@@ -8,6 +8,7 @@
 #include <stdlib.h>
 #include "version.h"
 #include "static_trajectory_list.h"
+#include <omp.h>
 using namespace std;
 
 
@@ -196,6 +197,7 @@ void Mean_Square_Displacement::listkernel(Trajectory* current_trajectory)
 
 void Mean_Square_Displacement::listkernel(Trajectory* current_trajectory, int timegapii,int thisii, int nextii)
 {
+  #pragma omp atomic
   msd[timegapii]+=pow(current_trajectory->distance(thisii,nextii),2);
 }
 

@@ -220,9 +220,6 @@ void Composition::listkernel(Trajectory* traj)
     traj_type = traj->show_type()-1;
 
     current_comp[current_time][traj_type]++;
-
-
-
 }
 
 

@@ -5,6 +5,7 @@
 #include "incoherent_scattering_function.h"
 #include "system.h"
 #include "version.h"
+#include <omp.h>
 
 using namespace std;
 
@@ -279,6 +280,7 @@ void Incoherent_Scattering_Function::list_displacementkernel(int timegapii,int t
 
 }
 
+/* This is deprecated in favor of the multithreaded version below */
 void Incoherent_Scattering_Function::listkernel(Trajectory* current_trajectory)
 {
 	int wavenumberii;
@@ -307,6 +309,7 @@ void Incoherent_Scattering_Function::listkernel(Trajectory* current_trajectory)
 	}	
 }
 
+/* This one is for multihreading */
 void Incoherent_Scattering_Function::listkernel(Trajectory* current_trajectory, int timegapii, int thisii, int nextii)
 {
 	int wavenumberii;
@@ -331,6 +334,7 @@ void Incoherent_Scattering_Function::listkernel(Trajectory* current_trajectory, 
 			coordinate2 = current_trajectory->show_unwrapped(nextii);
 			tempcorrelation += double(cos(vectorlist[wavevectorii]&(coordinate2-coordinate1))) / double(vectorcount);
 		}
+		#pragma omp atomic
 		correlation[timegapii][wavenumberii] += float(tempcorrelation);
 	}	
 }
