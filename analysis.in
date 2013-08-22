@@ -1,0 +1,339 @@
+system
+xyz_log
+traj.xyz log.lammps
+exponential 100 77 1.2 0 0 .01
+polymer 50
+1
+32
+
+create_list all
+all
+
+vhs vhslist.dat 2 100
+all
+
+compare_gaussian gaussian.dat 70
+all
+
+find_fast fast1 fast_count_list.dat
+all
+
+strings strings.dat 70 .6 sigma_matrix stringlist
+list fast1
+
+
+isfs isfs_strings.dat 24 24 xyz 0 0
+list stringlist
+
+isfs isfs.dat 24 24 xyz 0 0
+list all
+
+break
+
+
+isfs isfs_sizeset_new900_2.dat 24 24 xyz 8 0
+list all
+
+break
+
+isfs isfs_old.dat 24 24 xyz 0 0
+list all
+
+
+ngp ngp.dat
+list all
+
+break
+exponential 100 77 1.2 0 0 .01
+break
+
+vhs vhslist.dat 2 100
+all
+
+compare_gaussian gaussian.dat 70
+all
+
+find_fast fast1 fast_count_list.dat
+all
+
+strings strings4.dat 70 70 .6 sigma_matrix
+list fast1
+
+break
+
+
+create_bin_list bins
+all 1 1 2
+
+isfs isfs_bins2.dat /home/david/winshare/Analysis/qvector/qvector 24 24
+bin_list bins all
+
+break
+
+break
+
+isfs isfs.dat /home/david/winshare/Analysis/qvector/qvector 24 24
+all bins all
+
+break
+
+
+
+vector_autocorrelation_function bondcorrelation.dat bondlist.in
+
+break
+
+create_list all
+all
+
+displacement_map displacement_map 65 0 9
+list all
+
+break
+
+structure_factor structure_factor2.dat /home/dss/winshare/qvector/qvector symmetric 3D 0
+list all
+
+break
+
+
+create_list com
+moleculecom_all
+
+create_list all
+all
+
+msd msdtt.dat
+list all
+
+break
+
+msd msd_com.dat
+list com
+
+break
+
+11.651       11.651       11.651
+-5.8255       5.8255      -5.8255       5.8255      -5.8255       5.8255
+
+
+u2dist displacementdistu2.dat 50 .2 26
+list all
+
+u2dist displacementdistlong.dat 100 1 65
+list all
+
+break
+
+
+structure_factor structure_orig.dat /home/david/winshare/Analysis/qvector/qvector symmetric
+all
+
+
+ngp ngp.dat
+all
+
+ngp ngp_list.dat
+list all
+
+break
+
+vhs vhslist.dat 2 100
+all
+
+compare_gaussian gaussian.dat 70
+all
+
+find_fast fast1 fast_count_list.dat
+all
+
+strings strings.dat 70 70 .6
+list fast1
+
+break
+
+create_list COM
+moleculecom_all
+
+isfs isfs.dat /home/david/winshare/Analysis/qvector/qvector 8 8
+list COM
+
+break
+
+write_list_trajectory COM com.xyz
+
+structure_factor structure_com.dat /home/david/winshare/Analysis/qvector/qvector symmetric
+list COM
+
+msd msd.com.dat
+list COM
+
+break
+
+create_list all
+all
+
+structure_factor structure.dat /home/david/winshare/Analysis/qvector/qvector symmetric
+list all
+
+break
+
+vhs vhslist.dat 2 100
+all
+
+compare_gaussian gaussian.dat 70
+all
+
+find_fast fast1 fast_count_list.dat
+all
+
+strings strings.dat 70 70 .6
+list fast1
+
+break
+
+create_list all
+all
+
+
+msd msd.dat
+all
+
+msd msd_list.dat
+list all
+
+isfs isfs.dat /home/david/winshare/Analysis/qvector/qvector 24 24
+all
+
+isfs isfslist.dat /home/david/winshare/Analysis/qvector/qvector 24 24
+list all
+
+vhs vhs.dat 2 100
+all
+
+vhs vhslist.dat 2 100
+list all
+
+compare_gaussian gaussian.dat 70
+all
+
+find_fast fast1 fast_count.dat
+all
+
+find_fast fast1 fast_count_list.dat
+list all
+
+break
+
+msd msd_com.dat
+list molecule_COMs
+
+compare_gaussian gaussian.dat 70
+all
+
+find_fast fast1 fast_count.dat
+all
+ff
+msd msd_fast.dat
+list fast1
+
+u2dist u2dist.dat 50 .5 26
+all
+
+
+rgtensor_stats rgtensor.dat asphericity_dist.dat
+all
+
+break
+
+
+msd msd.dat
+list all
+
+break
+
+write_single_particle single.xyz 1
+
+break
+
+compare_gaussian gaussian.dat 70
+all
+
+find_fast fast1 fast_count.dat
+all
+
+strings strings.dat 70 70 .6
+list fast1
+
+break
+
+
+u2dist u2distlist.dat 50 .5 26
+list all
+
+break
+
+break
+
+stiffness_dist stiffness_dist.dat 40 500 26
+all
+
+stiffness_dist stiffness_distlist.dat 40 500 26
+list all
+
+break
+
+isfs isfs.dat /users/dss/analysis/qvector/qvector 24 24
+all
+
+isfs isfslist.dat /users/dss/analysis/qvector/qvector 24 24
+list all
+
+break
+
+msd_2d msd2d.dat xy
+all
+
+msd_2d msd2dlist.dat xy
+list all
+
+break
+
+msd msd.dat
+all
+
+msd msdlist.dat
+list all
+
+ngp ngp.dat
+all
+
+ngp ngplist.dat
+list all
+
+break
+
+vac_function vacf.dat
+all
+
+vac_fourier vacf_fourier.dat
+all
+
+strings strings.dat 1.5 2 50 67 67
+list fast1
+
+u2dist u2dist.dat 80 4 26
+all
+
+isf isf.dat /users/dss/analysis/qvector/qvector auto symmetric 0 24 24
+all
+
+compare_gaussian gaussian.dat
+all
+
+
+structure_factor structure.dat /users/dss/analysis/qvector/qvector symmetric
+all
+
+stiffness_dist stiffness_dist.dat 20 100 25
+all
