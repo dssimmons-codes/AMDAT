@@ -5,7 +5,7 @@ CFLAGSmain= -fopenmp
 ##Debugging flags
 #CFLAGS=-Wall -Wextra -Wcast-qual -Wcast-align -O0 -ggdb -g3 -fstack-protector-all -fno-inline -c
 #CFLAGSmain=-Wall -Wextra -Wcast-qual -Wcast-align -O0 -ggdb -g3 -fstack-protector -fno-inline -all
-SERVER=RANDOM_CRAP
+SERVER=
 WAVEVECTORS3D="\"/home/mdmarvin/Documents/AMDAT_work/build/qvectors/qvectors3d/qvector\""
 WAVEVECTORS2D="\"/home/mdmarvin/Documents/AMDAT_work/build/qvectors/qvectors2d/qvector\""
 WAVEVECTORS1D="\"/home/mdmarvin/Documents/AMDAT_work/build/qvectors/qvectors1d/qvector\""
