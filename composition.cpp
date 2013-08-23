@@ -6,6 +6,7 @@
 #include <stdlib.h>
 #include "composition.h"
 #include "version.h"
+#include <omp.h>
 
 using namespace std;
 
@@ -218,7 +219,7 @@ void Composition::listkernel(Trajectory* traj)
     int traj_type;
 
     traj_type = traj->show_type()-1;
-
+    #pragma omp atomic
     current_comp[current_time][traj_type]++;
 }
 
