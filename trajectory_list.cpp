@@ -182,13 +182,13 @@ void Trajectory_List::listloop(Analysis* analysis, int time1)
 {
 	int current_time;
 	current_time=convert_time(time1);
-	int t1 = time(NULL);
+//	int t1 = time(NULL);
 	#pragma omp parallel for schedule(dynamic) if(analysis->isThreadSafe()) // TODO: Structure Factor suggests this should be made parallel. 
 	for(int trajectoryii=0;trajectoryii<n_trajectories[current_time];trajectoryii++)
 	{
 		analysis->listkernel(trajectories[current_time][trajectoryii]);
 	}
-	cout << "listloop took " << time(NULL)-t1 << endl;
+//	cout << "listloop took " << time(NULL)-t1 << endl;
 }
 
 void Trajectory_List::listloop(Analysis* analysis, int timegap, int curTime, int nextTime)

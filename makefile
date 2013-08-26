@@ -1,7 +1,7 @@
 CXX=g++
 ##Normal flags
-CFLAGS=-c -fopenmp
-CFLAGSmain= -fopenmp
+CFLAGS=-c -fopenmp -O2
+CFLAGSmain= -fopenmp -O2
 ##Debugging flags
 #CFLAGS=-Wall -Wextra -Wcast-qual -Wcast-align -O0 -ggdb -g3 -fstack-protector-all -fno-inline -c
 #CFLAGSmain=-Wall -Wextra -Wcast-qual -Wcast-align -O0 -ggdb -g3 -fstack-protector -fno-inline -all

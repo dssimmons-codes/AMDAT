@@ -177,13 +177,14 @@ void Mean_Square_Displacement::analyze(Trajectory_List * t_list)
 void Mean_Square_Displacement::list_displacementkernel(int timegapii,int thisii, int nextii)
 {
 
-//  currenttime=thisii;
-//  nexttime=nextii;
-//  currenttimegap=timegapii;
+  currenttime=thisii;
+  nexttime=nextii;
+  currenttimegap=timegapii;
 
 //  weighting[timegapii]+=trajectory_list->show_n_trajectories(currenttime);
 //  //weighting[timegapii]+=(trajectory_list[0]).show_n_trajectories(currenttime);
 //  (trajectory_list[0]).listloop(this,currenttime);
+  #pragma omp atomic
   weighting[timegapii]+=trajectory_list->show_n_trajectories(thisii);
   (trajectory_list[0]).listloop(this,timegapii, thisii, nextii);
 }
@@ -192,6 +193,7 @@ void Mean_Square_Displacement::list_displacementkernel(int timegapii,int thisii,
 
 void Mean_Square_Displacement::listkernel(Trajectory* current_trajectory)
 {
+  #pragma omp atomic
   msd[currenttimegap]+=pow(current_trajectory->distance(currenttime,nexttime),2);
 }
 

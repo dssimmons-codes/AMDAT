@@ -2512,17 +2512,14 @@ void System::displacement_list(Analysis* analysis, bool fullblock)const
 		cout << "Analysis is not thread safe, running serially." << endl;
 
 	{
-		//cout << omp_get_num_threads() << "/" << omp_get_max_threads() << endl;
-
 		{
 			int thisii;
 			int nextii;
-			#pragma omp parallel for schedule(dynamic) if(analysis->isThreadSafe())
+			#pragma omp parallel for schedule(dynamic) if(analysis->isThreadSafe()) // TODO: Test if we can use the old loop
 			for(int timegapii=0;timegapii<n_exponential_steps;timegapii++)  //loop over exponential time step spacings within each block
 			{
 				int displacement_count=0;
 				bool abort = false;
-//				#pragma omp parallel for shared(abort, displacement_count)
 				for(int blockii=0;blockii<n_exponentials;blockii++)
 				{
 					if (!abort)
@@ -2530,9 +2527,8 @@ void System::displacement_list(Analysis* analysis, bool fullblock)const
 						thisii = n_exponential_steps*blockii+int(frt);	//calculate starting index of this block
 						nextii = thisii+timegapii;		//calculate dispaced index
 						analysis->list_displacementkernel(timegapii,thisii,nextii);
-						#pragma omp flush(displacement_count)
+						#pragma omp atomic
 						displacement_count++;
-						#pragma omp flush(displacement_count)
 						abort = (displacement_count == displacement_limit && displacement_limit != 0);
 						#pragma omp flush(abort)
 					}
@@ -2548,7 +2544,7 @@ void System::displacement_list(Analysis* analysis, bool fullblock)const
 		
 		{
 
-			#pragma omp parallel for schedule(dynamic)  if(analysis->isThreadSafe()) // This makes this loop execute in parallel, splitting by time values. This results in accurate data and substantial speed increases (~120 seconds faster for one that normally takes ~150 seconds, with 6 cpu cores, running msd w/ 2000 atoms)
+			#pragma omp parallel for schedule(dynamic)  if(analysis->isThreadSafe()) // This makes this loop execute in parallel, splitting by time values.
 			for(int timegapii=n_exponential_steps; timegapii<n_timegaps-1+int(frt); timegapii++)  //loop over linear time step spacings between blocks
 			{
 				int displacement_count=0;
@@ -2559,7 +2555,6 @@ void System::displacement_list(Analysis* analysis, bool fullblock)const
 				{
 					if (!abort)
 					{
-//						#pragma omp parallel for shared(abort, displacement_count)
 						for(int blockii=0; blockii<n_exponentials-block_timegapii; blockii++) // If this loop could be parallelized then you'd see even higher speed increases, but I've had a lot of data corruption when trying
 						{
 							if (!abort)
@@ -2567,11 +2562,10 @@ void System::displacement_list(Analysis* analysis, bool fullblock)const
 								int thisii = n_exponential_steps*blockii+expii+int(frt);
 								int nextii = thisii + n_exponential_steps*block_timegapii;
 								analysis->list_displacementkernel(timegapii,thisii,nextii);
-//								#pragma omp flush(displacement_count)
+								#pragma omp atomic
 								displacement_count++;
-//								#pragma omp flush(displacement_count)
 								abort = (displacement_count == displacement_limit && displacement_limit != 0);
-//								#pragma omp flush(abort)
+								#pragma omp flush(abort)
 //								analysis->list_displacementkernel(timegapii,thisii,nextii);
 //								displacement_count++;
 //						//		if (displacement_count == displacement_limit) break;

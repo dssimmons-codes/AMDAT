@@ -43,7 +43,7 @@ class Composition : public Analysis
     void listkernel(Trajectory *);
 
     void write(string);
-    bool isThreadSafe={return true;};
+    bool isThreadSafe(){return false;};
     
     
     
