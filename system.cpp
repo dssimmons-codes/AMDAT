@@ -2797,7 +2797,7 @@ int * System::timegap_weighting(bool fullblock) const
   for(timegapii=n_exponential_steps;timegapii<n_timegaps-1+int(frt);timegapii++)
   {
     block_timegapii = timegapii - n_exponential_steps+1;
-    weighting[timegapii]=(n_exponentials-block_timegapii)*((int(fullblock)*(n_exponential_steps-1))+1);
+    weighting[timegapii]=(n_exponentials-block_timegapii)+int(fullblock)*(n_exponentials-block_timegapii)*(n_exponential_steps-1)+1;
     if(weighting[timegapii] > displacement_limit&&displacement_limit!=0){weighting[timegapii]=displacement_limit;}	//check for limit on number of time data points per calculation and adjust weighting if appropriate
 //    cout << timegapii <<"\t"<< weighting[timegapii] << "\n";
   }

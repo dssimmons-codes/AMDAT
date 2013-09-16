@@ -756,6 +756,9 @@ Trajectory_List_Bins::Trajectory_List_Bins(System const * sys, float bin_thickne
    assign_bins_distance_plane(binning_list,pln,posit,dir,bin_thickness);
 
 }
+
+
+
 Trajectory_List_Bins::Trajectory_List_Bins(System const * sys, float bin_thickness, int n_bins, Trajectory_List* binning_list, Coordinate pnt)
 {
     /** Bins all system trajectories according to entire system dimensions
@@ -1490,7 +1493,7 @@ void Trajectory_List_Bins::assign_bins_distance_plane(Trajectory_List * binned_l
                         {
                             if (dist<0)
                             {
-                                length =  box_size.show_x()-dist;
+                                length =  box_size.show_x()+dist;
                             }
                             else
                             {
@@ -1534,7 +1537,7 @@ void Trajectory_List_Bins::assign_bins_distance_plane(Trajectory_List * binned_l
                         {
                             if (dist<0)
                             {
-                                length = box_size.show_y()-dist;
+                                length = box_size.show_y()+dist;
                             }
                             else
                             {
@@ -1578,7 +1581,7 @@ void Trajectory_List_Bins::assign_bins_distance_plane(Trajectory_List * binned_l
                         {
                             if (dist<0)
                             {
-                                length = box_size.show_z()-dist;
+                                length = box_size.show_z()+dist;
                             }
                             else
                             {
