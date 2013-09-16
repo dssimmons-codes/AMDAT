@@ -309,7 +309,7 @@ void Incoherent_Scattering_Function::listkernel(Trajectory* current_trajectory)
 	}	
 }
 
-/* This one is for multihreading */
+/* This version is for multihreading */
 void Incoherent_Scattering_Function::listkernel(Trajectory* current_trajectory, int timegapii, int thisii, int nextii)
 {
 	int wavenumberii;

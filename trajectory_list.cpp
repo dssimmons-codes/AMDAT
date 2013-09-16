@@ -7,7 +7,6 @@
 #include <fstream>
 #include "system.h"
 #include <stdlib.h>
-#include <stdio.h> //TODO: remove this and fix time references
 #include <omp.h>
 
 using namespace std;
@@ -178,17 +177,15 @@ Trajectory* Trajectory_List::operator()(int timeii,int trajii)
 }
 
 
-void Trajectory_List::listloop(Analysis* analysis, int time1)
+void Trajectory_List::listloop(Analysis* analysis, int time)
 {
 	int current_time;
-	current_time=convert_time(time1);
-//	int t1 = time(NULL);
-	#pragma omp parallel for schedule(dynamic) if(analysis->isThreadSafe()) // TODO: Structure Factor suggests this should be made parallel. 
+	current_time=convert_time(time);
+	#pragma omp parallel for schedule(dynamic) if(analysis->isThreadSafe()) // This is needed to make Structure Factor parallel 
 	for(int trajectoryii=0;trajectoryii<n_trajectories[current_time];trajectoryii++)
 	{
 		analysis->listkernel(trajectories[current_time][trajectoryii]);
 	}
-//	cout << "listloop took " << time(NULL)-t1 << endl;
 }
 
 void Trajectory_List::listloop(Analysis* analysis, int timegap, int curTime, int nextTime)
@@ -196,12 +193,10 @@ void Trajectory_List::listloop(Analysis* analysis, int timegap, int curTime, int
 	int current_time;
 
 	current_time=convert_time(curTime);
-//	int t1 = time(NULL);
 	for(int trajectoryii=0;trajectoryii<n_trajectories[current_time];trajectoryii++) 	
 	{
 		analysis->listkernel(trajectories[current_time][trajectoryii], timegap, curTime, nextTime);
 	}
-//	cout << "listloop took " << time(NULL)-t1 << endl;
 }
 
 

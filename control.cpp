@@ -738,18 +738,18 @@ void Control::change_processors()
     int threads = atoi(args[1].c_str());
     if (threads <= MAXTHREADS && threads > 0)
     {
-        cout << "Setting number of processors to " << threads << endl;
+        cout << "\nSetting number of processors to " << threads << endl;
         omp_set_num_threads(threads);
     }
     else if (threads > MAXTHREADS)
     {
-        cout << "Error! Number of processors given (" << threads << ") is higher than the maximum!" << endl;
+        cout << "\nError! Number of processors given (" << threads << ") is higher than the maximum!" << endl;
         cout << "Instead setting number of processors to maximum (" << MAXTHREADS << ")" << endl;
         omp_set_num_threads(MAXTHREADS);
     }
     else
     {
-        cout << "Error! Cannot set number of processors to " << args[1] << endl;
+        cout << "\nError! Cannot set number of processors to " << args[1] << endl;
         cout << "Instead setting number of processors to 1" << endl;
         omp_set_num_threads(1);
     }
@@ -765,7 +765,7 @@ void Control::get_user_input(bool show_tips)
     if (show_tips)
     {
         cout << "\nAwaiting user input! Type valid AMDAT commands here, line by line, pressing \"Enter\" at the end of each line. When you are finished, type \"done\" to execute the commands, or \"cancel\" to cancel execution." << endl;
-        cout << "(As of now there is little to no error checking so be careful when entering input)" << endl;
+        cout << "(As of now there is little to no error checking so be careful when entering input)" << endl; // TODO: When this is no longer true, remove this warning!
     }
     while (input != "done")
     {
