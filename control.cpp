@@ -8,6 +8,7 @@
 #include <iostream>
 #include <math.h>
 #include <sstream>
+#include <algorithm>
 
 #include "mean_square_displacement.h"
 #include "van_hove_self.h"
@@ -495,39 +496,66 @@ void Control::evaluate_expression()
    * @author Michael Marvin
    * @date 7/23/2013
    **/
-    string out_const = args[1];
-    string nextOp = "+";
-    float pVal = 0.0;
-    for (int indexii=2;indexii<ARGMAX;indexii++)
-    {
-        string exp=args[indexii];
-        if (exp == "" || exp.find("eq",0) != string::npos || exp == "=")
-            continue;
-        else if (exp == "+" || exp == "-" || exp == "*" || exp == "/" || exp == "^") // Add new math operators here
-            nextOp = exp;
-        else if (atof(exp.c_str()) || exp == "0" || exp == "0.0")
-        {
-            float tVal=atof(exp.c_str());
-            if (nextOp == "+")
-                pVal=pVal+tVal;
-            else if (nextOp == "-")
-                pVal=pVal-tVal;
-            else if (nextOp == "*")
-                pVal=pVal*tVal;
-            else if (nextOp == "/")
-                pVal=pVal/tVal;
-            else if (nextOp == "^")
-                pVal=pow(pVal,tVal);
-            // Add new math functionality here
-        }
-        else
-            continue;
 
+    string opArray[]={"+", "-", "*", "/", "^", "%", "(", ")"};  // Add new math operators here
+    vector<string> opVect(opArray, opArray+sizeof(opArray)/sizeof(string));
+
+    string out_const = "";
+    string line="";
+    for (int i=1; i<ARGMAX; i++) //Rebuild the line as a whole string
+        line=line+args[i];
+    if (line.find("=",0)!=string::npos)
+    {
+        int pos=line.find("=",0); //The constant is the content before the "=", the expression is after
+        out_const=line.substr(0, pos); 
+        line=line.substr(pos+1);
     }
+    out_const.erase(remove_if(out_const.begin(), out_const.end(), ::isspace), out_const.end()); //remove whitespace from the constant name
+    string stack="";
+    float stackVal=0.0;
+    string nextOp="+";
+    for(int i=0; i<line.length(); i++)
+    {
+        stringstream s;
+        s << line[i];
+        string ch = s.str();
+        if (find(opVect.begin(), opVect.end(), ch)!=opVect.end())
+        {
+            stackVal=eval_terms(nextOp, stackVal, atof(stack.c_str()));
+            
+            stack="";
+            nextOp=ch;
+        }
+        else if (ch==" ")
+            continue;
+        else
+        {
+            stack=stack+ch;
+        }
+    }
+    stackVal=eval_terms(nextOp, stackVal, atof(stack.c_str())); //Perform the last operation on the remaining term
+
     stringstream ss;
-    ss << pVal;
+    ss << stackVal;
     set_constant(out_const, ss.str());
 }
+
+float Control::eval_terms(string oper, float a, float b)
+{
+    if (oper == "+")
+        return a+b;
+    else if (oper == "-")
+        return a-b;
+    else if (oper == "*")
+        return a*b;
+    else if (oper == "/")
+        return a/b;
+    else if (oper == "^")
+        return pow(a,b);
+    else if (oper == "%")
+        return float(int(a) % int(b));
+}
+
 
 /* These functions are for logic and loops (if statements and for loops) */
 
