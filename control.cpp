@@ -511,15 +511,54 @@ void Control::evaluate_expression()
         line=line.substr(pos+1);
     }
     out_const.erase(remove_if(out_const.begin(), out_const.end(), ::isspace), out_const.end()); //remove whitespace from the constant name
+
+	float value=process_expression(line);
+
+    stringstream ss;
+    ss << value;
+    set_constant(out_const, ss.str());
+}
+
+float Control::process_expression(string exp)
+{
+    string opArray[]={"+", "-", "*", "/", "^", "%"};  // Add new math operators here
+    vector<string> opVect(opArray, opArray+sizeof(opArray)/sizeof(string));
     string stack="";
     float stackVal=0.0;
     string nextOp="+";
-    for(int i=0; i<line.length(); i++)
+    for(int i=0; i<exp.length(); i++)
     {
         stringstream s;
-        s << line[i];
+        s << exp[i];
         string ch = s.str();
-        if (find(opVect.begin(), opVect.end(), ch)!=opVect.end())
+        if (ch == "(")
+        {
+            int depth=0;
+            int len=0;
+            for(int j=i; j<exp.length(); j++)
+            {
+                stringstream T;
+                T << exp[j];
+                string temp = T.str();
+                if (temp=="(")
+                {
+                    depth++;
+                }
+                else if (temp==")")
+                {
+                    --depth;
+                }
+                if (depth==0)
+                {
+                    len=j-i-1;
+                    break;
+                }
+            }
+            stackVal=eval_terms(nextOp, stackVal, process_expression(exp.substr(i+1,len)));
+            stack="";
+            i=i+len;
+        }
+        else if (find(opVect.begin(), opVect.end(), ch)!=opVect.end())
         {
             stackVal=eval_terms(nextOp, stackVal, atof(stack.c_str()));
             
@@ -534,10 +573,7 @@ void Control::evaluate_expression()
         }
     }
     stackVal=eval_terms(nextOp, stackVal, atof(stack.c_str())); //Perform the last operation on the remaining term
-
-    stringstream ss;
-    ss << stackVal;
-    set_constant(out_const, ss.str());
+	return stackVal;
 }
 
 float Control::eval_terms(string oper, float a, float b)

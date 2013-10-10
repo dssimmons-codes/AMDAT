@@ -132,6 +132,7 @@ class Control
     void floor_const();                               // Input call to floor a constant to an integer
     void ceil_const();                               // Input call to ceiling a constant to an integer
     void evaluate_expression();                 // Performs basic mathematical operations and saves it into a constant
+    float process_expression(string);
 	float eval_terms(string, float, float);
     void get_user_input(bool);               // Pauses execution and allows the user to input commands on-the-fly
 
