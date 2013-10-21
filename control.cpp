@@ -48,7 +48,7 @@ using namespace std;
 /*--------------------------------------------------------------------------------*/
 
 string * Control::constants = new string[LISTSIZE];
-string * Control::constant_names = new string[LISTSIZE]; 
+string * Control::constant_names = new string[LISTSIZE];
 int Control::n_constants = 0;
 int Control::current_line = 0;
 vector<string> Control::inputFileVector;
