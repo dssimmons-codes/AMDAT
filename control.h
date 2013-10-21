@@ -187,6 +187,7 @@ class Control
     static int line_seek(int); // change the cursor position in the file vector, returns old position
     static int get_line_number(); // get the current cursor position in the file vector
 	static int get_input_file_length(); // gets the length of the input file, in lines
+	static void throw_error(string,bool); // Prints an error message and halts execution if error is fatal
 
 
 };

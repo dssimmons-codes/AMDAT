@@ -411,6 +411,21 @@ int Control::get_input_file_length()
     return inputFileVector.size();
 
 }
+
+void Control::throw_error(string error, bool fatal)
+{
+   /** Alerts the user to an error and (if applicable) exits AMDAT
+   * @author Michael Marvin
+   * @date 10/21/13
+   **/
+    cout<<"\nError: "<<error<<endl;
+    if (fatal)
+    {
+        cout<<"\nAMDAT execution halted due to fatal error listed above."<<endl;
+        exit(1);
+    }
+}
+
 /************************************************************************************/
 /* These functions are for mathematical AMDAT commands (such as round and evaluate) */
 /************************************************************************************/
@@ -425,8 +440,8 @@ void Control::round_const()
     int const_num = find_constant(args[1]);
     if (const_num < 0)
     {
-        cout << "Cannot round constant! Constant " << args[1] << " not found." << endl;
-        exit(1);
+        throw_error("Cannot round constant! Constant "+args[1]+" not found.", true);
+//        cout << "Cannot round constant! Constant " << args[1] << " not found." << endl;
     }
     int out = round_float(atof(constants[const_num].c_str()));
     //int out = f2int(atof(args[2].c_str()));
@@ -454,8 +469,9 @@ void Control::floor_const()
     int const_num = find_constant(args[1]);
     if (const_num < 0)
     {
-        cout << "Cannot floor constant! Constant " << args[1] << " not found." << endl;
-        exit(1);
+        throw_error("Cannot floor constant! Constant "+args[1]+" not found.", true);
+//        cout << "Cannot floor constant! Constant " << args[1] << " not found." << endl;
+//        exit(1);
     }
 	float f = atof(constants[const_num].c_str());
 	//int out = (f >= 0) ? (int)(f) : (int)(f - 1.0);
@@ -476,8 +492,9 @@ void Control::ceil_const()
     int const_num = find_constant(args[1]);
     if (const_num < 0)
     {
-        cout << "Cannot ceiling constant! Constant " << args[1] << " not found." << endl;
-        exit(1);
+        throw_error("Cannot ceiling constant! Constant "+args[1]+" not found.", true);
+//        cout << "Cannot ceiling constant! Constant " << args[1] << " not found." << endl;
+//        exit(1);
     }
 	float f = atof(constants[const_num].c_str());
 	//int out = (f >= 0) ? (int)(f+1.0) : (int)(f);
@@ -537,7 +554,7 @@ float Control::process_expression(string exp)
         if (ch == "(")
         {
             int depth=0;
-            int len=0;
+            int len=-1;
             for(int j=i; j<exp.length(); j++)
             {
                 stringstream T;
@@ -556,6 +573,10 @@ float Control::process_expression(string exp)
                     len=j-i-1;
                     break;
                 }
+            }
+            if (len<0)
+            {
+                throw_error("Unbalanced parenthesis in expression!", true);
             }
             stackVal=eval_terms(nextOp, stackVal, process_expression(exp.substr(i+1,len)));
             stack="";
@@ -955,8 +976,9 @@ string Control::replace_constants(string line) {
             constant_num = find_constant(constant_name);
             if (constant_num < 0)
             {
-            	cout<< "constant " << constant_name << " is not defined."<< endl; cout.flush();
-	            exit(1);
+//            	cout<< "constant " << constant_name << " is not defined."<< endl; cout.flush();
+//	            exit(1);
+                throw_error("Constant "+constant_name+" is not defined.", true);
             }
 
             line.replace(constant_start, constant_size, constants[constant_num]);
@@ -1043,7 +1065,7 @@ void Control::run_analysis(Analysis* analyzer, string setline)
   int listnum;
 
   n_setargs = tokenize(setline, setargs);
-  if(n_setargs==0){cout << "Error: No atom set command found.";exit(1);}
+  if(n_setargs==0){throw_error("No atom set command found.", true);}
   else {command = setargs[0];}
 
   /*
