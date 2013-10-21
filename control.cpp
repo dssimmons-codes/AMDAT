@@ -539,12 +539,12 @@ float Control::process_expression(string exp)
             {
                 stringstream T;
                 T << exp[j];
-                string temp = T.str();
-                if (temp=="(")
+                string tmp = T.str();
+                if (tmp=="(")
                 {
                     depth++;
                 }
-                else if (temp==")")
+                else if (tmp==")")
                 {
                     --depth;
                 }
@@ -556,7 +556,7 @@ float Control::process_expression(string exp)
             }
             stackVal=eval_terms(nextOp, stackVal, process_expression(exp.substr(i+1,len)));
             stack="";
-            i=i+len;
+            i=i+len+1;
         }
         else if (find(opVect.begin(), opVect.end(), ch)!=opVect.end())
         {
@@ -572,12 +572,15 @@ float Control::process_expression(string exp)
             stack=stack+ch;
         }
     }
-    stackVal=eval_terms(nextOp, stackVal, atof(stack.c_str())); //Perform the last operation on the remaining term
+    if (stack != "")
+        stackVal=eval_terms(nextOp, stackVal, atof(stack.c_str())); //Perform the last operation on the remaining term
+
 	return stackVal;
 }
 
 float Control::eval_terms(string oper, float a, float b)
 {
+   // cout << "a=" << a << " b=" << b << " op=" << oper << endl;
     if (oper == "+")
         return a+b;
     else if (oper == "-")

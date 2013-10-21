@@ -119,6 +119,8 @@ int main(int argc, char *argv[])
   }
   if(!procs_given)
     omp_set_num_threads(1);
+
+  cout<<"Amorphous Molecular Dynamics Analysis Toolkit (AMDAT) v."<<VERSION<<endl;
   Control control(inputfile,constants,constant_names,n_constants,t_file);
   return 0;
 }
