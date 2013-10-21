@@ -125,7 +125,7 @@ int Control::read_input_file(char * filename_input)
   input.close();
 
   cout << "\n"; 
-  for(int i=0; i<numLines; i++) // Display the contents of the vector, aka, display the file minus any comments
+  for(int i=0; i<numLines; i++) // Display the contents of the vector, aka, display the file minus any comments. TODO: Make this an option. MDM 10/21/13
   {
     cout << inputFileVector[i] << endl;
   }
@@ -137,12 +137,9 @@ int Control::execute_commands(int iIndex, int fIndex)
 {
   /** Executes the commands in the input file between the two supplied indices
   * Error codes: 0: error - stop script , 1: success - continue, 2: break loop
-  * @author Michael Marvin
-  * @date 7/18/2013
   **/
- string command;
- string line;
- //for(current_line=iIndex; current_line<fIndex; current_line++)
+  string command;
+  string line;
   line_seek(iIndex);
   while (current_line < fIndex)
   {
@@ -152,8 +149,7 @@ int Control::execute_commands(int iIndex, int fIndex)
     {
       args[argii]="";
     }
-    //line = replace_constants(inputFileVector[current_line]);
-    //line = get_line(current_line);
+
     line=read_line();
 
     n_args = tokenize(line, args);
@@ -165,8 +161,7 @@ int Control::execute_commands(int iIndex, int fIndex)
     else
     {
       command = args[0];
-     // cout <<"\n\n"<< line;
-    //  cout << "\n" << line << endl; // Need to make this an option. Either compiler or command line
+      cout << "\n" << line << endl; // TODO: Need to make this an option. Either compiler or command line. Should it be on by default? MDM 10/21/13
     }
     if (command.find("#",0) != string::npos)
     {
@@ -339,17 +334,9 @@ int Control::execute_commands(int iIndex, int fIndex)
     return 1;
 }
 
-
-/* These functions are public functions for reading parts of the input file vector/ seeking through it */
-string Control::read_next_line()
-{
-   /** Returns the line after the current one in the input vector and increments the current line number
-   * @author Michael Marvin
-   * @date 7/23/2013
-   **/
-    current_line++;
-    return replace_constants(inputFileVector[current_line]);
-}
+/*********************************************************************************************************/
+/* These functions are public functions for reading parts of the input file vector or seeking through it */
+/*********************************************************************************************************/
 
 string Control::read_line()
 {
@@ -358,7 +345,17 @@ string Control::read_line()
    * @date 7/23/2013
    **/
     current_line++;
-    return replace_constants(inputFileVector[current_line-1]);    
+    return get_line(current_line-1);    
+}
+
+string Control::read_next_line()
+{
+   /** Returns the line after the current one in the input vector and increments the current line number
+   * @author Michael Marvin
+   * @date 7/23/2013
+   **/
+    current_line++;
+    return get_line(current_line);
 }
 
 string Control::get_line(int lineNum)
@@ -386,9 +383,10 @@ int Control::line_seek(int lineNum)
    * @date 7/23/2013
    **/
     int old_line=current_line;
-    if (lineNum >= inputFileVector.size())
+    if (lineNum >= get_input_file_length())
     {
         cout << "Error: A function tried to seek beyond the end of the input file." << endl;
+        current_line=get_input_file_length()-1;
         return old_line;
     }
     current_line=lineNum;
@@ -404,7 +402,7 @@ int Control::get_line_number()
     return current_line;
 }
 
-int Control::get_input_file_size()
+int Control::get_input_file_length()
 {
    /** Returns the size of the inputFileVector
    * @author Michael Marvin
@@ -413,8 +411,9 @@ int Control::get_input_file_size()
     return inputFileVector.size();
 
 }
-
+/************************************************************************************/
 /* These functions are for mathematical AMDAT commands (such as round and evaluate) */
+/************************************************************************************/
 
 void Control::round_const()
 {
@@ -492,13 +491,13 @@ void Control::ceil_const()
 void Control::evaluate_expression()
 {
    /** Evaluates a mathematical expression and sets the value inside a constant. Performs calculations linearly, DOES NOT FOLLOW ORDER OF OPERATIONS!
-   * Parenthesis don't work and will probably break it, but could be added as an operator with some changes
+   * Parenthesis support added in version 0.430
    * @author Michael Marvin
    * @date 7/23/2013
    **/
 
-    string opArray[]={"+", "-", "*", "/", "^", "%", "(", ")"};  // Add new math operators here
-    vector<string> opVect(opArray, opArray+sizeof(opArray)/sizeof(string));
+//    string opArray[]={"+", "-", "*", "/", "^", "%", "(", ")"};  // Add new math operators here
+//    vector<string> opVect(opArray, opArray+sizeof(opArray)/sizeof(string));
 
     string out_const = "";
     string line="";
@@ -521,6 +520,10 @@ void Control::evaluate_expression()
 
 float Control::process_expression(string exp)
 {
+   /** Evaluates the specific string passed as a mathematical expression. Needed for recursion.
+   * @author Michael Marvin
+   * @date 10/21/2013
+   **/
     string opArray[]={"+", "-", "*", "/", "^", "%"};  // Add new math operators here
     vector<string> opVect(opArray, opArray+sizeof(opArray)/sizeof(string));
     string stack="";
@@ -580,6 +583,10 @@ float Control::process_expression(string exp)
 
 float Control::eval_terms(string oper, float a, float b)
 {
+   /** Performs a mathematical operation on two floats, used primarily for the evaluate command.
+   * @author Michael Marvin
+   * @date 10/21/2013
+   **/
    // cout << "a=" << a << " b=" << b << " op=" << oper << endl;
     if (oper == "+")
         return a+b;
@@ -595,8 +602,9 @@ float Control::eval_terms(string oper, float a, float b)
         return float(int(a) % int(b));
 }
 
-
+/*************************************************************************/
 /* These functions are for logic and loops (if statements and for loops) */
+/*************************************************************************/
 
 int Control::do_if_statement()
 {
@@ -795,7 +803,10 @@ int Control::locate_loop_end(int iIndex)
     return -1;
 }
 
+/**********************************************/
 /* These functions are more general functions */
+/**********************************************/
+
 void Control::change_processors()
 {
    /** Changes the number of processors that AMDAT can use, up to the maximum allotted at the beginning. Useful to ensure that non-threaded analysis don't try to use threads and give incorrect data
@@ -828,24 +839,24 @@ void Control::get_user_input(bool show_tips)
     int initialEnd = inputFileVector.size();
     int prevCursorPos = get_line_number();
     int linesAdded = 0;
-	bool cancelled = false;
+    bool cancelled = false;
     if (show_tips)
     {
         cout << "\nAwaiting user input! Type valid AMDAT commands here, line by line, pressing \"Enter\" at the end of each line. When you are finished, type \"done\" to execute the commands, or \"cancel\" to cancel execution." << endl;
         cout << "(As of now there is little to no error checking so be careful when entering input)" << endl; // TODO: When this is no longer true, remove this warning!
     }
-    while (input != "done")
+    while (input != "done") //Loop to allow an indefinite amount of commands until "done" is given
     {
         //cin >> input;
         getline(cin, input);
-        if (input == "cancel")
+        if (input == "cancel") //Allow the user to cancel input without executing commands
         {
             cancelled = true;
             break;
         }
         if (input != "")
         {
-            inputFileVector.push_back(input);
+            inputFileVector.push_back(input); //Add the lines to the end of the input file and increment the number of lines added
             linesAdded++;
         }
         //cout << input << endl;
@@ -872,13 +883,13 @@ void Control::get_user_input(bool show_tips)
 
     for (int i=0; i<linesAdded; i++)  // Remove the lines that were added to the script
         inputFileVector.pop_back();
-	if (prevCursorPos < get_input_file_size())
+	if (prevCursorPos < get_input_file_length())
     	line_seek(prevCursorPos);
 
     cout << "Waiting for additional input... (type \"done\" to return to previous execution)" << endl;
 
     get_user_input(false);
-	if (prevCursorPos < get_input_file_size())
+	if (prevCursorPos < get_input_file_length())
     	line_seek(prevCursorPos);
     return;
 
@@ -1081,7 +1092,7 @@ void Control::run_analysis(Analysis* analyzer, string setline)
  {
  if(n_runargs!=expected)
   {
-    cout << "\nError: Incorrect number of arguments for atom set type "<< command <<".\n"<< n_runargs-1 << " arguments given, "<< expected-1 << " expected.\n";
+    cout << "\nError: Incorrect number of arguments for command "<< command <<".\n"<< n_runargs-1 << " arguments given, "<< expected-1 << " expected.\n";
     exit(1);
   }
  }
@@ -2568,52 +2579,30 @@ void Control::remove_bin_list()
   * @date 7/17/2013
   **/
 
-  string listname;
   int expected=2;
   argcheck(expected); //checks first line of input section for format of remove_bin_list <name>
 
-  listname = args[1];		//user-input name of list to remove
+  string listname = args[1];		//user-input name of list to remove
 
   cout << "\nRemoving binned trajectory list " << listname << endl;
-  remove_trajectorylist_bins(listname); //remove the binned list from RAM
+
+  int listii = find_trajectorylist_bins(listname);
+  if (listii<0)
+  {
+      cout << "\nBinned list " << listname << " not found! Cannot remove it!" << endl;
+  }
+  else
+  {
+      delete binned_trajectories.at(listii);
+      binned_trajectories.erase(binned_trajectories.begin() + listii);
+      for (int i=listii; i<n_trajectory_list_bins; i++)
+      {
+          trajectory_list_bin_names[i]=trajectory_list_bin_names[i+1];
+      }
+      n_trajectory_list_bins--;
+  }
 }
 
-void Control::remove_trajectorylist_bins(string listname)
-{
-  /** Removes a binned list's contents from memory. Doesn't currently free the memory. It does make the list no longer available though. (SEMI-BROKEN)
-  * @author Michael Marvin
-  * @date 7/17/2013
-  **/
-    int listii;
-    listii = find_trajectorylist_bins(listname);
-    if (listii<0)
-    {
-        cout << "\nBinned list " << listname << " not found! Cannot remove it!" << endl;
-    }
-    else
-	{
-       /* if (n_trajectory_list_bins == 1)
-        {
-            cout << "Performing clean of binned trajectories" << endl;
-            for (unsigned i=0; i<binned_trajectories.size(); i++)
-                delete binned_trajectories.at(i); 
-
-           // binned_trajectories.clear();
-            vector<Trajectory_List_Bins *>().swap(binned_trajectories); // Should free its ram
-        }
-        else*/
-        {
-            delete binned_trajectories.at(listii);
-            binned_trajectories.erase(binned_trajectories.begin() + listii);
-        }
-        for (int i=listii; i<n_trajectory_list_bins; i++)
-        {
-            trajectory_list_bin_names[i]=trajectory_list_bin_names[i+1];
-        }
-        n_trajectory_list_bins--;
-
-	}
-}
 
 void Control::write_bin_xyz()
 {

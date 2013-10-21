@@ -59,8 +59,9 @@ int main(int argc, char *argv[])
       {
         cout<<"\nAmorphous Molecular Dynamics Analysis Toolkit (AMDAT) v."<<VERSION;
         cout<<"\nRelease date: "<<DATE;
-        cout<<"\n\nAMDAT is a toolkit of analysis methods appropriate for molecular dynamics simulations of amorphous matter.\nMore detailed descriptions of syntax and analysis methods can be found in the included documentaion file.\n\n";
+        cout<<"\n\nAMDAT is a toolkit of analysis methods appropriate for molecular dynamics simulations of amorphous matter.\nMore detailed descriptions of syntax and analysis methods can be found in the included documentation file.\n\n";
         cout<< "Examples:\n\n";
+        cout<<"./AMDAT -n 8 -i input.amdat\t\t\t\t\t# Runs AMDAT with 8 processing cores available for multithreaded analysis methods.\n";
         cout<<"./AMDAT -c CONSTANT 33 -c TEMP 1.00 -c QVECTOR_PATH /data/qvector -i input.amdat\t# Replaces constants in amdat.input with those defined, and then runs program on resulting commands.\n";
         cout<<"./AMDAT -i input.amdat\t\t\t\t\t\t\t\t\t# Runs AMDAT based on commands from input.amdat\n";
         cout<<"./AMDAT -i input.amdat -w 10\t\t\t\t\t\t\t\t# Waits for 10 seconds, then runs AMDAT based on commands from input.amdat\n";
@@ -70,6 +71,7 @@ int main(int argc, char *argv[])
         cout<<"-i \t\t Input file. REQUIRED to run progam"<<endl;
         cout<<"-v \t\t Display version information and exits"<<endl;
         cout<<"-c \t\t Define constant"<<endl;
+        cout<<"-n \t\t Set the number of available processing cores"<<endl;
         cout<<"-w \t\t Makes the system wait before reading in"<<endl;
         cout<<"-h, --help \t Display this message"<<endl<<endl;
 
@@ -93,20 +95,25 @@ int main(int argc, char *argv[])
       {
         if(argv[argii][2] == 'h') // help flag
         {
-          cout<<"\nAmorphous Molecular Dynamics Analysis Toolkit (AMDAT) v."<<VERSION;
-          cout<<"\nRelease date: "<<DATE;
-          cout<<"\n\nAMDAT is a toolkit of analysis methods appropriate for molecular dynamics simulations of amorphous matter.\nMore detailed descriptions of syntax and analysis methods can be found in the included documentaion file.\n\n";
-          cout<< "Examples:\n\n";
-          cout<<"./AMDAT -c CONSTANT 33 -c TEMP 1.00 -c QVECTOR_PATH /data/qvector -i input.amdat\t#Replaces constants in amdat.input with those defined, and then runs program on resulting commands.\n";
-          cout<<"./AMDAT -i input.amdat\t\t\t\t\t\t\t\t\t#Runs AMDAT based on commands from input.amdat\n";
-          cout<<"./AMDAT -i input.amdat > amdat.log 2>&1\t\t\t\t\t\t\t#Runs AMDAT based on commands from input.amdat with console output redirected to amdat.log\n";
-          cout<<"./AMDAT -v \t\t\t\t\t\t\t\t\t\t#Displays version information and exits program.\n\n";
-          cout<<"Flags:\n\n";
-          cout<<"-i \t\t Input file. REQUIRED to run progam"<<endl;
-          cout<<"-v \t\t Display version information and exits"<<endl;
-          cout<<"-c \t\t Define constant"<<endl;
-          cout<<"-h, --help \t Display this message"<<endl<<endl;
-          exit(0);
+        cout<<"\nAmorphous Molecular Dynamics Analysis Toolkit (AMDAT) v."<<VERSION;
+        cout<<"\nRelease date: "<<DATE;
+        cout<<"\n\nAMDAT is a toolkit of analysis methods appropriate for molecular dynamics simulations of amorphous matter.\nMore detailed descriptions of syntax and analysis methods can be found in the included documentation file.\n\n";
+        cout<< "Examples:\n\n";
+        cout<<"./AMDAT -n 8 -i input.amdat\t\t\t\t\t# Runs AMDAT with 8 processing cores available for multithreaded analysis methods.\n";
+        cout<<"./AMDAT -c CONSTANT 33 -c TEMP 1.00 -c QVECTOR_PATH /data/qvector -i input.amdat\t# Replaces constants in amdat.input with those defined, and then runs program on resulting commands.\n";
+        cout<<"./AMDAT -i input.amdat\t\t\t\t\t\t\t\t\t# Runs AMDAT based on commands from input.amdat\n";
+        cout<<"./AMDAT -i input.amdat -w 10\t\t\t\t\t\t\t\t# Waits for 10 seconds, then runs AMDAT based on commands from input.amdat\n";
+        cout<<"./AMDAT -i input.amdat > amdat.log 2>&1\t\t\t\t\t\t\t# Runs AMDAT based on commands from input.amdat with console output redirected to amdat.log\n";
+        cout<<"./AMDAT -v \t\t\t\t\t\t\t\t\t\t# Displays version information and exits program.\n\n";
+        cout<<"Flags:\n\n";
+        cout<<"-i \t\t Input file. REQUIRED to run progam"<<endl;
+        cout<<"-v \t\t Display version information and exits"<<endl;
+        cout<<"-c \t\t Define constant"<<endl;
+        cout<<"-n \t\t Set the number of available processing cores"<<endl;
+        cout<<"-w \t\t Makes the system wait before reading in"<<endl;
+        cout<<"-h, --help \t Display this message"<<endl<<endl;
+
+        exit(0);
         }
       }
     }

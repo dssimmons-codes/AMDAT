@@ -108,8 +108,7 @@ class Control
     //Trajectory_List_Bins * binned_trajectories [LISTSIZE];		//array of binned trajectory list objects
     vector<Trajectory_List_Bins *> binned_trajectories;
     int n_trajectory_list_bins;						//number of binned trajectory list objects stored
-    void remove_bin_list();                     // Input call to remove a binned list
-    void remove_trajectorylist_bins(string);    // Removes a binned list from memory
+    void remove_bin_list();                     // Removes a bin list from memory
     void write_bin_xyz();						//writes xyz file for binned_trajectories (all or single)
     void skip();
 
@@ -124,7 +123,7 @@ class Control
     /*Michael Marvin*/
     void print();                               // "prints" the arguments to screen
     bool do_for_loop();                         // executes a for loop from the current line to the appropriate "end" command
-    int locate_loop_end(int);                   // locates the line number of the appropriate "end" command
+    int locate_loop_end(int);                   // locates the line number of the appropriate "end" command for a loop
     int do_if_statement();                      // executes an if statement from the current line to the appropriate "end" command
     int locate_if_end(int, bool);               // locates the line number of the appropriate "end" command for if statements. The bool is whether it should look from an "if" (true) or "else" (false)
     int round_float(float);                     // rounds a float to the closest integer
@@ -187,7 +186,7 @@ class Control
     static string get_raw_line(int); // get the line at the passed index but without converting constants
     static int line_seek(int); // change the cursor position in the file vector, returns old position
     static int get_line_number(); // get the current cursor position in the file vector
-	static int get_input_file_size(); // gets the size of the input file, in lines
+	static int get_input_file_length(); // gets the length of the input file, in lines
 
 
 };
