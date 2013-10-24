@@ -276,9 +276,8 @@ void Structure_Factor::analyze(Trajectory_List * t_list1)
 
 //cout <<endl << timeincrement << endl;cout.flush();
 
-//  #pragma omp parallel for schedule(dynamic) if(analysis->isThreadSafe())
-  for(int timeii=0;timeii<n_times;timeii+=timeincrement) //TODO: This is probably the ideal spot, as it will call analyze_wave_density. Alternatively you could make listloop parallel and see how that works out
-  {														// Note: making the listloop calls in Trajectory_List does speed up, but references to globals (current_wavedensity) cause non-trivial errors
+  for(int timeii=0;timeii<n_times;timeii+=timeincrement) 
+  {														
     //Zero out wave densities
     for(int wavenumberii=0;wavenumberii<n_wavenumbers;wavenumberii++)
     {
@@ -292,7 +291,7 @@ void Structure_Factor::analyze(Trajectory_List * t_list1)
 
     /*calculate wave densities*/
     currenttime=timeii;
-    current_wavedensity = wavedensity1; //TODO: Figure out a way to pass current_wavedensity without needed new functions specifically for it
+    current_wavedensity = wavedensity1;
     analyze_wave_density(trajlist1); 
     //Calculate structure factor
     for(int wavenumberii=0;wavenumberii<n_wavenumbers;wavenumberii++)
@@ -323,12 +322,7 @@ void Structure_Factor::analyze_wave_density(Trajectory_List * t_list)
 {
   t_list->listloop(this,currenttime);
 }
-/*
-void Structure_Factor::analyze_wave_density(Trajectory_List * t_list, int timeii)
-{
-  t_list->listloop(this,0, timeii, 0);
-}
-*/
+
 void Structure_Factor::listkernel(Trajectory* current_trajectory)
 {
   int wavenumberii, vectorii;
@@ -342,44 +336,16 @@ void Structure_Factor::listkernel(Trajectory* current_trajectory)
   {
     vectorlist = wavevectors->vectorlist(wavenumberii);	//call up wave vector list for this wavenumber //The wavevectors reference may be what's breaking parallelization
     vectorcount = wavevectors->vectorcount(wavenumberii);	//get count of wave vectors for this wavenumber
-//	#pragma omp critical
     for(vectorii=0;vectorii<vectorcount;vectorii++)		//loop over wavevectors for this wavenumber
     {
       k_dot_r = vectorlist[vectorii]&coordinate;		//calculate dot product of wave vector and present atomecoordinate
 	  #pragma omp atomic
       current_wavedensity[wavenumberii][vectorii].real() += cos(k_dot_r);	//add contribution to real part of wave density // This COULD break paralleliation. Might need to omp flush the variable?
-//	  #pragma omp flush(current_wavedensity[wavenumerii][vectorii])
 	  #pragma omp atomic
       current_wavedensity[wavenumberii][vectorii].imag() += sin(k_dot_r);	//add contribution to imaginary part of wave density
-//	  #pragma omp flush(current_wavedensity)
     }
   }
 }
-/*
-void Structure_Factor::listkernel(Trajectory* current_trajectory, int NULL, int timeii, int NULL)
-{
-  int wavenumberii, vectorii;
-  Coordinate const * vectorlist;
-  Coordinate coordinate;
-  int vectorcount;
-  float k_dot_r;
-
-  coordinate = current_trajectory->show_coordinate(timeii);	//get atom coordinate at give time // the currenttime reference is... actually probably ok.
-  for(wavenumberii=0;wavenumberii<n_wavenumbers;wavenumberii++)		//loop over wavenumbers for which wavedensity will be calculated
-  {
-    vectorlist = wavevectors->vectorlist(wavenumberii);	//call up wave vector list for this wavenumber //The wavevectors reference may be what's breaking parallelization
-    vectorcount = wavevectors->vectorcount(wavenumberii);	//get count of wave vectors for this wavenumber
-    for(vectorii=0;vectorii<vectorcount;vectorii++)		//loop over wavevectors for this wavenumber
-    {
-      k_dot_r = vectorlist[vectorii]&coordinate;		//calculate dot product of wave vector and present atomecoordinate
-      current_wavedensity[wavenumberii][vectorii].real() += cos(k_dot_r);	//add contribution to real part of wave density // This COULD break paralleliation. Might need to omp flush the variable?
-//	  #pragma omp flush(current_wavedensity[wavenumerii][vectorii])
-//	  #pragma omp flush(current_wavedensity)
-      current_wavedensity[wavenumberii][vectorii].imag() += sin(k_dot_r);	//add contribution to imaginary part of wave density
-    }
-  }
-}
-*/
 
 /*Write correlation object to file*/
 void Structure_Factor::write(string filename)const

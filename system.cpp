@@ -296,6 +296,12 @@ void System::xyz_prep(vector<string> file_in, string fileline)
     trajtemplate = args[1];
   }
 
+  ifstream ifile(xyzfilename.c_str());
+  if (!ifile)
+  {
+	Control::throw_error("XYZ Trajectory file not found.", true);
+  }
+
   /*read in species names*/
   line = "";
   for(argii=0;argii<ARGMAX;argii++){args[argii]="";}
@@ -418,10 +424,21 @@ void System::xyz_prep_withlog(vector<string> file_in, string fileline)
   xyzfilename = args[0];
   if(n_args<2)
   {
-    cout << "Error: no log file specified.\n";
-    exit(0);
+	Control::throw_error("No log file specified.", true);
   }
   else {logfilename = args[1];}
+
+  ifstream ifile(xyzfilename.c_str());
+  if (!ifile)
+  {
+	Control::throw_error("XYZ Trajectory file not found.", true);
+  }
+  ifstream ifile1(logfilename.c_str());
+  if (!ifile1)
+  {
+	Control::throw_error("Log file not found.", true);
+  }
+
 
   if(n_args>2)
   {
@@ -830,6 +847,12 @@ void System::custom_prep(vector<string> file_in, string fileline)
   {
     trajtemplate_given=1;
     trajtemplate = args[1];
+  }
+
+  ifstream ifile(customfilename.c_str());
+  if (!ifile)
+  {
+	Control::throw_error("Custom Trajectory file not found.", true);
   }
 
   /*read in species names*/
@@ -1766,6 +1789,17 @@ void System::xtc_prep(vector<string> file_in, string fileline)
 
   xtc_file = args[0];
   gro_file = args[1];
+
+  ifstream ifile(xtc_file.c_str());
+  if (!ifile)
+  {
+	Control::throw_error("XTC Trajectory file not found.", true);
+  }
+  ifstream ifile1(gro_file.c_str());
+  if (!ifile1)
+  {
+	Control::throw_error("GRO file not found.", true);
+  }
 
   atomidentifier = read_gro(gro_file);
   read_xtc_format(xtc_file,atomidentifier);
