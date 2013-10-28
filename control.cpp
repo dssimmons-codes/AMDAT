@@ -9,6 +9,7 @@
 #include <math.h>
 #include <sstream>
 #include <algorithm>
+#include <omp.h>
 
 #include "mean_square_displacement.h"
 #include "van_hove_self.h"
@@ -39,7 +40,8 @@
 #include "vector_autocorrelation.h"
 #include "trajectory_list_decay.h"
 #include "version.h"
-#include <omp.h>
+
+#include "error.h"
 
 using namespace std;
 
@@ -84,7 +86,8 @@ int Control::read_input_file(char * filename_input)
   initialize_lists();
 
   input.open(filename_input);
-  if (!input.is_open()){cout << "Error opening file " << filename_input << ".\n"; exit(1);}
+  //if (!input.is_open()){cout << "Error opening file " << filename_input << ".\n"; exit(1);}
+  if (!input.is_open()){Error (string("Error opening file ").append(filename_input), -1, true);}
   int numLines=0;
   while(!input.eof())
   {
@@ -373,7 +376,10 @@ string Control::get_raw_line(int lineNum)
    * @author Michael Marvin
    * @date 7/23/2013
    **/
-    return inputFileVector[lineNum];
+	if (lineNum < get_input_file_length())
+    	return inputFileVector[lineNum];
+	else
+		return "";
 }
 
 int Control::line_seek(int lineNum)
@@ -383,12 +389,14 @@ int Control::line_seek(int lineNum)
    * @date 7/23/2013
    **/
     int old_line=current_line;
-    if (lineNum >= get_input_file_length())
+    if (lineNum > get_input_file_length())
     {
         cout << "Error: A function tried to seek beyond the end of the input file." << endl;
         current_line=get_input_file_length()-1;
         return old_line;
     }
+	else if (lineNum == get_input_file_length())
+		--lineNum;
     current_line=lineNum;
     return old_line;
 }
@@ -440,7 +448,8 @@ void Control::round_const()
     int const_num = find_constant(args[1]);
     if (const_num < 0)
     {
-        throw_error("Cannot round constant! Constant "+args[1]+" not found.", true);
+        Error("Cannot round constant! Constant "+args[1]+" not found.", 3);
+		return;
 //        cout << "Cannot round constant! Constant " << args[1] << " not found." << endl;
     }
     int out = round_float(atof(constants[const_num].c_str()));
@@ -469,7 +478,8 @@ void Control::floor_const()
     int const_num = find_constant(args[1]);
     if (const_num < 0)
     {
-        throw_error("Cannot floor constant! Constant "+args[1]+" not found.", true);
+        Error("Cannot floor constant! Constant "+args[1]+" not found.", 3);
+		return;
 //        cout << "Cannot floor constant! Constant " << args[1] << " not found." << endl;
 //        exit(1);
     }
@@ -492,7 +502,8 @@ void Control::ceil_const()
     int const_num = find_constant(args[1]);
     if (const_num < 0)
     {
-        throw_error("Cannot ceiling constant! Constant "+args[1]+" not found.", true);
+        Error("Cannot ceiling constant! Constant "+args[1]+" not found.", 3);
+		return;
 //        cout << "Cannot ceiling constant! Constant " << args[1] << " not found." << endl;
 //        exit(1);
     }
@@ -576,7 +587,8 @@ float Control::process_expression(string exp)
             }
             if (len<0)
             {
-                throw_error("Unbalanced parenthesis in expression!", true);
+                Error("Unbalanced parenthesis in expression!", 4);
+				return 0;
             }
             stackVal=eval_terms(nextOp, stackVal, process_expression(exp.substr(i+1,len)));
             stack="";
@@ -978,7 +990,8 @@ string Control::replace_constants(string line) {
             {
 //            	cout<< "constant " << constant_name << " is not defined."<< endl; cout.flush();
 //	            exit(1);
-                throw_error("Constant "+constant_name+" is not defined.", true);
+                Error("Constant "+constant_name+" is not defined.", 3);
+				return "";
             }
 
             line.replace(constant_start, constant_size, constants[constant_num]);

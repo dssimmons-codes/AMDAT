@@ -1,4 +1,4 @@
-/*Molecular Dynamics Analysis Toolkit (MDAT)*/
+/*Amorphous Molecular Dynamics Analysis Toolkit (AMDAT)*/
 /*Methods for parent Analysis class*/
 /*Written by David S. Simmons*/
 
