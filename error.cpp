@@ -11,16 +11,21 @@
 >=10000 - MINOR - AMDAT can still continue, but things may be incorrect
 
     Error code meanings, if you take a code please put it here!
-0 - General SEVERE error
+0  - General SEVERE error
 -1 - Input file not found
 -2 - System file not found
 -3 - End of if/loop not found
+-4 - Inconsistent number of atoms
+-5
+-6 - Incorrect number of arguments given, kill execution version
 
 
 1 - General MODERATE error
 2 - Output file not found
 3 - Constant not found
 4 - Unbalanced parenthesis
+5 - No atom set provided/found
+6 - Incorrect number of arguments given, skip command version
 
 
 10000 - General MINOR error
@@ -81,8 +86,11 @@ Error Error::operator =(const Error & copy)
 void Error::throw_severe(string msg, int code, bool internal)
 {   
     cerr << endl;
-    cerr << "Error! An error occured and AMDAT is not able to continue." << endl;
-    cerr << "Error message:" << endl;
+	if (!internal)
+	    cerr << "Error! An error occured and AMDAT is not able to continue." << endl;
+	else
+	    cerr << "Error! An internal error occured and AMDAT is not able to continue." << endl;
+    cerr << "Error message: ";
     print_msg_line(msg, internal);
     cerr << "Error Code: " << code << endl;
     exit(code);
@@ -90,20 +98,29 @@ void Error::throw_severe(string msg, int code, bool internal)
 
 void Error::throw_moderate(string msg, int code, bool internal)
 {
-    int current_line=Control::get_line_number()-1;
     cerr << endl;
-    cerr << "Error! An error occured and AMDAT must skip execution of the current command." << endl;
-    cerr << "Error message:" << endl;
+	if (!internal)
+	    cerr << "Error! An error occured and AMDAT must skip execution of the current command." << endl;
+	else
+	    cerr << "Error! An internal error occured and AMDAT must skip execution of the current command." << endl;
+    cerr << "Error message: ";
     print_msg_line(msg, internal);
     cerr << "Error Code: " << code << endl;
-    Control::line_seek(current_line+1);
+	int line_num=Control::get_line_number();
+	if (line_num<Control::get_input_file_length())
+	    Control::line_seek(line_num+1);
+	else
+	    Control::line_seek(Control::get_input_file_length());
 }
 
 void Error::throw_minor(string msg, int code, bool internal)
 {
     cerr << endl;
-    cerr << "Error! An error occured but AMDAT will try to continue." << endl;
-    cerr << "Error message:" << endl;
+	if (!internal)
+	    cerr << "Error! An error occured but AMDAT will try to continue." << endl;
+	else
+	    cerr << "Error! An internal error occured but AMDAT will try to continue." << endl;
+    cerr << "Error message: ";
     print_msg_line(msg, internal);
     cerr << "Error Code: " << code << endl;
 }

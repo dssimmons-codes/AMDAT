@@ -25,6 +25,7 @@
 using namespace std;
 #include "tokenize.h"
 #include "progress.h"
+#include "error.h"
 #define ARGMAX 100
 
 
@@ -69,7 +70,7 @@ System::System(vector<string> file_in, bool ensemble)
   if(n_args==2)
   {
     extra_trajectories=atoi(args[1].c_str());
-    cout << "\nAllocating space for " << extra_trajectories << " additional trajectories.";
+    cout << "\nAllocating space for " << extra_trajectories << " additional trajectories."<<endl;
   }
 
   /*read trajectory filename information*/
@@ -116,8 +117,7 @@ System::System(vector<string> file_in, bool ensemble)
   }
   else
   {
-    cout << "Error: time scheme " << timetype <<" not recognized!\n";
-    exit(1);
+    Error( string("Time scheme ").append(timetype)+" not recognized!",0);
   }
 
   /*allocate memory for box-size info*/
@@ -130,7 +130,7 @@ System::System(vector<string> file_in, bool ensemble)
   create_timelist();
 
   read_trajectory(trajectory_type,file_in,fileline);
-  cout << "\nTrajectory data read successfully.";
+  cout << "\nTrajectory data read successfully."<<endl;
 
   /*initialize master lists of trajectory objects (foreign key arrays)*/
   moleculecount=0;
@@ -188,7 +188,7 @@ System::System(vector<string> file_in, bool ensemble)
   }
 
   /*Calculate molecules centers of mass*/
-  cout << "\nGenerating molecule center of mass trajectories.";
+  cout << "\nGenerating molecule center of mass trajectories."<<endl;
   for(speciesii=0;speciesii<n_species;speciesii++)
   {
     for(moleculeii=0;moleculeii<n_molecules[speciesii];moleculeii++)
@@ -202,7 +202,7 @@ System::System(vector<string> file_in, bool ensemble)
 
   /*determine number of timegaps*/
   n_timegaps = n_exponential_steps + n_exponentials -1 +int(!frt);
-  cout << "\nSystem created.";
+  cout << "\nSystem created."<<endl;
 
   /*determine system density*/
   for(int timeii=0; timeii< n_timesteps; timeii++)
@@ -226,8 +226,7 @@ void System::read_trajectory(string trajectory_type, vector<string> file_in, str
   {
     if(trajectory_type=="xyz"||trajectory_type=="xyz_log"||trajectory_type=="xtc")
     {
-      cout << "Error: AMDAT can currently only handle custom LAMMP trajectory files for non-constant volume (system_np) trajectories.\n";
-      exit(0);
+      Error( "AMDAT can currently only handle custom LAMMP trajectory files for non-constant volume (system_np) trajectories.",-2);
     }
     else if (trajectory_type=="custom")
     {
@@ -235,8 +234,7 @@ void System::read_trajectory(string trajectory_type, vector<string> file_in, str
     }
     else
     {
-      cout<<"Error: trajectory file type "<<trajectory_type<<" not recognized.";
-      exit(1);
+      Error( string("Trajectory file type ").append(trajectory_type)+" not recognized.", -2);
     }
   }
   else
@@ -261,8 +259,7 @@ void System::read_trajectory(string trajectory_type, vector<string> file_in, str
     }
     else
     {
-      cout<<"Error: trajectory file type "<<trajectory_type<<" not recognized.";
-      exit(1);
+      Error( string("Trajectory file type ").append(trajectory_type)+" not recognized.", -2);
     }
   }
 }
@@ -299,7 +296,7 @@ void System::xyz_prep(vector<string> file_in, string fileline)
   ifstream ifile(xyzfilename.c_str());
   if (!ifile)
   {
-	Control::throw_error("XYZ Trajectory file not found.", true);
+	Error("XYZ Trajectory file not found.", -2);
   }
 
   /*read in species names*/
@@ -347,7 +344,12 @@ void System::xyz_prep(vector<string> file_in, string fileline)
 //    getline(*file_in,line);
     line = Control::read_line();
     n_args = tokenize(line, args);
-    if(n_args!=n_atomtypes){cout << "Error: number of atom counts ("<<n_args<<") does not match number of atom types("<<n_atomtypes<<").\n";exit(1);}
+    if(n_args!=n_atomtypes)
+    {
+        stringstream ss;
+        ss<< "Number of atom counts ("<<n_args<<") does not match number of atom types("<<n_atomtypes<<").";
+        Error(ss.str(), -4);
+    }
     for(atomii=0; atomii<n_atomtypes; atomii++)
     {
       natoms[speciesii][atomii] = atoi(args[atomii].c_str());
@@ -424,19 +426,19 @@ void System::xyz_prep_withlog(vector<string> file_in, string fileline)
   xyzfilename = args[0];
   if(n_args<2)
   {
-	Control::throw_error("No log file specified.", true);
+	Error("No log file specified.", -2);
   }
   else {logfilename = args[1];}
 
   ifstream ifile(xyzfilename.c_str());
   if (!ifile)
   {
-	Control::throw_error("XYZ Trajectory file not found.", true);
+	Error("XYZ Trajectory file not found.", -2);
   }
   ifstream ifile1(logfilename.c_str());
   if (!ifile1)
   {
-	Control::throw_error("Log file not found.", true);
+	Error("Log file not found.", -2);
   }
 
 
@@ -491,7 +493,12 @@ void System::xyz_prep_withlog(vector<string> file_in, string fileline)
 //    getline(*file_in,line);
     line = Control::read_line();
     n_args = tokenize(line, args);
-    if(n_args!=n_atomtypes){cout << "Error: number of atom counts ("<<n_args<<") does not match number of atom types("<<n_atomtypes<<").\n";exit(1);}
+    if(n_args!=n_atomtypes)
+    {
+        stringstream ss;
+        ss<< "Number of atom counts ("<<n_args<<") does not match number of atom types("<<n_atomtypes<<").";
+        Error(ss.str(), -4);
+    }
     for(atomii=0; atomii<n_atomtypes; atomii++)
     {
       natoms[speciesii][atomii] = atoi(args[atomii].c_str());
@@ -550,8 +557,7 @@ void System::xyz_prep_withlog(vector<string> file_in, string fileline)
 
   if(!found_bounds)
   {
-    cout << "Error: Thermo data not found in log file/\n";
-    exit(0);
+    Error( "Thermo data not found in log file.", -2);
   }
 
   count_atoms(natoms);
@@ -563,7 +569,7 @@ void System::xyz_prep_withlog(vector<string> file_in, string fileline)
 
   wrapped = 1;
   /*calculate unwrapped trajectories*/
-  cout << "\nUnwrapping trajectories.";
+  cout << "\nUnwrapping trajectories."<<endl;
   unwrap();
 
 }
@@ -601,9 +607,12 @@ void System::read_xyz(string xyzfilename)
     *fileobject >> file_atoms;		//read in number of atoms from file
     if(file_atoms!=n_atoms)		//check if the number of atoms listed in file is consistent with the molecule and atom counts given by the user
     {
-      cout << "The number of atoms listed in the xyz file is inconsistent with user input: ";	//if not, give error...
-      cout << file_atoms << " != " << n_atoms << "\n";
-      exit(0);											//and terminate program.
+      stringstream ss;
+      ss<<"The number of atoms listed in the xyz file is inconsistent with user input: "<<file_atoms<<" != "<<n_atoms;
+      Error(ss.str(), -4);
+      //cout << "The number of atoms listed in the xyz file is inconsistent with user input: ";	//if not, give error...
+      //cout << file_atoms << " != " << n_atoms << "\n";
+      //exit(0);											//and terminate program.
     }
 
     *fileobject >> trash;				//read out trash line: "atoms"
@@ -717,13 +726,12 @@ void System::read_xyz(string xyzfilename, string structure_filename)
     if(n_args==0){continue;}
     else if(n_args!=2)
     {
-      cout << "Error: incorrect number of arguments in structure file.  Each line should consist of 2 arguments: a species and a number of lines.\n";
-      exit(1);
+      Error("Incorrect number of arguments in structure file.  Each line should consist of 2 arguments: a species and a number of lines.", 0);
     }
     else
     {
       moleculeblock_type[moleculeblockii] = show_species_index(args[0]);
-      if(moleculeblock_type[moleculeblockii]==-1){cout<<"Error: species "<<args[0]<<" not found.\n";exit(1);}
+      if(moleculeblock_type[moleculeblockii]==-1){Error( string("Species ")+args[0]+" not found.",0);}
       moleculeblock_size[moleculeblockii] = atoi(args[1].c_str());
       moleculeblockii++;
     }
@@ -735,9 +743,12 @@ void System::read_xyz(string xyzfilename, string structure_filename)
   file_atoms = atoi(args[0].c_str());
   if(file_atoms!=n_atoms)		//check if the number of atoms listed in file is consistent with the molecule and atom counts given by the user
   {
-      cout << "The number of atoms listed in the xyz file is inconsistent with user input: ";	//if not, give error...
-      cout << file_atoms << " != " << n_atoms << "\n";
-      exit(0);											//and terminate program.
+      stringstream ss;
+      ss<<"The number of atoms listed in the xyz file is inconsistent with user input: "<<file_atoms<<" != "<<n_atoms;
+      Error(ss.str(), -4);
+//      cout << "The number of atoms listed in the xyz file is inconsistent with user input: ";	//if not, give error...
+//      cout << file_atoms << " != " << n_atoms << "\n";
+//      exit(0);											//and terminate program.
   }
 
   getline(filexyz, line); 		//read out garbage header line
@@ -780,9 +791,12 @@ void System::read_xyz(string xyzfilename, string structure_filename)
     file_atoms = atoi(args[0].c_str());
     if(file_atoms!=n_atoms)		//check if the number of atoms listed in file is consistent with the molecule and atom counts given by the user
     {
-      cout << "The number of atoms listed in the xyz file is inconsistent with user input: ";	//if not, give error...
-      cout << file_atoms << " != " << n_atoms << "\n";
-      exit(0);											//and terminate program.
+      stringstream ss;
+      ss<<"The number of atoms listed in the xyz file is inconsistent with user input: "<<file_atoms<<" != "<<n_atoms;
+      Error(ss.str(), -4);
+      //cout << "The number of atoms listed in the xyz file is inconsistent with user input: ";	//if not, give error...
+      //cout << file_atoms << " != " << n_atoms << "\n";
+      //exit(0);											//and terminate program.
     }
     getline(filexyz, line); 								//read out trash line: "atoms"
 
@@ -852,7 +866,7 @@ void System::custom_prep(vector<string> file_in, string fileline)
   ifstream ifile(customfilename.c_str());
   if (!ifile)
   {
-	Control::throw_error("Custom Trajectory file not found.", true);
+	Error("Custom Trajectory file not found.", -2);
   }
 
   /*read in species names*/
@@ -911,8 +925,9 @@ void System::custom_prep(vector<string> file_in, string fileline)
     n_args = tokenize(line, args);
     if(n_args!=n_atomtypes)
     {
-      cout << "Error: number of atom counts ("<<n_args<<") does not match number of atom types("<<n_atomtypes<<").\n";
-      exit(1);
+      stringstream ss;
+      ss<< "Number of atom counts ("<<n_args<<") does not match number of atom types("<<n_atomtypes<<").";
+      Error(ss.str(), -4);
     }
     for(atomii=0; atomii<n_atomtypes; atomii++)
     {
@@ -1018,9 +1033,12 @@ void System::read_custom(string xyzfilename)
      file_atoms=atoi(args[0].c_str());
     if(file_atoms!=n_atoms)		//check if the number of atoms listed in file is consistent with the molecule and atom counts given by the user
     {
-      cout << "The number of atoms listed in the xyz file is inconsistent with user input: ";	//if not, give error...
-      cout << file_atoms << " != " << n_atoms << "\n";
-      exit(0);											//and terminate program.
+      stringstream ss;
+      ss<<"The number of atoms listed in the xyz file is inconsistent with user input: "<<file_atoms<<" != "<<n_atoms;
+      Error(ss.str(), -4);
+      //cout << "The number of atoms listed in the xyz file is inconsistent with user input: ";	//if not, give error...
+      //cout << file_atoms << " != " << n_atoms << "\n";
+      //exit(0);											//and terminate program.
     }
 
     /*read in box bounds from trajectory file*/
@@ -1069,8 +1087,7 @@ void System::read_custom(string xyzfilename)
 //	if(box_boundary[0][0].show_x()!=xlo||box_boundary[0][1].show_x()!=xhi||box_boundary[0][0].show_y()!=ylo||box_boundary[0][1].show_y()!=yhi||box_boundary[0][0].show_z()!=zlo||box_boundary[0][1].show_z()!=zhi)
         if (!(floatCompare(box_boundary[0][0].show_x(), xlo)&&floatCompare(box_boundary[0][1].show_x(), xhi)&&floatCompare(box_boundary[0][0].show_y(), ylo)&&floatCompare(box_boundary[0][1].show_y(), yhi)&&floatCompare(box_boundary[0][0].show_z(), zlo)&&floatCompare(box_boundary[0][1].show_z(), zhi)))
         {
-            cout << "Error: The box boundaries provided in the custom file are not constant. For varying-volume trajectory, please select system_np system type.\n";
-            exit(0);
+            Error( "The box boundaries provided in the custom file are not constant. For varying-volume trajectory, please select system_np system type.", 0);
         }
       }
  //   }
@@ -1108,8 +1125,7 @@ void System::read_custom(string xyzfilename)
       /*figure out which coordinate types to read in*/
       if(!r_provided&&!rs_provided&&!ru_provided&&!rsu_provided)	//return error if no complete set of coordinates is provided
       {
-	cout << "Error: no complete set of coordinates provided in trajectory file.\n";
-	exit(0);
+        Error( "No complete set of coordinates provided in trajectory file.", -2);
       }
       else								//otherwise, determine which coordinate types to read in and their location
       {
@@ -1409,9 +1425,12 @@ void System::read_custom(string xyzfilename, string structure_filename)
     file_atoms=atoi(args[0].c_str());
     if(file_atoms!=n_atoms)		//check if the number of atoms listed in file is consistent with the molecule and atom counts given by the user
     {
-      cout << "The number of atoms listed in the xyz file is inconsistent with user input: ";	//if not, give error...
-      cout << file_atoms << " != " << n_atoms << "\n";
-      exit(0);											//and terminate program.
+      stringstream ss;
+      ss<<"The number of atoms listed in the xyz file is inconsistent with user input: "<<file_atoms<<" != "<<n_atoms;
+      Error(ss.str(), -4);
+      //cout << "The number of atoms listed in the xyz file is inconsistent with user input: ";	//if not, give error...
+      //cout << file_atoms << " != " << n_atoms << "\n";
+      //exit(0);											//and terminate program.
     }
     getline(*fileobject,line);		//read in "ITEM: BOX BOUNDS..." line
     getline(*fileobject,line);
@@ -1478,9 +1497,12 @@ void System::read_custom(string xyzfilename, string structure_filename)
      file_atoms=atoi(args[0].c_str());
     if(file_atoms!=n_atoms)		//check if the number of atoms listed in file is consistent with the molecule and atom counts given by the user
     {
-      cout << "The number of atoms listed in the xyz file is inconsistent with user input: ";	//if not, give error...
-      cout << file_atoms << " != " << n_atoms << "\n";
-      exit(0);											//and terminate program.
+      stringstream ss;
+      ss<<"The number of atoms listed in the xyz file is inconsistent with user input: "<<file_atoms<<" != "<<n_atoms;
+      Error(ss.str(), -4);
+      //cout << "The number of atoms listed in the xyz file is inconsistent with user input: ";	//if not, give error...
+      //cout << file_atoms << " != " << n_atoms << "\n";
+      //exit(0);											//and terminate program.
     }
 
     /*read in box bounds from trajectory file*/
@@ -1529,8 +1551,7 @@ void System::read_custom(string xyzfilename, string structure_filename)
 //	if(box_boundary[0][0].show_x()!=xlo||box_boundary[0][1].show_x()!=xhi||box_boundary[0][0].show_y()!=ylo||box_boundary[0][1].show_y()!=yhi||box_boundary[0][0].show_z()!=zlo||box_boundary[0][1].show_z()!=zhi)
         if (!(floatCompare(box_boundary[0][0].show_x(), xlo)&&floatCompare(box_boundary[0][1].show_x(), xhi)&&floatCompare(box_boundary[0][0].show_y(), ylo)&&floatCompare(box_boundary[0][1].show_y(), yhi)&&floatCompare(box_boundary[0][0].show_z(), zlo)&&floatCompare(box_boundary[0][1].show_z(), zhi)))
         {
-            cout << "Error: The box boundaries provided in the custom file are not constant. For varying-volume trajectory, please select system_np system type.\n";
-            exit(0);
+            Error( "The box boundaries provided in the custom file are not constant. For varying-volume trajectory, please select system_np system type.", 0);
         }
       }
  //   }
@@ -1785,7 +1806,7 @@ void System::xtc_prep(vector<string> file_in, string fileline)
 
   n_args = tokenize(fileline, args);
 
-  if(n_args!=2){cout<<"Error: incorrect number of files given for xtc trajectory.  File line must contain two files: an xtc file and a gro file.\n";exit(1);}
+  if(n_args!=2){Error( "Incorrect number of files given for xtc trajectory.  File line must contain two files: an xtc file and a gro file.", -2);}
 
   xtc_file = args[0];
   gro_file = args[1];
@@ -1793,19 +1814,19 @@ void System::xtc_prep(vector<string> file_in, string fileline)
   ifstream ifile(xtc_file.c_str());
   if (!ifile)
   {
-	Control::throw_error("XTC Trajectory file not found.", true);
+	Error("XTC Trajectory file not found.", -2);
   }
   ifstream ifile1(gro_file.c_str());
   if (!ifile1)
   {
-	Control::throw_error("GRO file not found.", true);
+	Error("GRO file not found.", -2);
   }
 
   atomidentifier = read_gro(gro_file);
   read_xtc_format(xtc_file,atomidentifier);
 
   /*calculate unwrapped trajectories*/
-  cout << "\nUnwrapping trajectories.";
+  cout << "\nUnwrapping trajectories."<<endl;
   unwrap();
 
 }
@@ -1949,11 +1970,11 @@ int** System::read_gro(string filename)
   /*create data structure based on the information obtained from this .gro file*/
   create_molecules(natoms);
 
-  cout <<"\n" << n_species << " found in .gro file:";
+  cout <<"\n" << n_species << " found in .gro file:"<<endl;
 
   for(ii=0;ii<n_species;ii++)
   {
-    cout<<"\n" << species_name[ii];
+    cout<<"\n" << species_name[ii]<<endl;
   }
   return atomidentifier;
 }
@@ -1983,8 +2004,9 @@ void System::read_xtc_format(string filename, int** atomidentifier)
 
   if(atomcount!=n_atoms)
   {
-    cout<<"Error: Number of atoms given by .gro file (" << n_atoms<<") and .xtc file (" << atomcount << ") are not equal.\n";
-    exit(1);
+    stringstream ss;
+    ss << "Number of atoms given by .gro file (" << n_atoms<<") and .xtc file (" << atomcount << ") are not equal.";
+    Error(ss.str(), -4);
   }
 
   coordinates = new rvec [n_atoms];
@@ -2000,8 +2022,9 @@ void System::read_xtc_format(string filename, int** atomidentifier)
 
     if(atomcount!=n_atoms)
     {
-      cout<<"Error: Number of atoms given by .gro file (" << n_atoms<<") and .xtc file (" << atomcount << ") are not equal.\n";
-      exit(1);
+        stringstream ss;
+        ss << "Number of atoms given by .gro file (" << n_atoms<<") and .xtc file (" << atomcount << ") are not equal.";
+        Error(ss.str(), -4);
     }
 
     for(atomii=0;atomii<n_atoms;atomii++)
@@ -2287,8 +2310,7 @@ float System::displacement_times(int timeii) const
 	}
 	else
 	{
-	  cout << "\nError: timegap time information requested for nonexistent timegap.\n"; 
-	  exit(0);
+	  Error( "Timegap time information requested for nonexistent timegap.", 0); 
 	}
 
 	return timegap;
@@ -2457,8 +2479,7 @@ void System::displacement_loop(Analysis* analysis, Trajectory * traj, int timega
 	}
 	else
 	{
-		cout << "Error: requested timegap out of range.";
-		exit(1);
+		Error( "Requested timegap out of range.", 0);
 	}
 }
 
@@ -2537,7 +2558,6 @@ void System::displacement_list(Analysis* analysis, bool fullblock)const
 //	int timegapii;						//index over displacement timestep
 //	int block_timegapii;
 	//int displacement_count;
-	cout << "CALLED displacement_list function (This is for testing only)!" << endl;
 	if(analysis->isThreadSafe() && omp_get_max_threads() > 1)
 		cout << "Analysis is thread safe, parallelizing." << endl;
 	else if(analysis->isThreadSafe() && omp_get_max_threads() == 1)
@@ -2553,7 +2573,7 @@ void System::displacement_list(Analysis* analysis, bool fullblock)const
 			for(int timegapii=0;timegapii<n_exponential_steps;timegapii++)  //loop over exponential time step spacings within each block
 			{
 				int displacement_count=0;
-				bool abort = false;
+                bool abort = false;
 				for(int blockii=0;blockii<n_exponentials;blockii++)
 				{
 					if (!abort)
@@ -2570,7 +2590,7 @@ void System::displacement_list(Analysis* analysis, bool fullblock)const
 		//			cout << thisii << "\t" << nextii << "\n";
 				}
 			}
-			cout << "Part 1 done!" << endl;
+			//cout << "Part 1 done!" << endl;
 		}
 //	cout << "exponential\n";
 
@@ -2611,7 +2631,7 @@ void System::displacement_list(Analysis* analysis, bool fullblock)const
 					}
 				}
 			}
-			cout << "Part 2 done!" << endl;
+		//	cout << "Part 2 done!" << endl;
 		}
 	}
 //	exit(1);
@@ -2675,8 +2695,7 @@ void System::displacement_loop_list(Analysis* analysis, Particle_List* particle_
 	}
 	else
 	{
-		cout << "Error: requested timegap out of range.";
-		exit(1);
+		Error( "Requested timegap out of range.", 0);
 	}
 }
 
@@ -2738,8 +2757,7 @@ void System::displacement_list(Analysis* analysis, int timegapii, bool fullblock
 	}
 	else
 	{
-		cout << "Error: requested timegap out of range.";
-		exit(1);
+		Error( "Requested timegap out of range.", 0);
 	}
 }
 
@@ -2760,8 +2778,8 @@ void System::displacement_list(Analysis* analysis, int timegapii, int firstblock
 	int block_timegapii;
 	int displacement_count;
 
-	if(firstblock<0){cout << "Error: first block cannot be less than zero";exit(1);}
-	if(lastblock>=n_exponentials){cout << "Error: last block greater than number of blocks";exit(1);}
+	if(firstblock<0){Error( "First block cannot be less than zero.", 0);}
+	if(lastblock>=n_exponentials){Error("Last block greater than number of blocks",0);}
 
 	if(timegapii<n_exponential_steps)
 	{
@@ -2804,8 +2822,7 @@ void System::displacement_list(Analysis* analysis, int timegapii, int firstblock
 	}
 	else
 	{
-		cout << "Error: requested timegap out of range.";
-		exit(1);
+		Error("Requested timegap out of range.",0);
 	}
 }
 
@@ -2870,8 +2887,7 @@ int System::timegap_weighting(int timegap, bool fullblock) const
   }
   else
   {
-    cout << "\nError: timegap weighting requested for nonexistent timegap.\n"; 
-    exit(0);
+    Error("Timegap weighting requested for nonexistent timegap.",0);
   }
   
 
@@ -3057,7 +3073,7 @@ void System::boxify()
 
  if (!boxified)
  {
-   cout << "\nBoxifying system.";
+   cout << "\nBoxifying system."<<endl;
    for(timeii=0;timeii<n_timesteps;timeii++)
    {
      xmin = box_boundary[timeii][0].show_x();

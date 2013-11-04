@@ -70,6 +70,7 @@ class Control
     static int find_constant(string);		//return index of constant with given custom name
     void set_constant(string, string);      // Sets a constant to a given value
     static string replace_constants(string); // A function that replaces the constants in the given string with their values
+    string get_constant(string);             //Gets the value of a constant by name
 
     Gaussian_Comparison * gaussian_comparison;		//array of Gaussian comparison objects
     int n_gaussian_comparisons;
@@ -78,6 +79,7 @@ class Control
     void system();			//create system object with input file data
 
     void argcheck(int);			//check if the number of arguments to a analysis method is correct
+    bool bool_argcheck(int);    //check if the number of arguments to a analysis method is correct and returns true if it is
     void limit();			//set limit of how many time spacings to use per timegap
     void create_list();
     void new_constant();
@@ -187,8 +189,6 @@ class Control
     static int line_seek(int); // change the cursor position in the file vector, returns old position
     static int get_line_number(); // get the current cursor position in the file vector
 	static int get_input_file_length(); // gets the length of the input file, in lines
-	static void throw_error(string,bool); // Prints an error message and halts execution if error is fatal
-
 
 };
 

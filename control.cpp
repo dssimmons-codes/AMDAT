@@ -47,6 +47,10 @@ using namespace std;
 
 #include "tokenize.h"
 
+//TODO: Convert all argcheck() calls to bool_argcheck() for error handling
+//      Convert all errors to use Error class
+//      Add <<endl; to nearly all cout references
+
 /*--------------------------------------------------------------------------------*/
 
 string * Control::constants = new string[LISTSIZE];
@@ -127,12 +131,12 @@ int Control::read_input_file(char * filename_input)
   }
   input.close();
 
-  cout << "\n"; 
-  for(int i=0; i<numLines; i++) // Display the contents of the vector, aka, display the file minus any comments. TODO: Make this an option. MDM 10/21/13
+//  cout << "\n"; 
+/*  for(int i=0; i<numLines; i++) // Display the contents of the vector, aka, display the file minus any comments. TODO: Make this an option. MDM 10/21/13
   {
     cout << inputFileVector[i] << endl;
-  }
-  cout << "\nRunning with " << omp_get_max_threads() << " processors." << endl;
+  }*/
+  cout << "Running with " << omp_get_max_threads() << " threads.\n" << endl;
   return numLines;
 }
 
@@ -164,7 +168,7 @@ int Control::execute_commands(int iIndex, int fIndex)
     else
     {
       command = args[0];
-      cout << "\n" << line << endl; // TODO: Need to make this an option. Either compiler or command line. Should it be on by default? MDM 10/21/13
+      cout << line << endl; // TODO: Need to make this an option. Either compiler or command line. Should it be on by default? MDM 10/21/13
     }
     if (command.find("#",0) != string::npos)
     {
@@ -330,8 +334,9 @@ int Control::execute_commands(int iIndex, int fIndex)
     {}
     else
     {
-      cout << "Command '" << command << "' not recognized.\n";
-      return 0;
+      Error(string("Command '").append(command)+"' not recognized.", 1);
+//      cout << "Command '" << command << "' not recognized.\n";
+//      return 0;
     }
   }
     return 1;
@@ -391,12 +396,12 @@ int Control::line_seek(int lineNum)
     int old_line=current_line;
     if (lineNum > get_input_file_length())
     {
-        cout << "Error: A function tried to seek beyond the end of the input file." << endl;
-        current_line=get_input_file_length()-1;
+        Error("A function tried to seek beyond the end of the input file.", 10002, true);
+        current_line=get_input_file_length();
         return old_line;
     }
-	else if (lineNum == get_input_file_length())
-		--lineNum;
+//	else if (lineNum == get_input_file_length())
+//		--lineNum;
     current_line=lineNum;
     return old_line;
 }
@@ -420,20 +425,6 @@ int Control::get_input_file_length()
 
 }
 
-void Control::throw_error(string error, bool fatal)
-{
-   /** Alerts the user to an error and (if applicable) exits AMDAT
-   * @author Michael Marvin
-   * @date 10/21/13
-   **/
-    cout<<"\nError: "<<error<<endl;
-    if (fatal)
-    {
-        cout<<"\nAMDAT execution halted due to fatal error listed above."<<endl;
-        exit(1);
-    }
-}
-
 /************************************************************************************/
 /* These functions are for mathematical AMDAT commands (such as round and evaluate) */
 /************************************************************************************/
@@ -445,15 +436,13 @@ void Control::round_const()
    * @date 7/23/2013
    **/
     string constant = args[1];
-    int const_num = find_constant(args[1]);
-    if (const_num < 0)
+    string const_val = get_constant(constant);
+    if (const_val.empty())
     {
-        Error("Cannot round constant! Constant "+args[1]+" not found.", 3);
+        Error("Cannot round constant! Constant "+constant+" not found.", 3);
 		return;
-//        cout << "Cannot round constant! Constant " << args[1] << " not found." << endl;
     }
-    int out = round_float(atof(constants[const_num].c_str()));
-    //int out = f2int(atof(args[2].c_str()));
+    int out = round_float(atof(const_val.c_str()));
     stringstream ss;
     ss << out;
     set_constant(constant, ss.str());
@@ -475,18 +464,14 @@ void Control::floor_const()
    * @date 8/15/2013
    **/
     string constant = args[1];
-    int const_num = find_constant(args[1]);
-    if (const_num < 0)
+    string const_val = get_constant(constant);
+    if (const_val.empty())
     {
-        Error("Cannot floor constant! Constant "+args[1]+" not found.", 3);
+        Error("Cannot floor constant! Constant "+constant+" not found.", 3);
 		return;
-//        cout << "Cannot floor constant! Constant " << args[1] << " not found." << endl;
-//        exit(1);
     }
-	float f = atof(constants[const_num].c_str());
-	//int out = (f >= 0) ? (int)(f) : (int)(f - 1.0);
+	float f = atof(const_val.c_str());
 	int out = floor(f);
-    //int out = f2int(atof(args[2].c_str()));
     stringstream ss;
     ss << out;
     set_constant(constant, ss.str());
@@ -499,18 +484,14 @@ void Control::ceil_const()
    * @date 8/15/2013
    **/
     string constant = args[1];
-    int const_num = find_constant(args[1]);
-    if (const_num < 0)
+    string const_val = get_constant(constant);
+    if (const_val.empty())
     {
-        Error("Cannot ceiling constant! Constant "+args[1]+" not found.", 3);
+        Error("Cannot ceiling constant! Constant "+constant+" not found.", 3);
 		return;
-//        cout << "Cannot ceiling constant! Constant " << args[1] << " not found." << endl;
-//        exit(1);
     }
-	float f = atof(constants[const_num].c_str());
-	//int out = (f >= 0) ? (int)(f+1.0) : (int)(f);
+	float f = atof(const_val.c_str());
 	int out = ceil(f);
-    //int out = f2int(atof(args[2].c_str()));
     stringstream ss;
     ss << out;
     set_constant(constant, ss.str());
@@ -536,6 +517,11 @@ void Control::evaluate_expression()
         int pos=line.find("=",0); //The constant is the content before the "=", the expression is after
         out_const=line.substr(0, pos); 
         line=line.substr(pos+1);
+    }
+    else
+    {
+        Error("Evaluate command requires the \"=\" symbol!", 1);
+        return;
     }
     out_const.erase(remove_if(out_const.begin(), out_const.end(), ::isspace), out_const.end()); //remove whitespace from the constant name
 
@@ -849,19 +835,19 @@ void Control::change_processors()
     int threads = atoi(args[1].c_str());
     if (threads <= MAXTHREADS && threads > 0)
     {
-        cout << "\nSetting number of processors to " << threads << endl;
+        cout << "Setting number of processors to " << threads << endl;
         omp_set_num_threads(threads);
     }
     else if (threads > MAXTHREADS)
     {
-        cout << "\nError! Number of processors given (" << threads << ") is higher than the maximum!" << endl;
-        cout << "Instead setting number of processors to maximum (" << MAXTHREADS << ")" << endl;
+        stringstream ss;
+        ss<<"Number of processors given (" << threads << ") is higher than the maximum. Instead setting to (" << MAXTHREADS << ")";
+        Error(ss.str(), 10001);
         omp_set_num_threads(MAXTHREADS);
     }
     else
     {
-        cout << "\nError! Cannot set number of processors to " << args[1] << endl;
-        cout << "Instead setting number of processors to 1" << endl;
+        Error(string("Cannot set number of processors to ")+args[1]+". Instead setting to 1.", 10001);
         omp_set_num_threads(1);
     }
 }
@@ -919,7 +905,7 @@ void Control::get_user_input(bool show_tips)
 	if (prevCursorPos < get_input_file_length())
     	line_seek(prevCursorPos);
 
-    cout << "Waiting for additional input... (type \"done\" to return to previous execution)" << endl;
+    cout << "Waiting for additional input... (type \"done\" with no other input to return to previous execution)" << endl;
 
     get_user_input(false);
 	if (prevCursorPos < get_input_file_length())
@@ -948,11 +934,24 @@ void Control::get_user_input(bool show_tips)
  {
  if(n_args!=expected)
   {
-    cout << "\nError: Incorrect number of arguments for command "<< args[0] <<".\n"<< n_args-1 << " arguments given, "<< expected-1 << " expected.\n";
-    exit(1);
+    stringstream ss;
+    ss << "Incorrect number of arguments for command "<< args[0] <<".\n"<< n_args-1 << " arguments given, "<< expected-1 << " expected.";
+    Error(ss.str(), -6);
   }
 }
 
+/*Same as previous function but returns true if the number is correct, and false if incorrect, for error handling. */
+bool Control::bool_argcheck(int expected)
+{
+    if(n_args!=expected)
+    {
+        stringstream ss;
+        ss << "Incorrect number of arguments for command "<< args[0] <<".\n"<< n_args-1 << " arguments given, "<< expected-1 << " expected.";
+        Error(ss.str(), 6);
+        return false;
+    }
+    return true;
+}
 
 
 /*--------------------------------------------------------------------------------*/
@@ -990,7 +989,7 @@ string Control::replace_constants(string line) {
             {
 //            	cout<< "constant " << constant_name << " is not defined."<< endl; cout.flush();
 //	            exit(1);
-                Error("Constant "+constant_name+" is not defined.", 3);
+                Error("Constant \""+constant_name+"\" is not defined.", 3);
 				return "";
             }
 
@@ -1040,6 +1039,15 @@ int Control::find_constant(string constant_name) {
 }
 
 
+/*--------------------------------------------------------------------------------*/
+/* Function to get the value of a constant from the constant's name. */
+string Control::get_constant(string constant_name) {
+    int index=find_constant(constant_name);
+    if (index>=0)
+        return constants[index];
+    else
+        return "";
+}
 
 /*--------------------------------------------------------------------------------*/
 
@@ -1078,7 +1086,7 @@ void Control::run_analysis(Analysis* analyzer, string setline)
   int listnum;
 
   n_setargs = tokenize(setline, setargs);
-  if(n_setargs==0){throw_error("No atom set command found.", true);}
+  if(n_setargs==0){Error("No atom set command found.", 5);}
   else {command = setargs[0];}
 
   /*
@@ -1289,7 +1297,7 @@ void Control::create_list()
     trajpointer=(Trajectory_List*)trajectory;
     run_analysis(trajectory,runline);	//create list from system loops
     add_trajectorylist(trajpointer, listname);	//add trajectory list to array
-    cout<<"\nTrajectory list "<<listname<<" created with "<<trajpointer->show_n_trajectories(0)<< " trajectories.";
+    cout<<"\nTrajectory list "<<listname<<" created with "<<trajpointer->show_n_trajectories(0)<< " trajectories."<<endl;
 //   }
 }
 
@@ -1353,7 +1361,7 @@ void Control::msd()
   run_analysis <Mean_Square_Displacement> (msd,runline,filename); // pass run_analysis template the analysis type 'Mean_Square_Displacement'
 
   finish = time(NULL);
-  cout << "\nCalculated mean square displacement in " << finish-start<<" seconds.";
+  cout << "\nCalculated mean square displacement in " << finish-start<<" seconds."<<endl;
 }
 
 
@@ -1385,7 +1393,7 @@ void Control::msd_2d()
   start = time(NULL);
   run_analysis<Mean_Square_Displacement_2D>(msd, runline, filename);
   finish = time(NULL);
-  cout << "\nCalculated mean square displacement in " << finish-start<<" seconds.";
+  cout << "\nCalculated mean square displacement in " << finish-start<<" seconds."<<endl;
 
 }
 
@@ -1437,7 +1445,7 @@ void Control::vacf()
   }
 
   finish = time(NULL);
-  cout << "\nCalculated velocity autocorrelation function in " << finish-start<<" seconds.";
+  cout << "\nCalculated velocity autocorrelation function in " << finish-start<<" seconds."<<endl;
   vaf.write(filename);
 }
 
