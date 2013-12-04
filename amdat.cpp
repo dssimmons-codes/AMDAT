@@ -1,6 +1,11 @@
-/*Molecular Dynamics Analysis Toolkit (AMDAT)*/
-/*'Main'*/
+/*Amorphous Molecular Dynamics Analysis Toolkit (AMDAT)*/
+/*A software package for analysis of molecular dynamics trajectories*/
 /*Written by David S. Simmons*/
+/*Major contributors: Michael Marvin, Mark Mackura*/
+/*Other contributors: Daniel Hunsicker, Ryan Lang*/
+
+
+/*'Main'*/
 
 #include "control.h"
 #include <stdio.h>

@@ -39,6 +39,7 @@
 #include "clustered_list.h"
 #include "vector_autocorrelation.h"
 #include "trajectory_list_decay.h"
+#include "mean_displacement.h"
 #include "version.h"
 
 #include "error.h"
@@ -196,6 +197,10 @@ int Control::execute_commands(int iIndex, int fIndex)
     else if (command == "msd_2d")
     {
       msd_2d();
+    }
+    else if (command == "mean_displacement")
+    {
+      mean_displacement();
     }
     else if (command == "vac_function")
     {
@@ -1400,7 +1405,33 @@ void Control::msd_2d()
 
 /*--------------------------------------------------------------------------------*/
 
+/*Calculate and write to file mean displacement as requested by user*/
+void Control::mean_displacement()
+{
+  string filename;
+  string runline;
+  int expected=2;
+  argcheck(expected);
+  dynamic = 1;
 
+  filename = args[1];
+
+//  getline(input,runline);
+  runline = read_line();
+  cout <<"\n"<< runline;
+
+  //analyte->unwrap();		//should already be unwrapped
+  Mean_Displacement md(analyte);
+  cout << "\nCalculating mean displacement.\n";cout.flush();
+  start = time(NULL);
+  run_analysis <Mean_Displacement> (md,runline,filename); // pass run_analysis template the analysis type 'Mean_Square_Displacement'
+
+  finish = time(NULL);
+  cout << "\nCalculated mean displacement in " << finish-start<<" seconds.";
+}
+
+
+/*--------------------------------------------------------------------------------*/
 
 /*Calculate and write to file velocity autocorrelation function as requested by user*/
 void Control::vacf()

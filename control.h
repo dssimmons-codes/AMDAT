@@ -140,6 +140,7 @@ class Control
     /*Analysis method calls*/
     void msd();			//calculate mean square displacement
     void msd_2d();		//calculate 2d mean square displacement
+    void mean_displacement();	//calculate mean displacement - primary purpose is identification of momentum buildup
     void vacf();		//calculate velocity autocorrelation function
     void vacf_fourier();	//calculate fourier transform of velocity autocorrelation function
     void calc_vhs();		//calculate self van hove
