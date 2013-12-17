@@ -6,9 +6,9 @@ CFLAGSmain= -fopenmp# -O2
 #CFLAGS=-Wall -Wextra -Wcast-qual -Wcast-align -O0 -ggdb -g3 -fstack-protector-all -fno-inline -c
 #CFLAGSmain=-Wall -Wextra -Wcast-qual -Wcast-align -O0 -ggdb -g3 -fstack-protector -fno-inline -all
 SERVER=
-WAVEVECTORS3D="\"/home/mdmarvin/Documents/AMDAT_work/build/qvectors/qvectors3d/qvector\""
-WAVEVECTORS2D="\"/home/mdmarvin/Documents/AMDAT_work/build/qvectors/qvectors2d/qvector\""
-WAVEVECTORS1D="\"/home/mdmarvin/Documents/AMDAT_work/build/qvectors/qvectors1d/qvector\""
+WAVEVECTORS3D="\"/home/magico13/work/AMDAT/build/qvectors/qvectors3d/qvector\""
+WAVEVECTORS2D="\"/home/magico13/work/AMDAT/build/qvectors/qvectors2d/qvector\""
+WAVEVECTORS1D="\"/home/magico13/work/AMDAT/build/qvectors/qvectors1d/qvector\""
 
 ifeq ($(SERVER),TACC)
 AMDAT: amdat.o coordinate.o trajectory.o atom_trajectory.o molecule.o system.o analysis.o time_correlation_function.o van_hove_self.o progress.o mean_square_displacement.o van_hove_distinct.o spacial_decomposition.o control.o wave_vectors.o spherical_wave_vectors.o wave_density.o intermediate_scattering_function.o correlation_2d.o incoherent_scattering_function.o debyewaller_dist.o stiffness_dist.o gaussian_comparison.o particle_list.o fast_particles.o non_gaussian_parameter.o  gaussian_comparison.o particle_list.o particle_list_exptime.o radial_debye_waller.o tokenize.o mean_square_displacement_2d.o velocity_autocorrelation.o strings.o trajectory_list.o static_trajectory_list.o exptime_trajectory_list.o rgtensor.o trajmath.o rgtensor_stats.o displacement_distribution.o version.h boolean_list.o fast_particles.o slow_particles.o average_particles.o displacement_map.o composition.o n_fold_order_parameter.o trajectory_list_bins.o structure_factor.o clustered_list.o trajectory_list_decay.o vector_autocorrelation.o error.o mean_displacement.o

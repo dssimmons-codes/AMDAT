@@ -10,6 +10,7 @@
 #include <sstream>
 #include <algorithm>
 #include <omp.h>
+#include <unistd.h>
 
 #include "mean_square_displacement.h"
 #include "van_hove_self.h"
@@ -335,6 +336,8 @@ int Control::execute_commands(int iIndex, int fIndex)
     {get_user_input(true);}
     else if (command == "processors")
     {change_processors();}
+	else if (command == "shell")
+	{shell_command();}
     else if (command == "none")
     {}
     else
@@ -830,6 +833,21 @@ int Control::locate_loop_end(int iIndex)
 /**********************************************/
 /* These functions are more general functions */
 /**********************************************/
+
+void Control::shell_command()
+{
+    string command = "";
+    for (int i=1; i<ARGMAX; i++)
+    {
+		//strcat(command, args[i].c_str());
+        command=command+" "+args[i];
+    }
+    //cout << command << endl;
+    int status=std::system(command.c_str());
+	cout << "Command exited with exit code " << status << endl;
+
+}
+
 
 void Control::change_processors()
 {

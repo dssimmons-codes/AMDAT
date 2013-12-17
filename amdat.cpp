@@ -12,6 +12,7 @@
 #include <stdlib.h>
 #include <iostream>
 #include <fstream>
+#include <unistd.h>
 #include "version.h"
 
 #include <omp.h>

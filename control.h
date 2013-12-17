@@ -123,6 +123,7 @@ class Control
     void add_value_list(Value_List<float>*, string);
 
     /*Michael Marvin*/
+	void shell_command(); 						// executes a Linux command
     void print();                               // "prints" the arguments to screen
     bool do_for_loop();                         // executes a for loop from the current line to the appropriate "end" command
     int locate_loop_end(int);                   // locates the line number of the appropriate "end" command for a loop
