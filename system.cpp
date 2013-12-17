@@ -986,22 +986,22 @@ void System::read_custom(string xyzfilename)
   * @author David S. Simmons
   **/
 
-  int file_atoms;			//variable to store the number of atoms listed in xyz file
-  string trash;				//create garbage string
-  int timestepii;			//index over timesteps
-  int speciesii;			//index over species
-  int moleculeii;			//index over molecules
-  int atomii;				//index over atoms within molecule
-  int type;				//type to pass to molecule
-  Coordinate coordinate;		//coordinate to pass to molecule
-  float x;				//temporary storage for x coordinate
-  float y;				//temporary storage for y coordinate
-  float z;				//temporary storage for z coordinate
-  int * n_typeii;			//array of indices to track how many of each type have been passed to particular molecule
-  int typeii;				//index over elements of above aray
+  //int file_atoms;			//variable to store the number of atoms listed in xyz file
+//  string trash;				//create garbage string
+//  int timestepii;			//index over timesteps
+//  int speciesii;			//index over species
+//  int moleculeii;			//index over molecules
+//  int atomii;				//index over atoms within molecule
+//  int type;				//type to pass to molecule
+//  Coordinate coordinate;		//coordinate to pass to molecule
+//  float x;				//temporary storage for x coordinate
+//  float y;				//temporary storage for y coordinate
+//  float z;				//temporary storage for z coordinate
+//  int * n_typeii;			//array of indices to track how many of each type have been passed to particular molecule
+//  int typeii;				//index over elements of above aray
   int timetally=0;
-  float xlo, xhi, ylo, yhi, zlo, zhi, Lx, Ly, Lz;
-  int n_columns;		//number of columns of atom data in custom dump file
+//float xlo, xhi, ylo, yhi, zlo, zhi, Lx, Ly, Lz;
+//  int n_columns;		//number of columns of atom data in custom dump file
   bool r_provided, rs_provided, ru_provided, rsu_provided;		//booleans specifying whether a complete set of wrapped, scaled wraped, unwrapped, and scaled unwrapped coordinates are provided by the trajectory file
   bool i_provided;		//specifies whether image indices are provided for unwrapping
   bool v_provided;	//bool specifying whether complete velocity is provided by trajectory file
@@ -1009,26 +1009,197 @@ void System::read_custom(string xyzfilename)
   bool read_r, read_rs, read_ru, read_rsu, read_i;		//bools specifying which type of coordinates to read in
   int x_position, y_position, z_position, xs_position, ys_position, zs_position, xu_position, yu_position, zu_position, xsu_position, ysu_position, zsu_position, ix_position, iy_position, iz_position, type_position, vx_position, vy_position, vz_position, mass_position;
   bool calc_wrapped;
+  bool timestep_zero_initialized=false;
 
-  string line;
-  string args [ARGMAX];
-  int n_args;
+//  string line;
+//  string args [ARGMAX];
+//  int n_args;
 
   ifstream filexyz(xyzfilename.c_str());
   ifstream * fileobject = &filexyz;
 
-  n_typeii = new int [n_atomtypes];
+//  n_typeii = new int [n_atomtypes];
   cout << "\nReading a " << n_timesteps <<" timestep trajectory of " << n_atoms << " atoms.\n";
 
-  for(timestepii=0; timestepii<n_timesteps; timestepii++)
+
+    //unsigned trajVectorPos=-1;
+	string l="";
+	vector<string> trajVector;
+	while (getline(*fileobject,l))
+	{
+		trajVector.push_back(l);
+	}
+    (*fileobject).close();
+	cout << "Trajectory file loaded into memory." << endl;
+
+/*                        Initial timestep loading                      */
+/************************************************************************/
+    
   {
+    unsigned trajVectorPos=-1;
+    /*read in and parse line specifying data types in custom dump file*/
+    string line="";
+    string args [ARGMAX];
+    int n_args;
+    float x, y, z, xlo, xhi, ylo, yhi, zlo, zhi, Lx, Ly, Lz;
+    int file_atoms;
+
+    line=trajVector[++trajVectorPos];	//read in "ITEM: TIMESTEP" line
+    line=trajVector[++trajVectorPos];	//read in timestep line
+    line=trajVector[++trajVectorPos];	//read in "ITEM: NUMBER OF ATOMS" line
+    line=trajVector[++trajVectorPos];	//read in number of atoms
+    n_args = tokenize(line, args);
+    file_atoms=atoi(args[0].c_str());
+    if(file_atoms!=n_atoms)		//check if the number of atoms listed in file is consistent with the molecule and atom counts given by the user
+    {
+      stringstream ss;
+      ss<<"The number of atoms listed in the xyz file is inconsistent with user input: "<<file_atoms<<" != "<<n_atoms;
+      Error(ss.str(), -4);
+    }
+
+    /*read in box bounds from trajectory file*/
+    line=trajVector[++trajVectorPos];  //read in "ITEM: BOX BOUNDS..." line
+    line=trajVector[++trajVectorPos];
+    n_args = tokenize(line, args);
+    xlo = atof(args[0].c_str());
+    xhi = atof(args[1].c_str());
+    line=trajVector[++trajVectorPos];
+    n_args = tokenize(line, args);
+    ylo = atof(args[0].c_str());
+    yhi = atof(args[1].c_str());
+    line=trajVector[++trajVectorPos];
+    n_args = tokenize(line, args);
+    zlo = atof(args[0].c_str());
+    zhi = atof(args[1].c_str());
+
+    Lx = xhi - xlo;
+    Ly = yhi - ylo;
+    Lz = zhi - zlo;
+    box_size[0].set(Lx,Ly,Lz);
+    box_boundary[0][0].set(xlo, ylo, zlo);
+    box_boundary[0][1].set(xhi, yhi, zhi);
+
+
+    line=trajVector[++trajVectorPos];
+    n_args = tokenize(line, args);
+    int n_columns = n_args - 2;	//determine number of columns of atom data
+
+    /*check which coordinate types are provided*/
+    r_provided = in_string_array(args,n_args,"x")&&in_string_array(args,n_args,"y")&&in_string_array(args,n_args,"z");		//wrapped
+    rs_provided = in_string_array(args,n_args,"xs")&&in_string_array(args,n_args,"ys")&&in_string_array(args,n_args,"zs");		//wrapped, scaled
+    ru_provided = in_string_array(args,n_args,"xu")&&in_string_array(args,n_args,"yu")&&in_string_array(args,n_args,"zu");		//unwrapped
+    rsu_provided = in_string_array(args,n_args,"xsu")&&in_string_array(args,n_args,"ysu")&&in_string_array(args,n_args,"zsu");	//unwrapped, scaled
+    i_provided = in_string_array(args,n_args,"ix")&&in_string_array(args,n_args,"iy")&&in_string_array(args,n_args,"iz");		//image index
+
+    /*check if velocities are provided; if so, note their columns*/
+    v_provided = in_string_array(args,n_args,"vx")&&in_string_array(args,n_args,"vy")&&in_string_array(args,n_args,"vz");
+    if(v_provided)
+    {
+        vx_position = find_in_string_array(args,n_args,"vx")-2;
+        vy_position = find_in_string_array(args,n_args,"vz")-2;
+        vz_position = find_in_string_array(args,n_args,"vz")-2;
+    }
+
+    /*Check if mass is provided; if so, note its column*/
+    mass_provided = in_string_array(args,n_args,"mass");
+    if(mass_provided) mass_position = find_in_string_array(args,n_args,"mass")-2;
+
+    /*figure out which coordinate types to read in*/
+    if(!r_provided&&!rs_provided&&!ru_provided&&!rsu_provided)	//return error if no complete set of coordinates is provided
+    {
+        Error( "No complete set of coordinates provided in trajectory file.", -2);
+    }
+    else								//otherwise, determine which coordinate types to read in and their location
+    {
+        calc_wrapped=true;
+        read_r=read_rs=read_ru=read_rsu=read_i=false;
+        /*Only read in at most one type of wrapped coordinates - unscaled or scaled; always choose unscaled if it is provided*/
+        if(r_provided)
+        {
+            read_r=true;
+            calc_wrapped=false;
+            x_position = find_in_string_array(args,n_args,"x")-2;
+            y_position = find_in_string_array(args,n_args,"y")-2;
+            z_position = find_in_string_array(args,n_args,"z")-2;
+        }
+        else if(rs_provided)
+        {
+            read_rs=true;
+            calc_wrapped=false;
+            xs_position = find_in_string_array(args,n_args,"xs")-2;
+            ys_position = find_in_string_array(args,n_args,"ys")-2;
+            zs_position = find_in_string_array(args,n_args,"zs")-2;
+        }
+
+        /*Only read in at most one type of unwrapped coordinates - unscaled or scaled; always choose unscaled if it is provided*/
+        if(ru_provided)
+        {
+            read_ru=true;
+            xu_position = find_in_string_array(args,n_args,"xu")-2;
+            yu_position = find_in_string_array(args,n_args,"yu")-2;
+            zu_position = find_in_string_array(args,n_args,"zu")-2;
+        }
+        else if(rsu_provided)
+        {
+            read_rsu=true;
+            xsu_position = find_in_string_array(args,n_args,"xsu")-2;
+            ysu_position = find_in_string_array(args,n_args,"ysu")-2;
+            zsu_position = find_in_string_array(args,n_args,"zsu")-2;
+        }
+        else if(i_provided&&(r_provided||rs_provided))
+        {
+            read_i=true;
+            ix_position = find_in_string_array(args,n_args,"ix")-2;
+            iy_position = find_in_string_array(args,n_args,"iy")-2;
+            iz_position = find_in_string_array(args,n_args,"iz")-2;
+        }
+
+        if(np)
+        {
+            if(!ru_provided&&!rsu_provided&&!i_provided)
+            {
+                cout << "Warning:  unwrapping of coordinates without image indices for variable-volume trajectories is incorrect. All calculations depending on unwrapped coordinates are therefore incorrect!\n";
+            }
+        }
+    }
+
+    /*Find and store position of type column; if not present, return error*/
+    if(in_string_array(args,n_args,"type"))
+    {
+        type_position=find_in_string_array(args,n_args,"type")-2;
+    }
+    else
+    {
+        cout << "Error: atom type data not provided.\n";
+        exit(0);
+    }
+  }
+
+cout << "Initial timestep data processed. Procesing remaining timesteps." << endl;
+/*****************************************************************************************************************************/
+
+
+  #pragma omp parallel for schedule(dynamic)
+  for(int timestepii=0; timestepii<n_timesteps; timestepii++)
+  {
+      unsigned trajVectorPos=timestepii*(n_atoms+9)-1;
+      int file_atoms;
+      string args [ARGMAX];
+      int n_args;
+      int type;				//type to pass to molecule
+      Coordinate coordinate;		//coordinate to pass to molecule
+      float x, y, z;				//temporary storage for x,y,z coordinates
+      int n_columns;
+      float xlo, xhi, ylo, yhi, zlo, zhi, Lx, Ly, Lz;
+      int n_typeii [n_atomtypes];
+      string trash;
     /*read in header information from custom trajectory file*/
+     string line = "";
+     line=trajVector[++trajVectorPos];  //read in "ITEM: TIMESTEP" line
+     line=trajVector[++trajVectorPos];  //read in timestep line
+     line=trajVector[++trajVectorPos];  //read in "ITEM: NUMBER OF ATOMS" line
      line = "";
-     getline(*fileobject,line);		//read in "ITEM: TIMESTEP" line
-     getline(*fileobject,line);		//read in timestep line
-     getline(*fileobject,line);		//read in "ITEM: NUMBER OF ATOMS" line
-     line = "";
-     getline(*fileobject,line);		//read in number of atoms
+     line=trajVector[++trajVectorPos];  //read in number of atoms
      n_args = tokenize(line, args);
      file_atoms=atoi(args[0].c_str());
     if(file_atoms!=n_atoms)		//check if the number of atoms listed in file is consistent with the molecule and atom counts given by the user
@@ -1036,257 +1207,144 @@ void System::read_custom(string xyzfilename)
       stringstream ss;
       ss<<"The number of atoms listed in the xyz file is inconsistent with user input: "<<file_atoms<<" != "<<n_atoms;
       Error(ss.str(), -4);
-      //cout << "The number of atoms listed in the xyz file is inconsistent with user input: ";	//if not, give error...
-      //cout << file_atoms << " != " << n_atoms << "\n";
-      //exit(0);											//and terminate program.
     }
 
     /*read in box bounds from trajectory file*/
-    getline(*fileobject,line);		//read in "ITEM: BOX BOUNDS..." line
+    line=trajVector[++trajVectorPos]; //read in "ITEM: BOX BOUNDS..." line
     line = "";
-    getline(*fileobject,line);
+    line=trajVector[++trajVectorPos];
     n_args = tokenize(line, args);
     xlo = atof(args[0].c_str());
     xhi = atof(args[1].c_str());
     line = "";
-    getline(*fileobject,line);
+    line=trajVector[++trajVectorPos];
     n_args = tokenize(line, args);
     ylo = atof(args[0].c_str());
     yhi = atof(args[1].c_str());
     line = "";
-    getline(*fileobject,line);
+    line=trajVector[++trajVectorPos];
     n_args = tokenize(line, args);
     zlo = atof(args[0].c_str());
     zhi = atof(args[1].c_str());
     line = "";
 
-//    if(timestepii==0)
-//    {
-      /*set box size*/
       Lx = xhi - xlo;
       Ly = yhi - ylo;
       Lz = zhi - zlo;
       box_size[timestepii].set(Lx,Ly,Lz);
       box_boundary[timestepii][0].set(xlo, ylo, zlo);
       box_boundary[timestepii][1].set(xhi, yhi, zhi);
-//    }
-//    else
-//    {
-//      if(np) /*if non-constant volume, set box size at each frame*/
-//      {
-//	Lx = xhi - xlo;
-//	Ly = yhi - ylo;
-//	Lz = zhi - zlo;
-//	box_size[timestepii].set(Lx,Ly,Lz);
-//	box_boundary[timestepii][0].set(xlo, ylo, zlo);
-//	box_boundary[timestepii][1].set(xhi, yhi, zhi);
-//    }
-//      else /*if constant volume, return error if file box bounds do not equal previous bounds*/
+/*if constant volume, return error if file box bounds do not equal previous bounds*/
       if(!np)
       {
-//	if(box_boundary[0][0].show_x()!=xlo||box_boundary[0][1].show_x()!=xhi||box_boundary[0][0].show_y()!=ylo||box_boundary[0][1].show_y()!=yhi||box_boundary[0][0].show_z()!=zlo||box_boundary[0][1].show_z()!=zhi)
         if (!(floatCompare(box_boundary[0][0].show_x(), xlo)&&floatCompare(box_boundary[0][1].show_x(), xhi)&&floatCompare(box_boundary[0][0].show_y(), ylo)&&floatCompare(box_boundary[0][1].show_y(), yhi)&&floatCompare(box_boundary[0][0].show_z(), zlo)&&floatCompare(box_boundary[0][1].show_z(), zhi)))
         {
+            cout << xlo << " " << ylo << " " << zlo << endl;
             Error( "The box boundaries provided in the custom file are not constant. For varying-volume trajectory, please select system_np system type.", 0);
         }
       }
- //   }
 
-
-    /*read in and parse line specifying data types in custom dump file*/
-    line = "";
-    getline(*fileobject,line);
-    n_args = tokenize(line, args);
-    n_columns = n_args - 2;	//determine number of columns of atom data
-
-    /*If this is the initial timestep, determine which types of trajectory data are to be read in and which columns they are in*/
-    if(timestepii==0)
-    {
-      /*check which coordinate types are provided*/
-      r_provided = in_string_array(args,n_args,"x")&&in_string_array(args,n_args,"y")&&in_string_array(args,n_args,"z");		//wrapped
-      rs_provided = in_string_array(args,n_args,"xs")&&in_string_array(args,n_args,"ys")&&in_string_array(args,n_args,"zs");		//wrapped, scaled
-      ru_provided = in_string_array(args,n_args,"xu")&&in_string_array(args,n_args,"yu")&&in_string_array(args,n_args,"zu");		//unwrapped
-      rsu_provided = in_string_array(args,n_args,"xsu")&&in_string_array(args,n_args,"ysu")&&in_string_array(args,n_args,"zsu");	//unwrapped, scaled
-      i_provided = in_string_array(args,n_args,"ix")&&in_string_array(args,n_args,"iy")&&in_string_array(args,n_args,"iz");		//image index
-
-      /*check if velocities are provided; if so, note their columns*/
-      v_provided = in_string_array(args,n_args,"vx")&&in_string_array(args,n_args,"vy")&&in_string_array(args,n_args,"vz");
-      if(v_provided)
-      {
-	vx_position = find_in_string_array(args,n_args,"vx")-2;
-	vy_position = find_in_string_array(args,n_args,"vz")-2;
-	vz_position = find_in_string_array(args,n_args,"vz")-2;
-      }
-
-      /*Check if mass is provided; if so, note its column*/
-      mass_provided = in_string_array(args,n_args,"mass");
-      if(mass_provided) mass_position = find_in_string_array(args,n_args,"mass")-2;
-
-      /*figure out which coordinate types to read in*/
-      if(!r_provided&&!rs_provided&&!ru_provided&&!rsu_provided)	//return error if no complete set of coordinates is provided
-      {
-        Error( "No complete set of coordinates provided in trajectory file.", -2);
-      }
-      else								//otherwise, determine which coordinate types to read in and their location
-      {
-	calc_wrapped=true;
-	read_r=read_rs=read_ru=read_rsu=read_i=false;
-	/*Only read in at most one type of wrapped coordinates - unscaled or scaled; always choose unscaled if it is provided*/
-	if(r_provided)
-	{
-	  read_r=true;
-	  calc_wrapped=false;
-	  x_position = find_in_string_array(args,n_args,"x")-2;
-	  y_position = find_in_string_array(args,n_args,"y")-2;
-	  z_position = find_in_string_array(args,n_args,"z")-2;
-	}
-	else if(rs_provided)
-	{
-	  read_rs=true;
-	  calc_wrapped=false;
-	  xs_position = find_in_string_array(args,n_args,"xs")-2;
-	  ys_position = find_in_string_array(args,n_args,"ys")-2;
-	  zs_position = find_in_string_array(args,n_args,"zs")-2;
-	}
-
-	/*Only read in at most one type of unwrapped coordinates - unscaled or scaled; always choose unscaled if it is provided*/
-	if(ru_provided)
-	{
-	  read_ru=true;
-	  xu_position = find_in_string_array(args,n_args,"xu")-2;
-	  yu_position = find_in_string_array(args,n_args,"yu")-2;
-	  zu_position = find_in_string_array(args,n_args,"zu")-2;
-	}
-	else if(rsu_provided)
-	{
-	  read_rsu=true;
-	  xsu_position = find_in_string_array(args,n_args,"xsu")-2;
-	  ysu_position = find_in_string_array(args,n_args,"ysu")-2;
-	  zsu_position = find_in_string_array(args,n_args,"zsu")-2;
-	}
-	else if(i_provided&&(r_provided||rs_provided))
-	{
-	  read_i=true;
-	  ix_position = find_in_string_array(args,n_args,"ix")-2;
-	  iy_position = find_in_string_array(args,n_args,"iy")-2;
-	  iz_position = find_in_string_array(args,n_args,"iz")-2;
-	}
-
-	if(np)
-	{
-	  if(!ru_provided&&!rsu_provided&&!i_provided)
-	  {
-	    cout << "Warning:  unwrapping of coordinates without image indices for variable-volume trajectories is incorrect. All calculations depending on unwrapped coordinates are therefore incorrect!\n";
-	  }
-	}
-      }
-
-      /*Find and store position of type column; if not present, return error*/
-      if(in_string_array(args,n_args,"type"))
-      {
-	type_position=find_in_string_array(args,n_args,"type")-2;
-      }
-      else
-      {
-	cout << "Error: atom type data not provided.\n";
-	exit(0);
-      }
-    }
+    line=trajVector[++trajVectorPos];
+//Initialization code was here
 
     /*loop over atoms at this time*/
-    for(speciesii=0; speciesii<n_species; speciesii++)
+    for(int speciesii=0; speciesii<n_species; speciesii++)
     {
-      for(moleculeii=0; moleculeii<n_molecules[speciesii]; moleculeii++)
+      for(int moleculeii=0; moleculeii<n_molecules[speciesii]; moleculeii++)
       {
-        for(typeii=0;typeii<n_atomtypes;typeii++)
+        for(int typeii=0;typeii<n_atomtypes;typeii++)
         {n_typeii[typeii]=0;}  //initiate type count array to zero at start of each molecule
 
-        for(atomii=0; atomii < ((molecules[speciesii][moleculeii]).atomcount());atomii++)
+        for(int atomii=0; atomii < ((molecules[speciesii][moleculeii]).atomcount());atomii++)
         {
-	  line = "";
-	  getline(*fileobject,line);
-	  n_args = tokenize(line, args);
+			line=trajVector[++trajVectorPos];
+	  		n_args = tokenize(line, args);
 
+	      /*read type and check whether it is valid*/
+	      type = show_atomtype_index(args[type_position]);
 
-	  /*read type and check whether it is valid*/
-	  type = show_atomtype_index(args[type_position]);
+	      if(type > n_atomtypes)
+              {
+                cout << "Atom type " << type << " in trajectory file out of range!\n";
+                exit(1);
+              }
 
-	  if(type > n_atomtypes)
-          {
-            cout << "Atom type " << type << " in trajectory file out of range!\n";
-            exit(1);
-          }
+	      if(read_r) /*read wrapped, unscaled coordinates if appropriate*/
+	      {
+	        x = atof(args[x_position].c_str());
+	        y = atof(args[y_position].c_str());
+	        z = atof(args[z_position].c_str());
+	        coordinate.set(x,y,z);		//store coordinates temporarily in coordinate object
+            #pragma omp critical
+	        (molecules[speciesii][moleculeii]).set_coordinate(type,n_typeii[type],coordinate,timestepii);	//send coordinates to atom
+	      }
+	      else if(read_rs) /*read wrapped, scaled coordinates if appropriate*/
+	      {
+	        x = box_size[timestepii].show_x()*atof(args[xs_position].c_str())+box_boundary[timestepii][0].show_x();
+	        y = box_size[timestepii].show_y()*atof(args[ys_position].c_str())+box_boundary[timestepii][0].show_y();
+	        z = box_size[timestepii].show_z()*atof(args[zs_position].c_str())+box_boundary[timestepii][0].show_z();
+	        coordinate.set(x,y,z);		//store coordinates temporarily in coordinate object
+            #pragma omp critical
+	        (molecules[speciesii][moleculeii]).set_coordinate(type,n_typeii[type],coordinate,timestepii);	//send coordinates to atom
+	      }
 
-	  if(read_r) /*read wrapped, unscaled coordinates if appropriate*/
-	  {
-	    x = atof(args[x_position].c_str());
-	    y = atof(args[y_position].c_str());
-	    z = atof(args[z_position].c_str());
-	    coordinate.set(x,y,z);		//store coordinates temporarily in coordinate object
-	    (molecules[speciesii][moleculeii]).set_coordinate(type,n_typeii[type],coordinate,timestepii);	//send coordinates to atom
-	  }
-	  else if(read_rs) /*read wrapped, scaled coordinates if appropriate*/
-	  {
-	    x = box_size[timestepii].show_x()*atof(args[xs_position].c_str())+box_boundary[timestepii][0].show_x();
-	    y = box_size[timestepii].show_y()*atof(args[ys_position].c_str())+box_boundary[timestepii][0].show_y();
-	    z = box_size[timestepii].show_z()*atof(args[zs_position].c_str())+box_boundary[timestepii][0].show_z();
-	    coordinate.set(x,y,z);		//store coordinates temporarily in coordinate object
-	    (molecules[speciesii][moleculeii]).set_coordinate(type,n_typeii[type],coordinate,timestepii);	//send coordinates to atom
-	  }
+	      if(read_i)
+	      {
+	        x=x+atof(args[ix_position].c_str())*box_size[timestepii].show_x();
+	        y=y+atof(args[iy_position].c_str())*box_size[timestepii].show_y();
+	        z=z+atof(args[iz_position].c_str())*box_size[timestepii].show_z();
+	        coordinate.set(x,y,z);		//store coordinates temporarily in coordinate object
+            #pragma omp critical
+	        (molecules[speciesii][moleculeii]).set_unwrapped(type,n_typeii[type],coordinate,timestepii);	//send coordinates to atom
+	      }
+	      else if(read_ru)	/*read unwrapped, scaled coordinates if appropriate*/
+	      {
+	        x = atof(args[xu_position].c_str());
+	        y = atof(args[yu_position].c_str());
+	        z = atof(args[zu_position].c_str());
+	        coordinate.set(x,y,z);		//store coordinates temporarily in coordinate object
+            #pragma omp critical
+	        (molecules[speciesii][moleculeii]).set_unwrapped(type,n_typeii[type],coordinate,timestepii);	//send coordinates to atom
+	      }
+	      else if(read_rsu)	/*read unwrapped, scaled coordinates if appropriate*/
+	      {
+	        x = box_size[timestepii].show_x()*atof(args[xsu_position].c_str())+box_boundary[timestepii][0].show_x();;
+	        y = box_size[timestepii].show_y()*atof(args[ysu_position].c_str())+box_boundary[timestepii][0].show_y();;
+	        z = box_size[timestepii].show_z()*atof(args[zsu_position].c_str())+box_boundary[timestepii][0].show_z();;
+	        coordinate.set(x,y,z);		//store coordinates temporarily in coordinate object
+            #pragma omp critical
+	        (molecules[speciesii][moleculeii]).set_unwrapped(type,n_typeii[type],coordinate,timestepii);	//send coordinates to atom
+	      }
 
-	  if(read_i)
-	  {
-	    x=x+atof(args[ix_position].c_str())*box_size[timestepii].show_x();
-	    y=y+atof(args[iy_position].c_str())*box_size[timestepii].show_y();
-	    z=z+atof(args[iz_position].c_str())*box_size[timestepii].show_z();
-	    coordinate.set(x,y,z);		//store coordinates temporarily in coordinate object
-	    (molecules[speciesii][moleculeii]).set_unwrapped(type,n_typeii[type],coordinate,timestepii);	//send coordinates to atom
-	  }
-	  else if(read_ru)	/*read unwrapped, scaled coordinates if appropriate*/
-	  {
-	    x = atof(args[xu_position].c_str());
-	    y = atof(args[yu_position].c_str());
-	    z = atof(args[zu_position].c_str());
-	    coordinate.set(x,y,z);		//store coordinates temporarily in coordinate object
-	    (molecules[speciesii][moleculeii]).set_unwrapped(type,n_typeii[type],coordinate,timestepii);	//send coordinates to atom
-	  }
-	  else if(read_rsu)	/*read unwrapped, scaled coordinates if appropriate*/
-	  {
-	    x = box_size[timestepii].show_x()*atof(args[xsu_position].c_str())+box_boundary[timestepii][0].show_x();;
-	    y = box_size[timestepii].show_y()*atof(args[ysu_position].c_str())+box_boundary[timestepii][0].show_y();;
-	    z = box_size[timestepii].show_z()*atof(args[zsu_position].c_str())+box_boundary[timestepii][0].show_z();;
-	    coordinate.set(x,y,z);		//store coordinates temporarily in coordinate object
-	    (molecules[speciesii][moleculeii]).set_unwrapped(type,n_typeii[type],coordinate,timestepii);	//send coordinates to atom
-	  }
-
-	  if(calc_wrapped) /*calculate wrapped from unwrapped coordinates, if necessary*/
-	  {
-	    coordinate -= box_size[timestepii]*((coordinate-box_boundary[timestepii][0])/box_size[timestepii]).coord_floor();
-	    (molecules[speciesii][moleculeii]).set_coordinate(type,n_typeii[type],coordinate,timestepii);	//send coordinates to atom
-	  }
+	      if(calc_wrapped) /*calculate wrapped from unwrapped coordinates, if necessary*/
+	      {
+	        coordinate -= box_size[timestepii]*((coordinate-box_boundary[timestepii][0])/box_size[timestepii]).coord_floor();
+            #pragma omp critical
+	        (molecules[speciesii][moleculeii]).set_coordinate(type,n_typeii[type],coordinate,timestepii);	//send coordinates to atom
+	      }
 
           if(v_provided)	/*read velocities if they are provided*/
-	  {
-	    x = atof(args[vx_position].c_str());
-	    y = atof(args[vy_position].c_str());
-	    z = atof(args[vz_position].c_str());
-	    coordinate.set(x,y,z);		//store velocities temporarily in coordinate object
-	    (molecules[speciesii][moleculeii]).set_velocity(type,n_typeii[type],coordinate,timestepii);	//send coordinates to atom
-	  }
-         if(mass_provided)
-	 {
-	   molecules[speciesii][moleculeii].show_atom_trajectory(type,n_typeii[type])->set_mass(atof(args[mass_position].c_str()));
-	 }
-
+	      {
+	        x = atof(args[vx_position].c_str());
+	        y = atof(args[vy_position].c_str());
+	        z = atof(args[vz_position].c_str());
+	        coordinate.set(x,y,z);		//store velocities temporarily in coordinate object
+            #pragma omp critical
+	        (molecules[speciesii][moleculeii]).set_velocity(type,n_typeii[type],coordinate,timestepii);	//send coordinates to atom
+	      }
+          if(mass_provided)
+          {
+            #pragma omp critical
+	        molecules[speciesii][moleculeii].show_atom_trajectory(type,n_typeii[type])->set_mass(atof(args[mass_position].c_str()));
+          }
          n_typeii[type]++;		//increment count of atoms of this type
        }
      }
    }
+    #pragma omp critical
     print_progress(++timetally, n_timesteps);
   }
-
-  (*fileobject).close();
-  delete [] n_typeii;
+  trajVector.clear();
 
   /*generate wrapped or unwrapped coordinates as necessary*/
   if(!ru_provided&&!rsu_provided&&!i_provided)
@@ -2559,17 +2617,18 @@ void System::displacement_list(Analysis* analysis, bool fullblock)const
 //	int block_timegapii;
 	//int displacement_count;
 	if(analysis->isThreadSafe() && omp_get_max_threads() > 1)
-		cout << "Analysis is thread safe, parallelizing." << endl;
-	else if(analysis->isThreadSafe() && omp_get_max_threads() == 1)
-		cout << "Analysis is thread safe but only one thread is permitted, running serially." << endl;
-	else
-		cout << "Analysis is not thread safe, running serially." << endl;
+        cout << "Analysis is running with multiple compute threads." << endl;
+//		cout << "Analysis is thread safe, parallelizing." << endl;
+//	else if(analysis->isThreadSafe() && omp_get_max_threads() == 1)
+//		cout << "Analysis is thread safe but only one thread is permitted, running serially." << endl;
+//	else
+//		cout << "Analysis is not thread safe, running serially." << endl;
 
 	{
 		{
 			int thisii;
 			int nextii;
-			#pragma omp parallel for schedule(dynamic) if(analysis->isThreadSafe()) // TODO: Test if we can use the old loop
+			#pragma omp parallel for schedule(dynamic) if(analysis->isThreadSafe())
 			for(int timegapii=0;timegapii<n_exponential_steps;timegapii++)  //loop over exponential time step spacings within each block
 			{
 				int displacement_count=0;
