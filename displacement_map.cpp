@@ -53,11 +53,6 @@ Displacement_Map::Displacement_Map(System* sys, int timespacing, int blockstart,
 
 }
 
-void Displacement_Map::displacementkernel(int timegap,int thisii, int nextii, Trajectory * traj)
-{
-}
-
-
 /*Methods to do calculation on list of trajectories*/
 
 void Displacement_Map::analyze(Trajectory_List* t_list)

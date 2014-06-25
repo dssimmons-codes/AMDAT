@@ -38,49 +38,6 @@ DebyeWaller_Dist::DebyeWaller_Dist(System* sys, int bins, float maxvalue, float 
 }
 
 
-/*----------------------------------------------------------------*/
-/*Methods to do calculation using system loops*/
-
-
-void DebyeWaller_Dist::displacementkernel(int timegap,int thisii, int nextii, Trajectory * traj)
-{
-  float msd;		//variable to temporarily hold mean-square displacement of atom
-  int index;
-
-  msd = pow(traj->distance(thisii,nextii),2.0);  //determine msd of this atom
-
-  mean += msd/float(timeweighting);
-  square_term += msd*msd/float(timeweighting);
-
-  index = int(msd/binsize);
-  if(index>=n_bins){index=n_bins-1;}		//use top bin as slough bin
-
-  distribution[index]+=1.0/float(timeweighting);
-
-}
-
-
-void DebyeWaller_Dist::atomkernel(Trajectory * traj)
-{
-  system->displacement_loop(this, traj);
-  atomcount++;
-}
-
-
-void DebyeWaller_Dist::postprocess()
-{
-  int binii;
-
-  mean /= atomcount;
-  variance = square_term/atomcount-mean*mean;
-
-  for(binii=0;binii<n_bins;binii++)
-  {
-    distribution[binii]/=atomcount;
-  }
-}
-
-
 
 /*----------------------------------------------------------------*/
 /*Methods to do calculation on list of trajectories*/

@@ -133,34 +133,6 @@ void Mean_Displacement::preprocess()
   weighting = system->timegap_weighting();
 }
 
-/*Methods to do analysis using system loops*/
-
-
-
-void Mean_Displacement::displacementkernel(int timegap,int thisii, int nextii, Trajectory* traj)
-{
-  md[timegap]+=traj->show_unwrapped(nextii)-traj->show_unwrapped(thisii);
-}
-
-
-
-void Mean_Displacement::atomkernel(Trajectory * traj)
-{
-	system->displacement_loop(this, traj);
-	atomcount ++;
-}
-
-
-void Mean_Displacement::postprocess()
-{
-
-  for(int timeii=0;timeii<n_times;timeii++)
-  {
-
-        md[timeii] /= (float(weighting[timeii])*float(atomcount));
-
-  }
-}
 
 /*Methods to do analysis using trajectory list*/
 

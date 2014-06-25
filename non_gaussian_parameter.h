@@ -20,8 +20,7 @@ class Non_Gaussian_Parameter: public Analysis
     float * timetable;
     int atomcount;
     float * n_atoms;
-    void postprocess();
-    
+
     //calculation variables
     int currenttime, nexttime, currenttimegap;
     
@@ -31,19 +30,21 @@ class Non_Gaussian_Parameter: public Analysis
     Non_Gaussian_Parameter(System*, const Mean_Square_Displacement*);
     Non_Gaussian_Parameter operator=(const Non_Gaussian_Parameter &);
     
-    void displacementkernel(int timegap,int thisii, int nextii,Trajectory * traj);
-    void atomkernel(Trajectory * traj);
+    Analysis_Type what_are_you(){Analysis_Type type = non_gaussian_parameter; return type;};		//virtual method to report the type of analysis
     
     void write(string)const;
     int max()const;
 
+     void analyze(Trajectory_List *,Trajectory_List *){cout<<"Error: Trajectory list targets with two lists not implemented for this analysis method.\n";}; //analysis method for when two trajectory lists are needed
     void analyze(Trajectory_List * t_list);
     void list_displacementkernel(int,int,int);
     void listkernel(Trajectory *);
+    void listkernel(Trajectory* , int ,int , int);
     void postprocess_list();
     
     void bin_hook(Trajectory_List * t_list, int timegapii, int thisii, int nextii);
     void postprocess_bins();
+    //bool isThreadSafe(){return true;};
 };
 
 }

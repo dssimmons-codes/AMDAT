@@ -406,7 +406,7 @@ Intermediate_Scattering_Function::Intermediate_Scattering_Function(System* sys, 
 
 /*----------------------------------------------------------------------------------*/
 
-
+#ifdef NEVER
 
 /*Method to calculate the intermediate scattering function at all timegaps, for a range of wavenumbers bounded by wn1 and wn2, based on a time-dependent particle list given by particle_list.  It will base the wavevectors and system off of the wavedensity that is provided.*/
 Intermediate_Scattering_Function::Intermediate_Scattering_Function(System* sys, Particle_List * particle_list, Wave_Density * wd2, int wn1, int wn2)
@@ -479,6 +479,7 @@ Intermediate_Scattering_Function::Intermediate_Scattering_Function(System* sys, 
   }
 }
 
+#endif
 
 Intermediate_Scattering_Function::~Intermediate_Scattering_Function()
 {

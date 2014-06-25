@@ -6,8 +6,6 @@
 
 /*The displacementkernel method is for use with analytical methods that need to consider displacements in time.  Typically its first three arguments will be the displacement time and two timesteps yielding that displacement time.  Its next four will be the same arguments as those for the atomkernel method.*/
 
-/*The cellkernel method is for use with loops over cells in methods that refer to a spacial decomposition of the atom positions.  It receives the timegap and two coordinates from a loop over a cell within a spacial_decomposition object.*/
-
 /*The setkernel method is for use any time some set of atom or molecules must be looped over.  Its four arguments are typically species index, molecule index, atom type, and atom index.  These are enough to identify any individual atom or molecule within the system.*/
 
 /*The postprocess method automatically runs after the system loop is complete, and is typically intended for such tasks as data normalization.*/
@@ -24,8 +22,33 @@
 namespace std{
 	
 class System;
-class Particle_List;
-	
+
+enum Analysis_Type
+{
+  analysis,
+  composition,
+  correlation_2d,
+  debyewaller_dist,
+  displacement_dist,
+  displacement_map,
+  exptime_trajectory_list,
+  fast_particles,
+  gaussian_comparison,
+  incoherent_scattering_function,
+  intermediate_scattering_function,
+  mean_displacement,
+  mean_square_displacement,
+  mean_square_displacement_2d,
+  n_fold_order_parameter,
+  non_gaussian_parameter,
+  radial_debye_waller,
+  rgtensor_stats,
+  space_time_correlation_function,
+  stiffness_dist,
+  strings
+};
+
+
 class Analysis
 {
   protected:
@@ -34,9 +57,7 @@ class Analysis
     Trajectory_List * trajectory_list;			//Array of trajectory_lists used by this analysis tool
     
     virtual void preprocess(){};
-    virtual void preprocess_list(Particle_List*){};
     virtual void postprocess(){};		//method to automatically run after loop for postprocessing
-    virtual void postprocess_list(Particle_List*){};		//method to automatically run after loop over time-varying atom list for postprocessing
     virtual void postprocess_list(){};		//method to automatically run after loop over time-varying trajectory list for postprocessing
     
   public:
@@ -47,34 +68,33 @@ class Analysis
     Analysis(const Analysis &);		//copy constructor
     Analysis operator = (const Analysis &);	//assignment
     
-    virtual void analyze(Trajectory_List *){cout<<"Error: Trajectory list targets not implemented for this analysis method.\n";};
+    virtual Analysis_Type what_are_you(){Analysis_Type type = analysis; return type;};		//virtual method to report the type of analysis
+    
+    /*Trajectory list methods*/
+    virtual void analyze(Trajectory_List *,Trajectory_List *){cout<<"Error: Trajectory list targets with two lists not implemented for this analysis method.\n";}; //analysis method for when two trajectory lists are needed
+    virtual void analyze(Trajectory_List *){cout<<"Error: Trajectory list targets with one list not implemented for this analysis method.\n";};
+    virtual void list_displacementkernel(int, int, int){cout<<"Error: Trajectory list targets not fully implemented for this analysis method.\n";};
+    virtual void listkernel(Trajectory*, int, int, int){cout<<"Error: Trajectory list targets not fully implemented for this analysis method.\n";};	//added by Michael?
+    virtual void listkernel2(Trajectory*, Trajectory*, int, int, int){cout<<"Error: Trajectory list targets not fully implemented for this analysis method.\n";};	//listkernel for use only when two (nested) trajectory loops are needed.
+    virtual void listkernel(Trajectory*){cout<<"Error: Trajectory list targets not fully implemented for this analysis method.\n";};
+    
     
     /*System loop methods*/
+    /*TODO: move to trajectory_list class and remove from here.*/
     virtual void atomkernel(Trajectory*){cout<<"Error: System set targets not implemented for this analysis method.\n";};  //new
     virtual void displacementkernel(int,int,int,Trajectory*){}; //new
     
-    /*Spatial decomposition loop methods*/
-    virtual void cellkernel(int, Coordinate, Coordinate,int atom_type=0){cout<<"Error: Cell loops not implemented for this analysis method.\n";};
-    virtual void cellkernelID(int, int, int, int, int, Coordinate, Coordinate){cout<<"Error: Cell loops not implemented for this analysis method.\n";};
-    
-    /*Trajectory list loop methods*/
-    virtual void list_displacementkernel(int, int, int){cout<<"Error: Trajectory list targets not fully implemented for this analysis method.\n";};
-    virtual void listkernel(Trajectory*){cout<<"Error: Trajectory list targets not fully implemented for this analysis method.\n";};
-    virtual void listkernel(Trajectory*, int, int, int){cout<<"Error: Trajectory list targets not fully implemented for this analysis method.\n";};
-    
+
+     
     /*Methods to use with trajectory list bins*/
     virtual void bin_hook(Trajectory_List *,int,int,int){cout<<"Error: Trajectory list bins not implemented for this analysis method.\n";};
     virtual void postprocess_bins(){};
-    
-    /*Particle list methods - outdated and slated for removal*/
-    //virtual void list_displacementkernel(int, int, int, Particle_List*){};
-    virtual void atomlist_kernel(int,int,int,int,int,Particle_List*){};
     
     
     virtual void write(string)const{cout<<"Error: No standard write method implemented for this analysis method.\n";};		//generic method for writing results to file
     
     /*Methods for employing the loops implemented in class System over various sets of atoms*/
-    virtual void atomlist(Particle_List *);
+    /*TODO: MOVE TO TRAJECTORY LISTS AND REMOVE FROM HERE*/
     void all_moleculecom();
     int species_moleculecom(){return 1;};
     void species_moleculecom(int species_index);

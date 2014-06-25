@@ -31,15 +31,14 @@ class Mean_Square_Displacement_2D: public Analysis
     Mean_Square_Displacement_2D(const Mean_Square_Displacement_2D &);	// copy constructor
     Mean_Square_Displacement_2D operator = (const Mean_Square_Displacement_2D &);	// assignment operator
        
-    
-    void displacementkernel(int timegap,int thisii, int nextii,Trajectory * traj);
-    void atomkernel(Trajectory * traj);
   
+    Analysis_Type what_are_you(){Analysis_Type type = mean_square_displacement_2d; return type;};		//virtual method to report the type of analysis
+    
     void single_atom(int species_index, int molecule_index, int atom_type, int atom_index);
     float * normalized();
     void write(string);
-    void postprocess();
     
+     void analyze(Trajectory_List *,Trajectory_List *){cout<<"Error: Trajectory list targets with two lists not implemented for this analysis method.\n";}; //analysis method for when two trajectory lists are needed
     void analyze(Trajectory_List * t_list);
     void list_displacementkernel(int,int,int);
     void listkernel(Trajectory *);

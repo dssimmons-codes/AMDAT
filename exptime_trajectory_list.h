@@ -23,7 +23,9 @@ class Exptime_Trajectory_List: public Trajectory_List, public Analysis
     void reset(const System*syst, int capacity=0);
 
     void write_count(string)const;
-
+    
+    Analysis_Type what_are_you(){Analysis_Type type = exptime_trajectory_list; return type;};		//virtual method to report the type of analysis
+    
     virtual void atomkernel(int species_index, int moleculeii, int atomtype, int atomindex){};
 
     virtual void displacementkernel(int,int,int,int,int,int,int){};

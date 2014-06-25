@@ -13,7 +13,6 @@
 #include <fstream>
 #include "van_hove_self.h"
 #include "van_hove_distinct.h"
-#include "particle_list.h"
 #include <string>
 #include "gaussian_comparison.h"
 #include <stdlib.h>
@@ -48,7 +47,7 @@ class Control
     bool vhs_defined;			//stores whether the self van hove has been calculated
     Van_Hove_Self vhs;			//self van hove for system
     Van_Hove_Distinct vhd;		//distinct van hove for system
-    Time_Correlation_Function vht;
+    Space_Time_Correlation_Function vht;
     time_t start;			//timer start
     time_t finish;			//timer stop
 
@@ -56,14 +55,25 @@ class Control
 
 
     /*Arrays to store analysis results with a name given by the user, for later recall and use in other analysis techniques*/
-    Particle_List * atomlists [LISTSIZE];
-    string atomlist_names [LISTSIZE];
-    int n_atomlists;
 
     Trajectory_List * trajectories [LISTSIZE];		//array of trajectory list objects
     string trajectorylist_names [LISTSIZE];		//custom name of trajectory list
     int n_trajectorylists;				//number of trajectory lists stored
-
+    int find_trajectorylist(string);		//return index of trajectorylist with given custom name
+    void add_trajectorylist(Trajectory_List*, string);
+    
+    
+    //Space-Time_Correlation_Function * space-time_correlations [LISTSIZE];
+    //string space-time_correlationnames [LISTSIZE];
+    //int n_space-time_correlations;
+    //int find_space-time_correlations();
+    //void add_space-time_correlations();
+    
+    //void * analyses [LISTSIZE];			//declare 
+    //string analysis_names [LISTSIZE];
+    //int n_analyses;
+    
+    
     static string * constants;                //Array of environment constants
     static string * constant_names;      //Array of custom environment constant names
     static int n_constants;
@@ -89,10 +99,7 @@ class Control
     /*Method to parse input for analysis class atom loop types*/
     void run_analysis(Analysis*, string);
     void setargcheck(int, int, string);		//check number of arguments for above method
-
-    int find_atomlist(string);			//return index of particle list with given custom name
-    int find_trajectorylist(string);		//return index of trajectorylist with given custom name
-    void add_trajectorylist(Trajectory_List*, string);
+    
 
     /*Daniel Hunsicker*/
     void initialize_lists();		//initialize some arrays
@@ -160,8 +167,6 @@ class Control
     void ngp();			//calculate non-gaussian parameter
     void compare_gaussian();	//compare self van hove to gaussian approximation for self van hove to find fast particles
     void find_fast();		//find fast particles
-    void find_slow();		//find 'slow' particles - this definition likely has little meaning
-    void find_average();	//find particles that are neither slow nor fast in the above classification
     void radial_debye_waller();	//calculate Debye-Waller factor as a function of distance from the origin
     void strings();		//find strings
     void rgtensor_stats();	//calculate rg tensor statistics
@@ -211,8 +216,8 @@ void Control::run_analysis(Analysis_type analyzer, string setline, string filena
      int n_setargs;			//number of arguments in runline
      string command;			//command specifying type of set to loop over
      int expected;
-     string listname;
-     int listnum;
+     string listname, listname2;
+     int listnum, listnum2;
      bool use_persistence=0;
 
      string bin_listname;
@@ -232,8 +237,8 @@ void Control::run_analysis(Analysis_type analyzer, string setline, string filena
      }
      if(command == "list")
      {
-	  expected = 2;
-	  setargcheck(expected, n_setargs, command);
+       if(n_setargs==2)
+       {
 	  listname = setargs[1];
 	  listnum = find_trajectorylist(listname);
 
@@ -247,6 +252,25 @@ void Control::run_analysis(Analysis_type analyzer, string setline, string filena
 	  	cout << "\nTrajectory list '"<<listname<<"' not found.";
 		exit(1);
 	  }
+       }
+       else if(n_setargs==3)
+       {
+	  listname = setargs[1];
+	  listnum = find_trajectorylist(listname);
+	  listname2 = setargs[2];
+	  listnum2 = find_trajectorylist(listname2);
+	  
+	  if(listnum!=-1&&listnum2!=-1)
+	  {
+		  analyzer.analyze(trajectories[listnum],trajectories[listnum2]);
+		  analyzer.write(filename);
+	  }
+	  else
+	  {
+	  	cout << "\nTrajectory list '"<<listname<<"' not found.";
+		exit(1);
+	  }
+       }
      }
      else if (command == "bin_list")
      {

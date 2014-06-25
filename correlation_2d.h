@@ -7,7 +7,6 @@
 #include "wave_vectors.h"
 #include <string>
 #include "system.h"
-#include "particle_list.h"
 
 #ifndef CORRELATION_2D
 #define CORRELATION_2D
@@ -47,7 +46,7 @@ class Correlation_2D:public Analysis
     //~Correlation_2D();
     Correlation_2D operator =(const Correlation_2D &);
     
-    
+    Analysis_Type what_are_you(){Analysis_Type type = correlation_2d; return type;};		//virtual method to report the type of analysis
     
     Correlation_2D operator + (const Correlation_2D &) const;
     Correlation_2D operator - (const Correlation_2D &) const;

@@ -35,6 +35,7 @@ class Trajectory_List_Decay: public Analysis
     Trajectory_List_Decay operator = (const Trajectory_List_Decay &);
     ~Trajectory_List_Decay();
 
+     void analyze(Trajectory_List *,Trajectory_List *){cout<<"Error: Trajectory list targets with two lists not implemented for this analysis method.\n";}; //analysis method for when two trajectory lists are needed
     void analyze(Trajectory_List * t_list);
     void listkernel(Trajectory *);
     void write(string);

@@ -30,7 +30,7 @@ class Vector_Autocorrelation: public Analysis
     
     void initialize(System*, string);
     void calculate_mean_vector_length();
-    void list_displacementkernel(int,int,int);
+
     
   public:
     
@@ -44,6 +44,7 @@ class Vector_Autocorrelation: public Analysis
     
     void set(System*,string);
     void write(string filename);
+    void list_displacementkernel(int,int,int);
     
 };
 

@@ -24,9 +24,8 @@ class Displacement_Map: public Value_List <float>, public Analysis
    
   public:
     Displacement_Map(System* sys, int timespacing, int blockstart, int blockend, float maxdisp = 0);
- 
-    void displacementkernel(int timegap,int thisii, int nextii, Trajectory * traj);
-    void atomkernel(Trajectory * traj){};
+    
+    Analysis_Type what_are_you(){Analysis_Type type = displacement_map; return type;};		//virtual method to report the type of analysis
     
     void write(string)const;			//write distribution to file
     

@@ -304,63 +304,6 @@ void Wave_Density::set(System * sys, const Wave_Vectors * wv, int inner, int out
 }
 
 
-void Wave_Density::atomkernel(Trajectory * traj)
-{
-  int wavenumberii, tii, vectorii;
-  Coordinate const * vectorlist;
-  Coordinate coordinate;
-  int vectorcount;
-  float k_dot_r;
-  int offsetwavenumber;
-
-  for(tii=int(system->show_frt());tii<n_times;tii++)
-  {
-    coordinate = traj->show_coordinate(tii);
-    for(wavenumberii=first_wavenumber_index;wavenumberii<=last_wavenumber_index;wavenumberii++)
-    {
-      offsetwavenumber = wavenumberii-first_wavenumber_index;
-      vectorlist = wavevectors->vectorlist(wavenumberii);
-      vectorcount = wavevectors->vectorcount(wavenumberii);
-      for(vectorii=0;vectorii<vectorcount;vectorii++)
-      {
-	k_dot_r = vectorlist[vectorii]&coordinate;
-
-	density[tii][offsetwavenumber][vectorii].real() += cos(k_dot_r);
-        density[tii][offsetwavenumber][vectorii].imag() += sin(k_dot_r);
-      }
-    }
-  }
-
-  n_atoms_looped++;
-
-}
-
-
-void Wave_Density::atomlist_kernel(int tii, int species_index, int molecule_index, int atom_type, int atom_index, Particle_List* particle_list)
-{
-  int wavenumberii, vectorii;
-  Coordinate const * vectorlist;
-  Coordinate coordinate;
-  int vectorcount;
-  float k_dot_r;
-  Atom_Trajectory * atom;
-
-  atom = (system->show_molecule(species_index, molecule_index))->show_atom_trajectory(atom_type, atom_index);		//get appropriate atom_trajectory object from system
-
-  coordinate = atom->show_coordinate(tii);	//get atom coordinate at give time
-  for(wavenumberii=first_wavenumber_index;wavenumberii<=last_wavenumber_index;wavenumberii++)		//loop over wavenumbers for which wavedensity will be calculated
-  {
-    vectorlist = wavevectors->vectorlist(wavenumberii);	//call up wave vector list for this wavenumber
-    vectorcount = wavevectors->vectorcount(wavenumberii);	//get count of wave vectors for this wavenumber
-    for(vectorii=0;vectorii<vectorcount;vectorii++)		//loop over wavevectors for this wavenumber
-    {
-      k_dot_r = vectorlist[vectorii]&coordinate;		//calculate dot product of wave vector and present atomecoordinate
-      density[tii][wavenumberii-first_wavenumber_index][vectorii].real() += cos(k_dot_r);	//add contribution to real part of wave density
-      density[tii][wavenumberii-first_wavenumber_index][vectorii].imag() += sin(k_dot_r);	//add contribution to imaginary parto f wave density
-//        if(tii==1&&wavenumberii==25&&molecule_index==0&&atom_index==0){cout<<k_dot_r<<"\n";}
-    }
-  }
-}
 
 
 void Wave_Density::analyze(Trajectory_List * t_list)
@@ -414,23 +357,3 @@ void Wave_Density::listkernel(Trajectory* current_trajectory)
 }
 
 
-void Wave_Density::postprocess_list(Particle_List * particle_list)
-{
-
-  int expii, tii;
-  for(expii=0;expii<system->show_n_exponentials();expii++)
-  {
-    tii = (expii * system->show_n_exponential_steps())+system->show_frt();
-    n_atoms[tii] = particle_list->show_n_atoms(tii);
-  }
-}
-
-
-void Wave_Density::postprocess()
-{
-   int tii;
-   for(tii=0;tii<n_times;tii++)
-   {
-     n_atoms[tii] = n_atoms_looped;
-   }
-}

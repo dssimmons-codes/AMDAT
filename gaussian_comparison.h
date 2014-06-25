@@ -47,6 +47,8 @@ class Gaussian_Comparison
     void set(System* sys, int time_in, const Van_Hove_Self* vhs, const Mean_Square_Displacement* msd);
     void write(string)const;
     
+    Analysis_Type what_are_you(){Analysis_Type type = gaussian_comparison; return type;};		//virtual method to report the type of analysis
+    
     float show_slowboundary()const{return slowboundary;};
     float show_fastboundary()const{return fastboundary;};
     int show_time_index()const{return time_index;};

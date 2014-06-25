@@ -1,5 +1,5 @@
 /*Molecular Dynamics Analysis Toolkit (MDAT)*/
-/*Methods for Time_Correlation_Function class: a general class to hold a time correlation function*/
+/*Methods for Space-Time_Correlation_Function class: a general class to hold a time correlation function*/
 /*Written by David S. Simmons*/
 
 
@@ -23,14 +23,14 @@ using namespace std;
 
 
 
-Time_Correlation_Function::~Time_Correlation_Function()
+Space-Time_Correlation_Function::~Space-Time_Correlation_Function()
 {
   //clear_memory();
 }
 
 
 
-void Time_Correlation_Function::clear_memory()
+void Space-Time_Correlation_Function::clear_memory()
 {
  int ii;
  for(ii=0;ii<n_times;ii++)
@@ -44,10 +44,10 @@ void Time_Correlation_Function::clear_memory()
 
 
 
-Time_Correlation_Function Time_Correlation_Function::operator+ (const Time_Correlation_Function & increment)const
+Space-Time_Correlation_Function Space-Time_Correlation_Function::operator+ (const Space-Time_Correlation_Function & increment)const
 {
   int timeii, binii;
-  Time_Correlation_Function temp;
+  Space-Time_Correlation_Function temp;
 
   if(n_bins==increment.n_bins)
   {temp.n_bins=n_bins;}
@@ -94,11 +94,11 @@ Time_Correlation_Function Time_Correlation_Function::operator+ (const Time_Corre
   for(timeii=0;timeii<n_times;timeii++)
   {
     temp.correlation[timeii]=new int[n_bins];
+    temp.weighting[timeii]=weighting[timeii]+increment.weighting[timeii];
     for(binii=0;binii<n_bins;binii++)
     {
-      temp.correlation[timeii][binii] = correlation[timeii][binii] + increment.correlation[timeii][binii];
+      temp.correlation[timeii][binii] = (correlation[timeii][binii]*float(weighting[timeii]) + increment.correlation[timeii][binii]*float(increment.weighting[timeii]))/float(temp.weighting[timeii]);
     }
-    temp.weighting[timeii] =weighting[timeii] + increment.weighting[timeii];
     if(timetable[timeii]==increment.timetable[timeii])
     {
       temp.timetable[timeii] = timetable[timeii];
@@ -119,10 +119,10 @@ Time_Correlation_Function Time_Correlation_Function::operator+ (const Time_Corre
 
 
 
-// Time_Correlation_Function Time_Correlation_Function::operator= (Time_Correlation_Function increment)
+// Space-Time_Correlation_Function Space-Time_Correlation_Function::operator= (Space-Time_Correlation_Function increment)
 // {
 //   int timeii, binii;
-//   Time_Correlation_Function temp;
+//   Space-Time_Correlation_Function temp;
 //   temp.n_bins=n_bins;
 //   temp.n_times=n_times;
 //   temp.bin_size=bin_size;
@@ -149,48 +149,9 @@ Time_Correlation_Function Time_Correlation_Function::operator+ (const Time_Corre
 /*------------------------------------------------------------------------------*/
 
 
-float ** Time_Correlation_Function::normalized()const
-{
-  float ** normal_correlation;
-  int timeii, binii;
-  float rshell;
-  float shellvolume;
-  
-  
-  normal_correlation = new float* [n_times];
-  
-  /*Normalize by number of timestep datapoint and number of atoms considered*/
-  for(timeii=0;timeii<n_times;timeii++)
-  {
-    (normal_correlation[timeii]) = new (nothrow) float [n_bins];
-    if(normal_correlation[timeii]==0){cout << "Memory allocation error!\n"; exit(1);}
-    for(binii=0;binii<n_bins;binii++)
-    {
-      normal_correlation[timeii][binii] = float(correlation[timeii][binii])/(float(n_atoms[timeii])*float(weighting[timeii]));
-    }
-    
-  }
-
-  /*Normalize by volume of shell to arrive at a density*/
-  for(binii=0;binii<n_bins;binii++)
-  {
-    rshell = min_value+binii*bin_size;						//determine inner radius of bin
-    shellvolume = (4.0/3.0)*PI*(pow(rshell+bin_size,3.0)-pow(rshell,3.0));		//calculate volume of bin
-    for(timeii=0;timeii<n_times;timeii++)
-    {
-      normal_correlation[timeii][binii] = normal_correlation[timeii][binii]/shellvolume;	//normalize by volume
-    }
-  }
-  return normal_correlation;
-
-}
-
-/*------------------------------------------------------------------------------*/
-
-
 #ifndef TACC
 /*calculates and writes to file the spherically symmetric spacial fourier transform of the correlation data*/
-float** Time_Correlation_Function::spherical_fourier(string filename, int minbin)
+float** Space-Time_Correlation_Function::spherical_fourier(string filename, int minbin)
 {
   #ifdef MANUAL
   float ** normal;				//define variable to hold normalized correlation data
@@ -333,7 +294,7 @@ float** Time_Correlation_Function::spherical_fourier(string filename, int minbin
 
 
 
-void Time_Correlation_Function::bin(int timestep, float distance)
+void Space-Time_Correlation_Function::bin(int timestep, float distance)
  {
   int binindex;
   binindex = int((distance-min_value)/bin_size);
@@ -357,7 +318,7 @@ void Time_Correlation_Function::bin(int timestep, float distance)
 
 
 
-void Time_Correlation_Function::write(string filename)const
+void Space-Time_Correlation_Function::write(string filename)const
 {
   int timeii;
   int binii;
@@ -399,3 +360,13 @@ void Time_Correlation_Function::write(string filename)const
 }
 
 
+
+void Space-Time_Correlation_Function::postprocess_list()
+{
+  int timeii;
+  for (timeii=0;timeii<n_times;timeii++)
+  {
+    correlation[timeii]/=float(weighting[timeii]);
+  }
+  
+}

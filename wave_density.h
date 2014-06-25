@@ -6,7 +6,6 @@
 #include "system.h"
 #include "analysis.h"
 #include <string>
-#include "particle_list.h"
 
 #ifndef WAVE_DENSITY
 #define WAVE_DENSITY
@@ -51,17 +50,13 @@ class Wave_Density:public Analysis
     complex<double> show_density(int time, int wavenumberindex, int vectorindex)const{return density[time][wavenumberindex][vectorindex];};
     int show_n_atoms_looped()const{return n_atoms_looped;};
     
-    void atomlist_kernel(int expii, int species_index, int molecule_index, int atom_type, int atom_index, Particle_List*);
     
     void analyze(Trajectory_List * t_list);
     void list_displacementkernel(int,int,int){};
     void listkernel(Trajectory *);
     void postprocess_list(){};
+
     
-    void postprocess();
-    void postprocess_list(Particle_List*);
-    
-    void atomkernel(Trajectory * traj);
     
 };
 

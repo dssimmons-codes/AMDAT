@@ -41,47 +41,6 @@ Radial_Debye_Waller::Radial_Debye_Waller(System* sys, int timeii, int bincount, 
 
 
 
-/*--------Methods to do analysis with system loops-----------*/
-
-void Radial_Debye_Waller::atomkernel(Trajectory * traj)
-{
-  system->displacement_loop(this, traj, time_index,bool(0));
-}
-
-
-void Radial_Debye_Waller::displacementkernel(int timegap,int thisii, int nextii,Trajectory * traj)
-{
-  float radius;
-  float distance;
-  int bin;
-  Coordinate coordinate1, coordinate2;
-
-  coordinate1 = traj->show_coordinate(thisii);
-  coordinate2 = traj->show_coordinate(nextii);
-
-  radius = (coordinate1-center).length();
-  distance = (coordinate2-coordinate1).length();
-  bin = int(radius/bin_size);
-  if(bin>=n_bins){bin=n_bins-1;}
-  n_atoms[bin]++;
-  msd[bin] += distance*distance;
-}
-
-
-
-void Radial_Debye_Waller::postprocess()
-{
-  int binii;
-  float shellvolume;
-  for(binii=0;binii<n_bins;binii++)
-  {
-    msd[binii]/=n_atoms[binii];
-    n_atoms[binii]/=time_weighting;
-    shellvolume = 4/3*PI*pow((float(binii)+1.0)*bin_size,3)-4/3*PI*pow((float(binii))*bin_size,3);
-    density[binii] = n_atoms[binii]/shellvolume;
-  }
-}
-
 
 /*-------Methods to do analysis with trajectory list--------*/
 

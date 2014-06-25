@@ -51,11 +51,8 @@ class N_Fold_Order_Parameter : public Value_List<float>, public Analysis
     public:
     N_Fold_Order_Parameter(System * sys, float ord, string sig_file, string orientation = "xy", float cut = 1.25, string file_stem = "map_hop", int start=0, int end=-1);
 
-
-
-    void atomkernel(int,int, int, int){cout<<"Error: n_fold_orientaional_order_parameter does not work with system loops";};
-    void displacementkernel(int,int,int,int,int,int,int){};
-
+    Analysis_Type what_are_you(){Analysis_Type type = n_fold_order_parameter; return type;};		//virtual method to report the type of analysis
+    
     void analyze(Trajectory_List * t_list);
     void listkernel(Trajectory *);
     void write(string);

@@ -1,44 +1,39 @@
-/*Molecular Dynamics Analysis Toolkit (MDAT)*/
-/*Van_Hove_Distinct: a class for distinct part of Van Hove correlation function.*/
+/*Amorphous Molecular Dynamics Analysis Toolkit (aMDAT)*/
+/*Van_Hove_Distinct: a class for calculation of the distinct part of the Van Hove correlation function.*/
 /*Written by David S. Simmons*/
 
 #ifndef VAN_HOVE_DISTINCT
 #define VAN_HOVE_DISTINCT
 
-#include "time_correlation_function.h"
-#include "spacial_decomposition.h"
-#include "particle_list.h"
+#include "space-time_correlation_function.h"
+#include "trajectory_list_bins.h"
 
 namespace std{
 
-class Van_Hove_Distinct: public Time_Correlation_Function
-{
-    int min_cell_size;
-    int max_cell_range;
-    Spacial_Decomposition const * cellobject;
-    void initialize(System*sys, int bin_count, const Spacial_Decomposition* cells, float min_size, float value_max, float value_min);
+class Van_Hove_Distinct: public Space_Time_Correlation_Function
+{ 
+    Trajectory_List_Bins * binned_trajectories;
+    
+    Trajectory_List * currentlist0;
+    Trajectory_List * currentlist1;
+    
+    bool use_binned;
+    
+    int nx, ny, nz;		//number of bins in the x, y, and z dimensions
 
-    void atom_list(int atomcount, int* species_index, int* molecule_index, int* atom_type, int* atom_index);
-    
-    /*computational members - just used in particle listcalculations; no useful value later on*/
-    int nexttime;
-    int timegap;
-    
   public:
     Van_Hove_Distinct();
-    Van_Hove_Distinct(System*sys, int bin_count, const Spacial_Decomposition* cells, float min_size=0, float value_max=0, float value_min=0);
-    void set(System*sys, int bin_count, const Spacial_Decomposition* cells, float min_size=0, float value_max=0, float value_min=0){initialize(sys, bin_count, cells, min_size, value_max, value_min);};
     
-    void displacementkernel(int timegap,int thisii, int nextii,Trajectory * traj);
-    void atomkernel(Trajectory * traj);
+    Van_Hove_Distinct(System*sys, Trajectory_List_Bins binnedtraj, int bin_count, float value_max=0);
+    Van_Hove_Distinct(System*sys, int bin_count, float value_max=0);
+    void set(System*sys, int bin_count, float value_max=0);
     
-    void single_atom(int species_index, int molecule_index, int atom_type, int atom_index);
-    void cellkernel(int timegap, Coordinate coordinate1, Coordinate coordinate2, int atom_type=0);
-    void postprocess();
     
-    void atomlist_kernel(int, int, int, int, int, Particle_List*);
-    void list_displacementkernel(int timegapii, int thisii, int nextii, Particle_List* particle_list);
-    void atomlist(Particle_List * particle_list){system->displacement_loop_list(this, particle_list);postprocess_list(particle_list);};
+    void analyze(Trajectory_List*);
+    void analyze(Trajectory_List*, Trajectory_List*);
+    void list_displacementkernel(int,int,int);
+    void listkernel(Trajectory*, int, int, int);
+    void listkernel2(Trajectory*, Trajectory*, int, int, int);
     
 };
 

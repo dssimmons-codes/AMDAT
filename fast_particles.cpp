@@ -28,8 +28,6 @@ Fast_Particles::Fast_Particles()
     trajectories[timeii] = new Trajectory * [capacity];
     n_trajectories[timeii]=0;
   }
-
-  atoms_considered = 0;
 }
 
 
@@ -54,7 +52,6 @@ Fast_Particles::Fast_Particles(System * sys, Gaussian_Comparison * gc)
     n_trajectories[timeii]=0;
     included[timeii].set(sys);
   }
-  atoms_considered = 0;
 }
 
 
@@ -71,29 +68,40 @@ void Fast_Particles::set(System * syst, Gaussian_Comparison * gc)
 
 
 
-  atoms_considered = 0;
 }
 
 
-void Fast_Particles::atomkernel(Trajectory * traj)
+
+
+void Fast_Particles::analyze(Trajectory_List * t_list)
 {
-  system->displacement_loop(this, traj, displacement_time_index,bool(0));
-  atoms_considered++;
+  trajectory_list=t_list;
+  system->displacement_list(this,displacement_time_index,bool(0));
+  postprocess_list();
 }
 
 
+void Fast_Particles::list_displacementkernel(int timegapii,int thisii, int nextii)
+{
 
-void Fast_Particles::displacementkernel(int timegap,int thisii, int nextii, Trajectory * traj)
+//  weighting[timegapii]+=trajectory_list->show_n_trajectories(currenttime);
+//  //weighting[timegapii]+=(trajectory_list[0]).show_n_trajectories(currenttime);
+//  (trajectory_list[0]).listloop(this,currenttime);
+  (trajectory_list[0]).listloop(this,timegapii, thisii, nextii);
+}
+
+
+void Fast_Particles::listkernel(Trajectory* current_trajectory, int timegapii, int currenttime, int nexttime)
 {
   float square_displacement;		//particle displacement
   int expindex;			//index of exponential block
 
-  square_displacement = pow(traj->distance(thisii,nextii),2);  //calculate particle displacement
+  square_displacement = pow(current_trajectory->distance(currenttime,nexttime),2);  //calculate particle displacement
 
-  expindex = int((float(thisii)-float(system->show_frt()))/float(system->show_n_exponential_steps()));	//calculate which exponential block this corresponds to
+  expindex = int((float(currenttime)-float(system->show_frt()))/float(system->show_n_exponential_steps()));	//calculate which exponential block this corresponds to
   if(square_displacement > mindistance)
   {
     if(n_trajectories[expindex]==capacity){cout<<"Error: particle list memory allocation full.\n";exit(1);}
-    addtrajectory(expindex,traj);
+    addtrajectory(expindex,current_trajectory);
   }
 }

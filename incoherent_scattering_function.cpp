@@ -209,51 +209,6 @@ Incoherent_Scattering_Function::Incoherent_Scattering_Function(System * sys, con
 
 
 
-/*--------------------------------------------*/
-/*---Methods to use system loops over atoms---*/
-/*--------------------------------------------*/
-
-
-void Incoherent_Scattering_Function::preprocess()
-{
-}
-
-void Incoherent_Scattering_Function::atomkernel(Trajectory * traj)
-{
-  system->displacement_loop(this,traj,fullblock);
-  n_atoms_represented++;
-}
-
-
-
-
-void Incoherent_Scattering_Function::displacementkernel(int timegapii, int thisii, int nextii, Trajectory * traj)
-{
-  int wavenumberii;
-  int wavevectorii;
-  Coordinate const * vectorlist;
-  int vectorcount;
-  Coordinate coordinate1;
-  Coordinate coordinate2;
-
-
-  /*increment fourier bins*/
-  for(wavenumberii=0;wavenumberii<n_spacebins;wavenumberii++)
-  {
-    vectorlist = wavevectors->vectorlist(wavenumberii+first_bin_index);
-    vectorcount = wavevectors->vectorcount(wavenumberii+first_bin_index);
-    for(wavevectorii=0;wavevectorii<vectorcount;wavevectorii++)
-    {
-      coordinate1 = traj->show_unwrapped(thisii);
-      coordinate2 = traj->show_unwrapped(nextii);
-      correlation[timegapii][wavenumberii] += cos(vectorlist[wavevectorii]&(coordinate2-coordinate1)) / (float(vectorcount));
-    }
-  }
-}
-
-
-
-
 /*-----------------------------------------------------*/
 /*---Methods to use trajectory list loops over atoms---*/
 /*-----------------------------------------------------*/

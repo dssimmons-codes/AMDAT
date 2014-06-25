@@ -56,7 +56,8 @@ class Trajectory_List
     bool is_included(int timeii,int trajii);                              //returns 1 if trajectory is included at that time
     Boolean_List show_included(int timeii){return included[timeii];}
     void listloop(Analysis* analysis, int time);			//loop over trajectories at a given time
-    void listloop(Analysis* analysis, int timegap, int time, int nextTime);			//loop over trajectories at a given time
+    void listloop(Analysis* analysis, int timegap, int curTime, int nextTime);			//loop over trajectories at a given time
+    void listloop2(Analysis* analysis, Trajectory* traj, int timegap, int curTime, int nextTime);			//loop over trajectories at a given time
     int show_n_trajectories(int timeii)const{return n_trajectories[convert_time(timeii)];};	//return number of trajectories at a given time
 
 

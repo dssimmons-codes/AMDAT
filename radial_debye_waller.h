@@ -24,13 +24,11 @@ class Radial_Debye_Waller: public Analysis
   
     int currenttime, nexttime;
     
-  public:
-    void displacementkernel(int timegap,int thisii, int nextii,Trajectory * traj);
-    void atomkernel(Trajectory * traj);
-    
+  public: 
     Radial_Debye_Waller(System* sys, int timeii, int bincount, float maxrange, Coordinate c);
    
-    void postprocess();
+    Analysis_Type what_are_you(){Analysis_Type type = radial_debye_waller; return type;};		//virtual method to report the type of analysis
+    
     void write(string);
     
     void analyze(Trajectory_List * t_list);

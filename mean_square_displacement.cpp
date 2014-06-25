@@ -131,39 +131,7 @@ void Mean_Square_Displacement::initialize(System* sys)
   atomcount = 0;
 }
 
-void Mean_Square_Displacement::preprocess()
-{
-  weighting = system->timegap_weighting();
-}
 
-/*Methods to do analysis using system loops*/
-
-
-
-void Mean_Square_Displacement::displacementkernel(int timegap,int thisii, int nextii, Trajectory* traj)
-{
-	msd[timegap]+=pow(traj->distance(thisii,nextii),2);
-}
-
-
-
-void Mean_Square_Displacement::atomkernel(Trajectory * traj)
-{
-	system->displacement_loop(this, traj);
-	atomcount ++;
-}
-
-
-void Mean_Square_Displacement::postprocess()
-{
-
-  for(int timeii=0;timeii<n_times;timeii++)
-  {
-
-        msd[timeii] /= (float(weighting[timeii])*float(atomcount));
-
-  }
-}
 
 /*Methods to do analysis using trajectory list*/
 
@@ -190,12 +158,6 @@ void Mean_Square_Displacement::list_displacementkernel(int timegapii,int thisii,
 }
 
 
-
-void Mean_Square_Displacement::listkernel(Trajectory* current_trajectory)
-{
-  #pragma omp atomic // TODO: Shouldn't be needed since this isn't in parallel
-  msd[currenttimegap]+=pow(current_trajectory->distance(currenttime,nexttime),2);
-}
 
 void Mean_Square_Displacement::listkernel(Trajectory* current_trajectory, int timegapii,int thisii, int nextii)
 {

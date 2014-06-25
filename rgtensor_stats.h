@@ -40,6 +40,8 @@ class RgTensor_Stats:public Analysis
   public:
     RgTensor_Stats(System*);
     
+    Analysis_Type what_are_you(){Analysis_Type type = rgtensor_stats; return type;};		//virtual method to report the type of analysis
+    
     void analyze (Trajectory_List*);
     void listkernel(Trajectory*);
     

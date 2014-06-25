@@ -3,7 +3,6 @@
 /*Written by David S. Simmons*/
 
 #include "system.h"
-#include "particle_list.h"
 #include <iostream>
 #include <stdlib.h>
 
@@ -46,10 +45,6 @@ Analysis Analysis::operator =(const Analysis & copy)
 
 
 /*Methods for employing the loops implemented in class System over various sets of atoms*/
-
-/*Do analysis on time-varying particle list, with different list of particles corresponding to first time element of each exponential block*/
-void Analysis::atomlist(Particle_List * particle_list)
-{preprocess_list(particle_list);particle_list->atomloop(this);postprocess_list(particle_list);}
 
 void Analysis::all_moleculecom()
 {system->loop_all_moleculecom(this);}

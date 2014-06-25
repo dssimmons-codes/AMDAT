@@ -25,8 +25,6 @@
 #include "non_gaussian_parameter.h"
 #include "gaussian_comparison.h"
 #include "fast_particles.h"
-#include "slow_particles.h"
-#include "average_particles.h"
 #include "radial_debye_waller.h"
 #include "mean_square_displacement_2d.h"
 #include "velocity_autocorrelation.h"
@@ -255,10 +253,6 @@ int Control::execute_commands(int iIndex, int fIndex)
     {compare_gaussian();}
     else if(command == "find_fast")
     {find_fast();}
-    else if(command == "find_slow")
-    {find_slow();}
-    else if(command == "find_average")
-    {find_average();}
     else if(command == "radial_debye_waller")
     {radial_debye_waller();}
     else if(command == "strings")
@@ -942,7 +936,6 @@ void Control::get_user_input(bool show_tips)
  void Control::initialize_lists()
  {
    //list of particle lists
-   n_atomlists=0;
    n_trajectorylists=0;
    n_gaussian_comparisons = 0;
    vhs_defined = 0;
@@ -1162,26 +1155,6 @@ void Control::run_analysis(Analysis* analyzer, string setline)
     exit(1);
   }
  }
-
-/*--------------------------------------------------------------------------------*/
-
-
-
- /*finds atomlist object by custom name*/
-int Control::find_atomlist(string listname)
-{
-  int listii;
-
-  for(listii=0;listii<n_atomlists;listii++)
-  {
-    if(listname==atomlist_names[listii]) return listii;
-  }
-  cout << "\nError: Atom list '" << listname<< "' not found.\n";
-  return -1;
-}
-
-
-
 
 
  /*--------------------------------------------------------------------------------*/
@@ -1605,34 +1578,23 @@ void Control::calc_vhd()
 {
 
   string runline;
-  float min_cell_size, max_range, overage, capacity;
+  float max_range;
   int n_bins;
   string filename;
-  int expected = 5;
+  
+  int expected = 3;
   argcheck(expected);
 
   filename = args[1];
-  min_cell_size = float(atof(args[2].c_str()));
   max_range = float(atof(args[3].c_str()));
   n_bins = atoi(args[4].c_str());
 
 //  getline(input,runline);
   runline = read_line();
   cout <<"\n"<< runline;
-  overage = ceil(max_range / min_cell_size);
-  capacity = 10*min_cell_size*min_cell_size*min_cell_size;
-
   analyte->boxify();
 
-  Spacial_Decomposition decomp(analyte, min_cell_size,capacity,overage);
-  cout<<"\nSorting atoms into spacial cells.";
-  start = time(NULL);
-  decomp.all();
-  decomp.fill_overhang();
-  finish = time(NULL);
-  cout <<"\nSorting complete in " << finish-start << " seconds.";
-
-  vhd.set(analyte, n_bins, &decomp, min_cell_size, max_range);
+  vhd.set(analyte, n_bins, max_range);
   cout << "\nCalculating distinct Van Hove correlation function.";
   start = time(NULL);
   run_analysis(&vhd, runline);
@@ -1681,7 +1643,7 @@ void Control::vhs_fourier()
   filename = args[1];
   cout << "\nCalculating radial fourier transform of self van hove.";
   cout << "\nWarning: this method is outdated and likely incorrect.";
-  vhs.spherical_fourier(filename, 0);
+  vhs.write_spatial_inverse(filename);
 }
 #endif
 
@@ -1701,7 +1663,7 @@ void Control::vhd_fourier()
   filename = args[1];
   cout << "\nCalculating radial fourier transform of distinct van hove.";
   cout << "\nWarning: this method is outdated and likely incorrect.";
-  vhd.spherical_fourier(filename, 0);
+  vhd.write_spatial_inverse(filename);
 }
 #endif
 
@@ -1903,8 +1865,10 @@ void Control::isf()
 /*--------------------------------------------------------------------------------*/
 
 
+
 void Control::isf_list()
 {
+  #ifdef NEVER
   string filename, wavevector_root, runline, method, structfac_filename, listname, plane;
   int inner, outer, listindex;		//minimum and maximum wave vector indices to calculate
 
@@ -1933,7 +1897,7 @@ void Control::isf_list()
   cout << "\nCalculating intermediate scattering function.";cout.flush();
   Intermediate_Scattering_Function is_fun(analyte, atomlists[listindex], &wavedensity1, inner, outer);
   is_fun.write(filename);		//write intermediate scattering function to file
-
+#endif
 }
 
 
@@ -2079,7 +2043,7 @@ void Control::stiffness_dist()
 
 
 
-/*control method to calculate distribution of u^2 values at a given time separation.*/
+/*control method to calculate distribution of u^N values at a given time separation.*/
 void Control::displacement_dist()
 {
   int n_bins, t;
@@ -2227,72 +2191,6 @@ void Control::find_fast()
   add_trajectorylist(trajpointer, listname);	//add trajectory list to array
 }
 
-
-
-/*--------------------------------------------------------------------------------*/
-
-
-
-void Control::find_slow()
-{
-  string filename, runline;
-  Slow_Particles * slow_particles;
-  string listname;
-
-  Trajectory_List * trajpointer;
-  slow_particles = new Slow_Particles;
-
-  trajpointer=(Trajectory_List*)slow_particles;
-
-  listname = args[1];	//Set name of this particle list
-  filename = args[2];
-
-//  getline(input,runline);
-  runline = read_line();
-  cout <<"\n"<< runline;
-
-  if(n_gaussian_comparisons==0){cout<<"\nError: A guassian comparison analysis myst be defined prior to calculating fast particle list.\n";exit(1);}
-
-  cout << "\nIdentifying 'slow' particles.";
-  slow_particles->set(analyte,gaussian_comparison);
-  run_analysis(slow_particles, runline);
-  slow_particles->write_count(filename);
-
-  add_trajectorylist(trajpointer, listname);	//add trajectory list to array
-}
-
-
-
-/*--------------------------------------------------------------------------------*/
-
-
-void Control::find_average()
-{
-  string filename, runline;
-  Average_Particles * average_particles;
-  string listname;
-
-  Trajectory_List * trajpointer;
-  average_particles = new Average_Particles;
-
-  trajpointer=(Trajectory_List*)average_particles;
-
-  listname = args[1];	//Set name of this particle list
-  filename = args[2];
-
-//  getline(input,runline);
-  runline = read_line();
-  cout <<"\n"<< runline;
-
-  if(n_gaussian_comparisons==0){cout<<"\nError: A guassian comparison analysis myst be defined prior to calculating fast particle list.\n";exit(1);}
-
-  cout << "\nIdentifying 'average' particles.";
-  average_particles->set(analyte,gaussian_comparison);
-  run_analysis(average_particles, runline);
-  average_particles->write_count(filename);
-
-  add_trajectorylist(trajpointer, listname);	//add trajectory list to array
-}
 
 
 /*--------------------------------------------------------------------------------*/

@@ -7,7 +7,6 @@
 
 
 #include <string>
-#include "spacial_decomposition.h"
 #include "analysis.h"
 
 namespace std {
@@ -69,9 +68,6 @@ class Strings: public Analysis
     void list_displacementkernel(int,int,int);
     void listkernel(Trajectory*);
     void postprocess_list();
-    
-    void atomkernel(int,int,int,int){};
-    void displacementkernel(int,int,int,int,int,int,int){};
     
     void construct_trajectory_list(Trajectory_List*);
 };

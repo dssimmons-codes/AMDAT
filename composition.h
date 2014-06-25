@@ -39,6 +39,9 @@ class Composition : public Analysis
 
     Composition operator=(const Composition &);
     
+    Analysis_Type what_are_you(){Analysis_Type type = composition; return type;};
+    
+     void analyze(Trajectory_List *,Trajectory_List *){cout<<"Error: Trajectory list targets with two lists not implemented for this analysis method.\n";}; //analysis method for when two trajectory lists are needed
     void analyze(Trajectory_List * t_list);
     void listkernel(Trajectory *);
 

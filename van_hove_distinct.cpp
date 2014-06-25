@@ -13,236 +13,226 @@ using namespace std;
 
 /*----------------------------------------------------------------------------------------------*/
 
-/*Method to intialize object*/
-void Van_Hove_Distinct::initialize(System*sys, int bin_count, const Spacial_Decomposition* cells, float min_size, float value_max, float value_min)
-{
-  int timeii, binii;
-
-  system = sys;
-  cellobject = cells;
-  n_bins = bin_count;
-  min_value = value_min;
-
-  if(value_max==0) max_value = (system->size().min())/2;	//if no max range given, set it to be half the minimum dimension of the box at the initial time.
-  else max_value=value_max;
-
-  if(min_size==0) {min_cell_size=value_max-value_min;}
-  else {min_cell_size = min_size;}
-
-  n_atoms_looped = 0;
-
-
-  max_cell_range = ceil(max_value/min_cell_size);
-
-  if(max_cell_range > cellobject->show_overhang())
-  {
-    cout << "Error: insufficient number of image cells in spacially decomposed atom data!  Increase overhang!";
-    exit(1);
-  }
-
-  bin_size = (max_value-min_value)/float(n_bins);
-
-  n_times = system->show_n_timegaps();;
-
-  timetable = system->displacement_times();
-  //allocate memory for van hove distinct correlation function and weighting and initialize to zero
-  correlation = new int * [n_times];
-  n_atoms = new double [n_times];
-  for(timeii=0;timeii<n_times;timeii++)
-  {
-    n_atoms[timeii]=0;
-    correlation[timeii]=new int [n_bins];
-    for(binii=0;binii<n_bins;binii++)
-    {
-      correlation[timeii][binii]=0;
-    }
-  }
-
-  weighting = system->timegap_weighting();	//get timegap weighting from system
-
-}
-
-
-/*----------------------------------------------------------------------------------------------*/
-
 /*Constructor*/
 
 Van_Hove_Distinct::Van_Hove_Distinct()
 {
   system = 0;
-  cellobject = 0;
   n_bins = 0;
-  min_value = 0;
   max_value = 0;
-  max_cell_range = 0;
   n_times = 0;
   bin_size = 0;
   timetable = 0;
-  correlation = new int * [1];
+  correlation = new float * [1];
   weighting = new int [0];
-  correlation[0]=new int [0];
-}
-
-
-/*----------------------------------------------------------------------------------------------*/
-
-
-/*Constructor*/
-Van_Hove_Distinct::Van_Hove_Distinct(System*sys, int bin_count, const Spacial_Decomposition* cells, float min_size, float value_max, float value_min)
-{
-  initialize(sys, bin_count, cells, min_size, value_max, value_min);
+  correlation[0]=new float [0];
 }
 
 
 
 /*----------------------------------------------------------------------------------------------*/
 
-
-/*atom kernel method*/
-void Van_Hove_Distinct::atomkernel(Trajectory * traj)
+Van_Hove_Distinct::Van_Hove_Distinct(System*sys, Trajectory_List_Bins binnedtraj, int bin_count, float value_max)
 {
-  system->displacement_loop(this, traj);
-  n_atoms_looped++;		//increment number of atoms for which correlation has been binned.
-}
+  int timeii, binii;
+  
+  system=sys;
+  n_bins=bin_count;
+  
+  if(value_max==0) max_value = (system->size().min())/2;	//if no max range given, set it to be half the minimum dimension of the box at the initial time.
+  else max_value=value_max;
+  
+  bin_size = (max_value)/float(n_bins);
+  
+  n_times = system->show_n_timegaps();;
 
-
-
-/*----------------------------------------------------------------------------------------------*/
-
-
-
-/*displacement kernel method*/
-void Van_Hove_Distinct::displacementkernel(int timegap,int thisii, int nextii,Trajectory * traj)
-{
-  int deltaxii, deltayii, deltazii;
-  Coordinate coordinate;
-  int atomID;
-
-  coordinate = traj->show_coordinate(thisii);
-  atomID = traj->show_trajectory_ID();
-  for(deltaxii=-max_cell_range;deltaxii<=max_cell_range;deltaxii++)
+  timetable = system->displacement_times();
+  
+  use_binned = true;
+  
+  trajectory_list = new Trajectory_List [2];
+//  currentlists = new Trajectory_List [2];
+  
+  correlation = new float * [n_times];
+  weighting = new int [n_times];
+  for(timeii=0;timeii<n_times;timeii++)
   {
-    for(deltayii=-max_cell_range;deltayii<=max_cell_range;deltayii++)
+    weighting[timeii]=0;
+    correlation[timeii]=new float [n_bins];
+    for(binii=0;binii<n_bins;binii++)
     {
-      for(deltazii=-max_cell_range;deltazii<=max_cell_range;deltazii++)
-      {
-        cellobject->loop_cell(this, timegap, nextii, coordinate, atomID, deltaxii, deltayii, deltazii);
-      }
+      correlation[timeii][binii]=0;
     }
   }
+  
 }
 
 
-/*----------------------------------------------------------------------------------------------*/
-
-
-/*cellkernel method*/
-void Van_Hove_Distinct::cellkernel(int timegap, Coordinate coordinate1, Coordinate coordinate2, int atom_type)
+Van_Hove_Distinct::Van_Hove_Distinct(System*sys, int bin_count, float value_max)
 {
-  float distance = (coordinate2-coordinate1).length();
+  int timeii, binii;
+  
+  system=sys;
+  n_bins=bin_count;
+  
+  if(value_max==0) max_value = (system->size().min())/2;	//if no max range given, set it to be half the minimum dimension of the box at the initial time.
+  else max_value=value_max;
+  
+  bin_size = (max_value)/float(n_bins);
+  
+  n_times = system->show_n_timegaps();;
 
-  bin(timegap,distance);
-}
-
-
-
-/*----------------------------------------------------------------------------------------------*/
-
-
-void Van_Hove_Distinct::postprocess()
-{
-	int timeii;
-
-	for(timeii=0;timeii<n_times;timeii++)
-	{
-		n_atoms[timeii] = n_atoms_looped;
-	}
-
-}
-
-
-
-/*----------------------------------------------------------------------------------------------*/
-
-
-void Van_Hove_Distinct::list_displacementkernel(int timegapii, int thisii, int nextii, Particle_List* particle_list)
-{
-  nexttime = nextii;
-  timegap = timegapii;
-
-  particle_list->atomloop(this,thisii);
-}
-
-
-
-
-/*----------------------------------------------------------------------------------------------*/
-
-
-void Van_Hove_Distinct::atomlist_kernel(int thisii, int species_index, int molecule_index, int atom_type, int atom_index,Particle_List* particle_list)
-{
-
-  int deltaxii, deltayii, deltazii;
-  Atom_Trajectory * atom;
-  Coordinate coordinate;
-  int atomID;
-
-  atom = ((system->show_molecule(species_index, molecule_index))->show_atom_trajectory(atom_type, atom_index));
-  coordinate = atom->show_coordinate(thisii);
-  atomID = atom->show_trajectory_ID();
-  for(deltaxii=-max_cell_range;deltaxii<=max_cell_range;deltaxii++)
+  timetable = system->displacement_times();
+  
+  use_binned = false;
+  
+  trajectory_list = new Trajectory_List [2];
+//  currentlists = new Trajectory_List [2];
+ 
+  correlation = new float * [n_times];
+  weighting = new int [n_times];
+  for(timeii=0;timeii<n_times;timeii++)
   {
-    for(deltayii=-max_cell_range;deltayii<=max_cell_range;deltayii++)
+    weighting[timeii]=0;
+    correlation[timeii]=new float [n_bins];
+    for(binii=0;binii<n_bins;binii++)
     {
-      for(deltazii=-max_cell_range;deltazii<=max_cell_range;deltazii++)
-      {
-        cellobject->loop_cell(this, timegap, nexttime, coordinate, atomID, deltaxii, deltayii, deltazii);
-      }
+      correlation[timeii][binii]=0;
     }
   }
-
-  n_atoms[timegap]+=double(particle_list->show_n_atoms(thisii))/double(weighting[timegap]);
+  
 }
 
-#ifdef NO
 
-/*----------------------------------------------------------------------------------------------*/
+
+void Van_Hove_Distinct::set(System*sys, int bin_count, float value_max)
+{
+  int timeii, binii;
+  
+  delete [] trajectory_list;
+//  delete [] currentlists;
+  
+  for(timeii=0;timeii<n_times;timeii++)
+  {
+    delete [] correlation[timeii];
+  }
+  
+  delete [] correlation;
+  delete [] weighting;
+  
+  system=sys;
+  n_bins=bin_count;
+  
+  if(value_max==0) max_value = (system->size().min())/2;	//if no max range given, set it to be half the minimum dimension of the box at the initial time.
+  else max_value=value_max;
+  
+  bin_size = (max_value)/float(n_bins);
+  
+  n_times = system->show_n_timegaps();;
+
+  timetable = system->displacement_times();
+  
+  use_binned = false;
+  
+  
+  
+  trajectory_list = new Trajectory_List [2];
+//  currentlists = new Trajectory_List [2];
+  
+  correlation = new float * [n_times];
+  weighting = new int [n_times];
+  for(timeii=0;timeii<n_times;timeii++)
+  {
+    weighting[timeii]=0;
+    correlation[timeii]=new float [n_bins];
+    for(binii=0;binii<n_bins;binii++)
+    {
+      correlation[timeii][binii]=0;
+    }
+  }
+ 
+  
+}
+
+
+void Van_Hove_Distinct::analyze(Trajectory_List * t_list1)
+{
+
+  
+  trajectory_list[0]=t_list1[0];
+  trajectory_list[1]=t_list1[0];
+ 
+  system->displacement_list(this);
+  postprocess_list();
+}
+
+
+void Van_Hove_Distinct::analyze(Trajectory_List * t_list1, Trajectory_List * t_list2)
+{
+  trajectory_list[0]=t_list1[0];
+  trajectory_list[1]=t_list2[0];
+  
+  if(!use_binned)
+  {
+    currentlist0=&trajectory_list[0];
+    currentlist1=&trajectory_list[1];
+  }
+  
+  system->displacement_list(this);
+  postprocess_list();
+  
+}
+
+
 
 
 void Van_Hove_Distinct::list_displacementkernel(int timegapii, int thisii, int nextii)
 {
-  nexttime = nextii;
-  timegap = timegapii;
+  int xii, yii, zii;	//bin of first trajectory_list
 
-  trajectory_list->listloop(this,thisii);
-}
-
-
-/*----------------------------------------------------------------------------------------------*/
-
-
-void Van_Hove_Distinct::listkernel(Trajectory* traj)
-{
-
-  int deltaxii, deltayii, deltazii;
-  Atom_Trajectory * atom;
-  Coordinate coordinate;
-  int atomID;
-
-  coordinate = traj->show_coordinate(thisii);
-  atomID = traj->show_trajectory_ID();
-  for(deltaxii=-max_cell_range;deltaxii<=max_cell_range;deltaxii++)
+  if(use_binned)
   {
-    for(deltayii=-max_cell_range;deltayii<=max_cell_range;deltayii++)
+    for(xii=0;xii<nx;xii++)
     {
-      for(deltazii=-max_cell_range;deltazii<=max_cell_range;deltazii++)
+      for(yii=0;yii<ny;yii++)
       {
-        cellobject->loop_cell(this, timegap, nexttime, coordinate, atomID, deltaxii, deltayii, deltazii);
+	for(zii=0;zii<nz;zii++)
+	{
+	
+	
+	}
       }
     }
   }
-
-  n_atoms[timegap]+=double(particle_list->show_n_atoms(thisii))/double(weighting[timegap]);
+  else
+  {
+    weighting[timegapii]+=trajectory_list[0].show_n_trajectories(thisii)*trajectory_list[1].show_n_trajectories(nextii);
+//    current_list1->listloop(this,timegapii, thisii, nextii);
+  }
 }
 
-#endif
+
+void Van_Hove_Distinct::listkernel(Trajectory* traj1, int timegapii, int thisii, int nextii)
+{
+//  current_list2->listloop(this, traj1, timegapii, thisii, nextii);
+}
+
+
+
+
+void Van_Hove_Distinct::listkernel2(Trajectory* traj1, Trajectory* traj2, int timegapii, int thisii, int nextii)
+{
+  float distance;
+  if(traj1!=traj2)
+  {
+    (traj2->show_coordinate(nextii)-(traj1->show_coordinate(thisii))).length_unwrapped(system->size());	//calculate shortest distance between two coordinates, taking into account periodic boundaries
+    bin(timegapii,distance);
+  }
+  else
+  {
+    weighting[timegapii]--;
+  }
+  
+  
+}
+

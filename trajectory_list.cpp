@@ -199,6 +199,17 @@ void Trajectory_List::listloop(Analysis* analysis, int timegap, int curTime, int
 	}
 }
 
+void Trajectory_List::listloop2(Analysis* analysis, Trajectory* traj1, int timegap, int curTime, int nextTime)
+{
+	int current_time;
+
+	current_time=convert_time(curTime);
+	for(int trajectoryii=0;trajectoryii<n_trajectories[current_time];trajectoryii++) 	
+	{
+		analysis->listkernel2(traj1, trajectories[current_time][trajectoryii], timegap, curTime, nextTime);
+	}
+}
+
 
 int Trajectory_List::n_system_trajectories()const
 {

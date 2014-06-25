@@ -1,7 +1,7 @@
 system
 xyz_log
 traj.xyz log.lammps
-exponential 100 77 1.2 0 0 .01
+exponential 10 77 1.2 0 0 .01
 polymer 50
 1
 32
@@ -9,40 +9,27 @@ polymer 50
 create_list all
 all
 
-msd msd.dat
+ngp ngp_threads.dat
 list all
 
-structure_factor structure.dat symmetric xyz 0 0
-list all
-
-isfs isfs.dat 24 24 xyz 0 0
-list all
-
-msd_2d msdxy.dat xy
-all
-
-ngp ngp.dat
-list all
-
-u2dist displacementdistu2.dat 50 .2 26
-list all
-
-stiffness_dist stiffness_dist.dat 20 100 25
-all
+exit
 
 vhs vhslist.dat 2 100
-all
+list all
 
 compare_gaussian gaussian.dat 70
-all
+list all
 
 find_fast fast1 fast_count_list.dat
-all
+list all
 
 strings strings.dat 70 .6 sigma_matrix stringlist
 list fast1
 
 displacement_map displacement_map 65 0 9
+list all
+
+structure_factor structure.dat symmetric xyz 0 0
 list all
 
 create_list COM
@@ -51,6 +38,35 @@ moleculecom_all
 write_list_trajectory COM com.xyz
 
 exit
+
+
+
+msd msd.dat
+list all
+
+isfs isfs.dat 24 24 xyz 0 0
+list all
+
+msd_2d msdxy.dat xy
+list all
+
+
+
+u2dist displacementdistu2.dat 50 .2 26
+list all
+
+stiffness_dist stiffness_dist.dat 20 100 25
+list all
+
+
+
+
+
+
+
+
+
+
 
 rgtensor_stats rgtensor.dat asphericity_dist.dat
 all

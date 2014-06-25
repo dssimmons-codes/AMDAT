@@ -18,13 +18,12 @@ Non_Gaussian_Parameter::Non_Gaussian_Parameter()
   msd = 0;
   
   ngp = new float [n_times];
-  n_atoms = new float [n_times];
-  weighting = 0;
+  weighting = new int [n_times];
   timetable = 0;
   for(int timeii=0;timeii<n_times;timeii++)
   {
     ngp[timeii]=0;
-    n_atoms[timeii]=0;
+    weighting[timeii]=0;
   }
   atomcount = 0;
 }
@@ -38,13 +37,12 @@ Non_Gaussian_Parameter::Non_Gaussian_Parameter(const Non_Gaussian_Parameter & co
   msd = copy.msd;
   
   ngp = new float [n_times];
-  n_atoms = new float [n_times];
-  weighting = system -> timegap_weighting();
+  weighting = new int [n_times];
   timetable = system -> displacement_times();
   for(int timeii=0;timeii<n_times;timeii++)
   {
     ngp[timeii]=copy.ngp[timeii];
-    n_atoms[timeii]=copy.ngp[timeii];
+    weighting[timeii]=copy.weighting[timeii];
   }
   atomcount = copy.atomcount;
 }
@@ -59,13 +57,12 @@ Non_Gaussian_Parameter Non_Gaussian_Parameter::operator =(const Non_Gaussian_Par
   msd = copy.msd;
   
   ngp = new float [n_times];
-  n_atoms = new float [n_times];
-  weighting = system -> timegap_weighting();
+  weighting = new int [n_times];
   timetable = system -> displacement_times();
   for(int timeii=0;timeii<n_times;timeii++)
   {
     ngp[timeii]=copy.ngp[timeii];
-    n_atoms[timeii]=copy.ngp[timeii];
+    weighting[timeii]=0;;
   }
   atomcount = copy.atomcount;
  }
@@ -83,52 +80,22 @@ Non_Gaussian_Parameter::Non_Gaussian_Parameter(System* sys, const Mean_Square_Di
 
   //allocate memory for ngp data and msd data
   ngp = new float [n_times];
-  n_atoms = new float [n_times];
-  weighting = system -> timegap_weighting();
+  weighting = new int [n_times];
   timetable = system -> displacement_times();
   for(timeii=0;timeii<n_times;timeii++)
   {
     ngp[timeii]=0;
-    n_atoms[timeii]=0;
+    weighting[timeii]=0;;
   }
   atomcount = 0;
 }
-
-
-void Non_Gaussian_Parameter::displacementkernel(int timegap,int thisii, int nextii, Trajectory * traj)
-{
-  ngp[timegap]+=pow(traj->distance(thisii,nextii),4);
-}
-
-
-
-void Non_Gaussian_Parameter::atomkernel(Trajectory * traj)
-{
-  system->displacement_loop(this, traj);
-  atomcount ++;
-}
-
-
-void Non_Gaussian_Parameter::postprocess()
-{
-  int timeii;
-
-  for(timeii=0;timeii<n_times;timeii++)
-  {
-    ngp[timeii] *= (3.0/(float(weighting[timeii])*float(atomcount)))/(5.0*pow((msd->show(timeii)),2.0));
-    ngp[timeii] -= 1.0;
-  }
-}
-
 
 
 void Non_Gaussian_Parameter::analyze(Trajectory_List * t_list)
 {
 
 	trajectory_list=t_list;
-
 	system->displacement_list(this);
-
 	postprocess_list();
 }
 
@@ -139,18 +106,25 @@ void Non_Gaussian_Parameter::list_displacementkernel(int timegapii,int thisii, i
 	currenttime=thisii;
 	nexttime=nextii;
 	currenttimegap=timegapii;
-	n_atoms[timegapii]+=trajectory_list[0].show_n_trajectories(currenttime)/float(weighting[timegapii]);
-	(trajectory_list[0]).listloop(this,currenttime);
+	#pragma omp atomic
+	weighting[timegapii]+=trajectory_list->show_n_trajectories(thisii);
+	(trajectory_list[0]).listloop(this,timegapii,thisii,nextii);
 }
 
 
 
 void Non_Gaussian_Parameter::listkernel(Trajectory* current_trajectory)
 {
-	ngp[currenttimegap]+=pow(current_trajectory->distance(currenttime,nexttime),4);
-
+//	#pragma omp atomic
+//	ngp[currenttimegap]+=pow(current_trajectory->distance(currenttime,nexttime),4);
 }
 
+
+void Non_Gaussian_Parameter::listkernel(Trajectory* current_trajectory, int timegapii,int thisii, int nextii)
+{
+	#pragma omp atomic
+	ngp[timegapii]+=pow(current_trajectory->distance(thisii,nextii),4);
+}
 
 
 void Non_Gaussian_Parameter::postprocess_list()
@@ -159,7 +133,7 @@ void Non_Gaussian_Parameter::postprocess_list()
 
 	for(timeii=0;timeii<n_times;timeii++)
 	{
-		ngp[timeii] *= (3.0/(float(weighting[timeii])*n_atoms[timeii]))/(5*pow((msd->show(timeii)),2.0));
+		ngp[timeii] *= (3.0/(float(weighting[timeii])))/(5*pow((msd->show(timeii)),2.0));
 		ngp[timeii] -= 1.0;
 	}
 }

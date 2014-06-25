@@ -7,7 +7,6 @@
 #include "molecule.h"
 #include <fstream>
 #include "analysis.h"
-#include "particle_list.h"
 #include <string>
 #include "trajectory.h"
 #include <vector>
@@ -138,10 +137,6 @@ class System
     /*loops over time spacings for use with system loops*/
     void displacement_loop(Analysis*, Trajectory *, bool fullblock=1)const;
     void displacement_loop(Analysis*, Trajectory *, int, bool fullblock=1)const;
-    
-    /*loops over time spacings for use with old particle lists - these are in the process of becoming obsolete*/
-    void displacement_loop_list(Analysis*, Particle_List*, bool fullblock=1)const;
-    void displacement_loop_list(Analysis*, Particle_List*, int timegap, bool fullblock=1)const;
     
     /*loops over time spacings for use with new trajectory lists*/
     void displacement_list(Analysis*, bool fullblock=1)const;

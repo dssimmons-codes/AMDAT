@@ -2488,7 +2488,7 @@ void System::displacement_loop(Analysis* analysis, Trajectory * traj, int timega
 
 
 
-
+#ifdef NEVER
 
 /*Method to loop over displacement times for a particle list.  At each instance of the loop it passes the displacement time and two corresponding time indices to a displacementkernel method of an Analysis class.  If fullblock=1 (default), then for timegaps from one exponential block to another all times are used.  If fullblock = 0, crossblock timegaps only use the first timestep of each block.*/
 void System::displacement_loop_list(Analysis* analysis, Particle_List* particle_list, bool fullblock)const
@@ -2544,6 +2544,7 @@ void System::displacement_loop_list(Analysis* analysis, Particle_List* particle_
 	if(!frt) {analysis->list_displacementkernel(n_timegaps-1,0,n_timesteps-1);}
 }
 
+#endif
 
 /*----------------------------------------------------------------------------------*/
 
@@ -2559,11 +2560,11 @@ void System::displacement_list(Analysis* analysis, bool fullblock)const
 //	int block_timegapii;
 	//int displacement_count;
 	if(analysis->isThreadSafe() && omp_get_max_threads() > 1)
-		cout << "Analysis is thread safe, parallelizing." << endl;
+		cout << "\nAnalysis is thread safe, parallelizing." << endl;
 	else if(analysis->isThreadSafe() && omp_get_max_threads() == 1)
-		cout << "Analysis is thread safe but only one thread is permitted, running serially." << endl;
+		cout << "\nAnalysis is thread safe but only one thread is permitted, running serially." << endl;
 	else
-		cout << "Analysis is not thread safe, running serially." << endl;
+		cout << "\nAnalysis is not thread safe, running serially." << endl;
 
 	{
 		{
@@ -2643,6 +2644,8 @@ void System::displacement_list(Analysis* analysis, bool fullblock)const
 
 /*----------------------------------------------------------------------------------*/
 
+#ifdef NEVER
+
 /*Method to loop over times to produce a single displacement time for a particle list.  It passes the displacement time and two corresponding time indices to a displacementkernel method of an Analysis class.  If fullblock=1 (default), then for timegaps from one exponential block to another all times are used.  If fullblock = 0, crossblock timegaps only use the first timestep of each block.*/
 void System::displacement_loop_list(Analysis* analysis, Particle_List* particle_list, int timegapii, bool fullblock)const
 {
@@ -2699,7 +2702,7 @@ void System::displacement_loop_list(Analysis* analysis, Particle_List* particle_
 	}
 }
 
-
+#endif
 
 
 

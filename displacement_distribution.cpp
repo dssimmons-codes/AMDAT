@@ -43,48 +43,6 @@ Displacement_Distribution::Displacement_Distribution(System* sys, float pow, int
 
 
 /*----------------------------------------------------------------*/
-/*Methods to do calculation using system loops*/
-
-void Displacement_Distribution::displacementkernel(int timegap,int thisii, int nextii, Trajectory * traj)
-{
-  float msd;		//variable to temporarily hold mean-square displacement of atom
-  int index;
-
-  msd = pow(traj->distance(thisii,nextii),power);  //determine displacement to appropriate power of this atom
-
-  mean += msd/float(timeweighting);
-  square_term += msd*msd/float(timeweighting);
-
-  index = int(msd/binsize);
-  if(index>=n_bins){index=n_bins-1;}		//use top bin as slough bin
-
-  distribution[index]+=1.0/float(timeweighting);
-
-}
-
-
-void Displacement_Distribution::atomkernel(Trajectory * traj)
-{
-  system->displacement_loop(this, traj);
-  atomcount++;
-}
-
-
-
-void Displacement_Distribution::postprocess()
-{
-  int binii;
-
-  mean /= atomcount;
-  variance = square_term/atomcount-mean*mean;
-
-  for(binii=0;binii<n_bins;binii++)
-  {
-    distribution[binii]/=atomcount;
-  }
-}
-
-/*----------------------------------------------------------------*/
 /*Methods to do calculation on list of trajectories*/
 
 void Displacement_Distribution::analyze(Trajectory_List* t_list)

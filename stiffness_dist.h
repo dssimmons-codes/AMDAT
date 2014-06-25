@@ -22,8 +22,7 @@ class Stiffness_Dist: public Analysis
     float log_mean;
     float log_variance;
     float log_square_term;
-    
-    void postprocess();
+
    
     //calculation variables
     int currenttime, nexttime;
@@ -31,8 +30,6 @@ class Stiffness_Dist: public Analysis
    
   public:
     Stiffness_Dist(System* sys, int bins, float maxvalue, float t);
-    void displacementkernel(int timegap,int thisii, int nextii,Trajectory * traj);
-    void atomkernel(Trajectory * traj);
     
 
     void write(string)const;			//write distribution to file

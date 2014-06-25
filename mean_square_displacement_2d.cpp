@@ -115,33 +115,6 @@ void Mean_Square_Displacement_2D::initialize(System* sys,string orientation)
 }
 
 
-/*---------Methods to do analysis using system loops----------*/
-
-
-void Mean_Square_Displacement_2D::displacementkernel(int timegap,int thisii, int nextii, Trajectory * traj)
-{
-  msd[timegap]+=pow((traj->*distancefun)(thisii,nextii),2);
-}
-
-
-
-void Mean_Square_Displacement_2D::atomkernel(Trajectory * traj)
-{
-	system->displacement_loop(this, traj);
-	atomcount ++;
-}
-
-
-
-void Mean_Square_Displacement_2D::postprocess()
-{
-  int timeii;
-  
-  for(timeii=0;timeii<n_times;timeii++)
-  {
-   msd[timeii] /= (float(weighting[timeii])*atomcount);
-  }
-}
 
 /*--------Methods to do analysis using trajectory lists------------*/
 

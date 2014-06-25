@@ -18,15 +18,17 @@ class Fast_Particles: public Exptime_Trajectory_List
     Gaussian_Comparison * gaussian_comparison;
     int displacement_time_index;
     float mindistance;
-    int atoms_considered;		//number of atoms tested
 
   public:
     Fast_Particles();
     Fast_Particles(System * sys, Gaussian_Comparison * gc);
     void set(System *, Gaussian_Comparison *);
-    void atomkernel(Trajectory * traj);
-    void displacementkernel(int timegap,int thisii, int nextii, Trajectory * traj);
     
+    Analysis_Type what_are_you(){Analysis_Type type = fast_particles; return type;};		//virtual method to report the type of analysis
+    
+    void analyze(Trajectory_List * t_list);
+    void list_displacementkernel(int,int,int);
+    void listkernel(Trajectory *, int, int, int);
 };
 
 }

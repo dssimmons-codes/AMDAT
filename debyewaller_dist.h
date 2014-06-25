@@ -21,18 +21,14 @@ class DebyeWaller_Dist: public Analysis
     float mean;
     float variance;
     float square_term;
-   
-    void postprocess();
     
     int currenttime, nexttime;
    
    
   public:
     DebyeWaller_Dist(System* sys, int bins, float maxvalue, float t);
- 
-    void displacementkernel(int timegap,int thisii, int nextii, Trajectory * traj);
-    void atomkernel(Trajectory * traj);
     
+    Analysis_Type what_are_you(){Analysis_Type type = debyewaller_dist; return type;};		//virtual method to report the type of analysis
     
     void write(string)const;			//write distribution to file
     

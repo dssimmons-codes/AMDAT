@@ -38,50 +38,6 @@ Stiffness_Dist::Stiffness_Dist(System* sys, int bins, float maxvalue, float t)
 }
 
 
-/*------------Methods to perform analysis with system loops----------*/
-
-void Stiffness_Dist::displacementkernel(int timegap,int thisii, int nextii, Trajectory * traj)
-{
-	float stiffness;		//variable to temporarily hold mean-square displacement of atom
-	int index;
-  
-	stiffness = pow(traj->distance(thisii,nextii),-2.0);  //determine msd of this atom
-
-	mean+=stiffness/float(timeweighting);
-	square_term += stiffness*stiffness/float(timeweighting);
-	
-	log_mean+=log(stiffness)/float(timeweighting);
-	log_square_term += log(stiffness)*log(stiffness)/float(timeweighting);
-	
-	index = int(stiffness/binsize);
-	if(index>=n_bins){index=n_bins-1;}		//use top bin as slough bin
-	distribution[index]+=1.0/float(timeweighting);
-
-}
-
-
-void Stiffness_Dist::atomkernel(Trajectory * traj)
-{
-	system->displacement_loop(this, traj, time_index);
-	atomcount++;
-}
-
-
-void Stiffness_Dist::postprocess()
-{
-	int binii;
-	mean /= atomcount;
-	variance = square_term/atomcount-mean*mean;
-	
-	log_mean/=atomcount;
-	log_variance = log_square_term/atomcount-log_mean*log_mean;
-	
-	for(binii=0;binii<n_bins;binii++)
-	{
-		distribution[binii]/=atomcount;
-	}
-}
-
 /*---------Methods to perform analysis with trajectory list-------------*/
 
 
