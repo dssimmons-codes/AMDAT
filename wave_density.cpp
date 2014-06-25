@@ -31,8 +31,8 @@ Wave_Density::Wave_Density()
       density[tii][wavenumberii-first_wavenumber_index]=new complex<double> [wavevectors->vectorcount(wavenumberii)];
       for(int vectorii=0;vectorii<wavevectors->vectorcount(wavenumberii);vectorii++)
       {
-        (density[tii][wavenumberii-first_wavenumber_index][vectorii].real())=0;
-        (density[tii][wavenumberii-first_wavenumber_index][vectorii].imag())=0;
+        ((density[tii][wavenumberii-first_wavenumber_index][vectorii]).real(0));
+        ((density[tii][wavenumberii-first_wavenumber_index][vectorii]).imag(0));
       }
     }
   }
@@ -65,8 +65,8 @@ Wave_Density::Wave_Density(System * sys, const Wave_Vectors * wv, bool stf)
       density[tii][wavenumberii-first_wavenumber_index]=new complex<double> [wavevectors->vectorcount(wavenumberii)];
       for(vectorii=0;vectorii<wavevectors->vectorcount(wavenumberii);vectorii++)
       {
-        (density[tii][wavenumberii-first_wavenumber_index][vectorii].real())=0;
-        (density[tii][wavenumberii-first_wavenumber_index][vectorii].imag())=0;
+        (density[tii][wavenumberii-first_wavenumber_index][vectorii].real(0));
+        (density[tii][wavenumberii-first_wavenumber_index][vectorii].imag(0));
       }
     }
   }
@@ -103,8 +103,8 @@ Wave_Density::Wave_Density(System * sys, const Wave_Vectors * wv, int inner, int
 	    density[tii][wavenumberii-first_wavenumber_index]=new complex<double> [wavevectors->vectorcount(wavenumberii)];
       for(vectorii=0;vectorii<wavevectors->vectorcount(wavenumberii);vectorii++)
       {
-        (density[tii][wavenumberii-first_wavenumber_index][vectorii].real())=0;
-        (density[tii][wavenumberii-first_wavenumber_index][vectorii].imag())=0;
+        (density[tii][wavenumberii-first_wavenumber_index][vectorii].real(0));
+        (density[tii][wavenumberii-first_wavenumber_index][vectorii].imag(0));
       }
     }
   }
@@ -254,8 +254,8 @@ void Wave_Density::set(System * sys, const Wave_Vectors * wv)
       density[tii][wavenumberii-first_wavenumber_index]=new complex<double> [wavevectors->vectorcount(wavenumberii)];
       for(vectorii=0;vectorii<wavevectors->vectorcount(wavenumberii);vectorii++)
       {
-        (density[tii][wavenumberii-first_wavenumber_index][vectorii].real())=0;
-        (density[tii][wavenumberii-first_wavenumber_index][vectorii].imag())=0;
+        (density[tii][wavenumberii-first_wavenumber_index][vectorii].real(0));
+        (density[tii][wavenumberii-first_wavenumber_index][vectorii].imag(0));
       }
     }
   }
@@ -294,8 +294,8 @@ void Wave_Density::set(System * sys, const Wave_Vectors * wv, int inner, int out
       density[tii][wavenumberii-first_wavenumber_index]=new complex<double> [wavevectors->vectorcount(wavenumberii)];
       for(vectorii=0;vectorii<wavevectors->vectorcount(wavenumberii);vectorii++)
       {
-        (density[tii][wavenumberii-first_wavenumber_index][vectorii].real())=0;
-        (density[tii][wavenumberii-first_wavenumber_index][vectorii].imag())=0;
+        (density[tii][wavenumberii-first_wavenumber_index][vectorii].real(0));
+        (density[tii][wavenumberii-first_wavenumber_index][vectorii].imag(0));
       }
     }
   }
@@ -339,6 +339,7 @@ void Wave_Density::listkernel(Trajectory* current_trajectory)
   Coordinate coordinate;
   int vectorcount;
   float k_dot_r;
+  complex<double> tempcomplex;
 
   coordinate = current_trajectory->show_coordinate(currenttime);	//get atom coordinate at give time
 
@@ -349,8 +350,11 @@ void Wave_Density::listkernel(Trajectory* current_trajectory)
     for(vectorii=0;vectorii<vectorcount;vectorii++)		//loop over wavevectors for this wavenumber
     {
       k_dot_r = vectorlist[vectorii]&coordinate;		//calculate dot product of wave vector and present atomecoordinate
-      density[currenttime][wavenumberii-first_wavenumber_index][vectorii].real() += cos(k_dot_r);	//add contribution to real part of wave density
-      density[currenttime][wavenumberii-first_wavenumber_index][vectorii].imag() += sin(k_dot_r);	//add contribution to imaginary parto f wave density
+      tempcomplex.real(cos(k_dot_r));
+      tempcomplex.imag(sin(k_dot_r));
+      (density[currenttime][wavenumberii-first_wavenumber_index][vectorii])+=tempcomplex;
+      //density[currenttime][wavenumberii-first_wavenumber_index][vectorii].real() += cos(k_dot_r);	//add contribution to real part of wave density
+      //density[currenttime][wavenumberii-first_wavenumber_index][vectorii].imag() += sin(k_dot_r);	//add contribution to imaginary parto f wave density
 //        if(tii==1&&wavenumberii==25&&molecule_index==0&&atom_index==0){cout<<k_dot_r<<"\n";}
     }
   }

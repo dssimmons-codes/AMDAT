@@ -43,7 +43,7 @@ class Structure_Factor:public Analysis
     void analyze_wave_density(Trajectory_List * t_list);
     void listkernel(Trajectory* current_trajectory);
     void write(string filename)const;
-    bool isThreadSafe(){return true;};    
+    //bool isThreadSafe(){return true;};    
 };
 
 }

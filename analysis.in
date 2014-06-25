@@ -9,10 +9,13 @@ polymer 50
 create_list all
 all
 
-ngp ngp_threads.dat
+msd msd.dat
 list all
 
 exit
+
+ngp ngp_threads.dat
+list all
 
 vhs vhslist.dat 2 100
 list all
@@ -39,10 +42,6 @@ write_list_trajectory COM com.xyz
 
 exit
 
-
-
-msd msd.dat
-list all
 
 isfs isfs.dat 24 24 xyz 0 0
 list all

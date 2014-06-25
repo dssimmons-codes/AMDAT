@@ -38,10 +38,10 @@ Structure_Factor::Structure_Factor()
     wavedensity2[wavenumberii]= new complex<float> [vectorcount];
     for(int wavevectorii=0;wavevectorii<vectorcount;wavevectorii++)		//loop over wavevectors for this wavenumber
     {
-      wavedensity1[wavenumberii][wavevectorii].real() = 0;
-      wavedensity1[wavenumberii][wavevectorii].imag() = 0;
-      wavedensity2[wavenumberii][wavevectorii].real() = 0;
-      wavedensity2[wavenumberii][wavevectorii].imag() = 0;
+      wavedensity1[wavenumberii][wavevectorii].real(0);
+      wavedensity1[wavenumberii][wavevectorii].imag(0);
+      wavedensity2[wavenumberii][wavevectorii].real(0);
+      wavedensity2[wavenumberii][wavevectorii].imag(0);
     }
   }
 }
@@ -70,10 +70,10 @@ Structure_Factor::Structure_Factor(System* sys, const Wave_Vectors * wv, bool fb
     wavedensity2[wavenumberii]= new complex<float> [vectorcount];
     for(int wavevectorii=0;wavevectorii<vectorcount;wavevectorii++)		//loop over wavevectors for this wavenumber
     {
-      wavedensity1[wavenumberii][wavevectorii].real() = 0;
-      wavedensity1[wavenumberii][wavevectorii].imag() = 0;
-      wavedensity2[wavenumberii][wavevectorii].real() = 0;
-      wavedensity2[wavenumberii][wavevectorii].imag() = 0;
+      wavedensity1[wavenumberii][wavevectorii].real(0);
+      wavedensity1[wavenumberii][wavevectorii].imag(0);
+      wavedensity2[wavenumberii][wavevectorii].real(0);
+      wavedensity2[wavenumberii][wavevectorii].imag(0);
     }
   }
 }
@@ -207,10 +207,10 @@ void Structure_Factor::analyze(Trajectory_List * t_list1, Trajectory_List * t_li
       vectorcount = wavevectors->vectorcount(wavenumberii);
       for(wavevectorii=0;wavevectorii<vectorcount;wavevectorii++)		//loop over wavevectors for this wavenumber
       {
-        wavedensity1[wavenumberii][wavevectorii].real() = 0;
-        wavedensity1[wavenumberii][wavevectorii].imag() = 0;
-        wavedensity2[wavenumberii][wavevectorii].real() = 0;
-        wavedensity2[wavenumberii][wavevectorii].imag() = 0;
+        wavedensity1[wavenumberii][wavevectorii].real(0);
+        wavedensity1[wavenumberii][wavevectorii].imag(0);
+        wavedensity2[wavenumberii][wavevectorii].real(0);
+        wavedensity2[wavenumberii][wavevectorii].imag(0);
       }
     }
 
@@ -284,8 +284,8 @@ void Structure_Factor::analyze(Trajectory_List * t_list1)
       vectorcount = wavevectors->vectorcount(wavenumberii);
       for(int wavevectorii=0;wavevectorii<vectorcount;wavevectorii++)		//loop over wavevectors for this wavenumber
       {
-        wavedensity1[wavenumberii][wavevectorii].real() = 0;
-        wavedensity1[wavenumberii][wavevectorii].imag() = 0;
+        wavedensity1[wavenumberii][wavevectorii].real(0);
+        wavedensity1[wavenumberii][wavevectorii].imag(0);
       }
     }
 
@@ -330,6 +330,7 @@ void Structure_Factor::listkernel(Trajectory* current_trajectory)
   Coordinate coordinate;
   int vectorcount;
   float k_dot_r;
+  complex<double> tempcomplex;
 
   coordinate = current_trajectory->show_coordinate(currenttime);	//get atom coordinate at give time // the currenttime reference is... actually probably ok.
   for(wavenumberii=0;wavenumberii<n_wavenumbers;wavenumberii++)		//loop over wavenumbers for which wavedensity will be calculated
@@ -339,10 +340,14 @@ void Structure_Factor::listkernel(Trajectory* current_trajectory)
     for(vectorii=0;vectorii<vectorcount;vectorii++)		//loop over wavevectors for this wavenumber
     {
       k_dot_r = vectorlist[vectorii]&coordinate;		//calculate dot product of wave vector and present atomecoordinate
-	  #pragma omp atomic
-      current_wavedensity[wavenumberii][vectorii].real() += cos(k_dot_r);	//add contribution to real part of wave density // This COULD break paralleliation. Might need to omp flush the variable?
-	  #pragma omp atomic
-      current_wavedensity[wavenumberii][vectorii].imag() += sin(k_dot_r);	//add contribution to imaginary part of wave density
+      tempcomplex.real(cos(k_dot_r));
+      tempcomplex.imag(sin(k_dot_r));
+//       #pragma omp atomic
+       
+       current_wavedensity[wavenumberii][vectorii] += tempcomplex;
+      //current_wavedensity[wavenumberii][vectorii].real() += cos(k_dot_r);	//add contribution to real part of wave density // This COULD break paralleliation. Might need to omp flush the variable?
+//      #pragma omp atomic
+      //current_wavedensity[wavenumberii][vectorii].imag() += sin(k_dot_r);	//add contribution to imaginary part of wave density
     }
   }
 }

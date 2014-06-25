@@ -1,4 +1,4 @@
-CXX=g++
+CXX=g++ -std=c++0x -std=gnu++0x
 ##Normal flags
 CFLAGS=-c -fopenmp #-O2
 CFLAGSmain= -fopenmp# -O2

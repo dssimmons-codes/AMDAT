@@ -14,12 +14,9 @@ Boolean_List::Boolean_List(System const * sys)
 
   system = sys;
 
-  included = new bool [system->show_n_trajectories()];
-
-  for(trajii=0;trajii<system->show_n_trajectories();trajii++)
-  {
-    included[trajii]=0;
-  }
+  included.resize(system->show_n_trajectories());
+  
+  system->add_boolean_list(this);
 }
 
 
@@ -33,17 +30,20 @@ Boolean_List::Boolean_List(System const * sys, int * inc, int n_included)
 
   system = sys;
 
-  included = new bool [system->show_n_trajectories()];
+  //included = new bool [system->show_n_trajectories()];
+  included.resize(system->show_n_trajectories());
 
-  for(trajii=0;trajii<system->show_n_trajectories();trajii++)
-  {
-    included[trajii]=0;
-  }
+  //for(trajii=0;trajii<system->show_n_trajectories();trajii++)
+  //{
+  //  included[trajii]=0;
+  //}
   
   for(trajii=0;trajii<n_included;trajii++)
   {
     included[inc[trajii]]=1;
   }
+  
+  system->add_boolean_list(this);
   
 }
 
@@ -54,7 +54,7 @@ Boolean_List::Boolean_List()
 
   system = 0;
 
-  included = new bool [0];
+  //included = new bool [0];
 
 }
 
@@ -62,11 +62,14 @@ Boolean_List::Boolean_List()
 Boolean_List::Boolean_List(const Boolean_List & copy)
 {
   system = copy.system;
-  included = new bool [system->show_n_trajectories()];
+  //included = new bool [system->show_n_trajectories()];
+  included.resize(system->show_n_trajectories());
   for(int trajii=0;trajii<system->show_n_trajectories();trajii++)
   {
     included[trajii]=copy.included[trajii];
   }
+  
+  system->add_boolean_list(this);
 }
 /*End New MEM*/
 
@@ -75,7 +78,7 @@ Boolean_List::Boolean_List(const Boolean_List & copy)
 /*NEW SECTION DSS*/
 Boolean_List::~Boolean_List()
 {
-  delete [] included;
+  system->remove_boolean_list(this);
 }
 /*END NEW SECTION*/
 
@@ -87,8 +90,9 @@ Boolean_List Boolean_List::operator= (const Boolean_List & copy)
    if(this!=&copy)
    {
      system = copy.system;
-     delete [] included;
-     included = new bool [system->show_n_trajectories()];
+     //delete [] included;
+     //included = new bool [system->show_n_trajectories()];
+     included.resize(system->show_n_trajectories());
      for(int trajii=0;trajii<system->show_n_trajectories();trajii++)
      {
        included[trajii]=copy.included[trajii];
@@ -100,32 +104,32 @@ Boolean_List Boolean_List::operator= (const Boolean_List & copy)
 
 void Boolean_List::set(System const * sys)
 {
-  delete [] included;
+  //delete [] included;
 
   system = sys;
 
-  included = new bool [system->show_n_trajectories()];
-
-  for(int trajii=0;trajii<system->show_n_trajectories();trajii++)
-  {
-    included[trajii]=0;
-  }
+  //included = new bool [system->show_n_trajectories()];
+  included.resize(system->show_n_trajectories());
+  //for(int trajii=0;trajii<system->show_n_trajectories();trajii++)
+  //{
+ //   included[trajii]=0;
+  //}
 }
 
 
 void Boolean_List::set(System const * sys, int * inc, int n_included)
 {
   int trajii=0;
-  delete [] included;
+//  delete [] included;
 
   system = sys;
 
-  included = new bool [system->show_n_trajectories()];
-
-  for(trajii=0;trajii<system->show_n_trajectories();trajii++)
-  {
-    included[trajii]=0;
-  }
+  //included = new bool [system->show_n_trajectories()];
+  included.resize(system->show_n_trajectories());
+//  for(trajii=0;trajii<system->show_n_trajectories();trajii++)
+//  {
+//    included[trajii]=0;
+//  }
   
   for(trajii=0;trajii<n_included;trajii++)
   {

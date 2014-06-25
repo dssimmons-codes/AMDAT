@@ -10,6 +10,7 @@
 #include <string>
 #include "trajectory.h"
 #include <vector>
+#include "boolean_list.h"
 namespace std {
 	
 class System
@@ -36,6 +37,10 @@ class System
     float exp_base;				//base of exponential scaling
     bool frt;					//controls whether first time step is zero or one; this has very large implications on the way that displacements are calculated throughout the code
     int first_exponent;				//set value of first exponent in exponential timescheme.  This is usually either zero or one, and it not count the zeroth time, if one exists.
+    unordered_set<Boolean_List*> bool_lists;	//stores a table of all boolean_lists in existence associated with this system to allow for their size to be updated if additional trajectories are created.
+    
+    int add_boolean_list(Boolean_List * new_bool_list){bool_lists.insert(new_bool_list);};
+    int remove_boolean_list(Boolean_List * bool_list){bool_lists.erase(bool_list);};
     
     Molecule ** molecules;			//array of molecules in rows by type
     
