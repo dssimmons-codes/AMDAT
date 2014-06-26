@@ -44,7 +44,7 @@ class Trajectory
     Trajectory(int,Coordinate *);	//constructor to instantiate coordinate array with full definition
    ~Trajectory();			//destructor
     
-    virtual void set(int,int,int m=1);		//change number of timesteps and reallocate memory accordingly
+    virtual void set(int,int,float m=1);		//change number of timesteps and reallocate memory accordingly
     virtual void set(int,int,Coordinate*,int);	//method to fully define object, including coordinate list
     
     void set(const Coordinate &, int);		//method to set single coordinate in coordinate list

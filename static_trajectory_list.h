@@ -19,8 +19,8 @@ class Static_Trajectory_List: public Trajectory_List, public Analysis
 
   public:
     Static_Trajectory_List();
-    Static_Trajectory_List(const System*syst, int capacity=0);
-    void reset(const System*syst, int capacity=0);
+    Static_Trajectory_List(System*syst, int capacity=0);
+    void reset(System*syst, int capacity=0);
 
     void atomkernel(Trajectory * traj);
 };

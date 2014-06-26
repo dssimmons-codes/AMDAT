@@ -8,7 +8,7 @@
 
 using namespace std;
 
-Boolean_List::Boolean_List(System const * sys)
+Boolean_List::Boolean_List(System * sys)
 {
   int trajii;
 
@@ -20,7 +20,7 @@ Boolean_List::Boolean_List(System const * sys)
 }
 
 
-Boolean_List::Boolean_List(System const * sys, int * inc, int n_included)
+Boolean_List::Boolean_List(System * sys, int * inc, int n_included)
 {
    /**Create boolean list from list of trajectory IDs of included trajectories
     * @author David Simmons
@@ -78,7 +78,7 @@ Boolean_List::Boolean_List(const Boolean_List & copy)
 /*NEW SECTION DSS*/
 Boolean_List::~Boolean_List()
 {
-  system->remove_boolean_list(this);
+  if(system!=0){system->remove_boolean_list(this);}
 }
 /*END NEW SECTION*/
 
@@ -102,7 +102,7 @@ Boolean_List Boolean_List::operator= (const Boolean_List & copy)
 }
 
 
-void Boolean_List::set(System const * sys)
+void Boolean_List::set(System * sys)
 {
   //delete [] included;
 
@@ -117,7 +117,7 @@ void Boolean_List::set(System const * sys)
 }
 
 
-void Boolean_List::set(System const * sys, int * inc, int n_included)
+void Boolean_List::set(System * sys, int * inc, int n_included)
 {
   int trajii=0;
 //  delete [] included;

@@ -37,7 +37,7 @@ Trajectory_List::Trajectory_List(int timecount, int cap)
 
 }
 
-Trajectory_List::Trajectory_List(const System* syst, int timecount, int cap, Boolean_List * boollist, int*time_conv)
+Trajectory_List::Trajectory_List(System* syst, int timecount, int cap, Boolean_List * boollist, int*time_conv)
 {
   sys=syst;
   capacity=cap;
@@ -323,7 +323,7 @@ void Trajectory_List::trajlist_from_boollist()
 
 /*Method to set trajectory_list based on a Boolean_List array*/
 
-void Trajectory_List::set(const System* syst, int timecount, int cap, Boolean_List * boollist, int*time_conv)
+void Trajectory_List::set(System* syst, int timecount, int cap, Boolean_List * boollist, int*time_conv)
 {
 
   sys=syst;

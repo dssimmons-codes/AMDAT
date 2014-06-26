@@ -95,10 +95,6 @@ class Analysis
     
     /*Methods for employing the loops implemented in class System over various sets of atoms*/
     /*TODO: MOVE TO TRAJECTORY LISTS AND REMOVE FROM HERE*/
-    void all_moleculecom();
-    int species_moleculecom(){return 1;};
-    void species_moleculecom(int species_index);
-    void species_moleculecom(string species_name);
     int atom_species(){return 3;};
     void atom_species(int species_index, int atom_type, int atom_index);
     void atom_species(string species_name, string atomtype_name, int atom_index);

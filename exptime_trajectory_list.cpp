@@ -25,7 +25,7 @@ Exptime_Trajectory_List::Exptime_Trajectory_List()
 
 }
 
-Exptime_Trajectory_List::Exptime_Trajectory_List(const System* syst, int capacity)
+Exptime_Trajectory_List::Exptime_Trajectory_List(System* syst, int capacity)
 {
   int timeii;
 
@@ -54,7 +54,7 @@ Exptime_Trajectory_List::Exptime_Trajectory_List(const System* syst, int capacit
 
 
 
-void Exptime_Trajectory_List::reset(const System* syst, int cap)
+void Exptime_Trajectory_List::reset(System* syst, int cap)
 {
   int timeii;
 

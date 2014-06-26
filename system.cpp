@@ -144,10 +144,10 @@ System::System(vector<string> file_in, bool ensemble)
   total_molecules=moleculecount;	//set total number of molecules in system
   moleculecount=0;
 
-  total_trajectories=total_molecules+n_atoms+extra_trajectories;
+  total_trajectories=n_atoms+extra_trajectories;
   atomlist = new Atom_Trajectory*[n_atoms];
   moleculelist = new Molecule*[total_molecules];
-  trajectorylist = new Trajectory*[total_trajectories];
+  trajectorylist.resize(total_trajectories);
 
 
   atomcount=0;
@@ -176,25 +176,12 @@ System::System(vector<string> file_in, bool ensemble)
 	  for(moleculeii=0;moleculeii<n_molecules[speciesii];moleculeii++)
 	  {
 		moleculelist[moleculecount]=&molecules[speciesii][moleculeii];	//add molecule to master molecule list
-		moleculelist[moleculecount]->set_type(n_atomtypes+speciesii);
-		trajectorylist[moleculecount+atomcount]=moleculelist[moleculecount];	//add molecule to master trajectory list
 		moleculelist[moleculecount]->set_moleculeID(moleculecount);		//set atom id in atom_trajectory object to correspond to position in master atom list
-		moleculelist[moleculecount]->set_trajectory_ID(moleculecount+atomcount);	//set trajectory id in atom_trajectory object to correspond to position in master trajectory list
 		moleculelist[moleculecount]->set_species(speciesii);		//set internal register of species of molecule
 		moleculelist[moleculecount]->ID_to_atoms();	//Pass unique ID of molecule down to constituent atoms
 		moleculecount++;
 
 	  }
-  }
-
-  /*Calculate molecules centers of mass*/
-  cout << "\nGenerating molecule center of mass trajectories."<<endl;
-  for(speciesii=0;speciesii<n_species;speciesii++)
-  {
-    for(moleculeii=0;moleculeii<n_molecules[speciesii];moleculeii++)
-    {
-      molecules[speciesii][moleculeii].calculate_center_of_mass(box_size,box_boundary);
-    }
   }
 
 
@@ -2167,7 +2154,7 @@ void System::create_molecules(int ** natoms)
   molecules = new Molecule * [n_species];
   for(speciesii=0;speciesii<n_species;speciesii++)
   {
-    molecules[speciesii] = new Molecule[n_molecules[speciesii]];
+    molecules[speciesii] = new Molecule [n_molecules[speciesii]];
     for(moleculeii=0; moleculeii<n_molecules[speciesii]; moleculeii++)	//create array of molecule objects
     {
       (molecules[speciesii][moleculeii]).set(n_atomtypes,natoms[speciesii],n_timesteps);	//tell molecule object how to create atom array
@@ -2904,37 +2891,6 @@ int System::timegap_weighting(int timegap, bool fullblock) const
 /*------------------------------------------------------------*/
 
 
-/*-----------------------------------------------------------------------------------*/
-/*loop over centers of mass of all molecules in system*/
-void System::loop_all_moleculecom(Analysis* analysis)const
-{
-  int speciesii;
-  int moleculeii;
-  Trajectory * traj;
-  for(speciesii=0;speciesii<n_species;speciesii++)
-  {
-    for(moleculeii=0;moleculeii<n_molecules[speciesii];moleculeii++)
-    {
-      print_progress(moleculeii+1,n_molecules[speciesii]);
-      traj = &molecules[speciesii][moleculeii];
-      analysis->atomkernel(traj);
-    }
-  }
-}
-
-
-/*loop over centers of mass of all molecules of a species*/
-void System::loop_species_moleculecom(Analysis* analysis, int species_index)const
-{
-  int moleculeii;
-  Trajectory * traj;
-  for(moleculeii=0;moleculeii<n_molecules[species_index];moleculeii++)
-  {
-    print_progress(moleculeii+1,n_molecules[species_index]);
-    traj = &molecules[species_index][moleculeii];
-    analysis->atomkernel(traj);
-  }
-}
 
 
 /*loop over all molecules of a species for an atom at a given position*/
@@ -3251,4 +3207,174 @@ void System::write_starr()const
 void System::write_single_particle(int trajii, string filename)const
 {
 	trajectorylist[trajii]->write(filename);
+}
+
+
+
+
+
+/*-----------------------------------------------------------------------------------*/
+/*-----------Methods to hande multibodies and multibody_sets-------------------------*/
+/*-----------------------------------------------------------------------------------*/
+
+
+
+/*Method to create multibody_sets based on string input*/
+Multibody_Set* System::create_multibody_set (int n_args, string* args)
+{
+  Multibody_Set * multibodysetpointer;
+  int n_bodies, speciesindex, atomtypeindex;
+  int* type;
+  int* index;
+  
+  
+  
+  if(args[2] == "all_molecule")
+  {
+    if(n_args==3)
+    {
+      multibodysetpointer=create_multibody_set();
+    }
+    else
+    {
+      cout<<"\nError:incorrect number of arguments for multibody_set type all_molecule. 3 expected.";
+      exit(1);
+    }
+  }
+  else if(args[2] == "species_molecule")
+  {
+    if(n_args==4)
+    {
+      speciesindex = show_species_index(args[3]);
+      multibodysetpointer=create_multibody_set();
+    }
+    else
+    {
+      cout<<"\nError:incorrect number of arguments for multibody_set type species_molecule. 4 expected.";
+      exit(1);
+    }
+  }
+  else if(args [2] == "species_type")
+  {
+    if(n_args==5)
+    {
+      speciesindex = show_species_index(args[3]);
+      atomtypeindex = show_atomtype_index(args[4]);
+      multibodysetpointer=create_multibody_set(speciesindex,atomtypeindex);
+    }
+    else
+    {
+      cout<<"\nError:incorrect number of arguments for multibody_set type species_type. 5 expected.";
+      exit(1);
+    }
+    
+  }
+  else if(args [2] == "species_atomlist")
+  {
+    if(n_args>5&&n_args/2==int(float(n_args)/2.0+.51))	//check that there are enough arguments and an even number of arguments
+    {
+      n_bodies = (n_args-4)/2;
+      type = new int [n_bodies];
+      speciesindex = show_species_index(args[3]);
+      index = new int [n_bodies];
+      for(int bodyii=0;bodyii<n_bodies;bodyii++)
+      {
+	type[bodyii] = show_atomtype_index(args[bodyii*2+5]);
+	index[bodyii] = atoi(args[bodyii*2+6].c_str());
+      }
+      multibodysetpointer=create_multibody_set(speciesindex,n_bodies,type,index);
+    }
+    else
+    {
+      cout<<"\nError:incorrect number of arguments for multibody_set type species_type. An even number 6 or greater is expected.";
+      exit(1);
+    }
+  }
+  else
+  {
+    cout << "\nError: Create_Multibodies keyword " << args[2] << " does not exist. Options are all_molecules, species_molecules, species_type, and species_atomlist.";
+    exit(1);
+  }
+  
+  return multibodysetpointer;
+}
+
+//creates a multibody_set containing a multibody for each molecule in the system, with each multibody containing all the trajectories in the corresponding molecule
+Multibody_Set* System::create_multibody_set()
+{
+  int speciesii,moleculeii;
+  int multibodyii=0;
+  int newset_index = multibody_sets.size(); //get index of new multibody set
+  
+  multibody_sets.emplace_back(total_molecules);		//create new multibody set with number of multibodies equal to number of molecules
+  
+  for(speciesii=0;speciesii<n_species;speciesii++)
+  {
+    for(moleculeii=0;moleculeii<n_molecules[speciesii];moleculeii++)
+    {
+      multibody_sets[newset_index].set_multibody(multibodyii,molecules[speciesii][moleculeii].create_multibody());	//request molecule to create multibody and copy it to multibody_set
+      multibodyii++;		//increment count of multibodeis created
+    }
+  }
+  
+  return &(multibody_sets[newset_index]);		//return pointer to new set
+}
+
+//creates a multibody_set containing a multibody for each molecule of a given species, with each multibody containing all the trajectories in the corresponding molecule
+Multibody_Set* System::create_multibody_set(int speciesii)
+{
+  int moleculeii;
+  int multibodyii=0;
+  int newset_index = multibody_sets.size(); //get index of new multibody set
+  
+  multibody_sets.emplace_back(n_molecules[speciesii]);		//create new multibody set with number of multibodies equal to number of molecules
+  
+    for(moleculeii=0;moleculeii<n_molecules[speciesii];moleculeii++)
+    {
+      multibody_sets[newset_index].set_multibody(multibodyii,molecules[speciesii][moleculeii].create_multibody());	//request molecule to create multibody and copy it to multibody_set
+      multibodyii++;		//increment count of multibodeis created
+    }
+
+  return &(multibody_sets[newset_index]);		//return pointer to new set
+}
+
+
+
+
+//creates a multibody_set containing a multibody for each molecule of a given species, with each multibody containing all the trajectories of a specified type in the corresponding molecule
+Multibody_Set* System::create_multibody_set(int speciesii, int type)
+{
+  int moleculeii;
+  int multibodyii=0;
+  int newset_index = multibody_sets.size(); //get index of new multibody set
+  
+  multibody_sets.emplace_back(n_molecules[speciesii]);		//create new multibody set with number of multibodies equal to number of molecules
+  
+    for(moleculeii=0;moleculeii<n_molecules[speciesii];moleculeii++)
+    {
+      multibody_sets[newset_index].set_multibody(multibodyii,molecules[speciesii][moleculeii].create_multibody(type));	//request molecule to create multibody and copy it to multibody_set
+      multibodyii++;		//increment count of multibodeis created
+    }
+
+  return &(multibody_sets[newset_index]);		//return pointer to new set
+}
+
+
+
+//creates a multibody_set containing a multibody for each molecule of a given species, with each multibody containing n_trajectories specified by arrays providing the type and index of each trajectory.
+Multibody_Set* System::create_multibody_set(int speciesii, int n_bodies, int * typeii, int * index)
+{
+  int moleculeii;
+  int multibodyii=0;
+  int newset_index = multibody_sets.size(); //get index of new multibody set
+  
+  multibody_sets.emplace_back(n_molecules[speciesii]);		//create new multibody set with number of multibodies equal to number of molecules
+  
+    for(moleculeii=0;moleculeii<n_molecules[speciesii];moleculeii++)
+    {
+      multibody_sets[newset_index].set_multibody(multibodyii,molecules[speciesii][moleculeii].create_multibody(n_bodies, typeii, index));	//request molecule to create multibody and copy it to multibody_set
+      multibodyii++;		//increment count of multibodeis created
+    }
+
+  return &(multibody_sets[newset_index]);		//return pointer to new set
 }

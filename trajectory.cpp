@@ -82,7 +82,7 @@ void Trajectory::clear_memory()
 /*--------------------------------------------------------------------------------------*/
 
 /*Method to define trajectory size and allocate memory appropriately*/
-void Trajectory::set(int atom_type,int timesteps, int m)
+void Trajectory::set(int atom_type,int timesteps, float m)
 {
 	clear_memory();					//clear memory assigned to existing arrays so they may be reassigned
 

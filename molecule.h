@@ -9,10 +9,11 @@
 #include "atom_trajectory.h"
 #include "coordinate.h"
 #include "trajectory.h"
+#include "multibody.h"
 
 namespace std {
 
-class Molecule:public Trajectory
+class Molecule
 {
     int total_atoms;
     int n_atomtypes;
@@ -20,12 +21,12 @@ class Molecule:public Trajectory
     
     int moleculeID;
     int species;		//stores species of molecule
+    int n_timesteps;
     
     bool atoms_unwrapped;
     
     Atom_Trajectory** atoms;
     void clear_memory();			//method to clear memory allocated to arrays so that they may be recreated
-    void calculate_mass();
     
   public:
     Molecule(int types=0,int ts=0);
@@ -38,15 +39,11 @@ class Molecule:public Trajectory
     Atom_Trajectory show_atom(int,int);	//method to return atom_trajectory object in molecule
     int unwrap_atoms(const Coordinate &);			//unwrap all atom trajectories (only works w/ constant volume)
     int wrap_atoms(const Coordinate *, Coordinate **);				//wrap all atom trajectories				
-    void calculate_center_of_mass(const Coordinate *, Coordinate**);
-    void calculate_center_of_mass();
     
     Coordinate show_unwrapped(int atom_type, int atom_index, int timestep)const;	//show unwrapped coordinate of a given atom at a given time
     
     Atom_Trajectory* show_atom_trajectory(int, int);
     float atom_distance(int,int,int,int);
-    
-    float gyration_radius();
     
     void set_coordinate(int, int, const Coordinate &, int);
     void set_unwrapped(int, int, const Coordinate &, int);
@@ -56,6 +53,10 @@ class Molecule:public Trajectory
     int show_species()const{return species;};		//return species index
     
     void ID_to_atoms();		//Pass unique ID of molecule down to constituent atoms
+    
+    Multibody create_multibody() const;	//return multibody consisting of all atoms in molecule
+    Multibody create_multibody(int typeii) const;	//return multibody consisting of all atoms of type typeii in molecule
+    Multibody create_multibody(int n_bodies, int * typeii, int * index) const; //return multibody consisting of atoms specified by a list of types and indices
 };
 
 }

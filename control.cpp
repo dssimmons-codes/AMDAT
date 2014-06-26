@@ -39,6 +39,7 @@
 #include "vector_autocorrelation.h"
 #include "trajectory_list_decay.h"
 #include "mean_displacement.h"
+#include "multibody_set.h"
 #include "version.h"
 
 #include "error.h"
@@ -189,6 +190,10 @@ int Control::execute_commands(int iIndex, int fIndex)
     {
       create_list();
     }
+    else if (command == "create_multibodies")
+    {
+      create_multibodies();
+    }
     else if (command == "msd")
     {
       msd();
@@ -239,8 +244,6 @@ int Control::execute_commands(int iIndex, int fIndex)
     {isf();}
     else if (command == "isf_list")
     {isf_list();}
-    else if(command == "gyration_radius")
-    {gyr_rad();}
     else if(command == "u2dist")
     {u2dist();}
     else if(command == "stiffness_dist")
@@ -1298,6 +1301,19 @@ void Control::create_list()
 }
 
 
+/*--------------------------------------------------------------------------------*/
+void Control::create_multibodies()
+{
+  string multibody_list_name;
+  Multibody_Set* multibody_set_pointer;
+  
+  multibody_list_name = args[1];
+  
+  multibody_set_pointer = analyte->create_multibody_set (n_args, args);
+}
+
+
+
 
 /*--------------------------------------------------------------------------------*/
 
@@ -1945,33 +1961,6 @@ void Control::isfs()
   cout << "\nSelf Intermediate Scattering Function calculated in " << finish-start<<" seconds.\n";cout.flush();
 }
 
-
-/*--------------------------------------------------------------------------------*/
-
-
-
-void Control::gyr_rad()
-{
-  int speciesii, moleculeii;
-  float radius;
-  string filename;
-  int expected = 4;
-
-  argcheck(expected);
-  filename = args[1];
-  speciesii = atoi(args[2].c_str());
-  moleculeii = atoi(args[3].c_str());
-
-  //analyte->unwrap();		//should already be unwrapped
-  radius = analyte->gyration_radius(speciesii,moleculeii);
-  ofstream output(filename.c_str());
-  output << radius;
-  output.close();
-}
-
-
-
-/*--------------------------------------------------------------------------------*/
 
 
 /*--------------------------------------------------------------------------------*/

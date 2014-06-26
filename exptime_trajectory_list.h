@@ -19,8 +19,8 @@ class Exptime_Trajectory_List: public Trajectory_List, public Analysis
 
   public:
     Exptime_Trajectory_List();
-    Exptime_Trajectory_List(const System*syst, int capacity=0);
-    void reset(const System*syst, int capacity=0);
+    Exptime_Trajectory_List(System*syst, int capacity=0);
+    void reset(System*syst, int capacity=0);
 
     void write_count(string)const;
     

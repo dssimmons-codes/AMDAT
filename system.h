@@ -4,6 +4,7 @@
 
 #ifndef SYSTEM
 #define SYSTEM
+#include <unordered_set>
 #include "molecule.h"
 #include <fstream>
 #include "analysis.h"
@@ -11,6 +12,7 @@
 #include "trajectory.h"
 #include <vector>
 #include "boolean_list.h"
+#include "multibody_set.h"
 namespace std {
 	
 class System
@@ -39,14 +41,16 @@ class System
     int first_exponent;				//set value of first exponent in exponential timescheme.  This is usually either zero or one, and it not count the zeroth time, if one exists.
     unordered_set<Boolean_List*> bool_lists;	//stores a table of all boolean_lists in existence associated with this system to allow for their size to be updated if additional trajectories are created.
     
-    int add_boolean_list(Boolean_List * new_bool_list){bool_lists.insert(new_bool_list);};
-    int remove_boolean_list(Boolean_List * bool_list){bool_lists.erase(bool_list);};
+    
     
     Molecule ** molecules;			//array of molecules in rows by type
     
     Atom_Trajectory ** atomlist;		//direct list of trajectories by atomID
     Molecule ** moleculelist;			//direct list of molecules by molecule ID
-    Trajectory ** trajectorylist;		//direct list of trajectories by trajectory ID
+    vector <Trajectory *> trajectorylist;		//direct list of trajectories by trajectory ID
+		   
+    int n_multibodies;		   
+    vector <Multibody_Set> multibody_sets;	//store sets of multibodies defined by user
 		   
     bool unwrapped;				//are unwrapped coordinates defined?
     bool wrapped;				//are wrapped coordinate defined?
@@ -91,12 +95,25 @@ class System
     void set_limit(int limit){displacement_limit=limit;};	//set limit on number of time points looped over for displacement times within linear time scaling
     void boxify();						//method to check every coordinate to see if it is within the system boundaries; if not, it treats it as an image coordinate and replaces it with the 'real' coordinate
     
+    
+    int add_boolean_list(Boolean_List * new_bool_list){bool_lists.insert(new_bool_list);};
+    int remove_boolean_list(Boolean_List * bool_list){bool_lists.erase(bool_list);};
+    
+    /*------Methods to handle multibodies and multibody_sets--------*/
+    Multibody_Set* create_multibody_set(int n_args, string * args);
+    Multibody_Set* create_multibody_set();			//creates a multibody_set containing a multibody for each molecule in the system, with each multibody containing all the trajectories in the corresponding molecule
+    Multibody_Set* create_multibody_set(int speciesii);	//creates a multibody_set containing a multibody for each molecule of a given species, with each multibody containing all the trajectories in the corresponding molecule
+    Multibody_Set* create_multibody_set(int speciesii, int type);//creates a multibody_set containing a multibody for each molecule of a given species, with each multibody containing all the trajectories of a specified type in the corresponding molecule
+    Multibody_Set* create_multibody_set(int speciesii, int n_trajectories, int * type, int * index);//creates a multibody_set containing a multibody for each molecule of a given species, with each multibody containing n_trajectories specified by arrays providing the type and index of each trajectory.
+    
     /*--------Methods to return information about box/system---------*/
     Coordinate size()const{return box_size[0];};		//return size of system;
     Coordinate size(int time){return box_size[time];};
+    const Coordinate* time_dependent_size()const{return box_size;};
     Coordinate min_box_dimensions()const;
     const Coordinate* boundaries()const{return box_boundary[0];};		//return boundaries of system
     const Coordinate * boundaries (int time) const {return box_boundary[time];};
+     Coordinate ** time_dependent_boundaries() const {return box_boundary;};
     float show_rho()const{return rho[0];};
     float show_rho(int timeii)const{return rho[timeii];};
     
@@ -112,7 +129,6 @@ class System
     int show_species_index(string) const;				
     int show_atomtype_index(string) const;
     Coordinate show_unwrapped(int species_index, int molecule_index, int atom_type, int atom_index, int timestep) const;	//returns a single unwrapped coordinate of a given atom
-    float gyration_radius(int speciesii, int moleculeii)const{return molecules[speciesii][moleculeii].gyration_radius();}	//return gyration radius of molecule
     int show_n_atomtypes()const{return n_atomtypes;};
     
     
@@ -149,7 +165,6 @@ class System
     void displacement_list(Analysis*, int timegap, int firstblock, int lastblock, bool fullblock=0)const;
     
     /*Methods to perform analyses on subsets of atoms in system*/
-    void loop_all_moleculecom(Analysis* analysis)const;
     void loop_species_moleculecom(Analysis* analysis, int species_index)const;
     void loop_atom_species(Analysis* analysis,int species_index, int atomtype, int atomindex)const;
     void loop_type_molecule(Analysis* analysis, int species_index, int molecule, int atomtype)const;

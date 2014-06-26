@@ -26,7 +26,7 @@ Static_Trajectory_List::Static_Trajectory_List()
 	time_conversion=new int [0];
 }
 
-Static_Trajectory_List::Static_Trajectory_List(const System* syst, int capacity)
+Static_Trajectory_List::Static_Trajectory_List(System* syst, int capacity)
 {
 
 	sys=syst;
@@ -54,7 +54,7 @@ Static_Trajectory_List::Static_Trajectory_List(const System* syst, int capacity)
 
 
 
-void Static_Trajectory_List::reset(const System* syst, int capacity)
+void Static_Trajectory_List::reset(System* syst, int capacity)
 {
 	sys=syst;
 	system=const_cast<System*>(sys);

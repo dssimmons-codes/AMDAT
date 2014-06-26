@@ -17,7 +17,7 @@ namespace std{
 
 class Trajectory_List_Bins
 {
-    System const * system;
+    System * system;
     int n_times;                                        //number of system times;
     int n_trajs;                                        //number of total binned trajectories
     int n_xbins, n_ybins, n_zbins;                      //number of bins in each direction
@@ -39,12 +39,12 @@ class Trajectory_List_Bins
       Trajectory_List_Bins(); //default constructor
       ~Trajectory_List_Bins(); //destructor
       Trajectory_List_Bins(const Trajectory_List_Bins &); //copy constructor
-      Trajectory_List_Bins(System const * sys,int xbins = 1,int ybins = 1,int zbins = 1);                                                                  //bins entire system rectangularly
-      Trajectory_List_Bins(System const * sys,int,int,int,float,float,float,float,float,float);                              //bins specified region rectangularly using absolute dimensions
-      Trajectory_List_Bins(System const * sys, float bin_thickness, int n_bins, Trajectory_List* binning_list, Trajectory_List* clustered_list);     //bins a list as a distance from particles in another list
-      Trajectory_List_Bins(System const * sys, float bin_thickness, int n_bins, Trajectory_List* binning_list, string pln, float posit, string dir);     //bins a list as a distance from particles in another list
-      Trajectory_List_Bins(System const * sys, float bin_thickness, int n_bins, Trajectory_List* binning_list, Coordinate pnt);     //bins a list as a distance from particles in another list
-      /*Don't use*/Trajectory_List_Bins(System const * sys,int,int,int,Coordinate,Coordinate);                                        //bins region between two coordinates rectangularly
+      Trajectory_List_Bins(System * sys,int xbins = 1,int ybins = 1,int zbins = 1);                                                                  //bins entire system rectangularly
+      Trajectory_List_Bins(System * sys,int,int,int,float,float,float,float,float,float);                              //bins specified region rectangularly using absolute dimensions
+      Trajectory_List_Bins(System * sys, float bin_thickness, int n_bins, Trajectory_List* binning_list, Trajectory_List* clustered_list);     //bins a list as a distance from particles in another list
+      Trajectory_List_Bins(System * sys, float bin_thickness, int n_bins, Trajectory_List* binning_list, string pln, float posit, string dir);     //bins a list as a distance from particles in another list
+      Trajectory_List_Bins(System * sys, float bin_thickness, int n_bins, Trajectory_List* binning_list, Coordinate pnt);     //bins a list as a distance from particles in another list
+      /*Don't use*/Trajectory_List_Bins(System * sys,int,int,int,Coordinate,Coordinate);                                        //bins region between two coordinates rectangularly
       Trajectory_List_Bins operator=(const Trajectory_List_Bins &);	//assignment
 
       /* Methods to return Trajectory lists for specific bins */

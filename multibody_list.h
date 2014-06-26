@@ -2,6 +2,7 @@
 /*Multibody_List class - stores list of multibody objects*/
 /*Written by David S. Simmons*/
 
+#include "multibody.h"
 
 namespace std{
   

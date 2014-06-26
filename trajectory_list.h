@@ -17,7 +17,7 @@ class Analysis;
 class Trajectory_List
 {
   protected:
-    System const* sys;
+    System * sys;
     Trajectory*** trajectories;		//list of pointers to Trajectory_List objects, with a separate list at each time
     int * time_conversion;	//table of system frame index to internal time index conversions
     int * n_trajectories;
@@ -45,12 +45,12 @@ class Trajectory_List
 
   public:
     Trajectory_List(int timecount = 0, int cap = 0);
-    Trajectory_List(const System* sys, int timecount, int cap, Boolean_List * boollist, int*time_conversion);
+    Trajectory_List(System* sys, int timecount, int cap, Boolean_List * boollist, int*time_conversion);
     ~Trajectory_List();
     Trajectory_List(const Trajectory_List &); // MEM - copy constructor
 
 
-    void set(const System* sys, int timecount, int cap, Boolean_List * boollist, int*time_conv);
+    void set(System* sys, int timecount, int cap, Boolean_List * boollist, int*time_conv);
     Trajectory* operator () (int trajii);				//return a requested trajectory at the first time stored
     Trajectory* operator () (int timeii, int trajii);		//return a requested trajectory at a given time
     bool is_included(int timeii,int trajii);                              //returns 1 if trajectory is included at that time

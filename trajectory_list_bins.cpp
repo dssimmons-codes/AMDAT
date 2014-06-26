@@ -201,7 +201,7 @@ Trajectory_List_Bins Trajectory_List_Bins::operator = (const Trajectory_List_Bin
   return *this;
 }
 
-Trajectory_List_Bins::Trajectory_List_Bins(System const * sys,int xbins,int ybins,int zbins)
+Trajectory_List_Bins::Trajectory_List_Bins(System * sys,int xbins,int ybins,int zbins)
 {
     /** Bins all system trajectories according to entire system dimensions
     * @param sys - pointer to System object to be binned
@@ -273,7 +273,7 @@ Trajectory_List_Bins::Trajectory_List_Bins(System const * sys,int xbins,int ybin
    assign_bins();
 
 }
-Trajectory_List_Bins::Trajectory_List_Bins(System const * sys,int xbins,int ybins,int zbins,float x_lo,float x_hi,float y_lo,float y_hi,float z_lo, float z_hi)
+Trajectory_List_Bins::Trajectory_List_Bins(System * sys,int xbins,int ybins,int zbins,float x_lo,float x_hi,float y_lo,float y_hi,float z_lo, float z_hi)
 {
     /** Bins all system trajectories only in box specified by high and low positions
     * @param sys - pointer to system object to be binned
@@ -388,7 +388,7 @@ Trajectory_List_Bins::Trajectory_List_Bins(System const * sys,int xbins,int ybin
    assign_bins();
 
 }
-Trajectory_List_Bins::Trajectory_List_Bins(System const * sys,int xbins,int ybins,int zbins,Coordinate los,Coordinate his)
+Trajectory_List_Bins::Trajectory_List_Bins(System * sys,int xbins,int ybins,int zbins,Coordinate los,Coordinate his)
 {
     /** Bins all system trajectories only in box specified two coordinates
     * @NOTE METHOD IS OUT OF DATE - this method is not current and needs to be revised to function as the 'float' based boundary constructor, with varying boxsize
@@ -454,7 +454,7 @@ Trajectory_List_Bins::Trajectory_List_Bins(System const * sys,int xbins,int ybin
 
 
 
-Trajectory_List_Bins::Trajectory_List_Bins(System const * sys, float bin_thickness, int n_bins, Trajectory_List* binning_list, Trajectory_List* clustered_list)
+Trajectory_List_Bins::Trajectory_List_Bins(System * sys, float bin_thickness, int n_bins, Trajectory_List* binning_list, Trajectory_List* clustered_list)
 {
     /** Bins all system trajectories according to entire system dimensions
     * @param sys - pointer to System object to be binned
@@ -553,7 +553,7 @@ Trajectory_List_Bins::Trajectory_List_Bins(System const * sys, float bin_thickne
 
 }
 
-Trajectory_List_Bins::Trajectory_List_Bins(System const * sys, float bin_thickness, int n_bins, Trajectory_List* binning_list, string pln, float posit, string dir)
+Trajectory_List_Bins::Trajectory_List_Bins(System * sys, float bin_thickness, int n_bins, Trajectory_List* binning_list, string pln, float posit, string dir)
 {
     /** Bins all system trajectories according to entire system dimensions
     * @param sys - pointer to System object to be binned
@@ -759,7 +759,7 @@ Trajectory_List_Bins::Trajectory_List_Bins(System const * sys, float bin_thickne
 
 
 
-Trajectory_List_Bins::Trajectory_List_Bins(System const * sys, float bin_thickness, int n_bins, Trajectory_List* binning_list, Coordinate pnt)
+Trajectory_List_Bins::Trajectory_List_Bins(System * sys, float bin_thickness, int n_bins, Trajectory_List* binning_list, Coordinate pnt)
 {
     /** Bins all system trajectories according to entire system dimensions
     * @param sys - pointer to System object to be binned

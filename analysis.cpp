@@ -46,20 +46,6 @@ Analysis Analysis::operator =(const Analysis & copy)
 
 /*Methods for employing the loops implemented in class System over various sets of atoms*/
 
-void Analysis::all_moleculecom()
-{system->loop_all_moleculecom(this);}
-
-void Analysis::species_moleculecom(int species_index)
-{preprocess();system->loop_species_moleculecom(this, species_index);postprocess();}
-
-void Analysis::species_moleculecom(string species_name)
-{
-  int species_index;
-  species_index = system->show_species_index(species_name);
-  if(species_index==-1){cout<<"Error: species "<<species_name<<" not found.\n";exit(1);}
-  system->loop_species_moleculecom(this, species_index);
-}
-
 void Analysis::atom_species(int species_index, int atom_type, int atom_index)
 {preprocess();system->loop_atom_species(this, species_index, atom_type, atom_index);postprocess();}
 
@@ -209,19 +195,6 @@ void Analysis::analyze(string runline)
       args_needed = 0;
     
       all();
-    }
-    else if(command == "moleculecom_all")
-    {
-      args_needed = 0;
-      
-      all_moleculecom();
-    }
-    else if (command == "moleculecom_species")
-    {
-      args_needed = species_moleculecom();
-      if(n_args-args_used<args_needed){cout<<"Error: Insufficient arguements for command " << command << ".";exit(1);}
-      species_moleculecom(args[args_used]);
-      args_used+=args_needed;
     }
     else
     {

@@ -96,6 +96,9 @@ class Control
     void write_list_trajectory();
     void write_list_trajectory_full();
 
+    
+    void create_multibodies();		//method to create set of user-defined multibodies from molecule, together with a list of multibodies enabling access to this set.
+    
     /*Method to parse input for analysis class atom loop types*/
     void run_analysis(Analysis*, string);
     void setargcheck(int, int, string);		//check number of arguments for above method
@@ -159,7 +162,6 @@ class Control
     void isf();			//calculate coherent (total) intermediate scattering function
     void isf_list();		//same as above but works with particle list instead of atom set
     void isfs();		//calculate self intermediate scattering function
-    void gyr_rad();		//calculate gyration radius; works only for system with a single molecule
     void structure_factor();	//calculate structure factor or intermediate scattering function as function of wavenumber at a given displacement time.
     void u2dist();		//calculate distribution of debye-waller factor (or displacement)
     void stiffness_dist();	//calculate distribbution of inverse debye-waller factor
