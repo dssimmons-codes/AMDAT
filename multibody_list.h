@@ -10,12 +10,14 @@ namespace std{
  
   class Multibody_List
   {
-    System const* sys;
-    Multibody *** multibodies;
-    int * time_conversion;
-    int * n_multibodies;
+    System sys;
     
-    int n_bodies;	//number of bodies in each multibody - must be the same for all multibodies
+    vector<vector<Multibody*>> multibodies
+    
+    //Multibody *** multibodies;
+    vector<int> time_conversion;
+    
+    int n_bodies;	//number of bodies in each multibody if all multibodies have same number of bodies; -1 otherwise; -2 if not checked
     
     int n_times;
     

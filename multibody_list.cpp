@@ -11,14 +11,53 @@
 
 using namespace std;
 
-void Multibody_List::listloop(Two_Body_Mean_Orientational_Gyration_Tensor)
+Multibody_List::Multibody_List();
 {
-  int current_time;
+  sys=0;
   
-  current_time = convert_time();
+  n_times=0;
+  n_bodies=-2;
   
-  for(int multibodyii=0;multibodyii<multibodies[current_time];multibodyii++)
-	{
-		analysis->listkernel(multibodies[current_time][multibodyii]);
-	}
+  time_conversion.resize(n_times);
+  multibodies.resize(n_times);
+  
+}
+
+
+
+
+
+Multibody_List::Multibody_List(const Multibody_List & copy);
+{
+  sys=copy.sys;
+  
+  n_times=copy.n_times;
+  n_bodies=copy.n_bodies;
+  
+  time_conversion = copy.time_conversion;
+  multibodies=copy.multibodies;
+  
+}
+
+
+
+
+
+
+
+Multibody_List::Multibody_List(int timecount);
+{
+  int timeii;
+  
+  sys=copy.sys;
+  n_times=0;
+  n_bodies=-2;
+  
+  time_conversion.resize(n_times);
+  multibodies.resize(n_times);
+  
+  for(timeii=0;timeii<n_times;timeii++)
+  {
+    multibodies[timeii].resize(0);
+  }
 }
