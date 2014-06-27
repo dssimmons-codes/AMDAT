@@ -26,7 +26,7 @@ namespace std
 
     //void calculate_mass;
     //void calculate_center_of_mass();
-    Coordinate calculate_centroid(int timeii);
+    Coordinate calculate_centroid(int timeii)const;
 
     public:
       Multibody();
@@ -47,7 +47,7 @@ namespace std
 
       int show_n_bodies()const{return n_trajectories;};
 
-      float gyration_radius(int timeii);
+      float square_gyration_radius(int timeii);
       //threefloat principle_axes(int timeii);
 
   };

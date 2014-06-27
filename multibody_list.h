@@ -2,11 +2,15 @@
 /*Multibody_List class - stores list of multibody objects*/
 /*Written by David S. Simmons*/
 
+#ifndef MULTIBODY_LIST
+#define MULTIBODY_LIST
+
 #include "multibody.h"
 #include "multibody_set.h"
-#include "mulibody_analysis.h"
 
 namespace std{
+  
+  class Multibody_Analysis;
 
   class System;
 
@@ -40,9 +44,11 @@ namespace std{
       void set(System * sys, Multibody_Set * multibodyset);
 
       int show_n_bodies(){return n_bodies;}; //return number of bodies in multibodies in list if they all contain the same number of bodies. Return -1 if they are not all the same or -2 if it has not been determined.
-      int show_n_multibodies(int timeii){return multibodies[timeii].size();};   //return number of multibodies in list at a given time
+      int show_n_multibodies(int timeii){return multibodies[convert_time(timeii)].size();};   //return number of multibodies in list at a given time
       
       void listloop(Multibody_Analysis* analysis, int timegap, int currenttime, int nexttime);
       
   };
 }
+
+#endif

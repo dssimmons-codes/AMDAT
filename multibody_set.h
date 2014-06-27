@@ -1,5 +1,5 @@
 /*Amorphous Molecular Dynamics Analysis Toolkit (AMDAT)*/
-/*Header for Multibody_Set class - Class to store sets of user-defined multibodies
+/*Header for Multibody_Set class - Class to store sets of user-defined multibodies*/
 /*Written by David S. Simmons*/
 
 #ifndef MULTIBODY_SET

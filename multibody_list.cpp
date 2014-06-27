@@ -5,7 +5,7 @@
 #include <fstream>
 #include <stdlib.h>
 #include "multibody_list.h"
-//include "multibody_analysis.h"
+#include "multibody_analysis.h"
 #include "system.h"
 
 using namespace std;
@@ -181,9 +181,9 @@ void Multibody_List::listloop(Multibody_Analysis* analysis, int timegap, int cur
 {
 	int internal_time;
 
-	current_time=convert_time(current_time);
+	internal_time=convert_time(currenttime);
 	for(int trajectoryii=0;trajectoryii<multibodies[internal_time].size();trajectoryii++) 	
 	{
-		analysis->listkernel(multibodies[internal_time][trajectoryii], timegap, currentime, nexttime);
+		analysis->listkernel(multibodies[internal_time][trajectoryii], timegap, currenttime, nexttime);
 	}
 }

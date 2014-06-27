@@ -7,23 +7,25 @@
 #ifndef CONTROL
 #define CONTROL
 
-#include "system.h"
-#include "analysis.h"
+#include <vector>
+#include <unordered_map>
 #include <time.h>
 #include <fstream>
+#include <string>
+#include <stdlib.h>
+
+#include "system.h"
+#include "analysis.h"
 #include "van_hove_self.h"
 #include "van_hove_distinct.h"
-#include <string>
 #include "gaussian_comparison.h"
-#include <stdlib.h>
 #include "trajectory_list_bins.h"
 #include "tokenize.h"
 #include "bin_dynamics_analysis.h"
 #include "bin_static_analysis.h"
 #include "value_list.h"
 #include "multibody_list.h"
-#include <vector>
-#include <unordered_map>
+
 
 
 #define ARGMAX 20
@@ -198,6 +200,8 @@ class Control
 
     void write_single_particle();	//write single trajectory to file as simple list of coordinates
 
+    /*Multibody analysis method calls*/
+    void gyration_radius();		//calculate mean gyration radius of multibody list
 
   public:
     Control(char *,string*,string*,int,string);		//constructor

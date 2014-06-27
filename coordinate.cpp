@@ -237,7 +237,7 @@ float Coordinate::length_yz()const
 float Coordinate::length_sq()const
 {
 	float lengthsq;
-	length = x*x+y*y+z*z;
+	lengthsq = x*x+y*y+z*z;
 	return lengthsq;
 }
 

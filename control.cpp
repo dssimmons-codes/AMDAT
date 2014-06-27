@@ -11,6 +11,8 @@
 #include <algorithm>
 #include <omp.h>
 #include <unistd.h>
+#include <iterator>
+#include <stdexcept>
 
 #include "mean_square_displacement.h"
 #include "van_hove_self.h"
@@ -40,9 +42,10 @@
 #include "trajectory_list_decay.h"
 #include "mean_displacement.h"
 #include "multibody_set.h"
+#include "gyration_radius.h"
+#include "multibody_list.h"
+#include "multibody_analysis.h"
 #include "version.h"
-#include <iterator>
-#include <stdexcept>
 
 #include "error.h"
 
@@ -298,6 +301,8 @@ int Control::execute_commands(int iIndex, int fIndex)
     {invert_list();}
     else if (command == "trajectory_list_decay")
     {trajectory_list_decay();}
+    else if (command == "gyration_radius")
+    {gyration_radius();}
     else if (command == "skip")
     {skip();}
     else if (command == "exit")
@@ -3145,4 +3150,29 @@ void Control::trajectory_list_decay()
     finish = time(NULL);
 
     cout << "\nCalculated trajectory list decay in " << finish-start<<" seconds.";
+}
+
+
+
+void Control::gyration_radius()
+{
+  string filename, multibody_list_name;
+  Multibody_List * multibodylist;
+  
+  int expected=3;
+  argcheck(expected);
+  
+  filename = args[1];
+  multibody_list_name=args[2];
+  
+  multibodylist = find_multibody_list(multibody_list_name);
+  
+  Gyration_Radius gyrrad(analyte);
+  cout << "\nCalculating gyration radius.\n";cout.flush();
+  start = time(NULL);
+  gyrrad.analyze(multibodylist); // pass run_analysis template the analysis type 'Mean_Square_Displacement'
+  finish = time(NULL);
+  cout << "\nCalculated gyration radius in " << finish-start<<" seconds."<<endl;
+  gyrrad.write(filename);
+  
 }

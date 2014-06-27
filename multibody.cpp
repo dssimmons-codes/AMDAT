@@ -1,10 +1,12 @@
 /*Amorphous Molecular Dynamics Analysis Toolkit (AMDAT)*/
-/*Methods for Multibody class - Class to allow definition of multi-trajectory bodies other than molecules
+/*Methods for Multibody class - Class to allow definition of multi-trajectory bodies other than molecules*/
 /*Written by David S. Simmons*/
+
 
 #include "multibody.h"
 #include "system.h"
 #include "coordinate.h"
+
 
 using namespace std;
 
@@ -192,7 +194,7 @@ Trajectory Multibody::centroid_trajectory()const
 }
 
 
-float Multibody::calculate_centroid(int timeii)
+Coordinate Multibody::calculate_centroid(int timeii)const
 {
   int bodyii;
   Coordinate centroid(0,0,0);
@@ -208,13 +210,13 @@ float Multibody::calculate_centroid(int timeii)
 
 
 /*Method to calculate multibody gyration radis at a given time*/
-float Multibody::gyration_radius(int timeii);
+float Multibody::square_gyration_radius(int timeii)
 {
   int bodyii;
   Coordinate centroid(0,0,0);
   float gyration_radius=0;
   
-  centroid=calculate_centroid(timeii)
+  centroid=calculate_centroid(timeii);
   
   for(bodyii=0;bodyii<n_trajectories;bodyii++)
   {
