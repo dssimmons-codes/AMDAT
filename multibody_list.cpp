@@ -5,20 +5,21 @@
 #include <fstream>
 #include <stdlib.h>
 #include "multibody_list.h"
-#include "analysis.h"
-#include "multibody_analysis.h"
+//include "multibody_analysis.h"
 #include "system.h"
 
 using namespace std;
 
-Multibody_List::Multibody_List();
+
+/*Default constructor*/
+Multibody_List::Multibody_List()
 {
   sys=0;
 
   n_times=0;
   n_bodies=-2;
 
-  time_conversion.resize(n_times);
+  time_conversion=new int [0];
   multibodies.resize(n_times);
 
 }
@@ -26,8 +27,8 @@ Multibody_List::Multibody_List();
 
 
 
-
-Multibody_List::Multibody_List(const Multibody_List & copy);
+/*Copy constructor*/
+Multibody_List::Multibody_List(const Multibody_List & copy)
 {
   sys=copy.sys;
 
@@ -44,8 +45,8 @@ Multibody_List::Multibody_List(const Multibody_List & copy);
 }
 
 
-
-Multibody_List Multibody_List::operator=(const Multibody_List & copy);
+/*Equality operator*/
+Multibody_List Multibody_List::operator=(const Multibody_List & copy)
 {
   if(this!=&copy)
   {
@@ -68,19 +69,19 @@ Multibody_List Multibody_List::operator=(const Multibody_List & copy);
 }
 
 
-
+/*Destructor*/
 Multibody_List::~Multibody_List()
 {
     delete [] time_conversion;
 }
 
-
-Multibody_List::Multibody_List(System sys,int timecount);
+/*Constructor that provides system and number of times*/
+Multibody_List::Multibody_List(System * syst,int timecount)
 {
   int timeii;
 
-  sys=copy.sys;
-  n_times=0;
+  sys=syst;
+  n_times=timecount;
   n_bodies=-2;
 
   time_conversion=new int[sys->show_n_timesteps()];
@@ -92,8 +93,9 @@ Multibody_List::Multibody_List(System sys,int timecount);
   }
 }
 
-
-Multibody_List::Multibody_List(System syst, Multibody_Set multibodyset)
+/*Constructor that provides system and a pointer to a Multibody_Set - fully creates list with multibodies in it*/
+/*This is comparable to a static trajectory list in that it defines only one list of multibodies that is the same for all times in the system*/
+Multibody_List::Multibody_List(System * syst, Multibody_Set * multibodyset)
 {
     int multibodyii;
 
@@ -101,29 +103,60 @@ Multibody_List::Multibody_List(System syst, Multibody_Set multibodyset)
     n_times = 1;
     multibodies.resize(n_times);
 
-    time_conversion = new int[sys->show_n_timesteps()]
+    time_conversion = new int[sys->show_n_timesteps()];
     for(int timeii=0;timeii<sys->show_n_timesteps();timeii++)
     {
         time_conversion[timeii]=0;
     }
 
-    multibodies[0].resize(multibodyset.show_n_multibodies());
+    multibodies[0].resize(multibodyset->show_n_multibodies());
 
-    for(multibodyii=0;multibodyii<multibodyset.show_n_multibodies();multibodyii++)
+    for(multibodyii=0;multibodyii<multibodyset->show_n_multibodies();multibodyii++)
     {
-        multibodies[0][multibodyii]=show_multibody(multibodyii);
+        multibodies[0][multibodyii]=multibodyset->show_multibody(multibodyii);
     }
 
     check_n_bodies();
 }
 
 
-Multibody_List Multibody_List::operator+(const Multibody_List)
+
+/*Method that resets object with system and a pointer to a Multibody_Set - fully creates list with multibodies in it*/
+/*This is comparable to a static trajectory list in that it defines only one list of multibodies that is the same for all times in the system*/
+void Multibody_List::set(System * syst, Multibody_Set * multibodyset)
+{
+    int multibodyii;
+    
+    delete [] time_conversion;
+    
+    sys = syst;
+    n_times = 1;
+    multibodies.resize(n_times);
+
+    time_conversion = new int[sys->show_n_timesteps()];
+    for(int timeii=0;timeii<sys->show_n_timesteps();timeii++)
+    {
+        time_conversion[timeii]=0;
+    }
+
+    multibodies[0].resize(multibodyset->show_n_multibodies());
+
+    for(multibodyii=0;multibodyii<multibodyset->show_n_multibodies();multibodyii++)
+    {
+        multibodies[0][multibodyii]=multibodyset->show_multibody(multibodyii);
+    }
+
+    check_n_bodies();
+}
+
+
+
+Multibody_List Multibody_List::operator+(const Multibody_List &)
 {
 
 }
 
-
+/*Determines whether all multibodies in the list have the same number of bodies.*/
 void Multibody_List::check_n_bodies()
 {
     int timeii, multibodyii;
@@ -141,4 +174,16 @@ void Multibody_List::check_n_bodies()
             }
         }
     }
+}
+
+
+void Multibody_List::listloop(Multibody_Analysis* analysis, int timegap, int currenttime, int nexttime)
+{
+	int internal_time;
+
+	current_time=convert_time(current_time);
+	for(int trajectoryii=0;trajectoryii<multibodies[internal_time].size();trajectoryii++) 	
+	{
+		analysis->listkernel(multibodies[internal_time][trajectoryii], timegap, currentime, nexttime);
+	}
 }

@@ -7,17 +7,22 @@
 
 namespace std{
 
-class Multibody_Analysis:public Analysis
+class Multibody_Analysis
 {
+  System* system
+  
   Multibody_List * multibody_list;
   
-  int n_bodies;	//number of bodies in each multibody
-  
   public:
+    Multibody_Analysis();
+    Multibody_Analysis(const Multibody_Analysis &);
+    Multibody_Analysis operator=(const Multibody_Analysis &);
+    Multibody_Analysis~(){};
+    
     
     virtual void analyze(Multibody_List *){cout<<"Error: Multibody list targets not implemented for this analysis method.\n";};
     virtual void list_displacementkernel(int, int, int){cout<<"Error: Multibody list targets not fully implemented for this analysis method.\n";};
-    virtual void listkernel(Multibody*){cout<<"Error: Multibody list targets not fully implemented for this analysis method.\n";};
-    virtual void postprocess_multibody_list(){cout<<"Error: Multibody list targets not fully implemented for this analysis method.\n";};
+    virtual void listkernel(Multibody*,int,int,int){cout<<"Error: Multibody list targets not fully implemented for this analysis method.\n";};
+    virtual void postprocess(){cout<<"Error: Multibody list targets not fully implemented for this analysis method.\n";};
 }
 }

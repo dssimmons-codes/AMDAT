@@ -41,6 +41,8 @@
 #include "mean_displacement.h"
 #include "multibody_set.h"
 #include "version.h"
+#include <iterator>
+#include <stdexcept>
 
 #include "error.h"
 
@@ -1201,6 +1203,72 @@ void Control::add_trajectorylist(Trajectory_List * t_list, string listname)
 
 /*--------------------------------------------------------------------------------*/
 
+Multibody_List* Control::find_multibody_list(string listname,bool allow_nofind)const
+{
+  Multibody_List * multibody_list;
+  
+  try
+  {
+    multibody_list = multibody_lists.at(listname);
+  }
+  catch(out_of_range & sa)
+  {
+    if(allow_nofind)
+    {
+      multibody_list=0;
+    }
+    else
+    {
+      cout << "\nError: multibody_list " << listname << " does not exist.\n";
+      exit(0);
+    }
+  }
+  
+  return multibody_list;
+}
+
+
+
+
+/*--------------------------------------------------------------------------------*/
+
+
+void Control::add_multibody_list(Multibody_List* multibody_list,string multibody_list_name)
+{
+  bool result;
+  
+  result=(multibody_lists.insert({multibody_list_name,multibody_list})).second;
+  
+  if(!result)
+  {
+    cout << "\nWarning:multibody_list "<< multibody_list_name<<" not created because a multibody_list with this name already exists. Replacement of a multibody_list requires that you first delete the existing list with the same name.\n";
+  }
+}
+
+
+
+
+/*--------------------------------------------------------------------------------*/
+
+void Control::delete_multibody_list(string listname)
+{
+  Multibody_List * multibody_list;
+  
+  multibody_list = find_multibody_list(listname,1);
+  if(multibody_list=0)
+  {
+    cout << "\nWarning: multibody_list " << listname << " does not exist and therefore cannot be deleted.";
+  }
+  else
+  {
+    multibody_lists.erase(listname);
+    delete [] multibody_list;
+  }
+}
+
+
+/*--------------------------------------------------------------------------------*/
+
 
 
   /*finds trajectorylist object by custom name*/
@@ -1306,10 +1374,15 @@ void Control::create_multibodies()
 {
   string multibody_list_name;
   Multibody_Set* multibody_set_pointer;
+  Multibody_List* new_multibody_list;
+  new_multibody_list=new Multibody_List;
   
   multibody_list_name = args[1];
   
   multibody_set_pointer = analyte->create_multibody_set (n_args, args);
+  
+  new_multibody_list->set(analyte,multibody_set_pointer);
+  add_multibody_list(new_multibody_list,multibody_list_name);
 }
 
 

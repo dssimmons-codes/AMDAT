@@ -7,6 +7,7 @@
 #define MULTIBODY
 
 #include "trajectory.h"
+#include "coordinate.h"
 
 
 namespace std
@@ -25,7 +26,7 @@ namespace std
 
     //void calculate_mass;
     //void calculate_center_of_mass();
-    //void calculate centroid
+    Coordinate calculate_centroid(int timeii);
 
     public:
       Multibody();
@@ -41,12 +42,12 @@ namespace std
 
       //void show_coordinates(int timeii,Coordinate* list);			//returns list of coordinates of trajectories at time ii. Coordinates are returned via Coordinate* list, which must be of length equal to n_trajectories;
 
-      Trajectory center_of_mass()const;
-      Trajectory centroid()const;
+      Trajectory center_of_mass_trajectory()const;
+      Trajectory centroid_trajectory()const;
 
-      int show_n_bodies()const{return n_trajectories;}l
+      int show_n_bodies()const{return n_trajectories;};
 
-      //float gyration_radius(int timeii);
+      float gyration_radius(int timeii);
       //threefloat principle_axes(int timeii);
 
   };

@@ -21,8 +21,9 @@
 #include "bin_dynamics_analysis.h"
 #include "bin_static_analysis.h"
 #include "value_list.h"
+#include "multibody_list.h"
 #include <vector>
-
+#include <unordered_map>
 
 
 #define ARGMAX 20
@@ -56,11 +57,21 @@ class Control
 
     /*Arrays to store analysis results with a name given by the user, for later recall and use in other analysis techniques*/
 
+    
+    /*Members to store and access trajectory_list objects*/
     Trajectory_List * trajectories [LISTSIZE];		//array of trajectory list objects
     string trajectorylist_names [LISTSIZE];		//custom name of trajectory list
     int n_trajectorylists;				//number of trajectory lists stored
     int find_trajectorylist(string);		//return index of trajectorylist with given custom name
     void add_trajectorylist(Trajectory_List*, string);
+    
+    
+    /*Members to store and access multibody_list objects*/
+    unordered_map<string,Multibody_List*> multibody_lists;
+    Multibody_List* find_multibody_list(string,bool allow_nofind=0)const;
+    void add_multibody_list(Multibody_List*,string);
+    void delete_multibody_list(string);
+    
     
     
     //Space-Time_Correlation_Function * space-time_correlations [LISTSIZE];

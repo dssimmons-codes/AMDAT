@@ -119,7 +119,7 @@ void Multibody::set(int n_bodies, Trajectory ** bodies)
 
 
 /*return center of mass trajectory of multibody*/
-Trajectory Multibody::center_of_mass()const
+Trajectory Multibody::center_of_mass_trajectory()const
 {
   Trajectory comtraj;
   Coordinate com;
@@ -159,7 +159,7 @@ Trajectory Multibody::center_of_mass()const
 
 
 /*return centroid trajectory of multibody*/
-Trajectory Multibody::centroid()const
+Trajectory Multibody::centroid_trajectory()const
 {
   Trajectory centraj;
   Coordinate cen;
@@ -176,18 +176,12 @@ Trajectory Multibody::centroid()const
   /*set trajectory type, length, and mass*/
   centraj.set(0,trajlength,mass);
   
-  /*Determine center of mass of multibody at each time based upon unwrapped coordinates and write to */
+  /*Determine centroid of multibody at each time based upon unwrapped coordinates and write to */
   for(timeii=0;timeii<trajlength;timeii++)
   {
     
-    /*calculate center of mass at current time*/
-    cen.set(0,0,0);
-    for(trajectoryii=0;trajectoryii<n_trajectories;trajectoryii++)
-    {
-      cen+=((trajectories[trajectoryii]->show_unwrapped(timeii)));
-    }
-    cen/=n_trajectories;
-    
+    /*calculate centroid at current time*/
+    cen=calculate_centroid(timeii);
     centraj.set_unwrapped(cen,timeii);		//set center of mass trajectory coordinate at current time
   }
   
@@ -195,4 +189,39 @@ Trajectory Multibody::centroid()const
   centraj.wrap(system->time_dependent_size(),system->time_dependent_boundaries());
   
   return centraj;
+}
+
+
+float Multibody::calculate_centroid(int timeii)
+{
+  int bodyii;
+  Coordinate centroid(0,0,0);
+  
+  for(bodyii=0;bodyii<n_trajectories;bodyii++)
+  {
+    centroid += (trajectories[bodyii]->show_unwrapped(timeii));
+  }
+  centroid/=n_trajectories;
+  
+  return centroid;
+}
+
+
+/*Method to calculate multibody gyration radis at a given time*/
+float Multibody::gyration_radius(int timeii);
+{
+  int bodyii;
+  Coordinate centroid(0,0,0);
+  float gyration_radius=0;
+  
+  centroid=calculate_centroid(timeii)
+  
+  for(bodyii=0;bodyii<n_trajectories;bodyii++)
+  {
+    gyration_radius+=(trajectories[bodyii]->show_unwrapped(timeii)-centroid).length_sq();
+  }
+  gyration_radius/=n_trajectories;
+  
+  return gyration_radius;
+  
 }

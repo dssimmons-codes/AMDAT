@@ -6,6 +6,16 @@ polymer 50
 1
 32
 
+create_multibodies mbodies all_molecule
+
+create_multibodies mbodies2 species_molecule polymer
+
+create_multibodies mbodies3 species_type polymer 1
+
+create_multibodies mbodies4 species_atomlist polymer 1 1 1 38
+
+exit
+
 create_list all
 all
 

@@ -83,6 +83,6 @@ Multibody* Multibody_Set::show_multibody(int index)
     }
     else
     {
-        return 0
+        return 0;
     };
 }

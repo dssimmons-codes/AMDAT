@@ -233,6 +233,16 @@ float Coordinate::length_yz()const
 	return length;
 }
 
+
+float Coordinate::length_sq()const
+{
+	float lengthsq;
+	length = x*x+y*y+z*z;
+	return lengthsq;
+}
+
+
+
 /*Methods to calculate length of shortest vector, considering box crossing*/
 float Coordinate::length_unwrapped(const Coordinate& boxsize)const
 {

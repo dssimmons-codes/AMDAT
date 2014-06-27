@@ -43,6 +43,8 @@ class Coordinate
     float length_xy() const;
     float length_yz() const;
     float length_xz() const;
+    float length_sq() const;			//returns vector length squared
+    
     float length_unwrapped(const Coordinate&)const;	//returns length of shortest vector, allowing box wrapping
     float min()const;			//returns minimum of three coordinate values
     
