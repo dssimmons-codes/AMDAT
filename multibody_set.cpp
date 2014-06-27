@@ -18,10 +18,10 @@ Multibody_Set::Multibody_Set()
 Multibody_Set::Multibody_Set(const Multibody_Set & copy)
 {
   int multibodyii;
-  
+
   n_multibodies=copy.n_multibodies;
   multibodies.resize(n_multibodies);
-  
+
   for(multibodyii=0;multibodyii<n_multibodies;multibodyii++)
   {
     multibodies[multibodyii]=copy.multibodies[multibodyii];
@@ -42,14 +42,14 @@ Multibody_Set::~Multibody_Set()
 Multibody_Set Multibody_Set::operator=(const Multibody_Set & copy)
 {
   int multibodyii;
-  
+
   if (this!=&copy)
   {
     int multibodyii;
-  
+
     n_multibodies=copy.n_multibodies;
     multibodies.resize(n_multibodies);
-  
+
     for(multibodyii=0;multibodyii<n_multibodies;multibodyii++)
     {
       multibodies[multibodyii]=copy.multibodies[multibodyii];
@@ -73,4 +73,16 @@ void Multibody_Set::add_multibody(const Multibody & multibody)
 {
   multibodies.push_back(multibody);
   n_multibodies++;
+}
+
+Multibody* Multibody_Set::show_multibody(int index)
+{
+    if(index<n_multibodies)
+    {
+        return &multibodies[index];
+    }
+    else
+    {
+        return 0
+    };
 }
