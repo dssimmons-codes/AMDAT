@@ -3320,7 +3320,7 @@ Multibody_Set* System::create_multibody_set()
     }
   }
   
-  multibody_sets.push_back(new_multibody_set);		//create new multibody set with number of multibodies equal to number of molecules
+  svn	//create new multibody set with number of multibodies equal to number of molecules
   
   return new_multibody_set;		//return pointer to new set
 }
