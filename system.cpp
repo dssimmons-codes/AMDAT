@@ -3307,18 +3307,22 @@ Multibody_Set* System::create_multibody_set()
   int speciesii,moleculeii;
   int multibodyii=0;
   
-  multibody_sets.emplace_back(total_molecules);		//create new multibody set with number of multibodies equal to number of molecules
+  Multibody_Set * new_multibody_set;
+  new_multibody_set = new Multibody_Set;
+  new_multibody_set->set(total_molecules);	//set number of multibodies
   
   for(speciesii=0;speciesii<n_species;speciesii++)
   {
     for(moleculeii=0;moleculeii<n_molecules[speciesii];moleculeii++)
     {
-      multibody_sets.back().set_multibody(multibodyii,molecules[speciesii][moleculeii].create_multibody());	//request molecule to create multibody and copy it to multibody_set
+      new_multibody_set->set_multibody(multibodyii,molecules[speciesii][moleculeii].create_multibody());	//request molecule to create multibody and copy it to multibody_set
       multibodyii++;		//increment count of multibodeis created
     }
   }
   
-  return &multibody_sets.back();		//return pointer to new set
+  multibody_sets.push_back(new_multibody_set);		//create new multibody set with number of multibodies equal to number of molecules
+  
+  return new_multibody_set;		//return pointer to new set
 }
 
 //creates a multibody_set containing a multibody for each molecule of a given species, with each multibody containing all the trajectories in the corresponding molecule
@@ -3327,15 +3331,20 @@ Multibody_Set* System::create_multibody_set(int speciesii)
   int moleculeii;
   int multibodyii=0;
   
-  multibody_sets.emplace_back(n_molecules[speciesii]);		//create new multibody set with number of multibodies equal to number of molecules
+  Multibody_Set * new_multibody_set;
+  new_multibody_set = new Multibody_Set;
+  new_multibody_set->set(n_molecules[speciesii]);	//set number of multibodies
+
   
     for(moleculeii=0;moleculeii<n_molecules[speciesii];moleculeii++)
     {
-      multibody_sets.back().set_multibody(multibodyii,molecules[speciesii][moleculeii].create_multibody());	//request molecule to create multibody and copy it to multibody_set
+      new_multibody_set->set_multibody(multibodyii,molecules[speciesii][moleculeii].create_multibody());	//request molecule to create multibody and copy it to multibody_set
       multibodyii++;		//increment count of multibodeis created
     }
 
-  return &multibody_sets.back();		//return pointer to new set
+  multibody_sets.push_back(new_multibody_set);		//create new multibody set with number of multibodies equal to number of molecules
+  
+  return new_multibody_set;		//return pointer to new set
 }
 
 
@@ -3347,15 +3356,19 @@ Multibody_Set* System::create_multibody_set(int speciesii, int type)
   int moleculeii;
   int multibodyii=0;
   
-  multibody_sets.emplace_back(n_molecules[speciesii]);		//create new multibody set with number of multibodies equal to number of molecules
+  Multibody_Set * new_multibody_set;
+  new_multibody_set = new Multibody_Set;
+  new_multibody_set->set(n_molecules[speciesii]);	//set number of multibodies
   
     for(moleculeii=0;moleculeii<n_molecules[speciesii];moleculeii++)
     {
-      multibody_sets.back().set_multibody(multibodyii,molecules[speciesii][moleculeii].create_multibody(type));	//request molecule to create multibody and copy it to multibody_set
+      new_multibody_set->set_multibody(multibodyii,molecules[speciesii][moleculeii].create_multibody(type));	//request molecule to create multibody and copy it to multibody_set
       multibodyii++;		//increment count of multibodeis created
     }
 
-  return &multibody_sets.back();		//return pointer to new set
+  multibody_sets.push_back(new_multibody_set);		//create new multibody set with number of multibodies equal to number of molecules
+  
+  return new_multibody_set;		//return pointer to new set
 }
 
 
@@ -3366,13 +3379,18 @@ Multibody_Set* System::create_multibody_set(int speciesii, int n_bodies, int * t
   int moleculeii;
   int multibodyii=0;
   
-  multibody_sets.emplace_back(n_molecules[speciesii]);		//create new multibody set with number of multibodies equal to number of molecules
+  Multibody_Set * new_multibody_set;
+  new_multibody_set = new Multibody_Set;
+  new_multibody_set->set(n_molecules[speciesii]);	//set number of multibodies
+  
   
     for(moleculeii=0;moleculeii<n_molecules[speciesii];moleculeii++)
     {
-      multibody_sets.back().set_multibody(multibodyii,molecules[speciesii][moleculeii].create_multibody(n_bodies, typeii, index));	//request molecule to create multibody and copy it to multibody_set
+      new_multibody_set->set_multibody(multibodyii,molecules[speciesii][moleculeii].create_multibody(n_bodies, typeii, index));	//request molecule to create multibody and copy it to multibody_set
       multibodyii++;		//increment count of multibodeis created
     }
 
-  return &multibody_sets.back();		//return pointer to new set
+  multibody_sets.push_back(new_multibody_set);		//create new multibody set with number of multibodies equal to number of molecules
+  
+  return new_multibody_set;		//return pointer to new set
 }

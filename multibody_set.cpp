@@ -10,7 +10,7 @@ using namespace std;
 Multibody_Set::Multibody_Set()
 {
   n_multibodies=0;
-  multibodies.resize(n_multibodies);
+  multibodies = new Multibody [n_multibodies];
 }
 
 
@@ -20,7 +20,7 @@ Multibody_Set::Multibody_Set(const Multibody_Set & copy)
   int multibodyii;
 
   n_multibodies=copy.n_multibodies;
-  multibodies.resize(n_multibodies);
+  multibodies = new Multibody [n_multibodies];
 
   for(multibodyii=0;multibodyii<n_multibodies;multibodyii++)
   {
@@ -46,9 +46,9 @@ Multibody_Set Multibody_Set::operator=(const Multibody_Set & copy)
   if (this!=&copy)
   {
     int multibodyii;
-
+    delete [] multibodies;
     n_multibodies=copy.n_multibodies;
-    multibodies.resize(n_multibodies);
+    multibodies = new Multibody [n_multibodies];
 
     for(multibodyii=0;multibodyii<n_multibodies;multibodyii++)
     {
@@ -63,17 +63,20 @@ Multibody_Set Multibody_Set::operator=(const Multibody_Set & copy)
 Multibody_Set::Multibody_Set(int multibody_count)
 {
   n_multibodies=multibody_count;
-  multibodies.resize(n_multibodies);
+  multibodies = new Multibody [n_multibodies];
 }
 
 
 
-/*Add additional multibody to list*/
-void Multibody_Set::add_multibody(const Multibody & multibody)
+
+/*reset number of multibodies and reinitialize array of multibodies*/
+void Multibody_Set::set(int multibody_count)
 {
-  multibodies.push_back(multibody);
-  n_multibodies++;
+  delete [] multibodies;
+  n_multibodies=multibody_count;
+  multibodies = new Multibody [n_multibodies];
 }
+
 
 Multibody* Multibody_Set::show_multibody(int index)
 {

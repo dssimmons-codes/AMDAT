@@ -49,8 +49,8 @@ class System
     Molecule ** moleculelist;			//direct list of molecules by molecule ID
     vector <Trajectory *> trajectorylist;		//direct list of trajectories by trajectory ID
 		   
-    int n_multibodies;		   
-    vector <Multibody_Set> multibody_sets;	//store sets of multibodies defined by user
+    int n_multibodies;		   		
+    vector <Multibody_Set*> multibody_sets;	//store sets of multibodies defined by user
 		   
     bool unwrapped;				//are unwrapped coordinates defined?
     bool wrapped;				//are wrapped coordinate defined?
