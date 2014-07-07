@@ -26,7 +26,6 @@ class Boolean_List
   ~Boolean_List();
   Boolean_List operator= (const Boolean_List &);
 
-
   void set(System * sys);
   void set(System * sys, int * inc, int n_included);
 

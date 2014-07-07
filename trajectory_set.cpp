@@ -2,6 +2,10 @@
 /*Methods for Trajectory_set class - Class to store sets of user-defined trajectories
 /*Written by David S. Simmons*/
 
+#include "trajectory_set.h"
+#include "trajectory.h"
+
+using namespace std;
 
 Trajectory_Set::Trajectory_Set()
 {
@@ -14,7 +18,7 @@ Trajectory_Set::Trajectory_Set(const Trajectory_Set & copy)
     int trajii;
 
     n_trajectories = copy.n_trajectories;
-    trajectories=new Trajeectory [n_trajectories];
+    trajectories=new Trajectory [n_trajectories];
 
     for(trajii=0;trajii<n_trajectories;trajii++)
     {
@@ -28,7 +32,7 @@ Trajectory_Set::~Trajectory_Set()
 }
 
 
-Trajectory_Set::operator=(const Trajectory_Set & copy)
+Trajectory_Set Trajectory_Set::operator=(const Trajectory_Set & copy)
 {
     int trajii;
 
@@ -37,7 +41,7 @@ Trajectory_Set::operator=(const Trajectory_Set & copy)
         delete [] trajectories;
 
         n_trajectories = copy.n_trajectories;
-        trajectories=new Trajeectory [n_trajectories];
+        trajectories=new Trajectory [n_trajectories];
 
         for(trajii=0;trajii<n_trajectories;trajii++)
         {
@@ -48,10 +52,10 @@ Trajectory_Set::operator=(const Trajectory_Set & copy)
 
 
 
-Trajectory_Set (const Multibody_Set & multibodies, bool centertype)
+Trajectory_Set::Trajectory_Set(Multibody_Set * multibodies, bool centertype)
 {
     int trajii;
-    n_trajectories = multibodies.show_n_multibodies();
+    n_trajectories = multibodies->show_n_multibodies();
 
     trajectories = new Trajectory [n_trajectories];
 
@@ -59,14 +63,66 @@ Trajectory_Set (const Multibody_Set & multibodies, bool centertype)
     {
         for(trajii=0;trajii<n_trajectories;trajii++)
         {
-            trajectories[trajii]=multibodies.show_multibody[trajii]->centroid_trajectory;
+            trajectories[trajii]=multibodies->show_multibody(trajii)->centroid_trajectory();
         }
     }
     else    //compute and save COM trajectory
     {
         for(trajii=0;trajii<n_trajectories;trajii++)
         {
-            trajectories[trajii]=multibodies.show_multibody[trajii]->center_of_mass_trajectory;
+            trajectories[trajii]=multibodies->show_multibody(trajii)->center_of_mass_trajectory();
         }
     }
+}
+
+
+
+void Trajectory_Set::trajectories_from_multibodies(Multibody_Set * multibodies, bool centertype)
+{
+  if(centertype)
+  {
+    trajectories_from_centroid(multibodies);
+  }
+  else
+  {
+    trajectories_from_com(multibodies);
+  }
+}
+
+
+void Trajectory_Set::trajectories_from_centroid(Multibody_Set * multibodies)
+{
+  
+  int trajii;
+ 
+  delete [] trajectories;
+  
+  n_trajectories = multibodies->show_n_multibodies();
+
+  trajectories = new Trajectory [n_trajectories];
+  
+  for(trajii=0;trajii<n_trajectories;trajii++)
+  {
+    trajectories[trajii]=multibodies->show_multibody(trajii)->centroid_trajectory();
+  }
+}
+
+
+
+
+void Trajectory_Set::trajectories_from_com(Multibody_Set * multibodies)
+{
+  
+  int trajii;
+ 
+  delete [] trajectories;
+  
+  n_trajectories = multibodies->show_n_multibodies();
+
+  trajectories = new Trajectory [n_trajectories];
+  
+  for(trajii=0;trajii<n_trajectories;trajii++)
+  {
+    trajectories[trajii]=multibodies->show_multibody(trajii)->centroid_trajectory();
+  }
 }

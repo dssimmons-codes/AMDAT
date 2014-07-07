@@ -61,11 +61,13 @@ class Control
 
     
     /*Members to store and access trajectory_list objects*/
+    //TODO Change trajectory_list storage to unordered_map.
     Trajectory_List * trajectories [LISTSIZE];		//array of trajectory list objects
     string trajectorylist_names [LISTSIZE];		//custom name of trajectory list
     int n_trajectorylists;				//number of trajectory lists stored
     int find_trajectorylist(string);		//return index of trajectorylist with given custom name
     void add_trajectorylist(Trajectory_List*, string);
+    void trajectories_from_multibodies();
     
     
     /*Members to store and access multibody_list objects*/

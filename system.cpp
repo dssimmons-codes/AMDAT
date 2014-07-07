@@ -7,27 +7,28 @@
 #include <iostream>
 #include <fstream>
 #include <math.h>
-#include "system.h"
 #include <time.h>
 #include <sstream>
 #include <string>
-#include "version.h"
-#include "control.h"
 #include <vector>
 #include <float.h>
 #include <omp.h>
+#include <stdexcept>
 
+#define ARGMAX 100
 #define CPLUSPLUS
 #ifndef TACC
 #include "xdrfile_xtc.h"
 #endif
 
 using namespace std;
+#include "system.h"
 #include "tokenize.h"
 #include "progress.h"
 #include "error.h"
-#define ARGMAX 100
-
+#include "version.h"
+#include "control.h"
+#include "multibody_set.h"
 
 /*-------------------------------------------------------------------------------------*/
 /*-----------------------------------CONSTRUCTORS -------------------------------------*/
@@ -60,8 +61,6 @@ System::System(vector<string> file_in, bool ensemble)
   boxified = 0;
 
   np = ensemble;	//determine whether system is constant volume varies (1 if yes)
-
-  multibody_sets.reserve(10);
 
   /*read type of trajectory file to be read in*/
 //  getline(*file_in,line);
@@ -3347,8 +3346,6 @@ Multibody_Set* System::create_multibody_set(int speciesii)
 }
 
 
-
-
 //creates a multibody_set containing a multibody for each molecule of a given species, with each multibody containing all the trajectories of a specified type in the corresponding molecule
 Multibody_Set* System::create_multibody_set(int speciesii, int type)
 {
@@ -3367,7 +3364,6 @@ Multibody_Set* System::create_multibody_set(int speciesii, int type)
 
   return new_multibody_set;		//return pointer to new set
 }
-
 
 
 //creates a multibody_set containing a multibody for each molecule of a given species, with each multibody containing n_trajectories specified by arrays providing the type and index of each trajectory.
@@ -3392,9 +3388,9 @@ Multibody_Set* System::create_multibody_set(int speciesii, int n_bodies, int * t
 
 
 /*Method to add multibody set to master list*/
-void add_multibody_set(string multibody_set_name,Multibody_Set* multibody_set)
+void System::add_multibody_set(string multibody_set_name,Multibody_Set* multibody_set)
 {
-    bool result
+    bool result;
 
     result=(multibody_sets.insert({multibody_set_name,multibody_set})).second;
 
@@ -3407,7 +3403,7 @@ void add_multibody_set(string multibody_set_name,Multibody_Set* multibody_set)
 
 
 /*Method to find a multibody set within master list*/
-Multibody_Set* find_multibody_set(string setname, bool allow_nofind=0)const
+Multibody_Set* System::find_multibody_set(string setname, bool allow_nofind)const
 {
     Multibody_Set * multibody_set;
 
@@ -3423,7 +3419,7 @@ Multibody_Set* find_multibody_set(string setname, bool allow_nofind=0)const
         }
         else
         {
-            cout << "\nError: multibody_set " << listname << " does not exist.\n";
+            cout << "\nError: multibody_set " << setname << " does not exist.\n";
             exit(0);
         }
     }
@@ -3431,41 +3427,99 @@ Multibody_Set* find_multibody_set(string setname, bool allow_nofind=0)const
   return multibody_set;
 }
 
-void delete_multibody_set(string setname)
-{
-    Multibody_List * multibody_list;
 
-    multibody_list = find_multibody_list(listname,1);
-    if(multibody_list=0)
+/*Delete multibody set*/
+void System::delete_multibody_set(string setname)
+{
+    Multibody_Set * multibody_set;
+
+    multibody_set = find_multibody_set(setname,1);
+    if(multibody_set=0)
     {
-        cout << "\nWarning: multibody_list " << listname << " does not exist and therefore cannot be deleted.";
+        cout << "\nWarning: multibody_list " << setname << " does not exist and therefore cannot be deleted.";
     }
     else
     {
-        multibody_lists.erase(listname);
-        delete [] multibody_list;
+        multibody_sets.erase(setname);
+        delete [] multibody_set;
     }
 }
 
-Trajectory_Set* create_trajectory_set(string setname, string multibodysetname)
+
+/*Method to create new trajectory set and add to necessary storage containers*/
+Trajectory_Set* System::create_trajectory_set(string setname, string multibodysetname, bool centertype)
 {
+  Multibody_Set * multibody_set;
+  Trajectory_Set * new_trajectory_set;
+  new_trajectory_set = new Trajectory_Set;
+  
+  multibody_set = find_multibody_set(multibodysetname);
+  
+  new_trajectory_set->trajectories_from_multibodies(multibody_set,centertype);	//define new trajectories from multibodies
+  
+  add_trajectories(new_trajectory_set);		//add trajectories to master list of trajectories and update boolean lists
+   
+  add_trajectory_set(setname, new_trajectory_set);	//add trajectory_set to master list of trajectory sets
+
+  return new_trajectory_set;		//return pointer to new set
 
 }
 
-void add_trajectories (int n_new_trajectories, Trajectory * new_trajectories)
+/*Method to find a trajectory set within master list*/
+Trajectory_Set* System::find_trajectory_set(string setname, bool allow_nofind)const
 {
-    int trajii
+    Trajectory_Set * trajectory_set;
+
+    try
+    {
+        trajectory_set = trajectory_sets.at(setname);
+    }
+    catch(out_of_range & sa)
+    {
+        if(allow_nofind)
+        {
+            trajectory_set=0;
+        }
+        else
+        {
+            cout << "\nError: multibody_set " << setname << " does not exist.\n";
+            exit(0);
+        }
+    }
+
+  return trajectory_set;
+}
+
+/*Method to add trajectory set to master list*/
+void System::add_trajectory_set(string trajectory_set_name,Trajectory_Set* trajectory_set)
+{
+    bool result;
+
+    result=(trajectory_sets.insert({trajectory_set_name,trajectory_set})).second;
+
+    if(!result)
+    {
+        cout << "\nWarning:trajectory_set "<< trajectory_set_name<<" not saved in master list because a multibody_set with this name already exists. \n";
+    }
+}
+
+/*Add new trajectories from trajectory set to master list*/
+void System::add_trajectories(Trajectory_Set * new_trajectories)
+{
+    int trajii;
+    
+    int n_new_trajectories = new_trajectories->show_n_trajectories();
 
     for(trajii=0;trajii<n_new_trajectories;trajii++)
     {
-        trajectorylist.push_back(new_trajectories[trajii]);
+        trajectorylist.push_back(new_trajectories->show_trajectory(trajii));
     }
 
-    //Now need code to update all boolean_lists in system appropriately
+    //Grow all boolean lists is system to be consistent with new number of trajectoriesl assigning zero's for all new trajectories.
     for(auto bool_iterator = bool_lists.begin();bool_iterator!=bool_lists.end();bool_iterator++)
     {
-
+      (*bool_iterator)->grow_list(n_new_trajectories);
 
     }
-    grow_list(n_new_trajectories)
+    
 }

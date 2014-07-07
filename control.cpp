@@ -199,6 +199,10 @@ int Control::execute_commands(int iIndex, int fIndex)
     {
       create_multibodies();
     }
+    else if (command == "trajectories_from_multibodies")
+    {
+      trajectories_from_multibodies();
+    }
     else if (command == "msd")
     {
       msd();
@@ -1372,6 +1376,51 @@ void Control::create_list()
     cout<<"\nTrajectory list "<<listname<<" created with "<<trajpointer->show_n_trajectories(0)<< " trajectories."<<endl;
 //   }
 }
+
+
+
+/*--------------------------------------------------------------------------------*/
+
+
+
+
+void Control::trajectories_from_multibodies()
+{
+  string trajectory_list_name, multibody_set_name, centertypename;
+  bool centertype;
+  Trajectory_Set * trajectory_set_pointer;
+  Static_Trajectory_List * new_trajectory_list;
+  
+  new_trajectory_list = new Static_Trajectory_List;
+  
+  trajectory_list_name = args[1];
+  multibody_set_name = args[2];
+  centertypename = args[3];
+  
+  if(centertypename == "centroid")
+  {
+    centertype = 0;
+  }
+  else if(centertypename == "com")
+  {
+    centertype = 1;
+  }
+  else
+  {
+    cout << "\n Type of multibody center '" << centertypename << "' not recognized. Allowable options are 'centroid' and 'com'";
+    exit (0);
+  }
+  
+  trajectory_set_pointer = analyte->create_trajectory_set(trajectory_list_name,multibody_set_name,centertype);
+  
+  new_trajectory_list->set(analyte,trajectory_set_pointer);
+  
+  
+  add_trajectorylist(new_trajectory_list, trajectory_list_name);
+  
+}
+
+
 
 
 /*--------------------------------------------------------------------------------*/

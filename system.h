@@ -5,6 +5,7 @@
 #ifndef SYSTEM
 #define SYSTEM
 #include <unordered_set>
+#include <unordered_map>
 #include "molecule.h"
 #include <fstream>
 #include "analysis.h"
@@ -13,6 +14,8 @@
 #include <vector>
 #include "boolean_list.h"
 #include "multibody_set.h"
+#include "trajectory_set.h"
+
 namespace std {
 
 class System
@@ -52,7 +55,7 @@ class System
     int n_multibodies;
     //vector <Multibody_Set*> multibody_sets;	//store sets of multibodies defined by user
     unordered_map <string, Multibody_Set*> multibody_sets;
-    vector <Trajectory_Set*> trajectory_sets;   //stores sets of trajectories defined by user
+    unordered_map <string, Trajectory_Set*> trajectory_sets;   //stores sets of trajectories defined by user
 
 
     bool unwrapped;				//are unwrapped coordinates defined?
@@ -114,8 +117,10 @@ class System
     void delete_multibody_set(string);
 
 
-    Trajectory_Set* create_trajectory_set();
-    void add_trajectories (int n_new_trajectories,Trajectory * new_trajectories);
+    Trajectory_Set* create_trajectory_set(string setname, string multibodysetname, bool centertype);	//centertype = 1 for centroid or 0 for COM
+    Trajectory_Set* find_trajectory_set(string setname, bool allow_nofind)const;
+    void add_trajectory_set(string trajectory_set_name,Trajectory_Set* trajectory_set);
+    void add_trajectories (Trajectory_Set * new_trajectories);
 
     /*--------Methods to return information about box/system---------*/
     Coordinate size()const{return box_size[0];};		//return size of system;
