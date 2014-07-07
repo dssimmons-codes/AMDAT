@@ -6,17 +6,28 @@
 #define TRAJECTORY_SET
 
 #include "trajectory.h"
+#include "multibody_set.h"
 
 namespace std
 {
-  
+
 class Trajectory_Set
 {
     int n_trajectories;
     Trajectory * trajectories;
-  
+
   public:
     Trajectory_Set();
+    Trajectory_Set(const Trajectory_Set &);
+    ~Trajectory_Set();
+    Trajectory_Set operator =(const Trajectory_Set &);
+    Trajectory_Set(const Multibody_Set &, bool);
+
+    void trajectories_from_centroid(const Multibody_Set &);
+    void trajectories_from_com(const Multibody_Set &);
+
+    Trajectory * show_trajectory(int index);
+    int show_n_trajectories()const{return n_trajectories;};
 };
 
 }

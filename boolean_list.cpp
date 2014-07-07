@@ -15,7 +15,7 @@ Boolean_List::Boolean_List(System * sys)
   system = sys;
 
   included.resize(system->show_n_trajectories());
-  
+
   system->add_boolean_list(this);
 }
 
@@ -25,7 +25,7 @@ Boolean_List::Boolean_List(System * sys, int * inc, int n_included)
    /**Create boolean list from list of trajectory IDs of included trajectories
     * @author David Simmons
     * @date 3/1/2013
-    */	
+    */
   int trajii;
 
   system = sys;
@@ -37,14 +37,14 @@ Boolean_List::Boolean_List(System * sys, int * inc, int n_included)
   //{
   //  included[trajii]=0;
   //}
-  
+
   for(trajii=0;trajii<n_included;trajii++)
   {
     included[inc[trajii]]=1;
   }
-  
+
   system->add_boolean_list(this);
-  
+
 }
 
 
@@ -68,7 +68,7 @@ Boolean_List::Boolean_List(const Boolean_List & copy)
   {
     included[trajii]=copy.included[trajii];
   }
-  
+
   system->add_boolean_list(this);
 }
 /*End New MEM*/
@@ -130,12 +130,12 @@ void Boolean_List::set(System * sys, int * inc, int n_included)
 //  {
 //    included[trajii]=0;
 //  }
-  
+
   for(trajii=0;trajii<n_included;trajii++)
   {
     included[inc[trajii]]=1;
   }
-  
+
 }
 
 
@@ -294,4 +294,14 @@ int Boolean_List::first_included()const
   }
 
   return int(-1);
+}
+
+
+
+void Boolean_List::grow_list(int growsize)
+{
+    int current_size = included.size();
+    int new_size = current_size+growsize;
+
+    included.resize(new_size);
 }

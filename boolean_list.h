@@ -40,8 +40,9 @@ class Boolean_List
   int show_n_included()const;
   int show_trajectory_ids(int, int *)const;
   int first_included()const;
-  
-  void grow_list(){included.push_back(0);};		//add additional '0' to end of boolean vector - use whenever a new trajetory is added to system
+
+  void grow_list(){included.push_back(0);};		//add additional '0' to end of boolean vector - use whenever a new trajectory is added to system
+  void grow_list(int growsize); //add additional '0's to end of boolean vector - use whenever multiple new trajectories are added to system
 
 };
 }

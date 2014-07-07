@@ -944,7 +944,7 @@ void System::custom_prep(vector<string> file_in, string fileline)
 /*----------------------------------------------------------------------------------*/
 /* Method to do a better job at comparing float values, since sometimes AMDAT will say box
 dimensions are changing when they really aren't.
-Taken from here: (which includes a good description of the problem and offers several solutions) 
+Taken from here: (which includes a good description of the problem and offers several solutions)
 http://randomascii.wordpress.com/2012/02/25/comparing-floating-point-numbers-2012-edition/
 Originally called "AlmostEqualRelative" on that site.
 */
@@ -957,7 +957,7 @@ bool System::floatCompare(float A, float B)
     B = fabs(B);
     // Find the largest
     float largest = (B > A) ? B : A;
- 
+
     if (diff <= largest * maxRelDiff)
         return true;
     return false;
@@ -2299,7 +2299,7 @@ float System::displacement_times(int timeii) const
 	}
 	else
 	{
-	  Error( "Timegap time information requested for nonexistent timegap.", 0); 
+	  Error( "Timegap time information requested for nonexistent timegap.", 0);
 	}
 
 	return timegap;
@@ -2388,7 +2388,7 @@ void System::displacement_loop(Analysis* analysis, Trajectory * traj, bool fullb
 			displacement_count++;
 			if(displacement_count == displacement_limit) break;
 //			cout << thisii << "\t" << nextii << "\n";
-		
+
 		}
 	}
 //	cout << "exponential\n";
@@ -2442,7 +2442,7 @@ void System::displacement_loop(Analysis* analysis, Trajectory * traj, int timega
 			displacement_count++;
 			if(displacement_count == displacement_limit) break;
 		}
-		
+
 	}
 	else if(timegapii>=n_exponential_steps&&timegapii<n_timegaps-1+int(frt))
 	{
@@ -2458,7 +2458,7 @@ void System::displacement_loop(Analysis* analysis, Trajectory * traj, int timega
 				displacement_count++;
 				if(displacement_count == displacement_limit) break;
 			}
-		
+
 			if(displacement_count == displacement_limit) break;
 		}
 	}
@@ -2502,7 +2502,7 @@ void System::displacement_loop_list(Analysis* analysis, Particle_List* particle_
 			displacement_count++;
 			if(displacement_count == displacement_limit) break;
 //			cout << thisii << "\t" << nextii << "\n";
-		
+
 		}
 	}
 //	cout << "exponential\n";
@@ -2522,7 +2522,7 @@ void System::displacement_loop_list(Analysis* analysis, Particle_List* particle_
 				if(displacement_count == displacement_limit) break;
 //				cout << thisii << "\t" << nextii << "\n";
 			}
-		
+
 			if(displacement_count == displacement_limit) break;
 		}
 	}
@@ -2585,7 +2585,7 @@ void System::displacement_list(Analysis* analysis, bool fullblock)const
 //	cout << "exponential\n";
 
 
-		
+
 		{
 
 			#pragma omp parallel for schedule(dynamic)  if(analysis->isThreadSafe()) // This makes this loop execute in parallel, splitting by time values.
@@ -2594,7 +2594,7 @@ void System::displacement_list(Analysis* analysis, bool fullblock)const
 				int displacement_count=0;
 				int block_timegapii = timegapii - n_exponential_steps + 1;
 				bool abort = false;
-				
+
 				for(int expii=0;expii<((int(fullblock)*(n_exponential_steps-1))+1);expii++)
 				{
 					if (!abort)
@@ -2658,7 +2658,7 @@ void System::displacement_loop_list(Analysis* analysis, Particle_List* particle_
 			displacement_count++;
 			if(displacement_count == displacement_limit) break;
 		}
-		
+
 	}
 	else if(timegapii>=n_exponential_steps&&timegapii<n_timegaps-1+int(frt))
 	{
@@ -2676,7 +2676,7 @@ void System::displacement_loop_list(Analysis* analysis, Particle_List* particle_
 				if(displacement_count == displacement_limit) break;
 			}
 
-		
+
 			if(displacement_count == displacement_limit) break;
 		}
 	}
@@ -2720,7 +2720,7 @@ void System::displacement_list(Analysis* analysis, int timegapii, bool fullblock
 			analysis->list_displacementkernel(timegapii,thisii,nextii);
 			displacement_count++;
 			if(displacement_count == displacement_limit) break;
-		
+
 		}
 	}
 	else if(timegapii>=n_exponential_steps&&timegapii<n_timegaps-1+int(frt))
@@ -2738,7 +2738,7 @@ void System::displacement_list(Analysis* analysis, int timegapii, bool fullblock
 				displacement_count++;
 				if(displacement_count == displacement_limit) break;
 			}
-		
+
 			if(displacement_count == displacement_limit) break;
 		}
 	}
@@ -2784,7 +2784,7 @@ void System::displacement_list(Analysis* analysis, int timegapii, int firstblock
 			analysis->list_displacementkernel(timegapii,thisii,nextii);
 			displacement_count++;
 			if(displacement_count == displacement_limit) break;
-		
+
 		}
 	}
 	else if(timegapii>=n_exponential_steps&&timegapii<n_timegaps-1+int(frt))
@@ -2803,7 +2803,7 @@ void System::displacement_list(Analysis* analysis, int timegapii, int firstblock
 				displacement_count++;
 				if(displacement_count == displacement_limit) break;
 			}
-		
+
 			if(displacement_count == displacement_limit) break;
 		}
 	}
@@ -2881,7 +2881,7 @@ int System::timegap_weighting(int timegap, bool fullblock) const
   {
     Error("Timegap weighting requested for nonexistent timegap.",0);
   }
-  
+
 
   return weighting;
 }
@@ -3222,15 +3222,15 @@ void System::write_single_particle(int trajii, string filename)const
 
 
 /*Method to create multibody_sets based on string input*/
-Multibody_Set* System::create_multibody_set (int n_args, string* args)
+Multibody_Set* System::create_multibody_set (string setname, int n_args, string* args)
 {
   Multibody_Set * multibodysetpointer;
   int n_bodies, speciesindex, atomtypeindex;
   int* type;
   int* index;
-  
-  
-  
+
+
+
   if(args[2] == "all_molecule")
   {
     if(n_args==3)
@@ -3269,7 +3269,7 @@ Multibody_Set* System::create_multibody_set (int n_args, string* args)
       cout<<"\nError:incorrect number of arguments for multibody_set type species_type. 5 expected.";
       exit(1);
     }
-    
+
   }
   else if(args [2] == "species_atomlist")
   {
@@ -3297,7 +3297,10 @@ Multibody_Set* System::create_multibody_set (int n_args, string* args)
     cout << "\nError: Create_Multibodies keyword " << args[2] << " does not exist. Options are all_molecules, species_molecules, species_type, and species_atomlist.";
     exit(1);
   }
-  
+
+  add_multibody_set(setname,multibodysetpointer);
+  //create new multibody set with number of multibodies equal to number of molecules
+
   return multibodysetpointer;
 }
 
@@ -3306,11 +3309,11 @@ Multibody_Set* System::create_multibody_set()
 {
   int speciesii,moleculeii;
   int multibodyii=0;
-  
+
   Multibody_Set * new_multibody_set;
   new_multibody_set = new Multibody_Set;
   new_multibody_set->set(total_molecules);	//set number of multibodies
-  
+
   for(speciesii=0;speciesii<n_species;speciesii++)
   {
     for(moleculeii=0;moleculeii<n_molecules[speciesii];moleculeii++)
@@ -3319,9 +3322,7 @@ Multibody_Set* System::create_multibody_set()
       multibodyii++;		//increment count of multibodeis created
     }
   }
-  
-  svn	//create new multibody set with number of multibodies equal to number of molecules
-  
+
   return new_multibody_set;		//return pointer to new set
 }
 
@@ -3330,20 +3331,18 @@ Multibody_Set* System::create_multibody_set(int speciesii)
 {
   int moleculeii;
   int multibodyii=0;
-  
+
   Multibody_Set * new_multibody_set;
   new_multibody_set = new Multibody_Set;
   new_multibody_set->set(n_molecules[speciesii]);	//set number of multibodies
 
-  
+
     for(moleculeii=0;moleculeii<n_molecules[speciesii];moleculeii++)
     {
       new_multibody_set->set_multibody(multibodyii,molecules[speciesii][moleculeii].create_multibody());	//request molecule to create multibody and copy it to multibody_set
       multibodyii++;		//increment count of multibodeis created
     }
 
-  multibody_sets.push_back(new_multibody_set);		//create new multibody set with number of multibodies equal to number of molecules
-  
   return new_multibody_set;		//return pointer to new set
 }
 
@@ -3355,19 +3354,17 @@ Multibody_Set* System::create_multibody_set(int speciesii, int type)
 {
   int moleculeii;
   int multibodyii=0;
-  
+
   Multibody_Set * new_multibody_set;
   new_multibody_set = new Multibody_Set;
   new_multibody_set->set(n_molecules[speciesii]);	//set number of multibodies
-  
+
     for(moleculeii=0;moleculeii<n_molecules[speciesii];moleculeii++)
     {
       new_multibody_set->set_multibody(multibodyii,molecules[speciesii][moleculeii].create_multibody(type));	//request molecule to create multibody and copy it to multibody_set
       multibodyii++;		//increment count of multibodeis created
     }
 
-  multibody_sets.push_back(new_multibody_set);		//create new multibody set with number of multibodies equal to number of molecules
-  
   return new_multibody_set;		//return pointer to new set
 }
 
@@ -3378,19 +3375,97 @@ Multibody_Set* System::create_multibody_set(int speciesii, int n_bodies, int * t
 {
   int moleculeii;
   int multibodyii=0;
-  
+
   Multibody_Set * new_multibody_set;
   new_multibody_set = new Multibody_Set;
   new_multibody_set->set(n_molecules[speciesii]);	//set number of multibodies
-  
-  
+
+
     for(moleculeii=0;moleculeii<n_molecules[speciesii];moleculeii++)
     {
       new_multibody_set->set_multibody(multibodyii,molecules[speciesii][moleculeii].create_multibody(n_bodies, typeii, index));	//request molecule to create multibody and copy it to multibody_set
       multibodyii++;		//increment count of multibodeis created
     }
 
-  multibody_sets.push_back(new_multibody_set);		//create new multibody set with number of multibodies equal to number of molecules
-  
   return new_multibody_set;		//return pointer to new set
+}
+
+
+/*Method to add multibody set to master list*/
+void add_multibody_set(string multibody_set_name,Multibody_Set* multibody_set)
+{
+    bool result
+
+    result=(multibody_sets.insert({multibody_set_name,multibody_set})).second;
+
+    if(!result)
+    {
+        cout << "\nWarning:multibody_set "<< multibody_set_name<<" not saved in master list because a multibody_set with this name already exists. \n";
+    }
+}
+
+
+
+/*Method to find a multibody set within master list*/
+Multibody_Set* find_multibody_set(string setname, bool allow_nofind=0)const
+{
+    Multibody_Set * multibody_set;
+
+    try
+    {
+        multibody_set = multibody_sets.at(setname);
+    }
+    catch(out_of_range & sa)
+    {
+        if(allow_nofind)
+        {
+            multibody_set=0;
+        }
+        else
+        {
+            cout << "\nError: multibody_set " << listname << " does not exist.\n";
+            exit(0);
+        }
+    }
+
+  return multibody_set;
+}
+
+void delete_multibody_set(string setname)
+{
+    Multibody_List * multibody_list;
+
+    multibody_list = find_multibody_list(listname,1);
+    if(multibody_list=0)
+    {
+        cout << "\nWarning: multibody_list " << listname << " does not exist and therefore cannot be deleted.";
+    }
+    else
+    {
+        multibody_lists.erase(listname);
+        delete [] multibody_list;
+    }
+}
+
+Trajectory_Set* create_trajectory_set(string setname, string multibodysetname)
+{
+
+}
+
+void add_trajectories (int n_new_trajectories, Trajectory * new_trajectories)
+{
+    int trajii
+
+    for(trajii=0;trajii<n_new_trajectories;trajii++)
+    {
+        trajectorylist.push_back(new_trajectories[trajii]);
+    }
+
+    //Now need code to update all boolean_lists in system appropriately
+    for(auto bool_iterator = bool_lists.begin();bool_iterator!=bool_lists.end();bool_iterator++)
+    {
+
+
+    }
+    grow_list(n_new_trajectories)
 }

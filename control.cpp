@@ -73,7 +73,7 @@ Control::Control(char * filename_input, string * consts, string * consts_names, 
   n_constants=n_consts;
   MAXTHREADS=omp_get_max_threads();
   int numLines = read_input_file(filename_input);
-  
+
   if (!execute_commands(0, numLines))
     cout << "\nProgram terminated prior to completion! An error was encountered." << endl;
   else
@@ -126,18 +126,18 @@ int Control::read_input_file(char * filename_input)
     { command = args[0]; }
 
     if (command == "skip")
-    { 
-        skip(); 
+    {
+        skip();
         continue;
     }
-    
+
     inputFileVector.push_back(line);
     numLines++;
-    
+
   }
   input.close();
 
-//  cout << "\n"; 
+//  cout << "\n";
 /*  for(int i=0; i<numLines; i++) // Display the contents of the vector, aka, display the file minus any comments. TODO: Make this an option. MDM 10/21/13
   {
     cout << inputFileVector[i] << endl;
@@ -324,7 +324,7 @@ int Control::execute_commands(int iIndex, int fIndex)
     {}//Nothing yet
     else if (command == "if")
     { int error = do_if_statement();
-        if (error != 1) 
+        if (error != 1)
             return error; }
     else if (command == "end" || command == "else")
     {}
@@ -365,7 +365,7 @@ string Control::read_line()
    * @date 7/23/2013
    **/
     current_line++;
-    return get_line(current_line-1);    
+    return get_line(current_line-1);
 }
 
 string Control::read_next_line()
@@ -527,7 +527,7 @@ void Control::evaluate_expression()
     if (line.find("=",0)!=string::npos)
     {
         int pos=line.find("=",0); //The constant is the content before the "=", the expression is after
-        out_const=line.substr(0, pos); 
+        out_const=line.substr(0, pos);
         line=line.substr(pos+1);
     }
     else
@@ -595,7 +595,7 @@ float Control::process_expression(string exp)
         else if (find(opVect.begin(), opVect.end(), ch)!=opVect.end())
         {
             stackVal=eval_terms(nextOp, stackVal, atof(stack.c_str()));
-            
+
             stack="";
             nextOp=ch;
         }
@@ -703,7 +703,7 @@ int Control::do_if_statement()
     {
        // cout << "executing else" << endl;
         int start = locate_if_end(initialPos-1, true); // Execute between "else" and "end"
-        int end = locate_if_end(start, false); 
+        int end = locate_if_end(start, false);
         error = execute_commands(start+1, end);
     }
     line_seek(endPos);
@@ -743,7 +743,7 @@ bool Control::do_for_loop()
             int error = execute_commands(initialPos, endPos);
             if (error == 0)
                 return false;
-            else if (error == 2)   
+            else if (error == 2)
                 break;
         }
     }
@@ -757,7 +757,7 @@ bool Control::do_for_loop()
             int error = execute_commands(initialPos, endPos);
             if (error == 0)
                 return false;
-            else if (error == 2)   
+            else if (error == 2)
                 break;
         }
     }
@@ -1211,7 +1211,7 @@ void Control::add_trajectorylist(Trajectory_List * t_list, string listname)
 Multibody_List* Control::find_multibody_list(string listname,bool allow_nofind)const
 {
   Multibody_List * multibody_list;
-  
+
   try
   {
     multibody_list = multibody_lists.at(listname);
@@ -1228,7 +1228,7 @@ Multibody_List* Control::find_multibody_list(string listname,bool allow_nofind)c
       exit(0);
     }
   }
-  
+
   return multibody_list;
 }
 
@@ -1241,9 +1241,9 @@ Multibody_List* Control::find_multibody_list(string listname,bool allow_nofind)c
 void Control::add_multibody_list(Multibody_List* multibody_list,string multibody_list_name)
 {
   bool result;
-  
+
   result=(multibody_lists.insert({multibody_list_name,multibody_list})).second;
-  
+
   if(!result)
   {
     cout << "\nWarning:multibody_list "<< multibody_list_name<<" not created because a multibody_list with this name already exists. Replacement of a multibody_list requires that you first delete the existing list with the same name.\n";
@@ -1258,7 +1258,7 @@ void Control::add_multibody_list(Multibody_List* multibody_list,string multibody
 void Control::delete_multibody_list(string listname)
 {
   Multibody_List * multibody_list;
-  
+
   multibody_list = find_multibody_list(listname,1);
   if(multibody_list=0)
   {
@@ -1381,11 +1381,11 @@ void Control::create_multibodies()
   Multibody_Set* multibody_set_pointer;
   Multibody_List* new_multibody_list;
   new_multibody_list=new Multibody_List;
-  
+
   multibody_list_name = args[1];
-  
-  multibody_set_pointer = analyte->create_multibody_set (n_args, args);
-  
+
+  multibody_set_pointer = analyte->create_multibody_set (multibody_list_name, n_args, args);    //create multibody set with name that is the same as the multibody list. This is where the multibodies are created.
+
   new_multibody_list->set(analyte,multibody_set_pointer);
   add_multibody_list(new_multibody_list,multibody_list_name);
 }
@@ -1675,7 +1675,7 @@ void Control::calc_vhd()
   float max_range;
   int n_bins;
   string filename;
-  
+
   int expected = 3;
   argcheck(expected);
 
@@ -2326,12 +2326,12 @@ void Control::strings()
 	imgfilename=filename;
 	imgfilename+="_img.xyz";
 	stringlist.write_jump(imgfilename,0);
-	
+
 	cout << "\nGenerating string trajectory list" << endl;
 
         Trajectory_List * trajpointer;
         trajpointer = new Trajectory_List();
-	
+
 	stringlist.construct_trajectory_list(trajpointer);
 
         add_trajectorylist(trajpointer, t_listname);	//add trajectory list to array
@@ -3123,7 +3123,7 @@ void Control::print()
 	//cout << "\n";
 	for (int i=1;i<n_args;i++)
 	{
-		cout << args[i] << " ";	
+		cout << args[i] << " ";
 	}
 	cout <<  endl;
 }
@@ -3158,15 +3158,15 @@ void Control::gyration_radius()
 {
   string filename, multibody_list_name;
   Multibody_List * multibodylist;
-  
+
   int expected=3;
   argcheck(expected);
-  
+
   filename = args[1];
   multibody_list_name=args[2];
-  
+
   multibodylist = find_multibody_list(multibody_list_name);
-  
+
   Gyration_Radius gyrrad(analyte);
   cout << "\nCalculating gyration radius.\n";cout.flush();
   start = time(NULL);
@@ -3174,5 +3174,5 @@ void Control::gyration_radius()
   finish = time(NULL);
   cout << "\nCalculated gyration radius in " << finish-start<<" seconds."<<endl;
   gyrrad.write(filename);
-  
+
 }
