@@ -59,36 +59,35 @@ class Control
 
     /*Arrays to store analysis results with a name given by the user, for later recall and use in other analysis techniques*/
 
-    
+
     /*Members to store and access trajectory_list objects*/
-    //TODO Change trajectory_list storage to unordered_map.
-    Trajectory_List * trajectories [LISTSIZE];		//array of trajectory list objects
-    string trajectorylist_names [LISTSIZE];		//custom name of trajectory list
-    int n_trajectorylists;				//number of trajectory lists stored
-    int find_trajectorylist(string);		//return index of trajectorylist with given custom name
+    unordered_map <string, Trajectory_List*> trajectories;
+    Trajectory_List* find_trajectorylist(string, bool allow_nofind=0)const;
     void add_trajectorylist(Trajectory_List*, string);
     void trajectories_from_multibodies();
-    
-    
+    void combine_trajectories(){};
+
+
+
     /*Members to store and access multibody_list objects*/
     unordered_map<string,Multibody_List*> multibody_lists;
     Multibody_List* find_multibody_list(string,bool allow_nofind=0)const;
     void add_multibody_list(Multibody_List*,string);
     void delete_multibody_list(string);
-    
-    
-    
+
+
+
     //Space-Time_Correlation_Function * space-time_correlations [LISTSIZE];
     //string space-time_correlationnames [LISTSIZE];
     //int n_space-time_correlations;
     //int find_space-time_correlations();
     //void add_space-time_correlations();
-    
-    //void * analyses [LISTSIZE];			//declare 
+
+    //void * analyses [LISTSIZE];			//declare
     //string analysis_names [LISTSIZE];
     //int n_analyses;
-    
-    
+
+
     static string * constants;                //Array of environment constants
     static string * constant_names;      //Array of custom environment constant names
     static int n_constants;
@@ -111,13 +110,13 @@ class Control
     void write_list_trajectory();
     void write_list_trajectory_full();
 
-    
+
     void create_multibodies();		//method to create set of user-defined multibodies from molecule, together with a list of multibodies enabling access to this set.
-    
+
     /*Method to parse input for analysis class atom loop types*/
     void run_analysis(Analysis*, string);
     void setargcheck(int, int, string);		//check number of arguments for above method
-    
+
 
     /*Daniel Hunsicker*/
     void initialize_lists();		//initialize some arrays
@@ -278,7 +277,7 @@ void Control::run_analysis(Analysis_type analyzer, string setline, string filena
 	  listnum = find_trajectorylist(listname);
 	  listname2 = setargs[2];
 	  listnum2 = find_trajectorylist(listname2);
-	  
+
 	  if(listnum!=-1&&listnum2!=-1)
 	  {
 		  analyzer.analyze(trajectories[listnum],trajectories[listnum2]);

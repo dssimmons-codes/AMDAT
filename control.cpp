@@ -203,6 +203,10 @@ int Control::execute_commands(int iIndex, int fIndex)
     {
       trajectories_from_multibodies();
     }
+    else if (command == "combine_trajectories")
+    {
+        combine_trajectories();
+    }
     else if (command == "msd")
     {
       msd();
@@ -950,7 +954,6 @@ void Control::get_user_input(bool show_tips)
  void Control::initialize_lists()
  {
    //list of particle lists
-   n_trajectorylists=0;
    n_gaussian_comparisons = 0;
    vhs_defined = 0;
    n_trajectory_list_bins = 0;
@@ -1138,10 +1141,11 @@ void Control::run_analysis(Analysis* analyzer, string setline)
     expected = 2;
     setargcheck(expected, n_setargs, command);
     listname = setargs[1];
-    listnum = find_trajectorylist(listname);
+    //listnum = find_trajectorylist(listname);
+
     if(listnum!=-1)
     {
-	    analyzer->analyze(trajectories[listnum]);
+	    analyzer->analyze(find_trajectorylist(listname));
     }
     else
     {
@@ -1176,15 +1180,29 @@ void Control::run_analysis(Analysis* analyzer, string setline)
 
 
   /*finds trajectorylist object by custom name*/
-int Control::find_trajectorylist(string listname)
+int Control::find_trajectorylist(string listname, bool allow_nofind)const
 {
-	int listii;
+    Trajectory_List * trajectory_list;
 
-	for(listii=0;listii<n_trajectorylists;listii++)
-	{
-	  if(listname==trajectorylist_names[listii]) return listii;
-	}
-	return -1;
+  try
+  {
+    trajectory_list = trajectories.at(listname);
+  }
+  catch(out_of_range & sa)
+  {
+    if(allow_nofind)
+    {
+      trajectory_list=0;
+    }
+    else
+    {
+      cout << "\nError: trajectory_list " << listname << " does not exist.\n";
+      exit(0);
+    }
+  }
+
+  return trajectory_list;
+
 }
 
 
@@ -1195,16 +1213,43 @@ int Control::find_trajectorylist(string listname)
 
 void Control::add_trajectorylist(Trajectory_List * t_list, string listname)
 {
-  int trajnum;
+ bool result;
 
-  trajnum = find_trajectorylist(listname);
-  if(trajnum==-1)
+  result=(trajectories.insert({listname,t_list})).second;
+
+  if(!result)
   {
-    trajnum = n_trajectorylists;
-    n_trajectorylists++;
+    cout << "\nWarning: trajectory_list "<< listname<<" not created because a trajectory_list with this name already exists. Replacement of a trajectory_list requires that you first delete the existing list with the same name.\n";
   }
-  trajectories[trajnum] = t_list;
-  trajectorylist_names[trajnum]=listname;
+
+
+}
+
+
+
+
+
+/*--------------------------------------------------------------------------------*/
+
+
+void Control::combine_trajectories()
+{
+    int argii;
+    string newlistname;
+
+    Trajectory_List * new_trajectory_list;
+    new_trajectory_list = new Trajectory_List;
+
+    newlistname=args[1];
+
+    (*new_trajectory_list)=find_trajectorylist(args[2]);
+
+    for(argii=3;argii<n_args;argii++)
+    {
+        (*new_trajectory_list)=(*new_trajectory_list)||(*find_trajectorylist([args[argii]));
+    }
+
+    add_trajectorylist(new_trajectory_list,newlistname);
 
 }
 
@@ -1390,13 +1435,13 @@ void Control::trajectories_from_multibodies()
   bool centertype;
   Trajectory_Set * trajectory_set_pointer;
   Static_Trajectory_List * new_trajectory_list;
-  
+
   new_trajectory_list = new Static_Trajectory_List;
-  
+
   trajectory_list_name = args[1];
   multibody_set_name = args[2];
   centertypename = args[3];
-  
+
   if(centertypename == "centroid")
   {
     centertype = 0;
@@ -1410,14 +1455,14 @@ void Control::trajectories_from_multibodies()
     cout << "\n Type of multibody center '" << centertypename << "' not recognized. Allowable options are 'centroid' and 'com'";
     exit (0);
   }
-  
+
   trajectory_set_pointer = analyte->create_trajectory_set(trajectory_list_name,multibody_set_name,centertype);
-  
+
   new_trajectory_list->set(analyte,trajectory_set_pointer);
-  
-  
+
+
   add_trajectorylist(new_trajectory_list, trajectory_list_name);
-  
+
 }
 
 
@@ -1455,7 +1500,7 @@ void Control::write_list_trajectory()
   listname = args[1];
   trajname = args[2];
 
-  trajectories[find_trajectorylist(listname)]->write_xyz(trajname);
+  find_trajectorylist(listname)->write_xyz(trajname);
 }
 
 
@@ -1472,7 +1517,7 @@ void Control::write_list_trajectory_full()
   listname = args[1];
   trajname = args[2];
 
-  trajectories[find_trajectorylist(listname)]->write_full_xyz(trajname);
+  find_trajectorylist(listname)->write_full_xyz(trajname);
 }
 
 
@@ -1848,8 +1893,8 @@ if (n_args !=4)
   {
     Structure_Factor struc_fac(analyte,&wavevectors,fullblock);
     listname1 = args[1];
-    listnum1 = find_trajectorylist(listname1);
-    cout <<"\n"<< analyte->show_n_trajectories()<<"\t"<<wavevectors.show_n_wavenumbers()<<"\t"<<trajectories[listnum1]->show_n_trajectories(0)<<"\t"<<fullblock<<"\t";cout.flush();
+    //listnum1 = find_trajectorylist(listname1);
+    cout <<"\n"<< analyte->show_n_trajectories()<<"\t"<<wavevectors.show_n_wavenumbers()<<"\t"<<find_trajectorylist(listname1)->show_n_trajectories(0)<<"\t"<<fullblock<<"\t";cout.flush();
 
     if (symmetry=="symmetric")
     {
@@ -1866,11 +1911,11 @@ if (n_args !=4)
       cout <<"\n"<< runline2;
       n_args = tokenize(runline2, args);
       listname2 = args[1];
-      listnum2 = find_trajectorylist(listname2);
+      //listnum2 = find_trajectorylist(listname2);
       cout << "\nCalculating structure factor.\n";cout.flush();
       start = time(NULL);
       //calls bins
-      struc_fac.analyze(trajectories[listnum1],trajectories[listnum2]);
+      struc_fac.analyze(find_trajectorylist(listname1),find_trajectorylist(listname2));
       finish = time(NULL);
       cout << "\nCalculated structure factor in " << finish-start<<" seconds.\n";
     }
@@ -2567,8 +2612,8 @@ void Control::create_bin_list()
             }
             ss[4] >> thickness;
             ss[5] >> n_bins;
-            list_to_bin = trajectories[find_trajectorylist(setargs[2])];
-            clust_list = trajectories[find_trajectorylist(setargs[3])];
+            list_to_bin = find_trajectorylist(setargs[2]);
+            clust_list = find_trajectorylist(setargs[3]);
             traj_list_bins = new Trajectory_List_Bins(analyte, thickness, n_bins, list_to_bin, clust_list); //creates Trajectory_List_Bins object
         }
         else if (subtype == "point")
@@ -2590,7 +2635,7 @@ void Control::create_bin_list()
             ss[4] >> y;
             ss[5] >> z;
             Coordinate point(x,y,z);
-            list_to_bin = trajectories[find_trajectorylist(setargs[2])];
+            list_to_bin = find_trajectorylist(setargs[2]);
             traj_list_bins = new Trajectory_List_Bins(analyte, thickness, n_bins, list_to_bin, point); //creates Trajectory_List_Bins object
         }
         else if (subtype == "plane")
@@ -2613,7 +2658,7 @@ void Control::create_bin_list()
             ss[6] >> thickness;
             ss[7] >> n_bins;
             ss[5] >> position;
-            list_to_bin = trajectories[find_trajectorylist(setargs[3])];
+            list_to_bin = find_trajectorylist(setargs[3]);
             plane = setargs[4];
             traj_list_bins = new Trajectory_List_Bins(analyte, thickness, n_bins, list_to_bin, plane, position, direction); //creates Trajectory_List_Bins object
         }
@@ -3003,7 +3048,7 @@ void Control::clustered_list()
   primary = atoi(args[5].c_str());
   secondary = atoi(args[6].c_str());
 
-  traj_listnum = find_trajectorylist(traj_listname);
+  //traj_listnum = find_trajectorylist(traj_listname);
 
   cout << "\nGenerating clustered trajectory list" << endl;
 
@@ -3013,7 +3058,7 @@ void Control::clustered_list()
 
 
   Clustered_List * clusters;
-  clusters = new Clustered_List(*trajectories[traj_listnum]);
+  clusters = new Clustered_List(*find_trajectorylist(traj_listname));
 
 
   start = time(NULL);
@@ -3054,11 +3099,11 @@ void Control::invert_list()
    Trajectory_List * trajpointer;
   trajpointer = new Trajectory_List();
 
-   traj_listnum = find_trajectorylist(traj_listname);
-   original_traj_listnum = find_trajectorylist(original_trajectory);
+   //traj_listnum = find_trajectorylist(traj_listname);
+   //original_traj_listnum = find_trajectorylist(original_trajectory);
 
    //trajectories[traj_listnum]->inversion(trajpointer, trajectories[original_traj_listnum]);
-    trajectories[traj_listnum]->inversion(trajpointer, trajectories[original_traj_listnum]);
+    trajectories[traj_listnum]->inversion(trajpointer, find_trajectorylist(original_trajectory));
 
    add_trajectorylist(trajpointer, t_listname);	//add trajectory list to array
 cout<<"\nTrajectory list "<<t_listname<<" created with "<<trajpointer->show_n_trajectories(0)<< " trajectories.";
