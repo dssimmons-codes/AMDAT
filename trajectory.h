@@ -5,8 +5,8 @@
 #ifndef TRAJECTORY
 #define TRAJECTORY
 
-#include <string>
 #include "coordinate.h"
+#include <string>
 
 namespace std {
 

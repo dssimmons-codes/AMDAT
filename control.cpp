@@ -1180,7 +1180,7 @@ void Control::run_analysis(Analysis* analyzer, string setline)
 
 
   /*finds trajectorylist object by custom name*/
-int Control::find_trajectorylist(string listname, bool allow_nofind)const
+Trajectory_List* Control::find_trajectorylist(string listname, bool allow_nofind)const
 {
     Trajectory_List * trajectory_list;
 
@@ -1242,11 +1242,11 @@ void Control::combine_trajectories()
 
     newlistname=args[1];
 
-    (*new_trajectory_list)=find_trajectorylist(args[2]);
+    new_trajectory_list=find_trajectorylist(args[2]);
 
     for(argii=3;argii<n_args;argii++)
     {
-        (*new_trajectory_list)=(*new_trajectory_list)||(*find_trajectorylist([args[argii]));
+        (*new_trajectory_list)=(*new_trajectory_list)||(*find_trajectorylist(args[argii]));
     }
 
     add_trajectorylist(new_trajectory_list,newlistname);
@@ -1900,7 +1900,7 @@ if (n_args !=4)
     {
       cout << "\nCalculating structure factor.\n";cout.flush();
       start = time(NULL);
-      struc_fac.analyze(trajectories[listnum1]);
+      struc_fac.analyze(find_trajectorylist(listname1));
       finish = time(NULL);
       cout << "\nCalculated structure factor in " << finish-start<<" seconds.\n";
     }
@@ -3103,7 +3103,7 @@ void Control::invert_list()
    //original_traj_listnum = find_trajectorylist(original_trajectory);
 
    //trajectories[traj_listnum]->inversion(trajpointer, trajectories[original_traj_listnum]);
-    trajectories[traj_listnum]->inversion(trajpointer, find_trajectorylist(original_trajectory));
+   find_trajectorylist(traj_listname)->inversion(trajpointer, find_trajectorylist(original_trajectory));
 
    add_trajectorylist(trajpointer, t_listname);	//add trajectory list to array
 cout<<"\nTrajectory list "<<t_listname<<" created with "<<trajpointer->show_n_trajectories(0)<< " trajectories.";

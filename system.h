@@ -102,8 +102,8 @@ class System
     void boxify();						//method to check every coordinate to see if it is within the system boundaries; if not, it treats it as an image coordinate and replaces it with the 'real' coordinate
 
 
-    int add_boolean_list(Boolean_List * new_bool_list){bool_lists.insert(new_bool_list);};
-    int remove_boolean_list(Boolean_List * bool_list){bool_lists.erase(bool_list);};
+    void add_boolean_list(Boolean_List * new_bool_list){bool_lists.insert(new_bool_list);};
+    void remove_boolean_list(Boolean_List * bool_list){bool_lists.erase(bool_list);};
 
     /*------Methods to handle multibodies and multibody_sets--------*/
     Multibody_Set* create_multibody_set(string setname, int n_args, string * args);

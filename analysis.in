@@ -1,7 +1,7 @@
 system
 xyz_log
 traj.xyz log.lammps
-exponential 10 77 1.2 0 0 .01
+exponential 1 77 1.2 0 0 .01
 polymer 50
 1
 32
@@ -27,14 +27,15 @@ gyration_radius gyrrad_polymer1.dat mbodies3
 
 gyration_radius gyrrad_endend.dat mbodies4
 
-
-exit
-
 create_list all
 all
 
 msd msd.dat
 list all
+
+
+exit
+
 
 exit
 

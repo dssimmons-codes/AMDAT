@@ -15,7 +15,6 @@
 #include <omp.h>
 #include <stdexcept>
 
-#define ARGMAX 100
 #define CPLUSPLUS
 #ifndef TACC
 #include "xdrfile_xtc.h"
@@ -50,7 +49,7 @@ System::System(vector<string> file_in, bool ensemble)
   **/
 
   string line, fileline;
-  string args [ARGMAX];
+  vector <string> args;
   int n_args, argii, speciesii, moleculeii, typeii, atomii, atomcount, moleculecount;
   string trajectory_type;
   int extra_trajectories = 0;	//extra space to allocate for additional trajectories
@@ -68,19 +67,17 @@ System::System(vector<string> file_in, bool ensemble)
 //  line=Control::replace_constants(line);
   n_args = tokenize(line, args);
   trajectory_type=args[0];
-  if(n_args==2)
-  {
-    extra_trajectories=atoi(args[1].c_str());
-    cout << "\nAllocating space for " << extra_trajectories << " additional trajectories."<<endl;
-  }
+  //if(n_args==2)
+  //{
+  //  extra_trajectories=atoi(args[1].c_str());
+  //  cout << "\nAllocating space for " << extra_trajectories << " additional trajectories."<<endl;
+  //}
 
   /*read trajectory filename information*/
 //  getline(*file_in,fileline);
   fileline = Control::read_line();
   /*read timestep information*/
   line = "";
-  for(argii=0;argii<ARGMAX;argii++){args[argii]="";}
-
 //  getline(*file_in,line);
   line = Control::read_line();
   n_args = tokenize(line, args);
@@ -261,7 +258,7 @@ void System::read_trajectory(string trajectory_type, vector<string> file_in, str
 void System::xyz_prep(vector<string> file_in, string fileline)
 {
   string line;
-  string args [ARGMAX];
+  vector <string> args;
   int n_args;
   int ** natoms;						//array of number of atoms of each type in each species
   int speciesii;						//species type index
@@ -289,7 +286,6 @@ void System::xyz_prep(vector<string> file_in, string fileline)
 
   /*read in species names*/
   line = "";
-  for(argii=0;argii<ARGMAX;argii++){args[argii]="";}
 //  getline(*file_in,line);
 //  line=Control::replace_constants(line);
   line = Control::read_line();
@@ -312,7 +308,6 @@ void System::xyz_prep(vector<string> file_in, string fileline)
 
   /*read in atom type names*/
   line = "";
-  for(argii=0;argii<ARGMAX;argii++){args[argii]="";}
 //  getline(*file_in,line);
 //  line=Control::replace_constants(line);
   line = Control::read_line();
@@ -328,7 +323,6 @@ void System::xyz_prep(vector<string> file_in, string fileline)
   {
     natoms[speciesii] = new int [n_atomtypes];
     line = "";
-    for(argii=0;argii<ARGMAX;argii++){args[argii]="";}
 //    getline(*file_in,line);
     line = Control::read_line();
     n_args = tokenize(line, args);
@@ -396,7 +390,7 @@ void System::xyz_prep_withlog(vector<string> file_in, string fileline)
 
 
   string line;
-  string args [ARGMAX];
+  vector <string> args;
   int n_args;
   int ** natoms;						//array of number of atoms of each type in each species
   int speciesii;						//species type index
@@ -438,7 +432,6 @@ void System::xyz_prep_withlog(vector<string> file_in, string fileline)
 
   /*read in species names*/
   line = "";
-  for(argii=0;argii<ARGMAX;argii++){args[argii]="";}
 //  getline(*file_in,line);
 //  line=Control::replace_constants(line);
   line = Control::read_line();
@@ -461,7 +454,6 @@ void System::xyz_prep_withlog(vector<string> file_in, string fileline)
 
   /*read in atom type names*/
   line = "";
-  for(argii=0;argii<ARGMAX;argii++){args[argii]="";}
 //  getline(*file_in,line);
 //  line=Control::replace_constants(line);
   line = Control::read_line();
@@ -477,7 +469,6 @@ void System::xyz_prep_withlog(vector<string> file_in, string fileline)
   {
     natoms[speciesii] = new int [n_atomtypes];
     line = "";
-    for(argii=0;argii<ARGMAX;argii++){args[argii]="";}
 //    getline(*file_in,line);
     line = Control::read_line();
     n_args = tokenize(line, args);
@@ -663,7 +654,7 @@ void System::read_xyz(string xyzfilename, string structure_filename)
   int typeii;				//index over elements of above aray
   int timetally=0;
   string line;
-  string args [ARGMAX];
+  vector <string> args;
   int n_args;
   int n_moleculeblocks=0;
   int * moleculeblock_type;
@@ -773,7 +764,6 @@ void System::read_xyz(string xyzfilename, string structure_filename)
     /*parse section header*/
 
     line = "";
-    for(argii=0;argii<ARGMAX;argii++){args[argii]="";}
     getline(filexyz, line);
     n_args = tokenize(line, args);
     file_atoms = atoi(args[0].c_str());
@@ -794,7 +784,6 @@ void System::read_xyz(string xyzfilename, string structure_filename)
       {
         for(typeii=0;typeii<n_atomtypes;typeii++) {n_typeii[typeii]=0;}  //initiate type count array to zero at start of each molecule
         line = "";
-        for(argii=0;argii<ARGMAX;argii++){args[argii]="";}
         for(atomii=0;atomii<molecules[moleculeblock_type[moleculeblockii]][0].atomcount();atomii++)
         {
           getline(filexyz, line);
@@ -833,7 +822,7 @@ void System::custom_prep(vector<string> file_in, string fileline)
     * @author David S. Simmons
     **/
   string line;
-  string args [ARGMAX];
+  vector <string> args;
   int n_args;
   int ** natoms;		//array of number of atoms of each type in each species
   int speciesii;		//species type index
@@ -859,10 +848,6 @@ void System::custom_prep(vector<string> file_in, string fileline)
 
   /*read in species names*/
   line = "";
-  for(argii=0;argii<ARGMAX;argii++)
-  {
-    args[argii]="";
-  }
 //  getline(*file_in,line);
 //  line=Control::replace_constants(line);
   line = Control::read_line();
@@ -885,10 +870,6 @@ void System::custom_prep(vector<string> file_in, string fileline)
 
   /*read in atom type names*/
   line = "";
-  for(argii=0;argii<ARGMAX;argii++)
-  {
-    args[argii]="";
-  }
 //  getline(*file_in,line);
 //  line=Control::replace_constants(line);
   line = Control::read_line();
@@ -904,10 +885,6 @@ void System::custom_prep(vector<string> file_in, string fileline)
   {
     natoms[speciesii] = new int [n_atomtypes];
     line = "";
-    for(argii=0;argii<ARGMAX;argii++)
-    {
-      args[argii]="";
-    }
 //    getline(*file_in,line);
     line = Control::read_line();
     n_args = tokenize(line, args);
@@ -999,7 +976,7 @@ void System::read_custom(string xyzfilename)
   bool calc_wrapped;
 
   string line;
-  string args [ARGMAX];
+  vector <string> args;
   int n_args;
 
   ifstream filexyz(xyzfilename.c_str());

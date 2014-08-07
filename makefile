@@ -1,10 +1,11 @@
+#CXX=g++
 CXX=g++ -std=c++0x -std=gnu++0x
 ##Normal flags
-CFLAGS=-c -fopenmp #-O2
-CFLAGSmain= -fopenmp# -O2
+#CFLAGS=-c -fopenmp #-O2
+#CFLAGSmain= -fopenmp# -O2
 ##Debugging flags
-#CFLAGS=-Wall -Wextra -Wcast-qual -Wcast-align -O0 -ggdb -g3 -fstack-protector-all -fno-inline -c -fopenmp #-O2
-#CFLAGSmain=-Wall -Wextra -Wcast-qual -Wcast-align -O0 -ggdb -g3 -fstack-protector -fno-inline -all -fopenmp #-O2
+CFLAGS=-Wall -Wextra -Wcast-qual -Wcast-align -O0 -ggdb -g3 -fstack-protector-all -fno-inline -c -fopenmp #-O2
+CFLAGSmain=-Wall -Wextra -Wcast-qual -Wcast-align -O0 -ggdb -g3 -fstack-protector -fno-inline -all -fopenmp #-O2
 SERVER=
 WAVEVECTORS3D="\"/home/david/qvectors/qvectors3d/qvector\""
 WAVEVECTORS2D="\"/home/david/qvectors/qvectors2d/qvector\""
@@ -29,8 +30,8 @@ else
 AMDAT: amdat.o coordinate.o trajectory.o atom_trajectory.o molecule.o system.o analysis.o space-time_correlation_function.o van_hove_self.o progress.o mean_square_displacement.o van_hove_distinct.o control.o wave_vectors.o wave_density.o intermediate_scattering_function.o correlation_2d.o incoherent_scattering_function.o debyewaller_dist.o stiffness_dist.o gaussian_comparison.o fast_particles.o non_gaussian_parameter.o  gaussian_comparison.o radial_debye_waller.o tokenize.o mean_square_displacement_2d.o velocity_autocorrelation.o strings.o trajectory_list.o static_trajectory_list.o clustered_list.o exptime_trajectory_list.o rgtensor.o trajmath.o rgtensor_stats.o displacement_distribution.o version.h boolean_list.o fast_particles.o   displacement_map.o composition.o n_fold_order_parameter.o trajectory_list_bins.o structure_factor.o trajectory_list_decay.o vector_autocorrelation.o error.o gyration_radius.o mean_displacement.o multibody.o multibody_set.o multibody_list.o multibody_analysis.o trajectory_set.o
 	${CXX} $(CFLAGSmain) amdat.o tokenize.o coordinate.o trajectory.o atom_trajectory.o molecule.o system.o analysis.o space-time_correlation_function.o van_hove_self.o progress.o mean_square_displacement.o van_hove_distinct.o control.o wave_vectors.o wave_density.o intermediate_scattering_function.o correlation_2d.o incoherent_scattering_function.o debyewaller_dist.o stiffness_dist.o non_gaussian_parameter.o gaussian_comparison.o radial_debye_waller.o mean_square_displacement_2d.o velocity_autocorrelation.o strings.o trajectory_list.o  static_trajectory_list.o clustered_list.o exptime_trajectory_list.o rgtensor.o trajmath.o rgtensor_stats.o displacement_distribution.o boolean_list.o fast_particles.o   composition.o n_fold_order_parameter.o displacement_map.o trajectory_list_bins.o structure_factor.o vector_autocorrelation.o trajectory_list_decay.o error.o mean_displacement.o multibody.o multibody_set.o multibody_list.o multibody_analysis.o gyration_radius.o trajectory_set.o -o AMDAT -lfftw3 -lm -lxdrfile 
 
-system.o: system.cpp system.h molecule.h analysis.h atom_trajectory.h coordinate.h tokenize.h trajectory.h
-	${CXX} $(CFLAGS) system.cpp -lxdrfile trajectory_set.o
+system.o: system.cpp system.h molecule.h analysis.h atom_trajectory.h coordinate.h tokenize.h trajectory.h trajectory_set.o
+	${CXX} $(CFLAGS) system.cpp -lxdrfile 
 
 space-time_correlation_function.o: space-time_correlation_function.cpp space-time_correlation_function.h system.h coordinate.h molecule.h analysis.h atom_trajectory.h trajectory.h
 	${CXX} $(CFLAGS) space-time_correlation_function.cpp -lfftw3 -lm 

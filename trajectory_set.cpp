@@ -1,5 +1,5 @@
 /*Amorphous Molecular Dynamics Analysis Toolkit (AMDAT)*/
-/*Methods for Trajectory_set class - Class to store sets of user-defined trajectories
+/*Methods for Trajectory_set class - Class to store sets of user-defined trajectories*/s
 /*Written by David S. Simmons*/
 
 #include "trajectory_set.h"
@@ -48,6 +48,8 @@ Trajectory_Set Trajectory_Set::operator=(const Trajectory_Set & copy)
             trajectories[trajii]=copy.trajectories[trajii];
         }
     }
+    
+    return *this;
 }
 
 

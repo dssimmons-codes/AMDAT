@@ -28,7 +28,7 @@
 
 
 
-#define ARGMAX 20
+#define ARGMAX 100
 
 #define LISTSIZE 100
 
@@ -65,7 +65,7 @@ class Control
     Trajectory_List* find_trajectorylist(string, bool allow_nofind=0)const;
     void add_trajectorylist(Trajectory_List*, string);
     void trajectories_from_multibodies();
-    void combine_trajectories(){};
+    void combine_trajectories();
 
 
 
@@ -235,7 +235,6 @@ void Control::run_analysis(Analysis_type analyzer, string setline, string filena
      string command;			//command specifying type of set to loop over
      int expected;
      string listname, listname2;
-     int listnum, listnum2;
      bool use_persistence=0;
 
      string bin_listname;
@@ -258,36 +257,16 @@ void Control::run_analysis(Analysis_type analyzer, string setline, string filena
        if(n_setargs==2)
        {
 	  listname = setargs[1];
-	  listnum = find_trajectorylist(listname);
-
-	  if(listnum!=-1)
-	  {
-		  analyzer.analyze(trajectories[listnum]);
-		  analyzer.write(filename);
-	  }
-	  else
-	  {
-	  	cout << "\nTrajectory list '"<<listname<<"' not found.";
-		exit(1);
-	  }
+	  analyzer.analyze(find_trajectorylist(listname));
+          analyzer.write(filename);
        }
        else if(n_setargs==3)
        {
 	  listname = setargs[1];
-	  listnum = find_trajectorylist(listname);
 	  listname2 = setargs[2];
-	  listnum2 = find_trajectorylist(listname2);
 
-	  if(listnum!=-1&&listnum2!=-1)
-	  {
-		  analyzer.analyze(trajectories[listnum],trajectories[listnum2]);
-		  analyzer.write(filename);
-	  }
-	  else
-	  {
-	  	cout << "\nTrajectory list '"<<listname<<"' not found.";
-		exit(1);
-	  }
+	  analyzer.analyze(find_trajectorylist(listname),find_trajectorylist(listname2));
+	  analyzer.write(filename);
        }
      }
      else if (command == "bin_list")
@@ -306,43 +285,36 @@ void Control::run_analysis(Analysis_type analyzer, string setline, string filena
 	  {
 	    use_persistence=bool(atoi(setargs[3].c_str()));
 	  }
-	  listnum = find_trajectorylist(listname);
-	  if (listnum !=-1)
-	  {
-	       if(bin_listnum!=-1)
-	       {
 
-		 binned_trajectory_list_to_analyze = binned_trajectories[bin_listnum];
-		 if(dynamic&&use_persistence)
-		 {
-		    Bin_Dynamics_Analysis <Analysis_type> bin_analyzer(binned_trajectory_list_to_analyze,analyzer,analyte);	// creates analysis array of desired analysis type using template declared above
-		    bin_analyzer.analyze(trajectories[listnum]); 							// performs analysis on intersection of bins given by <bin_list_ID> and trajectories given by <list_ID>
-		    bin_analyzer.write(filename);									// writes out data for each bin individually
-		 }
-		 else
-		 {
-		    Bin_Static_Analysis <Analysis_type> static_bin_analyzer(binned_trajectory_list_to_analyze,analyzer,analyte);	// creates analysis array of desired analysis type using template declared above
-		    static_bin_analyzer.analyze(trajectories[listnum]); 							// performs analysis on intersection of bins given by <bin_list_ID> and trajectories given by <list_ID>
-		    static_bin_analyzer.write(filename);									// writes out data for each bin individually
-		 }
-	       }
-	       else
-	       {
-		    cout << "\nBinned Trajectory list '"<<bin_listname<<"' not found.";
-		    exit(1);
-	       }
+	  if(bin_listnum!=-1)
+	  {
+
+	    binned_trajectory_list_to_analyze = binned_trajectories[bin_listnum];
+	    if(dynamic&&use_persistence)
+	    {
+	      Bin_Dynamics_Analysis <Analysis_type> bin_analyzer(binned_trajectory_list_to_analyze,analyzer,analyte);	// creates analysis array of desired analysis type using template declared above
+	      bin_analyzer.analyze(find_trajectorylist(listname)); 							// performs analysis on intersection of bins given by <bin_list_ID> and trajectories given by <list_ID>
+	      bin_analyzer.write(filename);									// writes out data for each bin individually
+	    }
+	    else
+	    {
+	      Bin_Static_Analysis <Analysis_type> static_bin_analyzer(binned_trajectory_list_to_analyze,analyzer,analyte);	// creates analysis array of desired analysis type using template declared above
+	      static_bin_analyzer.analyze(find_trajectorylist(listname)); 							// performs analysis on intersection of bins given by <bin_list_ID> and trajectories given by <list_ID>
+	      static_bin_analyzer.write(filename);									// writes out data for each bin individually
+	    }
 	  }
 	  else
 	  {
-	      cout << "\nTrajectory list '"<<listname<<"' not found.";
-	      exit(1);
+	    cout << "\nBinned Trajectory list '"<<bin_listname<<"' not found.";
+	    exit(1);
 	  }
+	 
 
      }
      else
      {
-     cout << "Error: Particles, etc. not suppored by this feature. Use lists or bin_lists please" << endl;
-     exit(1);
+     cout << "\nError: Command " << command << " not understood. Acceptable options are list or bin_list." << endl;
+     exit(10);
      //analyzer.analyze(setline);
      //analyzer.write(filename);
      }

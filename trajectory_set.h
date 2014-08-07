@@ -1,5 +1,5 @@
 /*Amorphous Molecular Dynamics Analysis Toolkit (AMDAT)*/
-/*Header for Trajectory_set class - Class to store sets of user-defined trajectories
+/*Header for Trajectory_set class - Class to store sets of user-defined trajectories*/
 /*Written by David S. Simmons*/
 
 #ifndef TRAJECTORY_SET

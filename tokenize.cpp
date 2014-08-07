@@ -5,9 +5,12 @@
 
 using namespace std;
 
-#include "tokenize.h"
+#include <vector>
 
-int tokenize(string line, string * tokens)
+#include "tokenize.h"
+#define ARGMAX 100
+
+int tokenize(string line, vector <string> tokens)
 {
   int n_tokens = 0;
   size_t token_start = 0;
@@ -15,6 +18,8 @@ int tokenize(string line, string * tokens)
   size_t next_tab;
   size_t token_end;
   size_t token_size;
+  
+  tokens.clear();
   
   while(1)	//loop until break command, at end of line
   {
@@ -25,7 +30,8 @@ int tokenize(string line, string * tokens)
     {
       if(token_start!=line.length())		//check if there is any token left to copy
       {
-        tokens[n_tokens] = line.substr(token_start);	//if so, pull token from line
+//	cout << "\n" << line << "\t" << n_tokens << "\t" <<token_start << "\t" << line.substr(token_start) << "\t." << tokens[n_tokens-1]; cout.flush();
+        tokens.push_back(line.substr(token_start));	//if so, pull token from line
         n_tokens++;					//increment count of tokens
       }
       return n_tokens;		//since end of string has been reached, terminate method
@@ -46,7 +52,7 @@ int tokenize(string line, string * tokens)
     token_size = token_end-token_start;	//determine token size
     if(int(token_size) != 0)		//check if token size is zero (as in the case of consecutive tabs/spaces).  If not, use these delimiters to get the next token
     {
-      tokens[n_tokens] = line.substr(token_start,token_size);	//pull token from line
+      tokens.push_back(line.substr(token_start,token_size));	//pull token from line
       n_tokens++;						//increment count of tokens
     } 
     

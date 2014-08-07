@@ -36,6 +36,7 @@ int main(int argc, char *argv[])
   input=0;
   int n_constants;
   n_constants=0;
+  procs_given = false;
   for(int argii=0;argii<argc;argii++) // loop over tokens
   {
     if(argv[argii][0] == '-') // flags
