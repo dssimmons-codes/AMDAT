@@ -6,16 +6,16 @@
 #define SYSTEM
 #include <unordered_set>
 #include <unordered_map>
-#include "molecule.h"
 #include <fstream>
-#include "analysis.h"
 #include <string>
-#include "trajectory.h"
 #include <vector>
+
+#include "molecule.h"
 #include "boolean_list.h"
 #include "multibody_set.h"
 #include "trajectory_set.h"
-
+#include "trajectory.h"
+#include "analysis.h"
 namespace std {
 
 class System
@@ -31,6 +31,7 @@ class System
     int * atoms_per_species;
     int total_molecules;			//total number of molecules in system
     int * n_molecules;				//array of number of molecules of each species
+    int * moleculecountholder;
     int total_trajectories;
     string timetype;				//stores type of time spacing
     int n_timesteps;				//number of timesteps

@@ -1900,7 +1900,7 @@ if (n_args !=4)
     {
       cout << "\nCalculating structure factor.\n";cout.flush();
       start = time(NULL);
-      struc_fac.analyze(find_trajectorylist(listname1));
+      struc_fac.analyze(trajectories[listname1]);
       finish = time(NULL);
       cout << "\nCalculated structure factor in " << finish-start<<" seconds.\n";
     }
@@ -3103,7 +3103,7 @@ void Control::invert_list()
    //original_traj_listnum = find_trajectorylist(original_trajectory);
 
    //trajectories[traj_listnum]->inversion(trajpointer, trajectories[original_traj_listnum]);
-   find_trajectorylist(traj_listname)->inversion(trajpointer, find_trajectorylist(original_trajectory));
+    trajectories[traj_listname]->inversion(trajpointer, find_trajectorylist(original_trajectory));
 
    add_trajectorylist(trajpointer, t_listname);	//add trajectory list to array
 cout<<"\nTrajectory list "<<t_listname<<" created with "<<trajpointer->show_n_trajectories(0)<< " trajectories.";

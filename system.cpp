@@ -20,7 +20,7 @@
 #include "xdrfile_xtc.h"
 #endif
 
-using namespace std;
+
 #include "system.h"
 #include "tokenize.h"
 #include "progress.h"
@@ -29,6 +29,7 @@ using namespace std;
 #include "control.h"
 #include "multibody_set.h"
 
+using namespace std;
 /*-------------------------------------------------------------------------------------*/
 /*-----------------------------------CONSTRUCTORS -------------------------------------*/
 /*-------------------------------------------------------------------------------------*/
@@ -126,14 +127,20 @@ System::System(vector<string> file_in, bool ensemble)
 
   /*create table of times in trajectory*/
   create_timelist();
-
+  
   read_trajectory(trajectory_type,file_in,fileline);
+  n_molecules=moleculecountholder;
+  cout << "\n\nAfter trajectory pointer " <<  n_molecules << "\n\n";cout.flush();
+  cout << "\n\nAfter trajectory " <<  n_molecules[0] << "\n\n";cout.flush();
   cout << "\nTrajectory data read successfully."<<endl;
 
+  
   /*initialize master lists of trajectory objects (foreign key arrays)*/
   moleculecount=0;
   for(speciesii=0;speciesii<n_species;speciesii++)
   {
+	  cout << "\n\n" << speciesii<<"\t";cout.flush();
+	  cout <<  n_molecules[speciesii] << "\n\n";cout.flush();
 	  for(moleculeii=0;moleculeii<n_molecules[speciesii];moleculeii++)
 	  {
 		  moleculecount++;		//count up total number of molecules
@@ -247,6 +254,12 @@ void System::read_trajectory(string trajectory_type, vector<string> file_in, str
       Error( string("Trajectory file type ").append(trajectory_type)+" not recognized.", -2);
     }
   }
+  
+  cout << "\n\nEnd of readtrajectory pointer " <<  n_molecules << "\n\n";cout.flush();
+  cout << "\n\nEnd of readtrajectory " <<  n_molecules[0] << "\n\n";cout.flush();
+  
+  moleculecountholder=n_molecules;
+  
 }
 
 
@@ -448,6 +461,7 @@ void System::xyz_prep_withlog(vector<string> file_in, string fileline)
   for(speciesii=0;speciesii<n_species;speciesii++)
   {
     n_molecules[speciesii] = atoi(args[speciesii*2+1].c_str());
+    cout << "\n\nMoleculecount definition: " << speciesii << "\t" << n_molecules[speciesii] << "\n\n";cout.flush();
   }
 
   natoms = new int*[n_species];			//allocate memory for atom-number-per-molecule array
@@ -494,6 +508,7 @@ void System::xyz_prep_withlog(vector<string> file_in, string fileline)
   {
     line = "";
     getline(logfile,line);
+    //cout << "\n\nLine is: " << line << "\n\n";cout.flush();
     n_args = tokenize(line, args);
     if(n_args==0){continue;}
     else if(args[0]=="Step")
@@ -542,7 +557,7 @@ void System::xyz_prep_withlog(vector<string> file_in, string fileline)
   count_atoms(natoms);
 
   create_molecules(natoms);
-
+  
   if(trajtemplate_given){read_xyz(xyzfilename,trajtemplate);}
   else {read_xyz(xyzfilename);}
 
@@ -550,6 +565,8 @@ void System::xyz_prep_withlog(vector<string> file_in, string fileline)
   /*calculate unwrapped trajectories*/
   cout << "\nUnwrapping trajectories."<<endl;
   unwrap();
+  
+  cout << "\n\nEnd of xyzprep " <<  n_molecules[0] << "\n\n";cout.flush();
 
 }
 
@@ -2132,6 +2149,7 @@ void System::create_molecules(int ** natoms)
   molecules = new Molecule * [n_species];
   for(speciesii=0;speciesii<n_species;speciesii++)
   {
+    cout << "\n\nCreating_molecules: " << speciesii<<"\t"<< n_molecules[speciesii] << "\n\n";cout.flush();
     molecules[speciesii] = new Molecule [n_molecules[speciesii]];
     for(moleculeii=0; moleculeii<n_molecules[speciesii]; moleculeii++)	//create array of molecule objects
     {

@@ -6,8 +6,7 @@ polymer 50
 1
 32
 
-
-
+exit
 
 create_multibodies mbodies5 species_type polymer 1
 
