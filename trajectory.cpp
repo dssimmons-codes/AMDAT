@@ -5,9 +5,10 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
-#include "trajectory.h"
 #include <iostream>
 #include <fstream>
+
+#include "trajectory.h"
 
 using namespace std;
 

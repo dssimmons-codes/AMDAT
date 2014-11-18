@@ -9,7 +9,7 @@
 
 #include "rgtensor.h"
 #include "math.h"
-#include <jama_eig.h>
+#include "tntjama/jama_eig.h"
 #include <stdlib.h>
 #include "version.h"
 

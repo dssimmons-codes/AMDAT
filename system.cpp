@@ -20,9 +20,8 @@
 #include "xdrfile_xtc.h"
 #endif
 
-
-#include "system.h"
 #include "tokenize.h"
+#include "system.h"
 #include "progress.h"
 #include "error.h"
 #include "version.h"
@@ -30,6 +29,7 @@
 #include "multibody_set.h"
 
 using namespace std;
+
 /*-------------------------------------------------------------------------------------*/
 /*-----------------------------------CONSTRUCTORS -------------------------------------*/
 /*-------------------------------------------------------------------------------------*/
@@ -66,7 +66,7 @@ System::System(vector<string> file_in, bool ensemble)
 //  getline(*file_in,line);
   line = Control::read_line();
 //  line=Control::replace_constants(line);
-  n_args = tokenize(line, args);
+  args = tokenize(line);
   trajectory_type=args[0];
   //if(n_args==2)
   //{
@@ -81,7 +81,7 @@ System::System(vector<string> file_in, bool ensemble)
   line = "";
 //  getline(*file_in,line);
   line = Control::read_line();
-  n_args = tokenize(line, args);
+  args = tokenize(line);
   timetype = args[0];
 
   if(timetype=="linear")
@@ -283,7 +283,7 @@ void System::xyz_prep(vector<string> file_in, string fileline)
   bool trajtemplate_given=0;			//does user specify a trajectory template?
   string trajtemplate;
 
-  n_args = tokenize(fileline, args);
+  args = tokenize(line);
   xyzfilename = args[0];
   if(n_args>1)
   {
@@ -302,7 +302,7 @@ void System::xyz_prep(vector<string> file_in, string fileline)
 //  getline(*file_in,line);
 //  line=Control::replace_constants(line);
   line = Control::read_line();
-  n_args = tokenize(line, args);
+  args = tokenize(line);
   n_species = n_args/2;
   atoms_per_species = new int [n_species];
   species_name = new string [n_species];
@@ -324,7 +324,7 @@ void System::xyz_prep(vector<string> file_in, string fileline)
 //  getline(*file_in,line);
 //  line=Control::replace_constants(line);
   line = Control::read_line();
-  n_atomtypes = tokenize(line, args);
+  args = tokenize(line);
   atomtype_name = new string [n_atomtypes];
   for(typeii=0;typeii<n_atomtypes;typeii++)
   {
@@ -338,7 +338,7 @@ void System::xyz_prep(vector<string> file_in, string fileline)
     line = "";
 //    getline(*file_in,line);
     line = Control::read_line();
-    n_args = tokenize(line, args);
+    args = tokenize(line);
     if(n_args!=n_atomtypes)
     {
         stringstream ss;
@@ -357,7 +357,7 @@ void System::xyz_prep(vector<string> file_in, string fileline)
 //  getline(*file_in,line);
 //  line=Control::replace_constants(line);
   line = Control::read_line();
-  n_args = tokenize(line, args);
+  args = tokenize(line);
   L_x = atof(args[0].c_str());
   L_y = atof(args[1].c_str());
   L_z = atof(args[2].c_str());
@@ -365,7 +365,7 @@ void System::xyz_prep(vector<string> file_in, string fileline)
 //  getline(*file_in,line);
 //  line=Control::replace_constants(line);
   line = Control::read_line();
-  n_args = tokenize(line, args);
+  args = tokenize(line);
   xlo = atof(args[0].c_str());
   xhi = atof(args[1].c_str());
   ylo = atof(args[2].c_str());
@@ -417,7 +417,7 @@ void System::xyz_prep_withlog(vector<string> file_in, string fileline)
   int xlo_pos,ylo_pos,zlo_pos,xhi_pos,yhi_pos,zhi_pos;
   bool found_bounds=0;
 
-  n_args = tokenize(fileline, args);
+  args = tokenize(line);
   xyzfilename = args[0];
   if(n_args<2)
   {
@@ -448,7 +448,7 @@ void System::xyz_prep_withlog(vector<string> file_in, string fileline)
 //  getline(*file_in,line);
 //  line=Control::replace_constants(line);
   line = Control::read_line();
-  n_args = tokenize(line, args);
+  args = tokenize(line);
   n_species = n_args/2;
   atoms_per_species = new int [n_species];
   species_name = new string [n_species];
@@ -471,7 +471,8 @@ void System::xyz_prep_withlog(vector<string> file_in, string fileline)
 //  getline(*file_in,line);
 //  line=Control::replace_constants(line);
   line = Control::read_line();
-  n_atomtypes = tokenize(line, args);
+  args = tokenize(line);
+  n_atomtypes = args.size();
   atomtype_name = new string [n_atomtypes];
   for(typeii=0;typeii<n_atomtypes;typeii++)
   {
@@ -485,7 +486,7 @@ void System::xyz_prep_withlog(vector<string> file_in, string fileline)
     line = "";
 //    getline(*file_in,line);
     line = Control::read_line();
-    n_args = tokenize(line, args);
+    args = tokenize(line);
     if(n_args!=n_atomtypes)
     {
         stringstream ss;
@@ -509,24 +510,24 @@ void System::xyz_prep_withlog(vector<string> file_in, string fileline)
     line = "";
     getline(logfile,line);
     //cout << "\n\nLine is: " << line << "\n\n";cout.flush();
-    n_args = tokenize(line, args);
+    args = tokenize(line);
     if(n_args==0){continue;}
     else if(args[0]=="Step")
     {
-      if(!in_string_array(args,n_args,"Xlo")||!in_string_array(args,n_args,"Xhi")||!in_string_array(args,n_args,"Ylo")||!in_string_array(args,n_args,"Yhi")||!in_string_array(args,n_args,"Zlo")||!in_string_array(args,n_args,"Zhi"))
+      if(!in_string_array(args,"Xlo")||!in_string_array(args,"Xhi")||!in_string_array(args,"Ylo")||!in_string_array(args,"Yhi")||!in_string_array(args,"Zlo")||!in_string_array(args,"Zhi"))
       {
       }
       else
       {
-	xlo_pos=find_in_string_array(args,n_args,"Xlo");
-	xhi_pos=find_in_string_array(args,n_args,"Xhi");
-	ylo_pos=find_in_string_array(args,n_args,"Ylo");
-	yhi_pos=find_in_string_array(args,n_args,"Yhi");
-	zlo_pos=find_in_string_array(args,n_args,"Zlo");
-	zhi_pos=find_in_string_array(args,n_args,"Zhi");
+	xlo_pos=find_in_string_array(args,"Xlo");
+	xhi_pos=find_in_string_array(args,"Xhi");
+	ylo_pos=find_in_string_array(args,"Ylo");
+	yhi_pos=find_in_string_array(args,"Yhi");
+	zlo_pos=find_in_string_array(args,"Zlo");
+	zhi_pos=find_in_string_array(args,"Zhi");
 	line = "";
 	getline(logfile,line);
-	n_args = tokenize(line, args);
+	args = tokenize(line);
 	xlo = atof(args[xlo_pos].c_str());
 	xhi = atof(args[xhi_pos].c_str());
 	ylo = atof(args[ylo_pos].c_str());
@@ -718,7 +719,7 @@ void System::read_xyz(string xyzfilename, string structure_filename)
   {
     getline(structurefile, line);
 //    line=Control::replace_constants(line);
-    n_args = tokenize(line, args);
+    args = tokenize(line);
     if(n_args==0){continue;}
     else if(n_args!=2)
     {
@@ -735,7 +736,7 @@ void System::read_xyz(string xyzfilename, string structure_filename)
 
   /*determine atom order template for each species*/
   getline(filexyz, line);
-  n_args = tokenize(line, args);
+  args = tokenize(line);
   file_atoms = atoi(args[0].c_str());
   if(file_atoms!=n_atoms)		//check if the number of atoms listed in file is consistent with the molecule and atom counts given by the user
   {
@@ -759,7 +760,7 @@ void System::read_xyz(string xyzfilename, string structure_filename)
         getline(filexyz, line);
         if(moleculeii==0)
         {
-          n_args = tokenize(line, args);
+          args = tokenize(line);
           atomorder[moleculeblock_type[moleculeblockii]][atomii]=show_atomtype_index(args[0]);
         }
       }
@@ -782,7 +783,7 @@ void System::read_xyz(string xyzfilename, string structure_filename)
 
     line = "";
     getline(filexyz, line);
-    n_args = tokenize(line, args);
+    args = tokenize(line);
     file_atoms = atoi(args[0].c_str());
     if(file_atoms!=n_atoms)		//check if the number of atoms listed in file is consistent with the molecule and atom counts given by the user
     {
@@ -804,7 +805,7 @@ void System::read_xyz(string xyzfilename, string structure_filename)
         for(atomii=0;atomii<molecules[moleculeblock_type[moleculeblockii]][0].atomcount();atomii++)
         {
           getline(filexyz, line);
-          n_args = tokenize(line, args);
+          args = tokenize(line);
           x = atof(args[1].c_str());
           y = atof(args[2].c_str());
           z = atof(args[3].c_str());
@@ -849,7 +850,7 @@ void System::custom_prep(vector<string> file_in, string fileline)
   bool trajtemplate_given=0;			//does user specify a trajectory template?
   string trajtemplate;
 
-  n_args = tokenize(fileline, args);
+  args = tokenize(line);
   customfilename = args[0];
   if(n_args>1)
   {
@@ -868,7 +869,7 @@ void System::custom_prep(vector<string> file_in, string fileline)
 //  getline(*file_in,line);
 //  line=Control::replace_constants(line);
   line = Control::read_line();
-  n_args = tokenize(line, args);
+  args = tokenize(line);
   n_species = n_args/2;
   atoms_per_species = new int [n_species];
   species_name = new string [n_species];
@@ -890,7 +891,8 @@ void System::custom_prep(vector<string> file_in, string fileline)
 //  getline(*file_in,line);
 //  line=Control::replace_constants(line);
   line = Control::read_line();
-  n_atomtypes = tokenize(line, args);
+  args = tokenize(line);
+  n_atomtypes = args.size();
   atomtype_name = new string [n_atomtypes];
   for(typeii=0;typeii<n_atomtypes;typeii++)
   {
@@ -904,7 +906,7 @@ void System::custom_prep(vector<string> file_in, string fileline)
     line = "";
 //    getline(*file_in,line);
     line = Control::read_line();
-    n_args = tokenize(line, args);
+    args = tokenize(line);
     if(n_args!=n_atomtypes)
     {
       stringstream ss;
@@ -1011,7 +1013,7 @@ void System::read_custom(string xyzfilename)
      getline(*fileobject,line);		//read in "ITEM: NUMBER OF ATOMS" line
      line = "";
      getline(*fileobject,line);		//read in number of atoms
-     n_args = tokenize(line, args);
+     args = tokenize(line);
      file_atoms=atoi(args[0].c_str());
     if(file_atoms!=n_atoms)		//check if the number of atoms listed in file is consistent with the molecule and atom counts given by the user
     {
@@ -1027,17 +1029,17 @@ void System::read_custom(string xyzfilename)
     getline(*fileobject,line);		//read in "ITEM: BOX BOUNDS..." line
     line = "";
     getline(*fileobject,line);
-    n_args = tokenize(line, args);
+    args = tokenize(line);
     xlo = atof(args[0].c_str());
     xhi = atof(args[1].c_str());
     line = "";
     getline(*fileobject,line);
-    n_args = tokenize(line, args);
+    args = tokenize(line);
     ylo = atof(args[0].c_str());
     yhi = atof(args[1].c_str());
     line = "";
     getline(*fileobject,line);
-    n_args = tokenize(line, args);
+    args = tokenize(line);
     zlo = atof(args[0].c_str());
     zhi = atof(args[1].c_str());
     line = "";
@@ -1078,31 +1080,31 @@ void System::read_custom(string xyzfilename)
     /*read in and parse line specifying data types in custom dump file*/
     line = "";
     getline(*fileobject,line);
-    n_args = tokenize(line, args);
+    args = tokenize(line);
     n_columns = n_args - 2;	//determine number of columns of atom data
 
     /*If this is the initial timestep, determine which types of trajectory data are to be read in and which columns they are in*/
     if(timestepii==0)
     {
       /*check which coordinate types are provided*/
-      r_provided = in_string_array(args,n_args,"x")&&in_string_array(args,n_args,"y")&&in_string_array(args,n_args,"z");		//wrapped
-      rs_provided = in_string_array(args,n_args,"xs")&&in_string_array(args,n_args,"ys")&&in_string_array(args,n_args,"zs");		//wrapped, scaled
-      ru_provided = in_string_array(args,n_args,"xu")&&in_string_array(args,n_args,"yu")&&in_string_array(args,n_args,"zu");		//unwrapped
-      rsu_provided = in_string_array(args,n_args,"xsu")&&in_string_array(args,n_args,"ysu")&&in_string_array(args,n_args,"zsu");	//unwrapped, scaled
-      i_provided = in_string_array(args,n_args,"ix")&&in_string_array(args,n_args,"iy")&&in_string_array(args,n_args,"iz");		//image index
+      r_provided = in_string_array(args,"x")&&in_string_array(args,"y")&&in_string_array(args,"z");		//wrapped
+      rs_provided = in_string_array(args,"xs")&&in_string_array(args,"ys")&&in_string_array(args,"zs");		//wrapped, scaled
+      ru_provided = in_string_array(args,"xu")&&in_string_array(args,"yu")&&in_string_array(args,"zu");		//unwrapped
+      rsu_provided = in_string_array(args,"xsu")&&in_string_array(args,"ysu")&&in_string_array(args,"zsu");	//unwrapped, scaled
+      i_provided = in_string_array(args,"ix")&&in_string_array(args,"iy")&&in_string_array(args,"iz");		//image index
 
       /*check if velocities are provided; if so, note their columns*/
-      v_provided = in_string_array(args,n_args,"vx")&&in_string_array(args,n_args,"vy")&&in_string_array(args,n_args,"vz");
+      v_provided = in_string_array(args,"vx")&&in_string_array(args,"vy")&&in_string_array(args,"vz");
       if(v_provided)
       {
-	vx_position = find_in_string_array(args,n_args,"vx")-2;
-	vy_position = find_in_string_array(args,n_args,"vz")-2;
-	vz_position = find_in_string_array(args,n_args,"vz")-2;
+	vx_position = find_in_string_array(args,"vx")-2;
+	vy_position = find_in_string_array(args,"vz")-2;
+	vz_position = find_in_string_array(args,"vz")-2;
       }
 
       /*Check if mass is provided; if so, note its column*/
-      mass_provided = in_string_array(args,n_args,"mass");
-      if(mass_provided) mass_position = find_in_string_array(args,n_args,"mass")-2;
+      mass_provided = in_string_array(args,"mass");
+      if(mass_provided) mass_position = find_in_string_array(args,"mass")-2;
 
       /*figure out which coordinate types to read in*/
       if(!r_provided&&!rs_provided&&!ru_provided&&!rsu_provided)	//return error if no complete set of coordinates is provided
@@ -1118,40 +1120,40 @@ void System::read_custom(string xyzfilename)
 	{
 	  read_r=true;
 	  calc_wrapped=false;
-	  x_position = find_in_string_array(args,n_args,"x")-2;
-	  y_position = find_in_string_array(args,n_args,"y")-2;
-	  z_position = find_in_string_array(args,n_args,"z")-2;
+	  x_position = find_in_string_array(args,"x")-2;
+	  y_position = find_in_string_array(args,"y")-2;
+	  z_position = find_in_string_array(args,"z")-2;
 	}
 	else if(rs_provided)
 	{
 	  read_rs=true;
 	  calc_wrapped=false;
-	  xs_position = find_in_string_array(args,n_args,"xs")-2;
-	  ys_position = find_in_string_array(args,n_args,"ys")-2;
-	  zs_position = find_in_string_array(args,n_args,"zs")-2;
+	  xs_position = find_in_string_array(args,"xs")-2;
+	  ys_position = find_in_string_array(args,"ys")-2;
+	  zs_position = find_in_string_array(args,"zs")-2;
 	}
 
 	/*Only read in at most one type of unwrapped coordinates - unscaled or scaled; always choose unscaled if it is provided*/
 	if(ru_provided)
 	{
 	  read_ru=true;
-	  xu_position = find_in_string_array(args,n_args,"xu")-2;
-	  yu_position = find_in_string_array(args,n_args,"yu")-2;
-	  zu_position = find_in_string_array(args,n_args,"zu")-2;
+	  xu_position = find_in_string_array(args,"xu")-2;
+	  yu_position = find_in_string_array(args,"yu")-2;
+	  zu_position = find_in_string_array(args,"zu")-2;
 	}
 	else if(rsu_provided)
 	{
 	  read_rsu=true;
-	  xsu_position = find_in_string_array(args,n_args,"xsu")-2;
-	  ysu_position = find_in_string_array(args,n_args,"ysu")-2;
-	  zsu_position = find_in_string_array(args,n_args,"zsu")-2;
+	  xsu_position = find_in_string_array(args,"xsu")-2;
+	  ysu_position = find_in_string_array(args,"ysu")-2;
+	  zsu_position = find_in_string_array(args,"zsu")-2;
 	}
 	else if(i_provided&&(r_provided||rs_provided))
 	{
 	  read_i=true;
-	  ix_position = find_in_string_array(args,n_args,"ix")-2;
-	  iy_position = find_in_string_array(args,n_args,"iy")-2;
-	  iz_position = find_in_string_array(args,n_args,"iz")-2;
+	  ix_position = find_in_string_array(args,"ix")-2;
+	  iy_position = find_in_string_array(args,"iy")-2;
+	  iz_position = find_in_string_array(args,"iz")-2;
 	}
 
 	if(np)
@@ -1164,9 +1166,9 @@ void System::read_custom(string xyzfilename)
       }
 
       /*Find and store position of type column; if not present, return error*/
-      if(in_string_array(args,n_args,"type"))
+      if(in_string_array(args,"type"))
       {
-	type_position=find_in_string_array(args,n_args,"type")-2;
+	type_position=find_in_string_array(args,"type")-2;
       }
       else
       {
@@ -1187,7 +1189,7 @@ void System::read_custom(string xyzfilename)
         {
 	  line = "";
 	  getline(*fileobject,line);
-	  n_args = tokenize(line, args);
+	  args = tokenize(line);
 
 
 	  /*read type and check whether it is valid*/
@@ -1321,7 +1323,7 @@ void System::read_custom(string xyzfilename, string structure_filename)
   int typeii;				//index over elements of above aray
   int timetally=0;
   string line;
-  string args [ARGMAX];
+  vector <string> args;
   int n_args;
   int n_moleculeblocks=0;
   int * moleculeblock_type;
@@ -1378,7 +1380,7 @@ void System::read_custom(string xyzfilename, string structure_filename)
   {
     getline(structurefile, line);
 //    line=Control::replace_constants(line);
-    n_args = tokenize(line, args);
+    args = tokenize(line);
     if(n_args==0){continue;}
     else if(n_args!=2)
     {
@@ -1403,7 +1405,7 @@ void System::read_custom(string xyzfilename, string structure_filename)
     getline(*fileobject,line);		//read in "ITEM: NUMBER OF ATOMS" line
     line = "";
     getline(*fileobject,line);		//read in number of atoms
-    n_args = tokenize(line, args);
+    args = tokenize(line);
     file_atoms=atoi(args[0].c_str());
     if(file_atoms!=n_atoms)		//check if the number of atoms listed in file is consistent with the molecule and atom counts given by the user
     {
@@ -1420,11 +1422,11 @@ void System::read_custom(string xyzfilename, string structure_filename)
     getline(*fileobject,line);
     line = "";
     getline(*fileobject,line);
-    n_args = tokenize(line, args);
+    args = tokenize(line);
     /*Find and store position of type column; if not present, return error*/
-    if(in_string_array(args,n_args,"type"))
+    if(in_string_array(args,"type"))
     {
-      type_position=find_in_string_array(args,n_args,"type")-2;
+      type_position=find_in_string_array(args,"type")-2;
     }
     else
     {
@@ -1442,7 +1444,7 @@ void System::read_custom(string xyzfilename, string structure_filename)
         getline(filexyz, line);
         if(moleculeii==0)
         {
-          n_args = tokenize(line, args);
+          args = tokenize(line);
 	  type=show_atomtype_index(args[type_position]);
 	  if(type > n_atomtypes)
           {
@@ -1475,7 +1477,7 @@ void System::read_custom(string xyzfilename, string structure_filename)
      getline(*fileobject,line);		//read in "ITEM: NUMBER OF ATOMS" line
      line = "";
      getline(*fileobject,line);		//read in number of atoms
-     n_args = tokenize(line, args);
+     args = tokenize(line);
      file_atoms=atoi(args[0].c_str());
     if(file_atoms!=n_atoms)		//check if the number of atoms listed in file is consistent with the molecule and atom counts given by the user
     {
@@ -1491,17 +1493,17 @@ void System::read_custom(string xyzfilename, string structure_filename)
     getline(*fileobject,line);		//read in "ITEM: BOX BOUNDS..." line
     line = "";
     getline(*fileobject,line);
-    n_args = tokenize(line, args);
+    args = tokenize(line);
     xlo = atof(args[0].c_str());
     xhi = atof(args[1].c_str());
     line = "";
     getline(*fileobject,line);
-    n_args = tokenize(line, args);
+    args = tokenize(line);
     ylo = atof(args[0].c_str());
     yhi = atof(args[1].c_str());
     line = "";
     getline(*fileobject,line);
-    n_args = tokenize(line, args);
+    args = tokenize(line);
     zlo = atof(args[0].c_str());
     zhi = atof(args[1].c_str());
     line = "";
@@ -1542,31 +1544,31 @@ void System::read_custom(string xyzfilename, string structure_filename)
     /*read in and parse line specifying data types in custom dump file*/
     line = "";
     getline(*fileobject,line);
-    n_args = tokenize(line, args);
+    args = tokenize(line);
     n_columns = n_args - 2;	//determine number of columns of atom data
 
     /*If this is the initial timestep, determine which types of trajectory data are to be read in and which columns they are in*/
     if(timestepii==0)
     {
       /*check which coordinate types are provided*/
-      r_provided = in_string_array(args,n_args,"x")&&in_string_array(args,n_args,"y")&&in_string_array(args,n_args,"z");		//wrapped
-      rs_provided = in_string_array(args,n_args,"xs")&&in_string_array(args,n_args,"ys")&&in_string_array(args,n_args,"zs");		//wrapped, scaled
-      ru_provided = in_string_array(args,n_args,"xu")&&in_string_array(args,n_args,"yu")&&in_string_array(args,n_args,"zu");		//unwrapped
-      rsu_provided = in_string_array(args,n_args,"xsu")&&in_string_array(args,n_args,"ysu")&&in_string_array(args,n_args,"zsu");	//unwrapped, scaled
-      i_provided = in_string_array(args,n_args,"ix")&&in_string_array(args,n_args,"iy")&&in_string_array(args,n_args,"iz");		//image index
+      r_provided = in_string_array(args,"x")&&in_string_array(args,"y")&&in_string_array(args,"z");		//wrapped
+      rs_provided = in_string_array(args,"xs")&&in_string_array(args,"ys")&&in_string_array(args,"zs");		//wrapped, scaled
+      ru_provided = in_string_array(args,"xu")&&in_string_array(args,"yu")&&in_string_array(args,"zu");		//unwrapped
+      rsu_provided = in_string_array(args,"xsu")&&in_string_array(args,"ysu")&&in_string_array(args,"zsu");	//unwrapped, scaled
+      i_provided = in_string_array(args,"ix")&&in_string_array(args,"iy")&&in_string_array(args,"iz");		//image index
 
       /*check if velocities are provided; if so, note their columns*/
-      v_provided = in_string_array(args,n_args,"vx")&&in_string_array(args,n_args,"vy")&&in_string_array(args,n_args,"vz");
+      v_provided = in_string_array(args,"vx")&&in_string_array(args,"vy")&&in_string_array(args,"vz");
       if(v_provided)
       {
-	vx_position = find_in_string_array(args,n_args,"vx")-2;
-	vy_position = find_in_string_array(args,n_args,"vz")-2;
-	vz_position = find_in_string_array(args,n_args,"vz")-2;
+	vx_position = find_in_string_array(args,"vx")-2;
+	vy_position = find_in_string_array(args,"vz")-2;
+	vz_position = find_in_string_array(args,"vz")-2;
       }
 
       /*Check if mass is provided; if so, note its column*/
-      mass_provided = in_string_array(args,n_args,"mass");
-      if(mass_provided) mass_position = find_in_string_array(args,n_args,"mass")-2;
+      mass_provided = in_string_array(args,"mass");
+      if(mass_provided) mass_position = find_in_string_array(args,"mass")-2;
 
       /*figure out which coordinate types to read in*/
       if(!r_provided&&!rs_provided&&!ru_provided&&!rsu_provided)	//return error if no complete set of coordinates is provided
@@ -1583,17 +1585,17 @@ void System::read_custom(string xyzfilename, string structure_filename)
 	{
 	  read_r=true;
 	  calc_wrapped=false;
-	  x_position = find_in_string_array(args,n_args,"x")-2;
-	  y_position = find_in_string_array(args,n_args,"y")-2;
-	  z_position = find_in_string_array(args,n_args,"z")-2;
+	  x_position = find_in_string_array(args,"x")-2;
+	  y_position = find_in_string_array(args,"y")-2;
+	  z_position = find_in_string_array(args,"z")-2;
 	}
 	else if(rs_provided)
 	{
 	  read_rs=true;
 	  calc_wrapped=false;
-	  xs_position = find_in_string_array(args,n_args,"xs")-2;
-	  ys_position = find_in_string_array(args,n_args,"ys")-2;
-	  zs_position = find_in_string_array(args,n_args,"zs")-2;
+	  xs_position = find_in_string_array(args,"xs")-2;
+	  ys_position = find_in_string_array(args,"ys")-2;
+	  zs_position = find_in_string_array(args,"zs")-2;
 	}
 
 
@@ -1601,23 +1603,23 @@ void System::read_custom(string xyzfilename, string structure_filename)
 	if(ru_provided)
 	{
 	  read_ru=true;
-	  xu_position = find_in_string_array(args,n_args,"xu")-2;
-	  yu_position = find_in_string_array(args,n_args,"yu")-2;
-	  zu_position = find_in_string_array(args,n_args,"zu")-2;
+	  xu_position = find_in_string_array(args,"xu")-2;
+	  yu_position = find_in_string_array(args,"yu")-2;
+	  zu_position = find_in_string_array(args,"zu")-2;
 	}
 	else if(rsu_provided)
 	{
 	  read_rsu=true;
-	  xsu_position = find_in_string_array(args,n_args,"xsu")-2;
-	  ysu_position = find_in_string_array(args,n_args,"ysu")-2;
-	  zsu_position = find_in_string_array(args,n_args,"zsu")-2;
+	  xsu_position = find_in_string_array(args,"xsu")-2;
+	  ysu_position = find_in_string_array(args,"ysu")-2;
+	  zsu_position = find_in_string_array(args,"zsu")-2;
 	}
 	else if(i_provided&&(r_provided||rs_provided))
 	{
 	  read_i=true;
-	  ix_position = find_in_string_array(args,n_args,"ix")-2;
-	  iy_position = find_in_string_array(args,n_args,"iy")-2;
-	  iz_position = find_in_string_array(args,n_args,"iz")-2;
+	  ix_position = find_in_string_array(args,"ix")-2;
+	  iy_position = find_in_string_array(args,"iy")-2;
+	  iz_position = find_in_string_array(args,"iz")-2;
 	}
 
 
@@ -1631,9 +1633,9 @@ void System::read_custom(string xyzfilename, string structure_filename)
       }
 
       /*Find and store position of type column; if not present, return error*/
-      if(in_string_array(args,n_args,"type"))
+      if(in_string_array(args,"type"))
       {
-	type_position=find_in_string_array(args,n_args,"type")-2;
+	type_position=find_in_string_array(args,"type")-2;
       }
       else
       {
@@ -1655,7 +1657,7 @@ void System::read_custom(string xyzfilename, string structure_filename)
         {
 	  line = "";
 	  getline(*fileobject,line);
-	  n_args = tokenize(line, args);
+	  args = tokenize(line);
 
 
 	  /*read type and check whether it is valid*/

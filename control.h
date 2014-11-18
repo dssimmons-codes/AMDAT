@@ -259,7 +259,7 @@ void Control::run_analysis(Analysis_type analyzer, string setline, string filena
 	  listname = setargs[1];
 	  //listnum = find_trajectorylist(listname);
 
-	  if(listnum!=-1)
+	  if(trajectories.count(listname))
 	  {
 		  analyzer.analyze(trajectories[listname]);
 		  analyzer.write(filename);
@@ -277,7 +277,7 @@ void Control::run_analysis(Analysis_type analyzer, string setline, string filena
 	  listname2 = setargs[2];
 	  //listnum2 = find_trajectorylist(listname2);
 
-	  if(listnum!=-1&&listnum2!=-1)
+	  if(trajectories.count(listname)&&trajectories.count(listname2))
 	  {
 		  analyzer.analyze(trajectories[listname],trajectories[listname2]);
 		  analyzer.write(filename);
@@ -306,7 +306,7 @@ void Control::run_analysis(Analysis_type analyzer, string setline, string filena
 	    use_persistence=bool(atoi(setargs[3].c_str()));
 	  }
 	  //listnum = find_trajectorylist(listname);
-	  if (listnum !=-1)
+	  if (trajectories.count(listname))
 	  {
 
 		 binned_trajectory_list_to_analyze = binned_trajectories[bin_listnum];
@@ -322,21 +322,13 @@ void Control::run_analysis(Analysis_type analyzer, string setline, string filena
 		    static_bin_analyzer.analyze(trajectories[listname]); 							// performs analysis on intersection of bins given by <bin_list_ID> and trajectories given by <list_ID>
 		    static_bin_analyzer.write(filename);									// writes out data for each bin individually
 		 }
-	       }
-	       else
-	       {
+	   }
+	   else
+	   {
 		    cout << "\nBinned Trajectory list '"<<bin_listname<<"' not found.";
 		    exit(1);
-	       }
-	  }
-	  else
-	  {
-	    cout << "\nBinned Trajectory list '"<<bin_listname<<"' not found.";
-	    exit(1);
-	  }
-	 
-
-     }
+	   }
+	}	 
      else
      {
      cout << "\nError: Command " << command << " not understood. Acceptable options are list or bin_list." << endl;
@@ -345,7 +337,7 @@ void Control::run_analysis(Analysis_type analyzer, string setline, string filena
      //analyzer.write(filename);
      }
 
-};
+}
 
 
 }

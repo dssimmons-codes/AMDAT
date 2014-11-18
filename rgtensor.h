@@ -4,7 +4,8 @@
 
 #include "system.h"
 #include "trajmath.h"
-#include <tnt.h>
+//#include <tnt.h>
+#include "tntjama/tnt.h"
 
 namespace std {
 
