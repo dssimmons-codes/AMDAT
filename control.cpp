@@ -46,12 +46,12 @@
 #include "multibody_list.h"
 #include "multibody_analysis.h"
 #include "version.h"
-
+#include "tokenize.h"
 #include "error.h"
 
 using namespace std;
 
-#include "tokenize.h"
+
 
 //TODO: Convert all argcheck() calls to bool_argcheck() for error handling
 //      Convert all errors to use Error class

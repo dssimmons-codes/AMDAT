@@ -18,6 +18,7 @@
 #include <string>
 #include <stdio.h>
 #include "trajectory_list.h"
+#include "tokenize.h"
 
 namespace std{
 	
@@ -55,6 +56,8 @@ class Analysis
     System * system;	//the system on which analysis is to be performed
     
     Trajectory_List * trajectory_list;			//Array of trajectory_lists used by this analysis tool
+    
+    Tokenize tokenize;
     
     virtual void preprocess(){};
     virtual void postprocess(){};		//method to automatically run after loop for postprocessing

@@ -5,12 +5,16 @@
 #include "trajectory_list.h"
 #include "analysis.h"
 #include "system.h"
+#include "tokenize.h"
+
 namespace std{
 
 class Clustered_List: public Trajectory_List
 {   protected:
     float ** sigmatrix;
     int *** neighbor;
+    
+    Tokenize tokenize;
 
 
     public:

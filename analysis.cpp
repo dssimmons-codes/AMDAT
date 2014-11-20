@@ -10,8 +10,6 @@
 
 using namespace std;
 
-#include "tokenize.h"
-
 
 /*----------------Constructors and assignment----------------------*/
 

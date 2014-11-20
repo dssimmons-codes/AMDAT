@@ -37,6 +37,7 @@ namespace std{
 class Control
 {
     string args [ARGMAX];		//current arguments
+    Tokenize tokenize;
     int n_args;				//current number of arguments
     static vector<string> inputFileVector; // Vector that holds the lines in the input file
     int read_input_file(char *); // Read the input file into the vector
@@ -230,7 +231,6 @@ void Control::run_analysis(Analysis_type analyzer, string setline, string filena
      * @date 6/06/2012
      **/
 
-     string setargs[ARGMAX];		//array of arguments in runline
      int n_setargs;			//number of arguments in runline
      string command;			//command specifying type of set to loop over
      int expected;
@@ -241,7 +241,9 @@ void Control::run_analysis(Analysis_type analyzer, string setline, string filena
      int bin_listnum;
      Trajectory_List_Bins * binned_trajectory_list_to_analyze;		//declare binned trajectory list to analyze
 
-     n_setargs = tokenize(setline, setargs);
+     Tokenize tokenize(setline);
+     n_setargs = tokenize.count();
+     //n_setargs = tokenize(setline, setargs);
      if ( n_setargs==0 )
      {
 	  cout << "Error: No atom set command found.";
@@ -249,14 +251,14 @@ void Control::run_analysis(Analysis_type analyzer, string setline, string filena
      }
      else
      {
-	  command = setargs[0];
+	  command = tokenize(0);
 	  cout <<command<< endl;cout.flush();
      }
      if(command == "list")
      {
        if(n_setargs==2)
        {
-	  listname = setargs[1];
+	  listname = tokenize(1);
 	  //listnum = find_trajectorylist(listname);
 
 	  if(trajectories.count(listname))
@@ -272,9 +274,9 @@ void Control::run_analysis(Analysis_type analyzer, string setline, string filena
        }
        else if(n_setargs==3)
        {
-	  listname = setargs[1];
+	  listname = tokenize(1);
 	  //listnum = find_trajectorylist(listname);
-	  listname2 = setargs[2];
+	  listname2 = tokenize(2);
 	  //listnum2 = find_trajectorylist(listname2);
 
 	  if(trajectories.count(listname)&&trajectories.count(listname2))
@@ -298,12 +300,12 @@ void Control::run_analysis(Analysis_type analyzer, string setline, string filena
 	    exit(0);
 	  }
 	  //setargcheck(expected, n_setargs, command);
-	  bin_listname = setargs[1];
+	  bin_listname = tokenize(1);
 	  bin_listnum = find_trajectorylist_bins(bin_listname);
-	  listname = setargs[2];
+	  listname = tokenize(2);
 	  if (n_setargs==4)
 	  {
-	    use_persistence=bool(atoi(setargs[3].c_str()));
+	    use_persistence=bool(atoi(tokenize(3).c_str()));
 	  }
 	  //listnum = find_trajectorylist(listname);
 	  if (trajectories.count(listname))

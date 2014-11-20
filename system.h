@@ -16,6 +16,7 @@
 #include "trajectory_set.h"
 #include "trajectory.h"
 #include "analysis.h"
+#include "tokenize.h"
 namespace std {
 
 class System
@@ -90,6 +91,14 @@ class System
     void read_custom(string, string);
 
     bool floatCompare(float, float);
+    
+    /*String-handling methods*/
+    Tokenize tokenize;
+    bool in_string_array(string * tokens, int array_size, string target);
+    bool in_string_array(vector <string> tokens, string target);
+    int find_in_string_array(string * tokens, int array_size, string target);
+    int find_in_string_array(vector <string> tokens, string target);
+
   public:
     System();							//default constructor that queries use for necessary values
     System(vector<string> file_in ,bool ensemble=0);

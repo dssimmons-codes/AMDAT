@@ -20,7 +20,7 @@
 #include "xdrfile_xtc.h"
 #endif
 
-#include "tokenize.h"
+//#include "tokenize.h"
 #include "system.h"
 #include "progress.h"
 #include "error.h"
@@ -29,6 +29,8 @@
 #include "multibody_set.h"
 
 using namespace std;
+
+
 
 /*-------------------------------------------------------------------------------------*/
 /*-----------------------------------CONSTRUCTORS -------------------------------------*/
@@ -418,7 +420,8 @@ void System::xyz_prep_withlog(vector<string> file_in, string fileline)
   bool found_bounds=0;
 
   args = tokenize(line);
-  xyzfilename = args[0];
+  xyzfilename = tokenize(0);
+  n_args = tokenize.count();
   if(n_args<2)
   {
 	Error("No log file specified.", -2);
@@ -3519,4 +3522,54 @@ void System::add_trajectories(Trajectory_Set * new_trajectories)
 
     }
     
+}
+
+
+/*-------------------------------------------------------------------------------------*/
+/*-----------------------------------String-handling methods -------------------------------------*/
+/*-------------------------------------------------------------------------------------*/
+
+
+
+
+bool System::in_string_array(string * tokens, int array_size, string target)
+{
+  for(int stringii=0; stringii<array_size; stringii++)
+  {
+    if(target==tokens[stringii])
+    {return 1;}
+  }
+  return 0;
+}
+
+
+bool System::in_string_array(vector <string> tokens, string target)
+{
+  for(int stringii=0; stringii<tokens.size(); stringii++)
+  {
+    if(target==tokens[stringii])
+    {return 1;}
+  }
+  return 0;
+}
+
+
+int System::find_in_string_array(string * tokens, int array_size, string target)
+{
+  for(int stringii=0; stringii<array_size; stringii++)
+  {
+    if(target==tokens[stringii])
+    {return stringii;}
+  }
+  return -1;
+}
+
+int System::find_in_string_array(vector <string> tokens, string target)
+{
+  for(int stringii=0; stringii<tokens.size(); stringii++)
+  {
+    if(target==tokens[stringii])
+    {return stringii;}
+  }
+  return -1;
 }
