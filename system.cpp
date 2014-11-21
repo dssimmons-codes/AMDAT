@@ -20,7 +20,7 @@
 #include "xdrfile_xtc.h"
 #endif
 
-//#include "tokenize.h"
+#include "tokenize.h"
 #include "system.h"
 #include "progress.h"
 #include "error.h"
@@ -53,7 +53,7 @@ System::System(vector<string> file_in, bool ensemble)
 
   string line, fileline;
   vector <string> args;
-  int n_args, argii, speciesii, moleculeii, typeii, atomii, atomcount, moleculecount;
+  int argii, speciesii, moleculeii, typeii, atomii, atomcount, moleculecount;
   string trajectory_type;
   int extra_trajectories = 0;	//extra space to allocate for additional trajectories
 
@@ -70,7 +70,7 @@ System::System(vector<string> file_in, bool ensemble)
 //  line=Control::replace_constants(line);
   args = tokenize(line);
   trajectory_type=args[0];
-  //if(n_args==2)
+  //if(tokenize.count()==2)
   //{
   //  extra_trajectories=atoi(args[1].c_str());
   //  cout << "\nAllocating space for " << extra_trajectories << " additional trajectories."<<endl;
@@ -274,7 +274,6 @@ void System::xyz_prep(vector<string> file_in, string fileline)
 {
   string line;
   vector <string> args;
-  int n_args;
   int ** natoms;						//array of number of atoms of each type in each species
   int speciesii;						//species type index
   int typeii, argii;
@@ -284,15 +283,15 @@ void System::xyz_prep(vector<string> file_in, string fileline)
   string xyzfilename;
   bool trajtemplate_given=0;			//does user specify a trajectory template?
   string trajtemplate;
-
-  args = tokenize(line);
-  xyzfilename = args[0];
-  if(n_args>1)
+  
+  args = tokenize(fileline);
+  xyzfilename = tokenize(0);
+  if(tokenize.count()>1)
   {
     trajtemplate_given=1;
     trajtemplate = args[1];
   }
-
+  
   ifstream ifile(xyzfilename.c_str());
   if (!ifile)
   {
@@ -305,7 +304,7 @@ void System::xyz_prep(vector<string> file_in, string fileline)
 //  line=Control::replace_constants(line);
   line = Control::read_line();
   args = tokenize(line);
-  n_species = n_args/2;
+  n_species = tokenize.count()/2;
   atoms_per_species = new int [n_species];
   species_name = new string [n_species];
   for(speciesii=0;speciesii<n_species;speciesii++)
@@ -341,10 +340,10 @@ void System::xyz_prep(vector<string> file_in, string fileline)
 //    getline(*file_in,line);
     line = Control::read_line();
     args = tokenize(line);
-    if(n_args!=n_atomtypes)
+    if(tokenize.count()!=n_atomtypes)
     {
         stringstream ss;
-        ss<< "Number of atom counts ("<<n_args<<") does not match number of atom types("<<n_atomtypes<<").";
+        ss<< "Number of atom counts ("<<tokenize.count()<<") does not match number of atom types("<<n_atomtypes<<").";
         Error(ss.str(), -4);
     }
     for(atomii=0; atomii<n_atomtypes; atomii++)
@@ -406,7 +405,6 @@ void System::xyz_prep_withlog(vector<string> file_in, string fileline)
 
   string line;
   vector <string> args;
-  int n_args;
   int ** natoms;						//array of number of atoms of each type in each species
   int speciesii;						//species type index
   int typeii, argii;
@@ -419,10 +417,9 @@ void System::xyz_prep_withlog(vector<string> file_in, string fileline)
   int xlo_pos,ylo_pos,zlo_pos,xhi_pos,yhi_pos,zhi_pos;
   bool found_bounds=0;
 
-  args = tokenize(line);
+  args = tokenize(fileline);
   xyzfilename = tokenize(0);
-  n_args = tokenize.count();
-  if(n_args<2)
+  if(tokenize.count()<2)
   {
 	Error("No log file specified.", -2);
   }
@@ -440,7 +437,7 @@ void System::xyz_prep_withlog(vector<string> file_in, string fileline)
   }
 
 
-  if(n_args>2)
+  if(tokenize.count()>2)
   {
     trajtemplate_given=1;
     trajtemplate = args[2];
@@ -452,7 +449,7 @@ void System::xyz_prep_withlog(vector<string> file_in, string fileline)
 //  line=Control::replace_constants(line);
   line = Control::read_line();
   args = tokenize(line);
-  n_species = n_args/2;
+  n_species = tokenize.count()/2;
   atoms_per_species = new int [n_species];
   species_name = new string [n_species];
   for(speciesii=0;speciesii<n_species;speciesii++)
@@ -490,10 +487,10 @@ void System::xyz_prep_withlog(vector<string> file_in, string fileline)
 //    getline(*file_in,line);
     line = Control::read_line();
     args = tokenize(line);
-    if(n_args!=n_atomtypes)
+    if(tokenize.count()!=n_atomtypes)
     {
         stringstream ss;
-        ss<< "Number of atom counts ("<<n_args<<") does not match number of atom types("<<n_atomtypes<<").";
+        ss<< "Number of atom counts ("<<tokenize.count()<<") does not match number of atom types("<<n_atomtypes<<").";
         Error(ss.str(), -4);
     }
     for(atomii=0; atomii<n_atomtypes; atomii++)
@@ -514,7 +511,7 @@ void System::xyz_prep_withlog(vector<string> file_in, string fileline)
     getline(logfile,line);
     //cout << "\n\nLine is: " << line << "\n\n";cout.flush();
     args = tokenize(line);
-    if(n_args==0){continue;}
+    if(tokenize.count()==0){continue;}
     else if(args[0]=="Step")
     {
       if(!in_string_array(args,"Xlo")||!in_string_array(args,"Xhi")||!in_string_array(args,"Ylo")||!in_string_array(args,"Yhi")||!in_string_array(args,"Zlo")||!in_string_array(args,"Zhi"))
@@ -676,7 +673,6 @@ void System::read_xyz(string xyzfilename, string structure_filename)
   int timetally=0;
   string line;
   vector <string> args;
-  int n_args;
   int n_moleculeblocks=0;
   int * moleculeblock_type;
   int * moleculeblock_size;
@@ -723,8 +719,8 @@ void System::read_xyz(string xyzfilename, string structure_filename)
     getline(structurefile, line);
 //    line=Control::replace_constants(line);
     args = tokenize(line);
-    if(n_args==0){continue;}
-    else if(n_args!=2)
+    if(tokenize.count()==0){continue;}
+    else if(tokenize.count()!=2)
     {
       Error("Incorrect number of arguments in structure file.  Each line should consist of 2 arguments: a species and a number of lines.", 0);
     }
@@ -844,7 +840,6 @@ void System::custom_prep(vector<string> file_in, string fileline)
     **/
   string line;
   vector <string> args;
-  int n_args;
   int ** natoms;		//array of number of atoms of each type in each species
   int speciesii;		//species type index
   int typeii, argii;
@@ -855,7 +850,7 @@ void System::custom_prep(vector<string> file_in, string fileline)
 
   args = tokenize(line);
   customfilename = args[0];
-  if(n_args>1)
+  if(tokenize.count()>1)
   {
     trajtemplate_given=1;
     trajtemplate = args[1];
@@ -873,7 +868,7 @@ void System::custom_prep(vector<string> file_in, string fileline)
 //  line=Control::replace_constants(line);
   line = Control::read_line();
   args = tokenize(line);
-  n_species = n_args/2;
+  n_species = tokenize.count()/2;
   atoms_per_species = new int [n_species];
   species_name = new string [n_species];
   for(speciesii=0;speciesii<n_species;speciesii++)
@@ -910,10 +905,10 @@ void System::custom_prep(vector<string> file_in, string fileline)
 //    getline(*file_in,line);
     line = Control::read_line();
     args = tokenize(line);
-    if(n_args!=n_atomtypes)
+    if(tokenize.count()!=n_atomtypes)
     {
       stringstream ss;
-      ss<< "Number of atom counts ("<<n_args<<") does not match number of atom types("<<n_atomtypes<<").";
+      ss<< "Number of atom counts ("<<tokenize.count()<<") does not match number of atom types("<<n_atomtypes<<").";
       Error(ss.str(), -4);
     }
     for(atomii=0; atomii<n_atomtypes; atomii++)
@@ -999,7 +994,6 @@ void System::read_custom(string xyzfilename)
 
   string line;
   vector <string> args;
-  int n_args;
 
   ifstream filexyz(xyzfilename.c_str());
   ifstream * fileobject = &filexyz;
@@ -1084,7 +1078,7 @@ void System::read_custom(string xyzfilename)
     line = "";
     getline(*fileobject,line);
     args = tokenize(line);
-    n_columns = n_args - 2;	//determine number of columns of atom data
+    n_columns = tokenize.count() - 2;	//determine number of columns of atom data
 
     /*If this is the initial timestep, determine which types of trajectory data are to be read in and which columns they are in*/
     if(timestepii==0)
@@ -1327,7 +1321,6 @@ void System::read_custom(string xyzfilename, string structure_filename)
   int timetally=0;
   string line;
   vector <string> args;
-  int n_args;
   int n_moleculeblocks=0;
   int * moleculeblock_type;
   int * moleculeblock_size;
@@ -1384,8 +1377,8 @@ void System::read_custom(string xyzfilename, string structure_filename)
     getline(structurefile, line);
 //    line=Control::replace_constants(line);
     args = tokenize(line);
-    if(n_args==0){continue;}
-    else if(n_args!=2)
+    if(tokenize.count()==0){continue;}
+    else if(tokenize.count()!=2)
     {
       cout << "Error: incorrect number of arguments in structure file.  Each line should consist of 2 arguments: a species and a number of lines.\n";
       exit(1);
@@ -1548,7 +1541,7 @@ void System::read_custom(string xyzfilename, string structure_filename)
     line = "";
     getline(*fileobject,line);
     args = tokenize(line);
-    n_columns = n_args - 2;	//determine number of columns of atom data
+    n_columns = tokenize.count() - 2;	//determine number of columns of atom data
 
     /*If this is the initial timestep, determine which types of trajectory data are to be read in and which columns they are in*/
     if(timestepii==0)
@@ -1787,13 +1780,12 @@ void System::xtc_prep(vector<string> file_in, string fileline)
   **/
   string line;
   string args [ARGMAX];
-  int n_args;
   string gro_file, xtc_file;
   int ** atomidentifier;
 
-  n_args = tokenize(fileline, args);
+  tokenize.count() = tokenize(fileline, args);
 
-  if(n_args!=2){Error( "Incorrect number of files given for xtc trajectory.  File line must contain two files: an xtc file and a gro file.", -2);}
+  if(tokenize.count()!=2){Error( "Incorrect number of files given for xtc trajectory.  File line must contain two files: an xtc file and a gro file.", -2);}
 
   xtc_file = args[0];
   gro_file = args[1];
@@ -1830,13 +1822,12 @@ int** System::read_gro(string filename)
   **/
   string line;
   string args [ARGMAX];
-  int n_args;
   int ** natoms;						//array of number of atoms of each type in each species
   int ii, moleculeii,typeii;
   int molecule_size=MOLECULE_SIZE;
   int species_size=SPECIES_SIZE;
   int type_size=TYPE_SIZE;
-
+  int n_args;
   int current_molecule=0;
   string current_species, current_type;
   int species_match, type_match;
@@ -3232,7 +3223,7 @@ Multibody_Set* System::create_multibody_set (string setname, int n_args, string*
 
   if(args[2] == "all_molecule")
   {
-    if(n_args==3)
+    if(tokenize.count()==3)
     {
       multibodysetpointer=create_multibody_set();
     }
@@ -3244,7 +3235,7 @@ Multibody_Set* System::create_multibody_set (string setname, int n_args, string*
   }
   else if(args[2] == "species_molecule")
   {
-    if(n_args==4)
+    if(tokenize.count()==4)
     {
       speciesindex = show_species_index(args[3]);
       multibodysetpointer=create_multibody_set();
@@ -3257,7 +3248,7 @@ Multibody_Set* System::create_multibody_set (string setname, int n_args, string*
   }
   else if(args [2] == "species_type")
   {
-    if(n_args==5)
+    if(tokenize.count()==5)
     {
       speciesindex = show_species_index(args[3]);
       atomtypeindex = show_atomtype_index(args[4]);
@@ -3272,9 +3263,9 @@ Multibody_Set* System::create_multibody_set (string setname, int n_args, string*
   }
   else if(args [2] == "species_atomlist")
   {
-    if(n_args>5&&n_args/2==int(float(n_args)/2.0+.51))	//check that there are enough arguments and an even number of arguments
+    if(tokenize.count()>5&&tokenize.count()/2==int(float(tokenize.count())/2.0+.51))	//check that there are enough arguments and an even number of arguments
     {
-      n_bodies = (n_args-4)/2;
+      n_bodies = (tokenize.count()-4)/2;
       type = new int [n_bodies];
       speciesindex = show_species_index(args[3]);
       index = new int [n_bodies];

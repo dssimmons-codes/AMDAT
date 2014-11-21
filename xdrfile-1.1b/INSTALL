@@ -1,0 +1,6 @@
+Installation is simple according to GNU tradition
+
+./configure [ flags ]
+make install
+
+
