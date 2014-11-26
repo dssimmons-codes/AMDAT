@@ -6,6 +6,20 @@ polymer 50
 1
 32
 
+
+
+create_multibodies mbodies5 species_type polymer 1
+
+create_multibodies mbodies2 species_molecule polymer
+
+create_multibodies mbodies all_molecule
+
+create_multibodies mbodies3 species_type polymer 1
+
+create_multibodies mbodies4 species_atomlist polymer 1 0 1 31
+
+exit
+
 create_list all
 all
 
@@ -20,20 +34,6 @@ list all
 
 msd msd_bins.dat
 bin_list bins all
-
-exit
-
-create_multibodies mbodies5 species_type polymer 1
-
-create_multibodies mbodies2 species_molecule polymer
-
-create_multibodies mbodies all_molecule
-
-create_multibodies mbodies3 species_type polymer 1
-
-create_multibodies mbodies4 species_atomlist polymer 1 0 1 31
-
-exit
 
 create_list all
 all
