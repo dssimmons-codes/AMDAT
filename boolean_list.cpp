@@ -8,15 +8,19 @@
 
 using namespace std;
 
+
+Boolean_List::Boolean_List()
+{
+  system = 0;
+}
+
 Boolean_List::Boolean_List(System * sys)
 {
   int trajii;
 
   system = sys;
 
-  included.resize(system->show_n_trajectories());
-
-  system->add_boolean_list(this);
+  included.resize(system->show_n_trajectories()); 
 }
 
 
@@ -27,7 +31,7 @@ Boolean_List::Boolean_List(System * sys, int * inc, int n_included)
     * @date 3/1/2013
     */
   int trajii;
-
+  
   system = sys;
 
   //included = new bool [system->show_n_trajectories()];
@@ -43,20 +47,9 @@ Boolean_List::Boolean_List(System * sys, int * inc, int n_included)
     included[inc[trajii]]=1;
   }
 
-  system->add_boolean_list(this);
-
 }
 
 
-
-Boolean_List::Boolean_List()
-{
-
-  system = 0;
-
-  //included = new bool [0];
-
-}
 
 /*New MEM - copy constructor*/
 Boolean_List::Boolean_List(const Boolean_List & copy)
@@ -69,7 +62,6 @@ Boolean_List::Boolean_List(const Boolean_List & copy)
     included[trajii]=copy.included[trajii];
   }
 
-  system->add_boolean_list(this);
 }
 /*End New MEM*/
 
@@ -78,7 +70,6 @@ Boolean_List::Boolean_List(const Boolean_List & copy)
 /*NEW SECTION DSS*/
 Boolean_List::~Boolean_List()
 {
-  if(system!=0){system->remove_boolean_list(this);}
 }
 /*END NEW SECTION*/
 
@@ -122,6 +113,7 @@ void Boolean_List::set(System * sys, int * inc, int n_included)
   int trajii=0;
 //  delete [] included;
 
+  
   system = sys;
 
   //included = new bool [system->show_n_trajectories()];
@@ -140,8 +132,9 @@ void Boolean_List::set(System * sys, int * inc, int n_included)
 
 
 
-bool Boolean_List::operator()(int index)const
+bool Boolean_List::operator()(int index)
 {
+  update_size();
   if(index>=system->show_n_trajectories())
   {
     cout << "Error: index greater than number of trajectories in system.\n";
@@ -156,6 +149,7 @@ bool Boolean_List::operator()(int index)const
 
 void Boolean_List::operator()(int index, bool inc)
 {
+  update_size();
   if(index>=system->show_n_trajectories())
   {
     cout << "Error: index greater than number of trajectories in system.\n";
@@ -170,7 +164,7 @@ void Boolean_List::operator()(int index, bool inc)
 
 
 
-Boolean_List Boolean_List::operator&&(const Boolean_List& comparison)
+Boolean_List Boolean_List::operator&&(Boolean_List& comparison)
 {
   Boolean_List intersection(system);
   int trajii;
@@ -180,7 +174,8 @@ Boolean_List Boolean_List::operator&&(const Boolean_List& comparison)
     cout << "Error: cannot combine boolean lists referencing different system objects.\n";
     exit(1);
   }
-
+  update_size();
+  comparison.update_size();
 
   for(trajii=0;trajii<system->show_n_trajectories();trajii++)
   {
@@ -192,7 +187,7 @@ Boolean_List Boolean_List::operator&&(const Boolean_List& comparison)
 
 
 
-Boolean_List Boolean_List::operator||(const Boolean_List& comparison)
+Boolean_List Boolean_List::operator||(Boolean_List& comparison)
 {
   Boolean_List intersection(system);
   int trajii;
@@ -203,6 +198,9 @@ Boolean_List Boolean_List::operator||(const Boolean_List& comparison)
     exit(1);
   }
 
+  update_size();
+  comparison.update_size();
+  
   for(trajii=0;trajii<system->show_n_trajectories();trajii++)
   {
     intersection.included[trajii] = included[trajii] || comparison.included[trajii];
@@ -215,7 +213,7 @@ Boolean_List Boolean_List::operator||(const Boolean_List& comparison)
 
 
 
-bool Boolean_List::operator==(const Boolean_List& comparison)
+bool Boolean_List::operator==(Boolean_List& comparison)
 {
   bool same;
   if(system!=comparison.system)
@@ -223,7 +221,8 @@ bool Boolean_List::operator==(const Boolean_List& comparison)
     cout << "Error: cannot combine boolean lists referencing different system objects.\n";
     exit(1);
   }
-
+  update_size();
+  comparison.update_size();
   for(int trajii=0;trajii<system->show_n_trajectories();trajii++)
   {
     if ((included[trajii] != comparison.included[trajii]))
@@ -240,7 +239,7 @@ bool Boolean_List::operator==(const Boolean_List& comparison)
   return same;
 }
 
-bool Boolean_List::operator!=(const Boolean_List& comparison)
+bool Boolean_List::operator!=(Boolean_List& comparison)
 {
   return !(*this == comparison);
 }
@@ -263,7 +262,7 @@ int Boolean_List::show_n_included()const
 
 
 
-int Boolean_List::show_trajectory_ids(int alloc_size, int * idlist)const
+int Boolean_List::show_trajectory_ids(int alloc_size, int * idlist)
 {
   int trajii, includedii;
   int n_included;
@@ -271,7 +270,7 @@ int Boolean_List::show_trajectory_ids(int alloc_size, int * idlist)const
   includedii=0;
 
 
-
+  update_size();
   for(trajii=0;trajii<system->show_n_trajectories();trajii++)
   {
     if(included[trajii])
@@ -297,11 +296,10 @@ int Boolean_List::first_included()const
 }
 
 
-
-void Boolean_List::grow_list(int growsize)
+void Boolean_List::update_size()
 {
-    int current_size = included.size();
-    int new_size = current_size+growsize;
-
-    included.resize(new_size);
+  if(included.size()<system->show_n_trajectories())
+  {
+    included.resize(system->show_n_trajectories());
+  }
 }

@@ -14,14 +14,30 @@ using namespace std;
 
 /*--------------------------------------------------------------------------------------*/
 
+Trajectory::Trajectory()
+{
+  trajtype=general;
+  is_unwrapped=0;
+  is_wrapped=0;
+  is_velocity=0;
+  n_timesteps=0;
+  type=-1;
+  trajectory_ID=-1;
+  mass=-1;
+  coordinates = new Coordinate[1];
+  unwrapped = new Coordinate[1];
+  velocity=new Coordinate[1];
+}
+
+
 /*Trajectory Constructor to initialize timestep count and allocate memory accordingly; defaults timesteps to one*/
 Trajectory::Trajectory(int timesteps)
 {
 	trajtype=general;
 	n_timesteps = timesteps;					//set number of timesteps (size of trajectory coordinate array)
 	coordinates = new Coordinate[n_timesteps];			//allocate memory for coordinate array
-	unwrapped = new Coordinate[0];					//allocate memory for displacement array
-	velocity = new Coordinate[0];
+	unwrapped = new Coordinate[1];					//allocate memory for displacement array
+	velocity = new Coordinate[1];
 	
 	for(int timeii=0;timeii<n_timesteps;timeii++)
 	{
@@ -48,8 +64,8 @@ Trajectory::Trajectory(int timesteps, Coordinate * coordinatelist)
 	{
 	  coordinates[timeii] = coordinatelist[timeii];					//define coordinate array
 	}
-	unwrapped = new Coordinate[0];
-	velocity = new Coordinate[0];
+	unwrapped = new Coordinate[1];
+	velocity = new Coordinate[1];
 	is_unwrapped = 0;						//not unwrapped
 	is_wrapped = 1;
 	is_velocity = 0;
@@ -91,8 +107,8 @@ void Trajectory::set(int atom_type,int timesteps, float m)
 	trajectory_ID = NULL;						
 
 	coordinates = new Coordinate[n_timesteps];			//allocate memory for coordinate array
-	unwrapped = new Coordinate[0];				//allocate memory for displacement array
-	velocity = new Coordinate[0];
+	unwrapped = new Coordinate[1];				//allocate memory for displacement array
+	velocity = new Coordinate[1];
 	
 	for(int timeii=0;timeii<n_timesteps;timeii++)
 	{
@@ -120,8 +136,8 @@ void Trajectory::set(int atom_type,int timesteps, Coordinate* coordinatelist, in
 	{
 	  coordinates[timeii] = coordinatelist[timeii];					//define coordinate array
 	}					//define coordinate array
-	unwrapped = new Coordinate[0];
-	velocity = new Coordinate[0];
+	unwrapped = new Coordinate[1];
+	velocity = new Coordinate[1];
 	is_unwrapped = 0;						//not unwrapped
 	is_wrapped = 1;
 	is_velocity = 0;

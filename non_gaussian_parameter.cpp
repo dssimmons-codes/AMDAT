@@ -148,7 +148,7 @@ void Non_Gaussian_Parameter::write(string filename)const
 
   ofstream output(filename.c_str());
 
-  output << "Non-Gaussian parameter data created by MDAT v." << VERSION << "\n";
+  output << "Non-Gaussian parameter data created by AMDAT v." << VERSION << "\n";
   for(timeii=0;timeii<n_times;timeii++)
   {
     output << timetable[timeii]<<"\t"<<ngp[timeii]<<"\n";
@@ -159,7 +159,8 @@ void Non_Gaussian_Parameter::write(string filename)const
 
 int Non_Gaussian_Parameter::max()const
 {
-  int maxtime, timeii;
+  int maxtime = -1; 
+  int timeii;
   float maxvalue=0;
 
   for(timeii=1;timeii<n_times;timeii++)

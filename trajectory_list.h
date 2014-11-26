@@ -26,7 +26,7 @@ class Trajectory_List
 
     int capacity;		//maximum number of trajectories that can be stored at each time
 
-    Boolean_List * included;	//stores boolean list specifying included trajectories at each time;
+    mutable Boolean_List * included;	//stores boolean list specifying included trajectories at each time;
 
 
 

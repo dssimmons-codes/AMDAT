@@ -3219,11 +3219,9 @@ Multibody_Set* System::create_multibody_set (string setname, int n_args, string*
   int* type;
   int* index;
 
-
-
   if(args[2] == "all_molecule")
   {
-    if(tokenize.count()==3)
+    if(n_args==3)
     {
       multibodysetpointer=create_multibody_set();
     }
@@ -3235,7 +3233,7 @@ Multibody_Set* System::create_multibody_set (string setname, int n_args, string*
   }
   else if(args[2] == "species_molecule")
   {
-    if(tokenize.count()==4)
+    if(n_args==4)
     {
       speciesindex = show_species_index(args[3]);
       multibodysetpointer=create_multibody_set();
@@ -3248,7 +3246,7 @@ Multibody_Set* System::create_multibody_set (string setname, int n_args, string*
   }
   else if(args [2] == "species_type")
   {
-    if(tokenize.count()==5)
+    if(n_args==5)
     {
       speciesindex = show_species_index(args[3]);
       atomtypeindex = show_atomtype_index(args[4]);
@@ -3263,7 +3261,7 @@ Multibody_Set* System::create_multibody_set (string setname, int n_args, string*
   }
   else if(args [2] == "species_atomlist")
   {
-    if(tokenize.count()>5&&tokenize.count()/2==int(float(tokenize.count())/2.0+.51))	//check that there are enough arguments and an even number of arguments
+    if(n_args>5&&n_args/2==int(float(n_args)/2.0+.51))	//check that there are enough arguments and an even number of arguments
     {
       n_bodies = (tokenize.count()-4)/2;
       type = new int [n_bodies];
@@ -3504,13 +3502,6 @@ void System::add_trajectories(Trajectory_Set * new_trajectories)
     for(trajii=0;trajii<n_new_trajectories;trajii++)
     {
         trajectorylist.push_back(new_trajectories->show_trajectory(trajii));
-    }
-
-    //Grow all boolean lists is system to be consistent with new number of trajectoriesl assigning zero's for all new trajectories.
-    for(auto bool_iterator = bool_lists.begin();bool_iterator!=bool_lists.end();bool_iterator++)
-    {
-      (*bool_iterator)->grow_list(n_new_trajectories);
-
     }
     
 }

@@ -23,8 +23,9 @@ class Atom_Trajectory: public Trajectory
     int moleculeID;						//unique ID of molecule within which this atom resides
     
   public:
-    using Trajectory::set;
-    Atom_Trajectory(int timesteps=0);				//constructor to instantiate coordinate array without defining it
+    using Trajectory::set;		//no idea what this is but the code doesn't compile properly with it. Who added it and why?
+    Atom_Trajectory();		//default constructor
+    Atom_Trajectory(int timesteps);				//constructor to instantiate coordinate array without defining it
     Atom_Trajectory(int,Coordinate *);				//constructor to instantiate coordinate array with full definition
     void set(int,int,int m=1);					//change number of timesteps and reallocate memory accordingly
     void set(int,int,Coordinate*,int);				//method to fully define object, including coordinate list

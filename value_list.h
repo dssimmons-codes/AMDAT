@@ -24,7 +24,7 @@ protected:
   System * syst;
 
   valType ** values;			//array of values stored: [internal_time][trajectory_ID]
-  Boolean_List * included;		//array of boolean lists specifying which trajectories are in value list at each time: [internal_time]
+  mutable Boolean_List * included;		//array of boolean lists specifying which trajectories are in value list at each time: [internal_time]
 
   int n_trajectories; //number of trajectories in system
 

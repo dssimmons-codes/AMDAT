@@ -44,7 +44,7 @@ class System
     float exp_base;				//base of exponential scaling
     bool frt;					//controls whether first time step is zero or one; this has very large implications on the way that displacements are calculated throughout the code
     int first_exponent;				//set value of first exponent in exponential timescheme.  This is usually either zero or one, and it not count the zeroth time, if one exists.
-    unordered_set<Boolean_List*> bool_lists;	//stores a table of all boolean_lists in existence associated with this system to allow for their size to be updated if additional trajectories are created.
+   
 
 
 
@@ -112,9 +112,6 @@ class System
     void boxify();						//method to check every coordinate to see if it is within the system boundaries; if not, it treats it as an image coordinate and replaces it with the 'real' coordinate
 
 
-    void add_boolean_list(Boolean_List * new_bool_list){bool_lists.insert(new_bool_list);};
-    void remove_boolean_list(Boolean_List * bool_list){bool_lists.erase(bool_list);};
-
     /*------Methods to handle multibodies and multibody_sets--------*/
     Multibody_Set* create_multibody_set(string setname, int n_args, string * args);
     Multibody_Set* create_multibody_set();			//creates a multibody_set containing a multibody for each molecule in the system, with each multibody containing all the trajectories in the corresponding molecule
@@ -147,7 +144,7 @@ class System
     int show_n_atoms()const{return n_atoms;};		//return total number of atoms in system
     int show_n_molecules()const{return total_molecules;};
     int show_n_molecules(int speciesii) const {return n_molecules[speciesii];};
-    int show_n_trajectories()const{return total_trajectories;};
+    int show_n_trajectories()const{return trajectorylist.size();};
     Atom_Trajectory* show_atom(int atomID)const{return atomlist[atomID];};		//return pointer to atom via atomID
     Molecule* show_molecule(int moleculeID)const{return moleculelist[moleculeID];};	//return pointer to molecule via moleculeID
     Trajectory* show_trajectory(int trajectoryID)const{return trajectorylist[trajectoryID];};	//return pointer to trajectory via trajectoryID

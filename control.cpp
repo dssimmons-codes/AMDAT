@@ -183,13 +183,15 @@ int Control::execute_commands(int iIndex, int fIndex)
     }
     else if(command == "system" || command =="system_nv")
     {
-      System system(inputFileVector);							//instantiate system object
-      analyte = &system;
+      analyte=new System(inputFileVector);
+      //System system(inputFileVector);							//instantiate system object
+      //analyte = &system;
     }
     else if(command == "system_np")
     {
-      System system(inputFileVector,1);	//instantiate system object in non-constant-volume ensemble
-      analyte = &system;
+      analyte = new System(inputFileVector,1);
+      //System system(inputFileVector,1);	//instantiate system object in non-constant-volume ensemble
+      //analyte = &system;
     }
     else if (command == "create_list")
     {
@@ -1141,9 +1143,8 @@ void Control::run_analysis(Analysis* analyzer, string setline)
     expected = 2;
     setargcheck(expected, n_setargs, command);
     listname = setargs[1];
-    //listnum = find_trajectorylist(listname);
 
-    if(listnum!=-1)
+    if(find_trajectorylist(listname)!=0)
     {
 	    analyzer->analyze(find_trajectorylist(listname));
     }

@@ -40,7 +40,8 @@ class Trajectory
     Coordinate unwrap_displacement(int,int,const Coordinate&);		//method to return atom displacement vector between two selected timesteps
 
   public:
-    Trajectory(int timesteps=0);	//constructor to instantiate coordinate array without defining it
+    Trajectory();	//default constructor
+    Trajectory(int timesteps);	//constructor to instantiate coordinate array without defining it
     Trajectory(int,Coordinate *);	//constructor to instantiate coordinate array with full definition
    ~Trajectory();			//destructor
     

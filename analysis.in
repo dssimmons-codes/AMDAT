@@ -1,24 +1,49 @@
 system
 xyz_log
 traj.xyz log.lammps
-exponential 10 77 1.2 0 0 .01
+exponential 1 77 1.2 0 0 .01
 polymer 50
 1
 32
 
-
 create_list all
 all
+
+msd msd1.dat
+list all
 
 create_bin_list bins
 all 2 1 2
 
+msd msd2.dat
+list all
+
+msd msd_bins.dat
+bin_list bins all
+
+exit
+
+create_multibodies mbodies5 species_type polymer 1
+
+create_multibodies mbodies2 species_molecule polymer
+
+create_multibodies mbodies all_molecule
+
+create_multibodies mbodies3 species_type polymer 1
+
+create_multibodies mbodies4 species_atomlist polymer 1 0 1 31
+
+exit
+
+create_list all
+all
+
+ngp ngp.dat
+list all
+
 exit
 
 msd msd.dat
-list all
-
-ngp ngp_threads.dat
 list all
 
 isfs isfs.dat 24 24 xyz 0 0
@@ -40,15 +65,9 @@ list fast1
 
 exit
 
-create_multibodies mbodies5 species_type polymer 1
 
-create_multibodies mbodies2 species_molecule polymer
 
-create_multibodies mbodies all_molecule
 
-create_multibodies mbodies3 species_type polymer 1
-
-create_multibodies mbodies4 species_atomlist polymer 1 0 1 31
 
 gyration_radius gyrrad.dat mbodies
 
@@ -58,6 +77,7 @@ gyration_radius gyrrad_polymer1.dat mbodies3
 
 gyration_radius gyrrad_endend.dat mbodies4
 
+exit
 
 
 exit

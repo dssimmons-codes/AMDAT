@@ -36,15 +36,44 @@ namespace std{
 
 class Control
 {
+    /*Members involved with input file read-in*/
     string args [ARGMAX];		//current arguments
-    Tokenize tokenize;
+    Tokenize tokenize;		//object to help parse input
     int n_args;				//current number of arguments
     static vector<string> inputFileVector; // Vector that holds the lines in the input file
     int read_input_file(char *); // Read the input file into the vector
     int execute_commands(int, int); // Execute all commands in the input file vector with indices between the two ints
     static int current_line; // A holder for where the "cursor"  is in the input file vector
-	int MAXTHREADS;
-	void change_processors();
+    ifstream input;
+    static string * constants;                //Array of environment constants
+    static string * constant_names;      //Array of custom environment constant names
+    static int n_constants;
+    static int find_constant(string);		//return index of constant with given custom name
+    void set_constant(string, string);      // Sets a constant to a given value
+    static string replace_constants(string); // A function that replaces the constants in the given string with their values
+    string get_constant(string);             //Gets the value of a constant by name
+    
+    /*Methods enabling advanced scripting in input file*/
+    /*Michael Marvin*/
+    void shell_command(); 			// executes a Linux command
+    void print();                               // "prints" the arguments to screen
+    bool do_for_loop();                         // executes a for loop from the current line to the appropriate "end" command
+    int locate_loop_end(int);                   // locates the line number of the appropriate "end" command for a loop
+    int do_if_statement();                      // executes an if statement from the current line to the appropriate "end" command
+    int locate_if_end(int, bool);               // locates the line number of the appropriate "end" command for if statements. The bool is whether it should look from an "if" (true) or "else" (false)
+    int round_float(float);                     // rounds a float to the closest integer
+    void round_const();                               // Input call to round a constant to an integer
+    void floor_const();                               // Input call to floor a constant to an integer
+    void ceil_const();                               // Input call to ceiling a constant to an integer
+    void evaluate_expression();                 // Performs basic mathematical operations and saves it into a constant
+    float process_expression(string);
+	float eval_terms(string, float, float);
+    void get_user_input(bool);               // Pauses execution and allows the user to input commands on-the-fly
+    
+    
+    /*Members dealing with parallelization*/
+    int MAXTHREADS;
+    void change_processors();
 
 
     System * analyte;			//system being analyzed
@@ -52,32 +81,14 @@ class Control
     Van_Hove_Self vhs;			//self van hove for system
     Van_Hove_Distinct vhd;		//distinct van hove for system
     Space_Time_Correlation_Function vht;
+    Gaussian_Comparison * gaussian_comparison;		//array of Gaussian comparison objects
+    int n_gaussian_comparisons;
     time_t start;			//timer start
     time_t finish;			//timer stop
 
-    ifstream input;
-
 
     /*Arrays to store analysis results with a name given by the user, for later recall and use in other analysis techniques*/
-
-
-    /*Members to store and access trajectory_list objects*/
-    unordered_map <string, Trajectory_List*> trajectories;
-    Trajectory_List* find_trajectorylist(string, bool allow_nofind=0)const;
-    void add_trajectorylist(Trajectory_List*, string);
-    void trajectories_from_multibodies();
-    void combine_trajectories();
-
-
-
-    /*Members to store and access multibody_list objects*/
-    unordered_map<string,Multibody_List*> multibody_lists;
-    Multibody_List* find_multibody_list(string,bool allow_nofind=0)const;
-    void add_multibody_list(Multibody_List*,string);
-    void delete_multibody_list(string);
-
-
-
+    //To be added
     //Space-Time_Correlation_Function * space-time_correlations [LISTSIZE];
     //string space-time_correlationnames [LISTSIZE];
     //int n_space-time_correlations;
@@ -89,20 +100,21 @@ class Control
     //int n_analyses;
 
 
-    static string * constants;                //Array of environment constants
-    static string * constant_names;      //Array of custom environment constant names
-    static int n_constants;
-    static int find_constant(string);		//return index of constant with given custom name
-    void set_constant(string, string);      // Sets a constant to a given value
-    static string replace_constants(string); // A function that replaces the constants in the given string with their values
-    string get_constant(string);             //Gets the value of a constant by name
+    /*Members to store and access trajectory_list objects*/
+    unordered_map <string, Trajectory_List*> trajectories;
+    Trajectory_List* find_trajectorylist(string, bool allow_nofind=0)const;
+    void add_trajectorylist(Trajectory_List*, string);
+    void trajectories_from_multibodies();
+    void combine_trajectories();
 
-    Gaussian_Comparison * gaussian_comparison;		//array of Gaussian comparison objects
-    int n_gaussian_comparisons;
-
+    /*Members to store and access multibody_list objects*/
+    unordered_map<string,Multibody_List*> multibody_lists;
+    Multibody_List* find_multibody_list(string,bool allow_nofind=0)const;
+    void add_multibody_list(Multibody_List*,string);
+    void delete_multibody_list(string);
+    
     /*Some general methods*/
     void system();			//create system object with input file data
-
     void argcheck(int);			//check if the number of arguments to a analysis method is correct
     bool bool_argcheck(int);    //check if the number of arguments to a analysis method is correct and returns true if it is
     void limit();			//set limit of how many time spacings to use per timegap
@@ -139,6 +151,7 @@ class Control
     void write_bin_xyz();						//writes xyz file for binned_trajectories (all or single)
     void skip();
 
+    /*Methods to handle value lists*/
     /*Daniel Hunsicker*/
     Value_List<float> * value_lists [LISTSIZE];		//array of value list objects
     string value_list_names [LISTSIZE];		//custom name of value list
@@ -146,22 +159,6 @@ class Control
 
     int find_value_list(string);		//return index of value list with given custom name
     void add_value_list(Value_List<float>*, string);
-
-    /*Michael Marvin*/
-	void shell_command(); 						// executes a Linux command
-    void print();                               // "prints" the arguments to screen
-    bool do_for_loop();                         // executes a for loop from the current line to the appropriate "end" command
-    int locate_loop_end(int);                   // locates the line number of the appropriate "end" command for a loop
-    int do_if_statement();                      // executes an if statement from the current line to the appropriate "end" command
-    int locate_if_end(int, bool);               // locates the line number of the appropriate "end" command for if statements. The bool is whether it should look from an "if" (true) or "else" (false)
-    int round_float(float);                     // rounds a float to the closest integer
-    void round_const();                               // Input call to round a constant to an integer
-    void floor_const();                               // Input call to floor a constant to an integer
-    void ceil_const();                               // Input call to ceiling a constant to an integer
-    void evaluate_expression();                 // Performs basic mathematical operations and saves it into a constant
-    float process_expression(string);
-	float eval_terms(string, float, float);
-    void get_user_input(bool);               // Pauses execution and allows the user to input commands on-the-fly
 
     /*Analysis method calls*/
     void msd();			//calculate mean square displacement
@@ -194,12 +191,9 @@ class Control
     void invert_list();     //inverts a trajectory_list
     void displacement_map();
     void trajectory_list_decay();
-
     void vector_autocorrelation_function();	//calculates autocorrelation function of vector orientations
-
     void crosscorrelate_value_lists();
     void autocorrelate_value_list();
-
     void write_single_particle();	//write single trajectory to file as simple list of coordinates
 
     /*Multibody analysis method calls*/
