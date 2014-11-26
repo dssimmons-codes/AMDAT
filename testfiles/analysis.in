@@ -28,6 +28,11 @@ gyration_radius gyrrad_endend.dat mbodies4
 
 gyration_radius gyrrad_polytype.dat mbodies5
 
+trajectories_from_multibodies mbodies mbodies com
+
+msd msd_com.dat
+list mbodies
+
 exit
 
 create_list all
@@ -77,18 +82,6 @@ strings strings.dat 70 .6 sigma_matrix stringlist
 list fast1
 
 exit
-
-
-
-
-
-
-
-exit
-
-
-exit
-
 
 
 displacement_map displacement_map 65 0 9

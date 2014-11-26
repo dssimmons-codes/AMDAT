@@ -12,13 +12,14 @@
 
 #include "molecule.h"
 #include "boolean_list.h"
-#include "multibody_set.h"
 #include "trajectory_set.h"
 #include "trajectory.h"
 #include "analysis.h"
 #include "tokenize.h"
 namespace std {
 
+class Multibody_Set;
+  
 class System
 {
   protected:

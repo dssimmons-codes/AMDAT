@@ -3308,7 +3308,7 @@ Multibody_Set* System::create_multibody_set()
 
   Multibody_Set * new_multibody_set;
   new_multibody_set = new Multibody_Set;
-  new_multibody_set->set(total_molecules);	//set number of multibodies
+  new_multibody_set->set(this,total_molecules);	//set number of multibodies
 
   for(speciesii=0;speciesii<n_species;speciesii++)
   {
@@ -3330,7 +3330,7 @@ Multibody_Set* System::create_multibody_set(int speciesii)
 
   Multibody_Set * new_multibody_set;
   new_multibody_set = new Multibody_Set;
-  new_multibody_set->set(n_molecules[speciesii]);	//set number of multibodies
+  new_multibody_set->set(this,n_molecules[speciesii]);	//set number of multibodies
 
 
     for(moleculeii=0;moleculeii<n_molecules[speciesii];moleculeii++)
@@ -3351,7 +3351,7 @@ Multibody_Set* System::create_multibody_set(int speciesii, int type)
 
   Multibody_Set * new_multibody_set;
   new_multibody_set = new Multibody_Set;
-  new_multibody_set->set(n_molecules[speciesii]);	//set number of multibodies
+  new_multibody_set->set(this,n_molecules[speciesii]);	//set number of multibodies
 
     for(moleculeii=0;moleculeii<n_molecules[speciesii];moleculeii++)
     {
@@ -3371,7 +3371,7 @@ Multibody_Set* System::create_multibody_set(int speciesii, int n_bodies, int * t
 
   Multibody_Set * new_multibody_set;
   new_multibody_set = new Multibody_Set;
-  new_multibody_set->set(n_molecules[speciesii]);	//set number of multibodies
+  new_multibody_set->set(this,n_molecules[speciesii]);	//set number of multibodies
 
 
     for(moleculeii=0;moleculeii<n_molecules[speciesii];moleculeii++)
@@ -3448,17 +3448,16 @@ Trajectory_Set* System::create_trajectory_set(string setname, string multibodyse
 {
   Multibody_Set * multibody_set;
   Trajectory_Set * new_trajectory_set;
-  new_trajectory_set = new Trajectory_Set;
   
   multibody_set = find_multibody_set(multibodysetname);
   
-  new_trajectory_set->trajectories_from_multibodies(multibody_set,centertype);	//define new trajectories from multibodies
+  multibody_set->compute_trajectories(centertype);	//define new trajectories from multibodies
   
-  add_trajectories(new_trajectory_set);		//add trajectories to master list of trajectories and update boolean lists
+  add_trajectories(multibody_set);		//add trajectories to master list of trajectories and update boolean lists
    
-  add_trajectory_set(setname, new_trajectory_set);	//add trajectory_set to master list of trajectory sets
+  add_trajectory_set(setname, multibody_set);	//add trajectory_set to master list of trajectory sets
 
-  return new_trajectory_set;		//return pointer to new set
+  return multibody_set;		//return pointer to new set
 
 }
 
@@ -3509,7 +3508,8 @@ void System::add_trajectories(Trajectory_Set * new_trajectories)
 
     for(trajii=0;trajii<n_new_trajectories;trajii++)
     {
-        trajectorylist.push_back(new_trajectories->show_trajectory(trajii));
+      (new_trajectories->show_trajectory(trajii))-> set_trajectory_ID(trajectorylist.size()); 
+      trajectorylist.push_back(new_trajectories->show_trajectory(trajii));
     }
     
 }

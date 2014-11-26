@@ -9,10 +9,14 @@
 
 #include "multibody.h"
 #include "trajectory.h"
+#include "trajectory_set.h"
 
 namespace std
 {
-class Multibody_Set
+  
+class System;
+
+class Multibody_Set: public Trajectory_Set
 {
     int n_multibodies;
     Multibody * multibodies;
@@ -27,10 +31,16 @@ class Multibody_Set
     /*Methods to define a multibody in the array of multibodies*/
     void set_multibody(int multibody_index, int n_bodies, Trajectory** bodies){multibodies[multibody_index].set(n_bodies,bodies);};
     void set_multibody(int multibody_index, const Multibody & multibody){multibodies[multibody_index]=multibody;};
-    void set(int multibody_count);		//reset number of multibodies and reinitialize array of multibodies
+    void set(System * system, int multibody_count);		//reset number of multibodies and reinitialize array of multibodies
     Multibody * show_multibody(int index);
     int show_n_multibodies(){return n_multibodies;};
+    
+    /*Method to compute COM or centroid trajectories for all multibodies in set*/
+    void compute_trajectories(bool centertype);
 
+    /*Replace trajectory_set methods to instead use the multibody list*/
+    Trajectory * show_trajectory(int index){return &multibodies[index];};
+    virtual int show_n_trajectories()const{return n_multibodies;};
 
 
 

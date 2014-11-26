@@ -171,7 +171,7 @@ error.o: error.cpp error.h control.cpp control.h
 multibody.o: multibody.cpp multibody.h trajectory.h coordinate.h system.h analysis.h atom_trajectory.h tokenize.h 
 	$(CXX) $(CFLAGS) multibody.cpp
 
-multibody_set.o: multibody_set.cpp multibody_set.h trajectory.h coordinate.h system.h analysis.h atom_trajectory.h tokenize.h 
+multibody_set.o: multibody_set.cpp multibody_set.h trajectory.h coordinate.h system.h analysis.h atom_trajectory.h tokenize.h trajectory_set.h
 	$(CXX) $(CFLAGS) multibody_set.cpp
 
 multibody_list.o: multibody_list.cpp multibody_list.h system.h molecule.h analysis.h atom_trajectory.h coordinate.h tokenize.h trajectory.h multibody.h multibody_set.h multibody_analysis.h
@@ -180,7 +180,7 @@ multibody_list.o: multibody_list.cpp multibody_list.h system.h molecule.h analys
 multibody_analysis.o: multibody_analysis.cpp multibody_analysis.h multibody_list.h system.h molecule.h analysis.h atom_trajectory.h coordinate.h tokenize.h trajectory.h multibody.h multibody_set.h version.h
 	$(CXX) $(CFLAGS) multibody_analysis.cpp
 
-trajectory_set.o: trajectory_set.cpp trajectory_set.h multibody_set.h trajectory.h coordinate.h system.h analysis.h atom_trajectory.h tokenize.h 
+trajectory_set.o: trajectory_set.cpp trajectory_set.h trajectory.h coordinate.h system.h analysis.h atom_trajectory.h tokenize.h 
 	$(CXX) $(CFLAGS) trajectory_set.cpp
 
 gyration_radius.o: gyration_radius.cpp gyration_radius.h multibody_analysis.h multibody_list.h system.h molecule.h analysis.h atom_trajectory.h coordinate.h tokenize.h trajectory.h multibody.h multibody_set.h version.h

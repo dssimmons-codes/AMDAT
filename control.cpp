@@ -1475,14 +1475,20 @@ void Control::create_multibodies()
   string multibody_list_name;
   Multibody_Set* multibody_set_pointer;
   Multibody_List* new_multibody_list;
+  
   new_multibody_list=new Multibody_List;
 
-  multibody_list_name = args[1];
 
+  multibody_list_name = args[1];
+ 
+  
   multibody_set_pointer = analyte->create_multibody_set (multibody_list_name, n_args, args);    //create multibody set with name that is the same as the multibody list. This is where the multibodies are created.
+
+
 
   new_multibody_list->set(analyte,multibody_set_pointer);
   add_multibody_list(new_multibody_list,multibody_list_name);
+  
 }
 
 

@@ -3,6 +3,7 @@
 /*Written by David S. Simmons*/
 
 #include "multibody_set.h"
+#include "system.h"
 
 using namespace std;
 
@@ -70,11 +71,16 @@ Multibody_Set::Multibody_Set(int multibody_count)
 
 
 /*reset number of multibodies and reinitialize array of multibodies*/
-void Multibody_Set::set(int multibody_count)
+void Multibody_Set::set(System* system, int multibody_count)
 {
   delete [] multibodies;
   n_multibodies=multibody_count;
   multibodies = new Multibody [n_multibodies];
+  
+  for(int mbii=0;mbii<n_multibodies;mbii++)
+  {
+    multibodies[mbii].set(system);
+  }
 }
 
 
@@ -88,4 +94,21 @@ Multibody* Multibody_Set::show_multibody(int index)
     {
         return 0;
     };
+}
+
+
+void Multibody_Set::compute_trajectories(bool centertype)
+{
+  int trajii;
+  for(trajii=0;trajii<n_multibodies;trajii++)
+  {
+    if(centertype)
+    {
+      multibodies[trajii].center_of_mass_trajectory();
+    }
+    else
+    {
+      multibodies[trajii].centroid_trajectory();
+    }
+  }
 }

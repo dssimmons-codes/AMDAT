@@ -15,7 +15,7 @@ namespace std
 
   class System;
 
-  class Multibody
+  class Multibody: public Trajectory
   {
     System * system;
 
@@ -35,15 +35,16 @@ namespace std
       Multibody operator =(const Multibody &);
       Multibody(int n_bodies);		//construct multibody with n_bodies initially corresponding to null pointers
       Multibody(int n_bodies,Trajectory** bodies);
-
+      
+      void set(System * sys);
       void set(int n_bodies, Trajectory** bodies);
       void set(int body_index, Trajectory * body){trajectories[body_index]=body;};	//set pointer to one of the bodies
       //Coordinate shortvector(int trajii1,int trajii2,int timeii);		//Returns shortest vector between two trajectories at a given time (first trajectory index, second trajectory index, time)
 
       //void show_coordinates(int timeii,Coordinate* list);			//returns list of coordinates of trajectories at time ii. Coordinates are returned via Coordinate* list, which must be of length equal to n_trajectories;
 
-      Trajectory center_of_mass_trajectory()const;
-      Trajectory centroid_trajectory()const;
+      void center_of_mass_trajectory();
+      void centroid_trajectory();
 
       int show_n_bodies()const{return n_trajectories;};
 

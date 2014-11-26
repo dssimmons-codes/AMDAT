@@ -10,6 +10,8 @@
 
 using namespace std;
 
+/*need to set trajectory_id on creation*/
+
 
 /*Default constructor*/
 Multibody::Multibody()
@@ -100,6 +102,11 @@ Multibody::Multibody(int n_bodies, Trajectory ** bodies)
 }
 
 
+void Multibody::set(System*sys)
+{
+  system=sys;
+}
+
 
 /*reset multibody based on an array of trajectories*/
 void Multibody::set(int n_bodies, Trajectory ** bodies)
@@ -121,13 +128,12 @@ void Multibody::set(int n_bodies, Trajectory ** bodies)
 
 
 /*return center of mass trajectory of multibody*/
-Trajectory Multibody::center_of_mass_trajectory()const
+void Multibody::center_of_mass_trajectory()
 {
-  Trajectory comtraj;
   Coordinate com;
-  float mass=0;
+  mass=0;
   int trajectoryii,timeii;
-  int trajlength = system->show_n_timesteps();
+  n_timesteps = system->show_n_timesteps();
   
   /*Calculate total mass of multibody*/
   for(trajectoryii=0;trajectoryii<n_trajectories;trajectoryii++)
@@ -135,11 +141,10 @@ Trajectory Multibody::center_of_mass_trajectory()const
     mass+=trajectories[trajectoryii]->show_mass();
   }
   
-  /*set trajectory type, length, and mass*/
-  comtraj.set(0,trajlength,mass);
+  type=0;
   
   /*Determine center of mass of multibody at each time based upon unwrapped coordinates and write to */
-  for(timeii=0;timeii<trajlength;timeii++)
+  for(timeii=0;timeii<n_timesteps;timeii++)
   {
     
     /*calculate center of mass at current time*/
@@ -150,24 +155,21 @@ Trajectory Multibody::center_of_mass_trajectory()const
     }
     com/=mass;
     
-    comtraj.set_unwrapped(com,timeii);		//set center of mass trajectory coordinate at current time
+    set_unwrapped(com,timeii);		//set center of mass trajectory coordinate at current time
   }
   
   /*determine wrapped coordinates from unwrapped coordinates*/
-  comtraj.wrap(system->time_dependent_size(),system->time_dependent_boundaries());
-  
-  return comtraj;
+  wrap(system->time_dependent_size(),system->time_dependent_boundaries());
 }
 
 
 /*return centroid trajectory of multibody*/
-Trajectory Multibody::centroid_trajectory()const
+void Multibody::centroid_trajectory()
 {
-  Trajectory centraj;
   Coordinate cen;
-  float mass=0;
+  mass=0;
   int trajectoryii,timeii;
-  int trajlength = system->show_n_timesteps();
+  n_timesteps = system->show_n_timesteps();
   
   /*Calculate total mass of multibody*/
   for(trajectoryii=0;trajectoryii<n_trajectories;trajectoryii++)
@@ -175,22 +177,20 @@ Trajectory Multibody::centroid_trajectory()const
     mass+=trajectories[trajectoryii]->show_mass();
   }
   
-  /*set trajectory type, length, and mass*/
-  centraj.set(0,trajlength,mass);
+  type=0;
   
   /*Determine centroid of multibody at each time based upon unwrapped coordinates and write to */
-  for(timeii=0;timeii<trajlength;timeii++)
+  for(timeii=0;timeii<n_timesteps;timeii++)
   {
     
     /*calculate centroid at current time*/
     cen=calculate_centroid(timeii);
-    centraj.set_unwrapped(cen,timeii);		//set center of mass trajectory coordinate at current time
+    set_unwrapped(cen,timeii);		//set center of mass trajectory coordinate at current time
   }
   
   /*determine wrapped coordinates from unwrapped coordinates*/
-  centraj.wrap(system->time_dependent_size(),system->time_dependent_boundaries());
-  
-  return centraj;
+  wrap(system->time_dependent_size(),system->time_dependent_boundaries());
+ 
 }
 
 
