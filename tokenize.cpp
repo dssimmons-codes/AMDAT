@@ -33,6 +33,8 @@ Tokenize Tokenize::operator=(const Tokenize & copy)
 vector <string> Tokenize::operator()(string line)
 {
   tokens.clear();
+  tokens.resize(0);
+
   
   size_t token_start = 0;
   size_t next_space;

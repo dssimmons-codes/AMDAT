@@ -3263,13 +3263,21 @@ Multibody_Set* System::create_multibody_set (string setname, int n_args, string*
   {
     if(n_args>5&&n_args/2==int(float(n_args)/2.0+.51))	//check that there are enough arguments and an even number of arguments
     {
-      n_bodies = (tokenize.count()-4)/2;
+      n_bodies = (n_args-4)/2;
       type = new int [n_bodies];
       speciesindex = show_species_index(args[3]);
+      if(speciesindex==-1)
+      {
+	cout<<"\nError:"<<args[3]<<" is invalid species selection.";
+      }
       index = new int [n_bodies];
       for(int bodyii=0;bodyii<n_bodies;bodyii++)
       {
 	type[bodyii] = show_atomtype_index(args[bodyii*2+4]);
+        if(type[bodyii]==-1)
+        {
+	  cout<<"\nError:"<<type[bodyii]<<" is invalid type selection.";
+        }
 	index[bodyii] = atoi(args[bodyii*2+5].c_str());
       }
       multibodysetpointer=create_multibody_set(speciesindex,n_bodies,type,index);

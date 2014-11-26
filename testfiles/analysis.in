@@ -1,6 +1,6 @@
 system
 xyz_log
-traj.xyz log.lammps
+/home/dsimmon/svnrepositories/trunk/testfiles/traj.xyz /home/dsimmon/svnrepositories/trunk/testfiles/log.lammps
 exponential 1 77 1.2 0 0 .01
 polymer 50
 1
@@ -18,10 +18,23 @@ create_multibodies mbodies3 species_type polymer 1
 
 create_multibodies mbodies4 species_atomlist polymer 1 0 1 31
 
+gyration_radius gyrrad.dat mbodies
+
+gyration_radius gyrrad_polymer.dat mbodies2
+
+gyration_radius gyrrad_polymer1.dat mbodies3
+
+gyration_radius gyrrad_endend.dat mbodies4
+
+gyration_radius gyrrad_polytype.dat mbodies5
+
 exit
 
 create_list all
 all
+
+
+exit
 
 msd msd1.dat
 list all
@@ -69,13 +82,7 @@ exit
 
 
 
-gyration_radius gyrrad.dat mbodies
 
-gyration_radius gyrrad_polymer.dat mbodies2
-
-gyration_radius gyrrad_polymer1.dat mbodies3
-
-gyration_radius gyrrad_endend.dat mbodies4
 
 exit
 
