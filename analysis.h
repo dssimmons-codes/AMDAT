@@ -46,7 +46,8 @@ enum Analysis_Type
   rgtensor_stats,
   space_time_correlation_function,
   stiffness_dist,
-  strings
+  strings,
+  edge_detector_timedependent
 };
 
 

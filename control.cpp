@@ -41,6 +41,7 @@
 #include "vector_autocorrelation.h"
 #include "trajectory_list_decay.h"
 #include "mean_displacement.h"
+#include "edge_detector_timedependent.h"
 #include "multibody_set.h"
 #include "gyration_radius.h"
 #include "multibody_list.h"
@@ -313,6 +314,8 @@ int Control::execute_commands(int iIndex, int fIndex)
     {trajectory_list_decay();}
     else if (command == "gyration_radius")
     {gyration_radius();}
+    else if (command == "find_edge")
+    {find_edge();}
     else if (command == "skip")
     {skip();}
     else if (command == "exit")
@@ -3027,6 +3030,34 @@ void Control::composition()
      cout << "\nCalculated composition in " << finish-start<<" seconds.";
 }
 
+
+void Control::find_edge()
+{
+  string filename;
+  string runline;
+  int expected=5;
+  argcheck(expected);
+  dynamic = 0;
+  float vectorx,vectory,vectorz;
+  Coordinate vector;
+  
+  filename = args[1];
+  vectorx = atof(args[2].c_str());
+  vectory = atof(args[3].c_str());
+  vectorz = atof(args[4].c_str());
+  vector.set(vectorx,vectory,vectorz);
+  
+  runline = read_line();
+  cout <<"\n"<< runline;
+  
+  Edge_Detector_Timedependent edge(analyte,vector);
+  cout << "\nFinding edge.\n";cout.flush();
+  start = time(NULL);
+  run_analysis <Edge_Detector_Timedependent> (edge,runline,filename); // pass run_analysis template the analysis type 'Mean_Square_Displacement'
+
+  finish = time(NULL);
+  cout << "\nFound edges in " << finish-start<<" seconds."<<endl;
+}
 
 
 

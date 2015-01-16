@@ -7,6 +7,31 @@ polymer 50
 32
 
 
+create_list all
+all
+
+create_bin_list bins
+all 2 1 1
+
+find_edge binnededge1 -1 0 0
+bin_list bins all
+
+exit
+
+find_edge edge1.dat -1 0 0
+list all
+
+find_edge edge2.dat 1 0 0
+list all
+
+find_edge edge3.dat 0 -1 0
+list all
+
+find_edge edge4.dat 0 1 0
+list all
+
+exit
+
 
 create_multibodies mbodies5 species_type polymer 1
 
