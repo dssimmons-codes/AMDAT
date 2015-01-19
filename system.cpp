@@ -226,6 +226,10 @@ void System::read_trajectory(string trajectory_type, vector<string> file_in, str
     {
       custom_prep(file_in,fileline);
     }
+    else if (trajectory_type=="custom_byid")
+    {
+      custom_byid_prep(file_in,fileline);
+    }
     else
     {
       Error( string("Trajectory file type ").append(trajectory_type)+" not recognized.", -2);
@@ -250,6 +254,10 @@ void System::read_trajectory(string trajectory_type, vector<string> file_in, str
     else if (trajectory_type=="custom")
     {
       custom_prep(file_in,fileline);
+    }
+    else if (trajectory_type=="custom_byid")
+    {
+      custom_byid_prep(file_in,fileline);
     }
     else
     {
@@ -831,6 +839,7 @@ void System::read_xyz(string xyzfilename, string structure_filename)
 /*------------------------Methods to read custom LAMMPS trajectories --------------------- ------*/
 
 
+
 void System::custom_prep(vector<string> file_in, string fileline)
 {
     /** Prepare to read in custom LAMMPS trajectory
@@ -848,7 +857,7 @@ void System::custom_prep(vector<string> file_in, string fileline)
   bool trajtemplate_given=0;			//does user specify a trajectory template?
   string trajtemplate;
 
-  args = tokenize(line);
+  args = tokenize(fileline);
   customfilename = args[0];
   if(tokenize.count()>1)
   {
@@ -959,7 +968,7 @@ bool System::floatCompare(float A, float B)
 
 /*----------------------------------------------------------------------------------*/
 
-/*Method to read in a LAMMPS custom file.  The file must be formatted in an ordered manner if this method is to work correctly.  In particular the method assumes that the xyz file is grouped by species, with the species appearing in the order in which they were entered by the user.  This approach could be replaced by a method to read in an enhanced xyz file that stores molecular data.*/
+/*Method to read in a LAMMPS custom file.  The file must be formatted in an ordered manner if this method is to work correctly.  In particular the method assumes that the custom file is grouped by species, with the species appearing in the order in which they were entered by the user.  This approach could be replaced by a method to read in an enhanced xyz file that stores molecular data.*/
 
 void System::read_custom(string xyzfilename)
 {
@@ -1296,7 +1305,6 @@ void System::read_custom(string xyzfilename)
 
 
 /*--------------------------------------------------------------------------------------------*/
-
 
 /*Method to read in a LAMMPS custom file.  Atoms within every molecule of each species must be ordered the same, but order of molecules is given by extra template file*/
 
@@ -1763,6 +1771,967 @@ void System::read_custom(string xyzfilename, string structure_filename)
 
 
 /*--------------------------------------------------------------------------------------------*/
+
+
+typedef int twoint [2];
+
+int compare_twoint(const void*a,const void*b)
+{
+  if((*(twoint*)a)[0]<(*(twoint*)b)[0]) return -1;
+  if((*(twoint*)a)[0]==(*(twoint*)b)[0]) return 0;
+  if((*(twoint*)a)[0]>(*(twoint*)b)[0]) return 1;
+}
+
+
+/*--------------------------------------------------------------------------------------------*/
+
+
+void System::custom_byid_prep(vector<string> file_in, string fileline)
+{
+    /** Prepare to read in custom LAMMPS trajectory
+    * @param file_in - user-specified input file
+    * @param fileline - line containing location of trajectory file(s)
+    * @author David S. Simmons
+    **/
+  string line;
+  vector <string> args;
+  int ** natoms;		//array of number of atoms of each type in each species
+  int speciesii;		//species type index
+  int typeii, argii;
+  int atomii;							//atom type index
+  string customfilename;
+  bool trajtemplate_given=0;			//does user specify a trajectory template?
+  string trajtemplate;
+
+  args = tokenize(fileline);
+  customfilename = args[0];
+  if(tokenize.count()>1)
+  {
+    trajtemplate_given=1;
+    trajtemplate = args[1];
+  }
+
+  ifstream ifile(customfilename.c_str());
+  if (!ifile)
+  {
+	Error("Custom Trajectory file not found.", -2);
+  }
+
+  /*read in species names*/
+  line = "";
+//  getline(*file_in,line);
+//  line=Control::replace_constants(line);
+  line = Control::read_line();
+  args = tokenize(line);
+  n_species = tokenize.count()/2;
+  atoms_per_species = new int [n_species];
+  species_name = new string [n_species];
+  for(speciesii=0;speciesii<n_species;speciesii++)
+  {
+    species_name[speciesii] = args[speciesii*2];
+    atoms_per_species[speciesii]=0;
+  }
+  n_molecules = new int[n_species];	//allocate memory for molecule-number array
+  for(speciesii=0;speciesii<n_species;speciesii++)
+  {
+    n_molecules[speciesii] = atoi(args[speciesii*2+1].c_str());
+  }
+
+  natoms = new int*[n_species];			//allocate memory for atom-number-per-molecule array
+
+  /*read in atom type names*/
+  line = "";
+//  getline(*file_in,line);
+//  line=Control::replace_constants(line);
+  line = Control::read_line();
+  args = tokenize(line);
+  n_atomtypes = args.size();
+  atomtype_name = new string [n_atomtypes];
+  for(typeii=0;typeii<n_atomtypes;typeii++)
+  {
+    atomtype_name[typeii] = args[typeii];
+  }
+
+  /*read in atomtype counts for each species*/
+  for(speciesii=0; speciesii<n_species; speciesii++)
+  {
+    natoms[speciesii] = new int [n_atomtypes];
+    line = "";
+//    getline(*file_in,line);
+    line = Control::read_line();
+    args = tokenize(line);
+    if(tokenize.count()!=n_atomtypes)
+    {
+      stringstream ss;
+      ss<< "Number of atom counts ("<<tokenize.count()<<") does not match number of atom types("<<n_atomtypes<<").";
+      Error(ss.str(), -4);
+    }
+    for(atomii=0; atomii<n_atomtypes; atomii++)
+    {
+      natoms[speciesii][atomii] = atoi(args[atomii].c_str());
+      atoms_per_species += natoms[speciesii][atomii];
+    }
+  }
+  
+  count_atoms(natoms);
+
+  create_molecules(natoms);
+
+  read_custom_byid(customfilename);
+
+}
+
+/*-------------------------------------------------------------------------------------------------------*/
+
+/*Method to read in a LAMMPS custom file.  Uses atom indices to allow for unsorted trajectories (atom indices can be out of order and order can change between timesteps), but the atoms refered to by the indices must be ordered in a particular if this method is to work correctly.  In particular the method assumes that the atoms refered to are grouped by species, with the species appearing in the order in which they were entered by the user. In addition, for this to work correctly atom ids must begin at 1 and may not skip.*/
+
+void System::read_custom_byid(string xyzfilename)
+{
+  /** Read in custom LAMMPS trajectory file
+  * @param xyzfilename location of trajectory file
+  * @author David S. Simmons
+  **/
+
+  int file_atoms;			//variable to store the number of atoms listed in xyz file
+  string trash;				//create garbage string
+  int timestepii;			//index over timesteps
+  int speciesii;			//index over species
+  int moleculeii;			//index over molecules
+  int atomii;				//index over atoms within molecule
+  int type;				//type to pass to molecule
+  int id;				//atom id in lammps
+  Coordinate coordinate;		//coordinate to pass to molecule
+  float x;				//temporary storage for x coordinate
+  float y;				//temporary storage for y coordinate
+  float z;				//temporary storage for z coordinate
+  int * n_typeii;			//array of indices to track how many of each type have been passed to particular molecule
+  int lineii;
+  int typeii;				//index over elements of above aray
+  int idii=0;				//for loop over ids
+  int timetally=0;
+  float xlo, xhi, ylo, yhi, zlo, zhi, Lx, Ly, Lz;
+  int n_columns;		//number of columns of atom data in custom dump file
+  bool r_provided, rs_provided, ru_provided, rsu_provided;		//booleans specifying whether a complete set of wrapped, scaled wraped, unwrapped, and scaled unwrapped coordinates are provided by the trajectory file
+  bool i_provided;		//specifies whether image indices are provided for unwrapping
+  bool v_provided;	//bool specifying whether complete velocity is provided by trajectory file
+  bool mass_provided;	//bool specifying whether mass is provided by trajectory file
+  bool read_r, read_rs, read_ru, read_rsu, read_i;		//bools specifying which type of coordinates to read in
+  int x_position, y_position, z_position, xs_position, ys_position, zs_position, xu_position, yu_position, zu_position, xsu_position, ysu_position, zsu_position, ix_position, iy_position, iz_position, type_position, vx_position, vy_position, vz_position, mass_position, id_position;
+  bool calc_wrapped;
+  
+  twoint * index_type_list;		//array storing id and type to allow sorting of type by id in map building
+  index_type_list=new twoint [n_atoms];
+  
+  int ** idmap;			//store map of where to find each atom based on id - ie store speciesii, moleculeii, type, and atomii for each id. Assuming that lammps atom ids begin at one and do not skip, the atom id is simply the first index of this array plus one.
+  idmap = new int* [n_atoms];
+  for(idii=0;idii<n_atoms;idii++)
+  {
+    idmap[idii]=new int [4];
+  }
+  
+  string line;
+  vector <string> args;
+
+  ifstream filexyz(xyzfilename.c_str());
+  ifstream * fileobject = &filexyz;
+  auto startpoint = filexyz.tellg();
+
+  n_typeii = new int [n_atomtypes];
+  cout << "\nReading a " << n_timesteps <<" timestep trajectory of " << n_atoms << " atoms.\n";
+
+  
+  
+  /*perform initial read of first timestep: decide what kind of data can be read in and build map linking each index with to a particular atom in the data structure*/
+  
+  
+  /*read in header information from custom trajectory file*/
+     line = "";
+     getline(*fileobject,line);		//read in "ITEM: TIMESTEP" line
+     getline(*fileobject,line);		//read in timestep line
+     getline(*fileobject,line);		//read in "ITEM: NUMBER OF ATOMS" line
+     line = "";
+     getline(*fileobject,line);		//read in number of atoms
+     args = tokenize(line);
+     file_atoms=atoi(args[0].c_str());
+    if(file_atoms!=n_atoms)		//check if the number of atoms listed in file is consistent with the molecule and atom counts given by the user
+    {
+      stringstream ss;
+      ss<<"The number of atoms listed in the xyz file is inconsistent with user input: "<<file_atoms<<" != "<<n_atoms;
+      Error(ss.str(), -4);
+      //cout << "The number of atoms listed in the xyz file is inconsistent with user input: ";	//if not, give error...
+      //cout << file_atoms << " != " << n_atoms << "\n";
+      //exit(0);											//and terminate program.
+    }
+
+    /*read in box bounds from trajectory file*/
+    getline(*fileobject,line);		//read in "ITEM: BOX BOUNDS..." line
+    line = "";
+    getline(*fileobject,line);
+    args = tokenize(line);
+    xlo = atof(args[0].c_str());
+    xhi = atof(args[1].c_str());
+    line = "";
+    getline(*fileobject,line);
+    args = tokenize(line);
+    ylo = atof(args[0].c_str());
+    yhi = atof(args[1].c_str());
+    line = "";
+    getline(*fileobject,line);
+    args = tokenize(line);
+    zlo = atof(args[0].c_str());
+    zhi = atof(args[1].c_str());
+    line = "";
+
+//    if(timestepii==0)
+//    {
+      /*set box size*/
+      Lx = xhi - xlo;
+      Ly = yhi - ylo;
+      Lz = zhi - zlo;
+      box_size[timestepii].set(Lx,Ly,Lz);
+      box_boundary[timestepii][0].set(xlo, ylo, zlo);
+      box_boundary[timestepii][1].set(xhi, yhi, zhi);
+//    }
+//    else
+//    {
+//      if(np) /*if non-constant volume, set box size at each frame*/
+//      {
+//	Lx = xhi - xlo;
+//	Ly = yhi - ylo;
+//	Lz = zhi - zlo;
+//	box_size[timestepii].set(Lx,Ly,Lz);
+//	box_boundary[timestepii][0].set(xlo, ylo, zlo);
+//	box_boundary[timestepii][1].set(xhi, yhi, zhi);
+//    }
+//      else /*if constant volume, return error if file box bounds do not equal previous bounds*/
+      if(!np)
+      {
+//	if(box_boundary[0][0].show_x()!=xlo||box_boundary[0][1].show_x()!=xhi||box_boundary[0][0].show_y()!=ylo||box_boundary[0][1].show_y()!=yhi||box_boundary[0][0].show_z()!=zlo||box_boundary[0][1].show_z()!=zhi)
+        if (!(floatCompare(box_boundary[0][0].show_x(), xlo)&&floatCompare(box_boundary[0][1].show_x(), xhi)&&floatCompare(box_boundary[0][0].show_y(), ylo)&&floatCompare(box_boundary[0][1].show_y(), yhi)&&floatCompare(box_boundary[0][0].show_z(), zlo)&&floatCompare(box_boundary[0][1].show_z(), zhi)))
+        {
+            Error( "The box boundaries provided in the custom file are not constant. For varying-volume trajectory, please select system_np system type.", 0);
+        }
+      }
+ //   }
+
+
+    /*read in and parse line specifying data types in custom dump file*/
+    line = "";
+    getline(*fileobject,line);
+    args = tokenize(line);
+    n_columns = tokenize.count() - 2;	//determine number of columns of atom data
+  
+      /*look for index column*/
+      if(in_string_array(args,"id"))
+      {
+	id_position=find_in_string_array(args,"id")-2;
+      }
+      else
+      {
+	cout<<"\nError: Atom IDs not provided. Atom IDs are required to read a custom file by ID.\n";
+	exit(0);
+      }
+  
+      /*check which coordinate types are provided*/
+      r_provided = in_string_array(args,"x")&&in_string_array(args,"y")&&in_string_array(args,"z");		//wrapped
+      rs_provided = in_string_array(args,"xs")&&in_string_array(args,"ys")&&in_string_array(args,"zs");		//wrapped, scaled
+      ru_provided = in_string_array(args,"xu")&&in_string_array(args,"yu")&&in_string_array(args,"zu");		//unwrapped
+      rsu_provided = in_string_array(args,"xsu")&&in_string_array(args,"ysu")&&in_string_array(args,"zsu");	//unwrapped, scaled
+      i_provided = in_string_array(args,"ix")&&in_string_array(args,"iy")&&in_string_array(args,"iz");		//image index
+
+      /*check if velocities are provided; if so, note their columns*/
+      v_provided = in_string_array(args,"vx")&&in_string_array(args,"vy")&&in_string_array(args,"vz");
+      if(v_provided)
+      {
+	vx_position = find_in_string_array(args,"vx")-2;
+	vy_position = find_in_string_array(args,"vz")-2;
+	vz_position = find_in_string_array(args,"vz")-2;
+      }
+
+      /*Check if mass is provided; if so, note its column*/
+      mass_provided = in_string_array(args,"mass");
+      if(mass_provided) mass_position = find_in_string_array(args,"mass")-2;
+
+      /*figure out which coordinate types to read in*/
+      if(!r_provided&&!rs_provided&&!ru_provided&&!rsu_provided)	//return error if no complete set of coordinates is provided
+      {
+        Error( "No complete set of coordinates provided in trajectory file.", -2);
+      }
+      else								//otherwise, determine which coordinate types to read in and their location
+      {
+	calc_wrapped=true;
+	read_r=read_rs=read_ru=read_rsu=read_i=false;
+	/*Only read in at most one type of wrapped coordinates - unscaled or scaled; always choose unscaled if it is provided*/
+	if(r_provided)
+	{
+	  read_r=true;
+	  calc_wrapped=false;
+	  x_position = find_in_string_array(args,"x")-2;
+	  y_position = find_in_string_array(args,"y")-2;
+	  z_position = find_in_string_array(args,"z")-2;
+	}
+	else if(rs_provided)
+	{
+	  read_rs=true;
+	  calc_wrapped=false;
+	  xs_position = find_in_string_array(args,"xs")-2;
+	  ys_position = find_in_string_array(args,"ys")-2;
+	  zs_position = find_in_string_array(args,"zs")-2;
+	}
+
+	/*Only read in at most one type of unwrapped coordinates - unscaled or scaled; always choose unscaled if it is provided*/
+	if(ru_provided)
+	{
+	  read_ru=true;
+	  xu_position = find_in_string_array(args,"xu")-2;
+	  yu_position = find_in_string_array(args,"yu")-2;
+	  zu_position = find_in_string_array(args,"zu")-2;
+	}
+	else if(rsu_provided)
+	{
+	  read_rsu=true;
+	  xsu_position = find_in_string_array(args,"xsu")-2;
+	  ysu_position = find_in_string_array(args,"ysu")-2;
+	  zsu_position = find_in_string_array(args,"zsu")-2;
+	}
+	else if(i_provided&&(r_provided||rs_provided))
+	{
+	  read_i=true;
+	  ix_position = find_in_string_array(args,"ix")-2;
+	  iy_position = find_in_string_array(args,"iy")-2;
+	  iz_position = find_in_string_array(args,"iz")-2;
+	}
+
+	if(np)
+	{
+	  if(!ru_provided&&!rsu_provided&&!i_provided)
+	  {
+	    cout << "Warning:  unwrapping of coordinates without image indices for variable-volume trajectories is incorrect. All calculations depending on unwrapped coordinates are therefore incorrect!\n";
+	  }
+	}
+      }
+
+      /*Find and store position of type column; if not present, return error*/
+      if(in_string_array(args,"type"))
+      {
+	type_position=find_in_string_array(args,"type")-2;
+      }
+      else
+      {
+	cout << "Error: atom type data not provided.\n";
+	exit(0);
+      }
+    
+    
+  /*loop over atoms in first timestep, building array of twoints containing index and timestep*/
+  for(atomii=0;atomii<n_atoms;atomii++)
+  {
+    line = "";
+    getline(*fileobject,line);
+    args = tokenize(line);
+    /*read id and type*/
+    index_type_list[atomii][0]=atoi(args[id_position].c_str());
+    index_type_list[atomii][1]=show_atomtype_index(args[type_position]);
+    /*check whether type is valid*/
+    if(index_type_list[atomii][1] > n_atomtypes)
+    {
+      cout << "Atom type " << type << " in trajectory file out of range!\n";
+      exit(1);
+    }
+  }
+  
+  
+  /*sort array by index*/
+  qsort(index_type_list,n_atoms,sizeof(twoint),compare_twoint);
+
+  idii=0;
+  /*build map based on sorted*/
+  for(speciesii=0; speciesii<n_species; speciesii++)
+    {
+      for(moleculeii=0; moleculeii<n_molecules[speciesii]; moleculeii++)
+      {
+        for(typeii=0;typeii<n_atomtypes;typeii++)
+        {n_typeii[typeii]=0;}  //initiate type count array to zero at start of each molecule
+
+        for(atomii=0; atomii < ((molecules[speciesii][moleculeii]).atomcount());atomii++)
+        {
+	  if(idii!=(index_type_list[idii][0]-1))
+	  {
+	    cout<<"\nError: Some problem with handling atom ids during file read in. Atom ids should begin with 1 and should not skip. Violation of this rule is a possible source of this error.\n";
+	    exit(0);
+	  }
+	  idmap[idii][0]=speciesii;
+	  idmap[idii][1]=moleculeii;
+	  idmap[idii][2]=index_type_list[idii][1];
+	  idmap[idii][3]=n_typeii[index_type_list[idii][1]];
+	  n_typeii[index_type_list[idii][1]]++;		//increment count of atoms of this type
+	  idii++;					//increment id
+	}
+      }
+    }
+  
+  /*restart at beginning of file*/
+  filexyz.close();
+  filexyz.open(xyzfilename.c_str());
+  //filexyz.clear();
+  //filexyz.seekg(startpoint);
+  for(timestepii=0; timestepii<n_timesteps; timestepii++)
+  {
+    /*read in header information from custom trajectory file*/
+     line = "";
+     getline(*fileobject,line);		//read in "ITEM: TIMESTEP" line
+     line = "";
+     getline(*fileobject,line);		//read in timestep line
+	  line = "";
+     getline(*fileobject,line);		//read in "ITEM: NUMBER OF ATOMS" line
+	  line = "";
+     getline(*fileobject,line);		//read in number of atoms
+	  
+     args = tokenize(line);
+     file_atoms=atoi(args[0].c_str());
+    if(file_atoms!=n_atoms)		//check if the number of atoms listed in file is consistent with the molecule and atom counts given by the user
+    {
+      stringstream ss;
+      ss<<"The number of atoms listed in the xyz file is inconsistent with user input: "<<file_atoms<<" != "<<n_atoms;
+      Error(ss.str(), -4);
+      //cout << "The number of atoms listed in the xyz file is inconsistent with user input: ";	//if not, give error...
+      //cout << file_atoms << " != " << n_atoms << "\n";
+      //exit(0);											//and terminate program.
+    }
+
+    /*read in box bounds from trajectory file*/
+    getline(*fileobject,line);		//read in "ITEM: BOX BOUNDS..." line
+    line = "";
+    getline(*fileobject,line);
+    args = tokenize(line);
+    xlo = atof(args[0].c_str());
+    xhi = atof(args[1].c_str());
+    line = "";
+    getline(*fileobject,line);
+    args = tokenize(line);
+    ylo = atof(args[0].c_str());
+    yhi = atof(args[1].c_str());
+    line = "";
+    getline(*fileobject,line);
+    args = tokenize(line);
+    zlo = atof(args[0].c_str());
+    zhi = atof(args[1].c_str());
+    line = "";
+
+//    if(timestepii==0)
+//    {
+      /*set box size*/
+      Lx = xhi - xlo;
+      Ly = yhi - ylo;
+      Lz = zhi - zlo;
+      box_size[timestepii].set(Lx,Ly,Lz);
+      box_boundary[timestepii][0].set(xlo, ylo, zlo);
+      box_boundary[timestepii][1].set(xhi, yhi, zhi);
+//    }
+//    else
+//    {
+//      if(np) /*if non-constant volume, set box size at each frame*/
+//      {
+//	Lx = xhi - xlo;
+//	Ly = yhi - ylo;
+//	Lz = zhi - zlo;
+//	box_size[timestepii].set(Lx,Ly,Lz);
+//	box_boundary[timestepii][0].set(xlo, ylo, zlo);
+//	box_boundary[timestepii][1].set(xhi, yhi, zhi);
+//    }
+//      else /*if constant volume, return error if file box bounds do not equal previous bounds*/
+      if(!np)
+      {
+//	if(box_boundary[0][0].show_x()!=xlo||box_boundary[0][1].show_x()!=xhi||box_boundary[0][0].show_y()!=ylo||box_boundary[0][1].show_y()!=yhi||box_boundary[0][0].show_z()!=zlo||box_boundary[0][1].show_z()!=zhi)
+        if (!(floatCompare(box_boundary[0][0].show_x(), xlo)&&floatCompare(box_boundary[0][1].show_x(), xhi)&&floatCompare(box_boundary[0][0].show_y(), ylo)&&floatCompare(box_boundary[0][1].show_y(), yhi)&&floatCompare(box_boundary[0][0].show_z(), zlo)&&floatCompare(box_boundary[0][1].show_z(), zhi)))
+        {
+            Error( "The box boundaries provided in the custom file are not constant. For varying-volume trajectory, please select system_np system type.", 0);
+        }
+      }
+ //   }
+
+    /*read in and parse line specifying data types in custom dump file*/
+    line = "";
+    getline(*fileobject,line);
+    args = tokenize(line);
+    n_columns = tokenize.count() - 2;	//determine number of columns of atom data
+
+    /*loop over atoms at this time, using id map to locate appropriate atoms*/
+   
+        
+        for(lineii=0;lineii<n_atoms;lineii++)
+        {
+	  
+	  line = "";
+	  getline(*fileobject,line);
+	  args = tokenize(line);
+
+	  id = atoi(args[id_position].c_str());//read id
+	  idii=id-1;	//compute index of id in map;
+	  
+	  /*read type and check whether it is valid*/
+	  type = show_atomtype_index(args[type_position]);
+
+	  if(type > n_atomtypes)
+          {
+            cout << "Atom type " << type << " in trajectory file out of range!\n";
+            exit(0);
+          }
+          if(type!=idmap[idii][2])
+	  {
+	    cout << "Error. Type of index in file does not match type in id map. This is probably a back end error. Contact the developer.\n";
+	    exit(0);
+	  }
+          
+          /*get species, molecule, and atom index from idmap*/
+          speciesii=idmap[idii][0];
+	  moleculeii=idmap[idii][1];
+	  atomii=idmap[idii][3];
+	  //cout << "\n"<<id<<"\t"<<speciesii<<"\t"<<moleculeii<<"\t"<<type<<"\t"<<n_typeii[type]<<"\t"<<atomii;
+
+	  if(read_r) /*read wrapped, unscaled coordinates if appropriate*/
+	  {
+	    x = atof(args[x_position].c_str());
+	    y = atof(args[y_position].c_str());
+	    z = atof(args[z_position].c_str());
+	    coordinate.set(x,y,z);		//store coordinates temporarily in coordinate object
+	    (molecules[speciesii][moleculeii]).set_coordinate(type,atomii,coordinate,timestepii);	//send coordinates to atom
+	  }
+	  else if(read_rs) /*read wrapped, scaled coordinates if appropriate*/
+	  {
+	    x = box_size[timestepii].show_x()*atof(args[xs_position].c_str())+box_boundary[timestepii][0].show_x();
+	    y = box_size[timestepii].show_y()*atof(args[ys_position].c_str())+box_boundary[timestepii][0].show_y();
+	    z = box_size[timestepii].show_z()*atof(args[zs_position].c_str())+box_boundary[timestepii][0].show_z();
+	    coordinate.set(x,y,z);		//store coordinates temporarily in coordinate object
+	    (molecules[speciesii][moleculeii]).set_coordinate(type,atomii,coordinate,timestepii);	//send coordinates to atom
+	  }
+
+	  if(read_i)
+	  {
+	    x=x+atof(args[ix_position].c_str())*box_size[timestepii].show_x();
+	    y=y+atof(args[iy_position].c_str())*box_size[timestepii].show_y();
+	    z=z+atof(args[iz_position].c_str())*box_size[timestepii].show_z();
+	    coordinate.set(x,y,z);		//store coordinates temporarily in coordinate object
+	    (molecules[speciesii][moleculeii]).set_unwrapped(type,atomii,coordinate,timestepii);	//send coordinates to atom
+	  }
+	  else if(read_ru)	/*read unwrapped, scaled coordinates if appropriate*/
+	  {
+	    x = atof(args[xu_position].c_str());
+	    y = atof(args[yu_position].c_str());
+	    z = atof(args[zu_position].c_str());
+	    coordinate.set(x,y,z);		//store coordinates temporarily in coordinate object
+	    (molecules[speciesii][moleculeii]).set_unwrapped(type,atomii,coordinate,timestepii);	//send coordinates to atom
+	  }
+	  else if(read_rsu)	/*read unwrapped, scaled coordinates if appropriate*/
+	  {
+	    x = box_size[timestepii].show_x()*atof(args[xsu_position].c_str())+box_boundary[timestepii][0].show_x();;
+	    y = box_size[timestepii].show_y()*atof(args[ysu_position].c_str())+box_boundary[timestepii][0].show_y();;
+	    z = box_size[timestepii].show_z()*atof(args[zsu_position].c_str())+box_boundary[timestepii][0].show_z();;
+	    coordinate.set(x,y,z);		//store coordinates temporarily in coordinate object
+	    (molecules[speciesii][moleculeii]).set_unwrapped(type,atomii,coordinate,timestepii);	//send coordinates to atom
+	  }
+
+	  if(calc_wrapped) /*calculate wrapped from unwrapped coordinates, if necessary*/
+	  {
+	    coordinate -= box_size[timestepii]*((coordinate-box_boundary[timestepii][0])/box_size[timestepii]).coord_floor();
+	    (molecules[speciesii][moleculeii]).set_coordinate(type,atomii,coordinate,timestepii);	//send coordinates to atom
+	  }
+
+          if(v_provided)	/*read velocities if they are provided*/
+	  {
+	    x = atof(args[vx_position].c_str());
+	    y = atof(args[vy_position].c_str());
+	    z = atof(args[vz_position].c_str());
+	    coordinate.set(x,y,z);		//store velocities temporarily in coordinate object
+	    (molecules[speciesii][moleculeii]).set_velocity(type,atomii,coordinate,timestepii);	//send coordinates to atom
+	  }
+         if(mass_provided)
+	 {
+	   molecules[speciesii][moleculeii].show_atom_trajectory(type,atomii)->set_mass(atof(args[mass_position].c_str()));
+	 }
+       }
+    print_progress(++timetally, n_timesteps);
+  }
+
+  (*fileobject).close();
+  delete [] n_typeii;
+
+  /*generate wrapped or unwrapped coordinates as necessary*/
+  if(!ru_provided&&!rsu_provided&&!i_provided)
+  {
+    /*calculate unwrapped trajectories*/
+    cout << "\nUnwrapping trajectories.";
+    unwrap();
+  }
+  else
+  {
+    unwrapped = 1;
+  }
+//  if(!r_provided&&!rs_provided)
+//  {
+//    /*calculate wrapped trajectories*/
+//    cout << "\nWrapping trajectories.";
+//    wrap();
+//  }
+//  else
+//  {
+    wrapped = 1;
+//  }
+}
+
+
+void System::read_velocity_byid(string xyzfilename)
+{
+  /** Read in custom LAMMPS trajectory file containing supplementary velocity info
+  * @param xyzfilename location of trajectory file
+  * @author David S. Simmons
+  **/
+
+  int file_atoms;			//variable to store the number of atoms listed in xyz file
+  string trash;				//create garbage string
+  int timestepii;			//index over timesteps
+  int speciesii;			//index over species
+  int moleculeii;			//index over molecules
+  int atomii;				//index over atoms within molecule
+  int type;				//type to pass to molecule
+  int id;				//atom id in lammps
+  Coordinate coordinate;		//coordinate to pass to molecule
+  float x;				//temporary storage for x coordinate
+  float y;				//temporary storage for y coordinate
+  float z;				//temporary storage for z coordinate
+  int * n_typeii;			//array of indices to track how many of each type have been passed to particular molecule
+  int lineii;
+  int typeii;				//index over elements of above aray
+  int idii=0;				//for loop over ids
+  int timetally=0;
+  float xlo, xhi, ylo, yhi, zlo, zhi, Lx, Ly, Lz;
+  int n_columns;		//number of columns of atom data in custom dump file
+  bool r_provided, rs_provided, ru_provided, rsu_provided;		//booleans specifying whether a complete set of wrapped, scaled wraped, unwrapped, and scaled unwrapped coordinates are provided by the trajectory file
+  bool i_provided;		//specifies whether image indices are provided for unwrapping
+  bool v_provided;	//bool specifying whether complete velocity is provided by trajectory file
+  bool mass_provided;	//bool specifying whether mass is provided by trajectory file
+  bool read_r, read_rs, read_ru, read_rsu, read_i;		//bools specifying which type of coordinates to read in
+  int x_position, y_position, z_position, xs_position, ys_position, zs_position, xu_position, yu_position, zu_position, xsu_position, ysu_position, zsu_position, ix_position, iy_position, iz_position, type_position, vx_position, vy_position, vz_position, mass_position, id_position;
+  bool calc_wrapped;
+  
+  twoint * index_type_list;		//array storing id and type to allow sorting of type by id in map building
+  index_type_list=new twoint [n_atoms];
+  
+  int ** idmap;			//store map of where to find each atom based on id - ie store speciesii, moleculeii, type, and atomii for each id. Assuming that lammps atom ids begin at one and do not skip, the atom id is simply the first index of this array plus one.
+  idmap = new int* [n_atoms];
+  for(idii=0;idii<n_atoms;idii++)
+  {
+    idmap[idii]=new int [4];
+  }
+  
+  string line;
+  vector <string> args;
+
+  ifstream filexyz(xyzfilename.c_str());
+  ifstream * fileobject = &filexyz;
+  auto startpoint = filexyz.tellg();
+
+  n_typeii = new int [n_atomtypes];
+  cout << "\nReading a " << n_timesteps <<" timestep trajectory of " << n_atoms << " atoms.\n";
+
+  
+  
+  /*perform initial read of first timestep: decide what kind of data can be read in and build map linking each index with to a particular atom in the data structure*/
+  
+  
+  /*read in header information from custom trajectory file*/
+     line = "";
+     getline(*fileobject,line);		//read in "ITEM: TIMESTEP" line
+     getline(*fileobject,line);		//read in timestep line
+     getline(*fileobject,line);		//read in "ITEM: NUMBER OF ATOMS" line
+     line = "";
+     getline(*fileobject,line);		//read in number of atoms
+     args = tokenize(line);
+     file_atoms=atoi(args[0].c_str());
+    if(file_atoms!=n_atoms)		//check if the number of atoms listed in file is consistent with the molecule and atom counts given by the user
+    {
+      stringstream ss;
+      ss<<"The number of atoms listed in the xyz file is inconsistent with user input: "<<file_atoms<<" != "<<n_atoms;
+      Error(ss.str(), -4);
+      //cout << "The number of atoms listed in the xyz file is inconsistent with user input: ";	//if not, give error...
+      //cout << file_atoms << " != " << n_atoms << "\n";
+      //exit(0);											//and terminate program.
+    }
+
+    /*read in box bounds from trajectory file*/
+    getline(*fileobject,line);		//read in "ITEM: BOX BOUNDS..." line
+    line = "";
+    getline(*fileobject,line);
+    args = tokenize(line);
+    xlo = atof(args[0].c_str());
+    xhi = atof(args[1].c_str());
+    line = "";
+    getline(*fileobject,line);
+    args = tokenize(line);
+    ylo = atof(args[0].c_str());
+    yhi = atof(args[1].c_str());
+    line = "";
+    getline(*fileobject,line);
+    args = tokenize(line);
+    zlo = atof(args[0].c_str());
+    zhi = atof(args[1].c_str());
+    line = "";
+
+//    if(timestepii==0)
+//    {
+      /*set box size*/
+      Lx = xhi - xlo;
+      Ly = yhi - ylo;
+      Lz = zhi - zlo;
+      box_size[timestepii].set(Lx,Ly,Lz);
+      box_boundary[timestepii][0].set(xlo, ylo, zlo);
+      box_boundary[timestepii][1].set(xhi, yhi, zhi);
+//    }
+//    else
+//    {
+//      if(np) /*if non-constant volume, set box size at each frame*/
+//      {
+//	Lx = xhi - xlo;
+//	Ly = yhi - ylo;
+//	Lz = zhi - zlo;
+//	box_size[timestepii].set(Lx,Ly,Lz);
+//	box_boundary[timestepii][0].set(xlo, ylo, zlo);
+//	box_boundary[timestepii][1].set(xhi, yhi, zhi);
+//    }
+//      else /*if constant volume, return error if file box bounds do not equal previous bounds*/
+      if(!np)
+      {
+//	if(box_boundary[0][0].show_x()!=xlo||box_boundary[0][1].show_x()!=xhi||box_boundary[0][0].show_y()!=ylo||box_boundary[0][1].show_y()!=yhi||box_boundary[0][0].show_z()!=zlo||box_boundary[0][1].show_z()!=zhi)
+        if (!(floatCompare(box_boundary[0][0].show_x(), xlo)&&floatCompare(box_boundary[0][1].show_x(), xhi)&&floatCompare(box_boundary[0][0].show_y(), ylo)&&floatCompare(box_boundary[0][1].show_y(), yhi)&&floatCompare(box_boundary[0][0].show_z(), zlo)&&floatCompare(box_boundary[0][1].show_z(), zhi)))
+        {
+            Error( "The box boundaries provided in the custom file are not constant. For varying-volume trajectory, please select system_np system type.", 0);
+        }
+      }
+ //   }
+
+
+    /*read in and parse line specifying data types in custom dump file*/
+    line = "";
+    getline(*fileobject,line);
+    args = tokenize(line);
+    n_columns = tokenize.count() - 2;	//determine number of columns of atom data
+  
+      /*look for index column*/
+      if(in_string_array(args,"id"))
+      {
+	id_position=find_in_string_array(args,"id")-2;
+      }
+      else
+      {
+	cout<<"\nError: Atom IDs not provided. Atom IDs are required to read a custom file by ID.\n";
+	exit(0);
+      }
+
+      /*check if velocities are provided; if so, note their columns*/
+      v_provided = in_string_array(args,"vx")&&in_string_array(args,"vy")&&in_string_array(args,"vz");
+      if(v_provided)
+      {
+	vx_position = find_in_string_array(args,"vx")-2;
+	vy_position = find_in_string_array(args,"vz")-2;
+	vz_position = find_in_string_array(args,"vz")-2;
+      }
+
+      /*Find and store position of type column; if not present, return error*/
+      if(in_string_array(args,"type"))
+      {
+	type_position=find_in_string_array(args,"type")-2;
+      }
+      else
+      {
+	cout << "Error: atom type data not provided.\n";
+	exit(0);
+      }
+    
+    
+  /*loop over atoms in first timestep, building array of twoints containing index and timestep*/
+  for(atomii=0;atomii<n_atoms;atomii++)
+  {
+    line = "";
+    getline(*fileobject,line);
+    args = tokenize(line);
+    /*read id and type*/
+    index_type_list[atomii][0]=atoi(args[id_position].c_str());
+    index_type_list[atomii][1]=show_atomtype_index(args[type_position]);
+    /*check whether type is valid*/
+    if(index_type_list[atomii][1] > n_atomtypes)
+    {
+      cout << "Atom type " << type << " in trajectory file out of range!\n";
+      exit(1);
+    }
+  }
+  
+  
+  /*sort array by index*/
+  qsort(index_type_list,n_atoms,sizeof(twoint),compare_twoint);
+
+  idii=0;
+  /*build map based on sorted*/
+  for(speciesii=0; speciesii<n_species; speciesii++)
+    {
+      for(moleculeii=0; moleculeii<n_molecules[speciesii]; moleculeii++)
+      {
+        for(typeii=0;typeii<n_atomtypes;typeii++)
+        {n_typeii[typeii]=0;}  //initiate type count array to zero at start of each molecule
+
+        for(atomii=0; atomii < ((molecules[speciesii][moleculeii]).atomcount());atomii++)
+        {
+	  if(idii!=(index_type_list[idii][0]-1))
+	  {
+	    cout<<"\nError: Some problem with handling atom ids during file read in. Atom ids should begin with 1 and should not skip. Violation of this rule is a possible source of this error.\n";
+	    exit(0);
+	  }
+	  idmap[idii][0]=speciesii;
+	  idmap[idii][1]=moleculeii;
+	  idmap[idii][2]=index_type_list[idii][1];
+	  idmap[idii][3]=n_typeii[index_type_list[idii][1]];
+	  n_typeii[index_type_list[idii][1]]++;		//increment count of atoms of this type
+	  idii++;					//increment id
+	}
+      }
+    }
+  
+  /*restart at beginning of file*/
+  filexyz.close();
+  filexyz.open(xyzfilename.c_str());
+  //filexyz.clear();
+  //filexyz.seekg(startpoint);
+  for(timestepii=0; timestepii<n_timesteps; timestepii++)
+  {
+    /*read in header information from custom trajectory file*/
+     line = "";
+     getline(*fileobject,line);		//read in "ITEM: TIMESTEP" line
+     line = "";
+     getline(*fileobject,line);		//read in timestep line
+	  line = "";
+     getline(*fileobject,line);		//read in "ITEM: NUMBER OF ATOMS" line
+	  line = "";
+     getline(*fileobject,line);		//read in number of atoms
+	  
+     args = tokenize(line);
+     file_atoms=atoi(args[0].c_str());
+    if(file_atoms!=n_atoms)		//check if the number of atoms listed in file is consistent with the molecule and atom counts given by the user
+    {
+      stringstream ss;
+      ss<<"The number of atoms listed in the xyz file is inconsistent with user input: "<<file_atoms<<" != "<<n_atoms;
+      Error(ss.str(), -4);
+      //cout << "The number of atoms listed in the xyz file is inconsistent with user input: ";	//if not, give error...
+      //cout << file_atoms << " != " << n_atoms << "\n";
+      //exit(0);											//and terminate program.
+    }
+
+    /*read in box bounds from trajectory file*/
+    getline(*fileobject,line);		//read in "ITEM: BOX BOUNDS..." line
+    line = "";
+    getline(*fileobject,line);
+    args = tokenize(line);
+    xlo = atof(args[0].c_str());
+    xhi = atof(args[1].c_str());
+    line = "";
+    getline(*fileobject,line);
+    args = tokenize(line);
+    ylo = atof(args[0].c_str());
+    yhi = atof(args[1].c_str());
+    line = "";
+    getline(*fileobject,line);
+    args = tokenize(line);
+    zlo = atof(args[0].c_str());
+    zhi = atof(args[1].c_str());
+    line = "";
+
+//    if(timestepii==0)
+//    {
+      /*set box size*/
+      Lx = xhi - xlo;
+      Ly = yhi - ylo;
+      Lz = zhi - zlo;
+      box_size[timestepii].set(Lx,Ly,Lz);
+      box_boundary[timestepii][0].set(xlo, ylo, zlo);
+      box_boundary[timestepii][1].set(xhi, yhi, zhi);
+//    }
+//    else
+//    {
+//      if(np) /*if non-constant volume, set box size at each frame*/
+//      {
+//	Lx = xhi - xlo;
+//	Ly = yhi - ylo;
+//	Lz = zhi - zlo;
+//	box_size[timestepii].set(Lx,Ly,Lz);
+//	box_boundary[timestepii][0].set(xlo, ylo, zlo);
+//	box_boundary[timestepii][1].set(xhi, yhi, zhi);
+//    }
+//      else /*if constant volume, return error if file box bounds do not equal previous bounds*/
+      if(!np)
+      {
+//	if(box_boundary[0][0].show_x()!=xlo||box_boundary[0][1].show_x()!=xhi||box_boundary[0][0].show_y()!=ylo||box_boundary[0][1].show_y()!=yhi||box_boundary[0][0].show_z()!=zlo||box_boundary[0][1].show_z()!=zhi)
+        if (!(floatCompare(box_boundary[0][0].show_x(), xlo)&&floatCompare(box_boundary[0][1].show_x(), xhi)&&floatCompare(box_boundary[0][0].show_y(), ylo)&&floatCompare(box_boundary[0][1].show_y(), yhi)&&floatCompare(box_boundary[0][0].show_z(), zlo)&&floatCompare(box_boundary[0][1].show_z(), zhi)))
+        {
+            Error( "The box boundaries provided in the custom file are not constant. For varying-volume trajectory, please select system_np system type.", 0);
+        }
+      }
+ //   }
+
+    /*read in and parse line specifying data types in custom dump file*/
+    line = "";
+    getline(*fileobject,line);
+    args = tokenize(line);
+    n_columns = tokenize.count() - 2;	//determine number of columns of atom data
+
+    /*loop over atoms at this time, using id map to locate appropriate atoms*/
+   
+        
+        for(lineii=0;lineii<n_atoms;lineii++)
+        {
+	  
+	  line = "";
+	  getline(*fileobject,line);
+	  args = tokenize(line);
+
+	  id = atoi(args[id_position].c_str());//read id
+	  idii=id-1;	//compute index of id in map;
+	  
+	  /*read type and check whether it is valid*/
+	  type = show_atomtype_index(args[type_position]);
+
+	  if(type > n_atomtypes)
+          {
+            cout << "Atom type " << type << " in trajectory file out of range!\n";
+            exit(0);
+          }
+          if(type!=idmap[idii][2])
+	  {
+	    cout << "Error. Type of index in file does not match type in id map. This is probably a back end error. Contact the developer.\n";
+	    exit(0);
+	  }
+          
+          /*get species, molecule, and atom index from idmap*/
+          speciesii=idmap[idii][0];
+	  moleculeii=idmap[idii][1];
+	  atomii=idmap[idii][3];
+	  //cout << "\n"<<id<<"\t"<<speciesii<<"\t"<<moleculeii<<"\t"<<type<<"\t"<<n_typeii[type]<<"\t"<<atomii;
+
+          if(v_provided)	/*read velocities if they are provided*/
+	  {
+	    x = atof(args[vx_position].c_str());
+	    y = atof(args[vy_position].c_str());
+	    z = atof(args[vz_position].c_str());
+	    coordinate.set(x,y,z);		//store velocities temporarily in coordinate object
+	    (molecules[speciesii][moleculeii]).set_velocity(type,atomii,coordinate,timestepii);	//send coordinates to atom
+	  }
+    print_progress(++timetally, n_timesteps);
+    }
+  }
+  (*fileobject).close();
+  delete [] n_typeii;
+
+}
+
+
+/*-------------------------------------------------------------------------------------------------------*/
 
 
 #define MOLECULE_SIZE 5

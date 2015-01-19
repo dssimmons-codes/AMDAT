@@ -194,6 +194,15 @@ int Control::execute_commands(int iIndex, int fIndex)
       //System system(inputFileVector,1);	//instantiate system object in non-constant-volume ensemble
       //analyte = &system;
     }
+    else if(command == "read_velocity_byid")
+    {
+      if(n_args<2)
+      {
+	cout<<"\nError: read_velocity_byid needs at least one argument.\n";
+	exit(0);
+      }
+      analyte->read_velocity_byid(args[1]);
+    }
     else if (command == "create_list")
     {
       create_list();

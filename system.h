@@ -88,8 +88,10 @@ class System
     int ** read_gro(string);				//method to read .gro file to determine trajectory file structure
     void read_xtc_format(string filename, int** atomidentifier);
     void custom_prep(vector<string> file_in, string fileline);
+    void custom_byid_prep(vector<string> file_in, string fileline);
     void read_custom(string);
     void read_custom(string, string);
+    void read_custom_byid(string);
 
     bool floatCompare(float, float);
     
@@ -106,6 +108,9 @@ class System
     //~System();
     void clear_memory();
 
+    /*Method to add velocity data from separate custom file*/
+    void read_velocity_byid(string);
+    
     /*------Methods to perform some sort of operation on entire system-------*/
     void unwrap();				//send command to all molecules to unwrap atom trajectories
     void wrap();				//send command to all molecules to wrap atom trajectories
