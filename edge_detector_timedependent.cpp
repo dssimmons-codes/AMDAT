@@ -75,6 +75,7 @@ void Edge_Detector_Timedependent::analyze(Trajectory_List * t_list)
 
     for (int timeii=0; timeii<n_times;timeii++)
     {
+      max_magnitude=0;
       if(trajectory_list->show_n_trajectories(timeii)>0)
       {
 	max_magnitude=((*trajectory_list)(timeii,0)->show_coordinate(timeii))&unit_vector;

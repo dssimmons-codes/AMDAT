@@ -237,6 +237,7 @@ Trajectory_List_Bins::Trajectory_List_Bins(System * sys,int xbins,int ybins,int 
       xhi[timeii] = boxsize[timeii][1](0);
       yhi[timeii] = boxsize[timeii][1](1);
       zhi[timeii] = boxsize[timeii][1](2);
+
     }
 
     /* Create time_conversion array with each value same as index*/
@@ -983,7 +984,7 @@ void Trajectory_List_Bins::assign_bins()
       xcoord = system->show_trajectory(trajii)->show_coordinate(timeii).show_x();
       ycoord = system->show_trajectory(trajii)->show_coordinate(timeii).show_y();
       zcoord = system->show_trajectory(trajii)->show_coordinate(timeii).show_z();
-      if((xcoord<xhi[timeii] && xcoord>xlo[timeii]) && (ycoord<yhi[timeii] && xcoord>ylo[timeii]) && (zcoord<zhi[timeii] && zcoord>zlo[timeii]))
+      if((xcoord<xhi[timeii] && xcoord>xlo[timeii]) && (ycoord<yhi[timeii] && ycoord>ylo[timeii]) && (zcoord<zhi[timeii] && zcoord>zlo[timeii]))
       {
 	xii = int((xcoord-xlo[timeii]+FLT_EPSILON*10.0)/(xhi[timeii]-xlo[timeii]+FLT_EPSILON*20.0)*float(n_xbins));
 	yii = int((ycoord-ylo[timeii]+FLT_EPSILON*10.0)/(yhi[timeii]-ylo[timeii]+FLT_EPSILON*20.0)*float(n_ybins));
