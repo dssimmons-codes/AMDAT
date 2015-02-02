@@ -49,6 +49,7 @@
 #include "version.h"
 #include "tokenize.h"
 #include "error.h"
+#include "mean_velocity_unsteady.h"
 
 using namespace std;
 
@@ -325,6 +326,8 @@ int Control::execute_commands(int iIndex, int fIndex)
     {gyration_radius();}
     else if (command == "find_edge")
     {find_edge();}
+    else if (command == "unsteady_velocity")
+    {unsteady_velocity();}
     else if (command == "skip")
     {skip();}
     else if (command == "exit")
@@ -3066,6 +3069,31 @@ void Control::find_edge()
 
   finish = time(NULL);
   cout << "\nFound edges in " << finish-start<<" seconds."<<endl;
+}
+
+
+
+
+void Control::unsteady_velocity()
+{
+  string filename;
+  string runline;
+  int expected=2;
+  argcheck(expected);
+  dynamic = 0;
+  
+  filename = args[1];
+  
+  runline = read_line();
+  cout <<"\n"<< runline;
+  
+  Mean_Velocity_Unsteady velocity(analyte);
+  cout << "\nComputing mean velocity.\n";cout.flush();
+  start = time(NULL);
+  run_analysis <Mean_Velocity_Unsteady> (velocity,runline,filename); // pass run_analysis template the analysis type 'Mean_Square_Displacement'
+
+  finish = time(NULL);
+  cout << "\Computed velocity in " << finish-start<<" seconds."<<endl;
 }
 
 

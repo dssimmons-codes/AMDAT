@@ -196,6 +196,7 @@ class Control
     void autocorrelate_value_list();
     void write_single_particle();	//write single trajectory to file as simple list of coordinates
     void find_edge();
+    void unsteady_velocity();
     /*Multibody analysis method calls*/
     void gyration_radius();		//calculate mean gyration radius of multibody list
 
