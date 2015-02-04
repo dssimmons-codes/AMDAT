@@ -1042,14 +1042,21 @@ void Trajectory_List_Bins::assign_bins()
       xcoord = system->show_trajectory(trajii)->show_coordinate(timeii).show_x();
       ycoord = system->show_trajectory(trajii)->show_coordinate(timeii).show_y();
       zcoord = system->show_trajectory(trajii)->show_coordinate(timeii).show_z();
-      if((xcoord<xhi[timeii] && xcoord>xlo[timeii]) && (ycoord<yhi[timeii] && xcoord>ylo[timeii]) && (zcoord<zhi[timeii] && zcoord>zlo[timeii]))
+      if((xcoord<xhi[timeii] && xcoord>xlo[timeii]) && (ycoord<yhi[timeii] && ycoord>ylo[timeii]) && (zcoord<zhi[timeii] && zcoord>zlo[timeii]))
       {
       xii=temp_bins[trajii][timeii][0];
       yii=temp_bins[trajii][timeii][1];
       zii=temp_bins[trajii][timeii][2];
 
-      if(tempcount[xii][yii][zii][timeii]==trajcount[xii][yii][zii][timeii]){cout<<"\n"<<xii<<"\t"<<yii<<"\t"<<zii<<"\t"<<timeii<<"\t"<<trajii<<"\t"<<n_times<<"\t";cout.flush();}
-      if(tempcount[xii][yii][zii][timeii]==trajcount[xii][yii][zii][timeii]){cout<<tempcount[xii][yii][zii][timeii]<<"\t"<<include[xii][yii][zii][timeii][tempcount[xii][yii][zii][timeii]]<<"\t"<<trajcount[xii][yii][zii][timeii]<<"\t";cout.flush();}
+      if(tempcount[xii][yii][zii][timeii]==trajcount[xii][yii][zii][timeii])
+      {
+	cout<<"\n"<<xii<<"\t"<<yii<<"\t"<<zii<<"\t"<<timeii<<"\t"<<trajii<<"\t"<<n_times<<"\t";cout.flush();
+      }
+      if(tempcount[xii][yii][zii][timeii]==trajcount[xii][yii][zii][timeii])
+      {
+	cout<<tempcount[xii][yii][zii][timeii]<<"\t"<<include[xii][yii][zii][timeii][tempcount[xii][yii][zii][timeii]]<<"\t"<<trajcount[xii][yii][zii][timeii]<<"\t";cout.flush();
+	
+      }
 
       include[xii][yii][zii][timeii][tempcount[xii][yii][zii][timeii]]=trajii;
       tempcount[xii][yii][zii][timeii]++;
