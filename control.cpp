@@ -50,6 +50,7 @@
 #include "tokenize.h"
 #include "error.h"
 #include "mean_velocity_unsteady.h"
+#include "mean_unsteady_displacement.h"
 
 using namespace std;
 
@@ -328,6 +329,8 @@ int Control::execute_commands(int iIndex, int fIndex)
     {find_edge();}
     else if (command == "unsteady_velocity")
     {unsteady_velocity();}
+    else if (command == "incremental_mean_displacement")
+    {incremental_mean_displacement();}
     else if (command == "skip")
     {skip();}
     else if (command == "exit")
@@ -3096,6 +3099,29 @@ void Control::unsteady_velocity()
   cout << "\Computed velocity in " << finish-start<<" seconds."<<endl;
 }
 
+
+
+void Control::incremental_mean_displacement()
+{
+  string filename;
+  string runline;
+  int expected=2;
+  argcheck(expected);
+  dynamic = 0;
+  
+  filename = args[1];
+  
+  runline = read_line();
+  cout <<"\n"<< runline;
+  
+  Mean_Unsteady_Displacement mud(analyte);
+  cout << "\nComputing mean incremental displacement.\n";cout.flush();
+  start = time(NULL);
+  run_analysis <Mean_Unsteady_Displacement> (mud,runline,filename); // pass run_analysis template the analysis type 'Mean_Square_Displacement'
+
+  finish = time(NULL);
+  cout << "\Computed mean incremental displacement in " << finish-start<<" seconds."<<endl;
+}
 
 
 void Control::clustered_list()

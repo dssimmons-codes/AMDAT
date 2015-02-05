@@ -2432,7 +2432,7 @@ void System::read_velocity_byid(string xyzfilename)
   auto startpoint = filexyz.tellg();
 
   n_typeii = new int [n_atomtypes];
-  cout << "\nReading a " << n_timesteps <<" timestep trajectory of " << n_atoms << " atoms.\n";
+  cout << "\nReading a supplementary " << n_timesteps <<" timestep velocity trajectory of " << n_atoms << " atoms.\n";
 
   
   
@@ -2457,7 +2457,7 @@ void System::read_velocity_byid(string xyzfilename)
       //cout << file_atoms << " != " << n_atoms << "\n";
       //exit(0);											//and terminate program.
     }
-
+   
     /*read in box bounds from trajectory file*/
     getline(*fileobject,line);		//read in "ITEM: BOX BOUNDS..." line
     line = "";
@@ -2480,12 +2480,6 @@ void System::read_velocity_byid(string xyzfilename)
 //    if(timestepii==0)
 //    {
       /*set box size*/
-      Lx = xhi - xlo;
-      Ly = yhi - ylo;
-      Lz = zhi - zlo;
-      box_size[timestepii].set(Lx,Ly,Lz);
-      box_boundary[timestepii][0].set(xlo, ylo, zlo);
-      box_boundary[timestepii][1].set(xhi, yhi, zhi);
 //    }
 //    else
 //    {
@@ -2509,7 +2503,7 @@ void System::read_velocity_byid(string xyzfilename)
       }
  //   }
 
-
+ 
     /*read in and parse line specifying data types in custom dump file*/
     line = "";
     getline(*fileobject,line);
@@ -2646,12 +2640,7 @@ void System::read_velocity_byid(string xyzfilename)
 //    if(timestepii==0)
 //    {
       /*set box size*/
-      Lx = xhi - xlo;
-      Ly = yhi - ylo;
-      Lz = zhi - zlo;
-      box_size[timestepii].set(Lx,Ly,Lz);
-      box_boundary[timestepii][0].set(xlo, ylo, zlo);
-      box_boundary[timestepii][1].set(xhi, yhi, zhi);
+
 //    }
 //    else
 //    {
@@ -2722,11 +2711,14 @@ void System::read_velocity_byid(string xyzfilename)
 	    coordinate.set(x,y,z);		//store velocities temporarily in coordinate object
 	    (molecules[speciesii][moleculeii]).set_velocity(type,atomii,coordinate,timestepii);	//send coordinates to atom
 	  }
-    print_progress(++timetally, n_timesteps);
+	  
+    //print_progress(++timetally, n_timesteps);
+    
     }
   }
   (*fileobject).close();
   delete [] n_typeii;
+  
 
 }
 

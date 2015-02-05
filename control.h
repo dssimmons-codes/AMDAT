@@ -199,6 +199,7 @@ class Control
     void unsteady_velocity();
     /*Multibody analysis method calls*/
     void gyration_radius();		//calculate mean gyration radius of multibody list
+    void incremental_mean_displacement();	//calculates mean displacement between adjacent frames
 
   public:
     Control(char *,string*,string*,int,string);		//constructor
