@@ -1,6 +1,6 @@
 system
 xyz_log
-/home/dsimmon/svnrepositories/trunk/testfiles/traj.xyz /home/dsimmon/svnrepositories/trunk/testfiles/log.lammps
+/home/david/AMDATsync/trunk/testfiles/traj.xyz /home/david/AMDATsync/trunk/testfiles/log.lammps
 exponential 1 77 1.2 0 0 .01
 polymer 50
 1
