@@ -1234,7 +1234,7 @@ void Control::add_trajectorylist(Trajectory_List * t_list, string listname)
 {
  bool result;
 
-  result=(trajectories.insert({listname,t_list})).second;
+  result=(trajectories.insert(listname,t_list));
 
   if(!result)
   {
@@ -1310,7 +1310,7 @@ void Control::add_multibody_list(Multibody_List* multibody_list,string multibody
 {
   bool result;
 
-  result=(multibody_lists.insert({multibody_list_name,multibody_list})).second;
+  result=(multibody_lists.insert(multibody_list_name,multibody_list));
 
   if(!result)
   {

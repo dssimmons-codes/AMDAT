@@ -4350,7 +4350,7 @@ void System::add_multibody_set(string multibody_set_name,Multibody_Set* multibod
 {
     bool result;
 
-    result=(multibody_sets.insert({multibody_set_name,multibody_set})).second;
+    result=(multibody_sets.insert(multibody_set_name,multibody_set));
 
     if(!result)
     {
@@ -4452,7 +4452,7 @@ void System::add_trajectory_set(string trajectory_set_name,Trajectory_Set* traje
 {
     bool result;
 
-    result=(trajectory_sets.insert({trajectory_set_name,trajectory_set})).second;
+    result=(trajectory_sets.insert(trajectory_set_name,trajectory_set));
 
     if(!result)
     {

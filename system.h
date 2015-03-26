@@ -4,8 +4,7 @@
 
 #ifndef SYSTEM
 #define SYSTEM
-#include <unordered_set>
-#include <unordered_map>
+//#include <unordered_map>
 #include <fstream>
 #include <string>
 #include <vector>
@@ -16,6 +15,7 @@
 #include "trajectory.h"
 #include "analysis.h"
 #include "tokenize.h"
+#include "vector_map.h"
 namespace std {
 
 class Multibody_Set;
@@ -57,8 +57,8 @@ class System
 
     int n_multibodies;
     //vector <Multibody_Set*> multibody_sets;	//store sets of multibodies defined by user
-    unordered_map <string, Multibody_Set*> multibody_sets;
-    unordered_map <string, Trajectory_Set*> trajectory_sets;   //stores sets of trajectories defined by user
+    Vector_Map <string, Multibody_Set*> multibody_sets;
+    Vector_Map <string, Trajectory_Set*> trajectory_sets;   //stores sets of trajectories defined by user
 
 
     bool unwrapped;				//are unwrapped coordinates defined?

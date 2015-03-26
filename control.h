@@ -8,7 +8,7 @@
 #define CONTROL
 
 #include <vector>
-#include <unordered_map>
+//#include <unordered_map>
 #include <time.h>
 #include <fstream>
 #include <string>
@@ -25,6 +25,7 @@
 #include "bin_static_analysis.h"
 #include "value_list.h"
 #include "multibody_list.h"
+#include "vector_map.h"
 
 
 
@@ -101,14 +102,14 @@ class Control
 
 
     /*Members to store and access trajectory_list objects*/
-    unordered_map <string, Trajectory_List*> trajectories;
+    Vector_Map <string, Trajectory_List*> trajectories;
     Trajectory_List* find_trajectorylist(string, bool allow_nofind=0)const;
     void add_trajectorylist(Trajectory_List*, string);
     void trajectories_from_multibodies();
     void combine_trajectories();
 
     /*Members to store and access multibody_list objects*/
-    unordered_map<string,Multibody_List*> multibody_lists;
+    Vector_Map<string,Multibody_List*> multibody_lists;
     Multibody_List* find_multibody_list(string,bool allow_nofind=0)const;
     void add_multibody_list(Multibody_List*,string);
     void delete_multibody_list(string);
