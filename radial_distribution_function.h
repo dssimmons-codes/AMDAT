@@ -10,7 +10,7 @@
 
 namespace std{
 
-class Radial_Distribution_Function: public Analysis
+class Radial_Distribution_Function: public Analysis_Onetime
 {
     float max_distance;
     int n_bins;
@@ -19,18 +19,13 @@ class Radial_Distribution_Function: public Analysis
     float ** time_rdf;
     float * mean_rdf;
     int * n_atoms_i;
-    int * n_atoms_j;
-  
-    void initialize(System*);                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  
-    
-    /*internal calculation variables*/
-    int currenttime, nexttime, currenttimegap;
+    int * n_atoms_j;                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              
     
     
   public:
-    Radial_Distribution_Function();			//default constructor
+    Radial_Distribution_Function();			//default constructor    
     Radial_Distribution_Function(const Radial_Distribution_Function &);		//copy constructor
-    Radial_Distribution_Function(System*sys, int n_bins, float max_distance=0);
+    Radial_Distribution_Function(System*sys, int nbins, int timescheme, float maxdistance=0);
     
     Radial_Distribution_Function operator = (const Radial_Distribution_Function &);	//assignment
     
@@ -42,8 +37,9 @@ class Radial_Distribution_Function: public Analysis
     void write(string);
     void set(System * sys){initialize(sys);};
     
-    void analyze(Trajectory_List *,Trajectory_List *); //analysis method for when two trajectory lists are needed
-    void analyze(Trajectory_List * t_list);
+    void preprocess(){trajectory_list2=trajectory_list}
+    void timekernel2(int timeii);
+    void timekernel(int timeii){timekernel2(timeii);};
     void list_displacementkernel(int,int,int);
     void listkernel(Trajectory *, int, int, int);
     void postprocess_list();

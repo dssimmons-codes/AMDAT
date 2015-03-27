@@ -267,6 +267,8 @@ int Control::execute_commands(int iIndex, int fIndex)
     #endif
     else if (command == "structure_factor")
     {structure_factor();}
+    else if (command == "rdf")
+    {rdf();}
     else if (command == "isf")
     {isf();}
     else if (command == "isf_list")
@@ -1901,17 +1903,14 @@ void Control::vhd_fourier()
 void Control::structure_factor()
 {
   string filename, command, wavevector_root, symmetry, runline1, runline2, plane, listname1, listname2;
-  int expected = 6;
   int listnum1, listnum2;
   bool fullblock=0;
   int timescheme;
   float max_length_scale = 0;
   dynamic = 0;
 
-if (n_args !=4)
-{
-     argcheck(expected);
-}
+  argcheck(4,6);
+
 
 
   filename = args[1];			//name of file to which to save calculated data
@@ -1998,7 +1997,62 @@ if (n_args !=4)
 
 }
 
+/*--------------------------------------------------------------------------------*/
 
+
+void Control::rdf()
+{
+  string filename, symmetry, runline1, runline2, plane, listname1, listname2;
+  int listnum1, listnum2;
+  int timescheme, n_bins;
+  float max_length_scale = 0;
+  dynamic = 0;
+  
+  argcheck(6);
+  
+  filename = args[1];			//name of file to which to save calculated data
+  symmetry = args[2];			//determine if atom sets are the same or different
+  n_bins = atoi(args[3].c_str());
+  timescheme=atoi(args[4].c_str());
+  max_length_scale = atof(args[5].c_str());
+  
+  Radial_Distribution_Function rad_dis_fun(analyte,n_bins,timescheme,max_length_scale);
+  
+  //  getline(input,runline1);
+  runline1 = read_line();
+  cout <<"\n"<< runline1;
+  n_args = tokenize(runline1, args);
+  listname1 = args[1];
+  
+  if (symmetry=="symmetric")
+    {
+      cout << "\nCalculating radial distribution function.\n";cout.flush();
+      start = time(NULL);
+      rad_dis_fun.analyze(trajectories[listname1]);
+      finish = time(NULL);
+      cout << "\nCalculated radial distribution function in " << finish-start<<" seconds.\n";
+    }
+    else if(symmetry=="asymmetric")
+    {
+//      getline(input,runline2);
+      runline2 = read_line();
+      cout <<"\n"<< runline2;
+      n_args = tokenize(runline2, args);
+      listname2 = args[1];
+      cout << "\nCalculating structure factor.\n";cout.flush();
+      start = time(NULL);
+      //calls bins
+      rad_dis_fun.analyze(trajectories[listname1,trajectories[listname2]);
+      finish = time(NULL);
+      cout << "\nCalculated radial distribution function in " << finish-start<<" seconds.\n";
+    }
+    else
+    {
+      cout<<"Error: command for radial distribution function calculation atom set types not understood.\n";
+      exit(1);
+    }
+    rad_dis_fun.write(filename);
+}
 
 /*--------------------------------------------------------------------------------*/
 
