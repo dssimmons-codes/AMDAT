@@ -1,17 +1,25 @@
 system
 xyz_log
 /home/david/AMDATsync/trunk/testfiles/traj.xyz /home/david/AMDATsync/trunk/testfiles/log.lammps
-exponential 1 77 1.2 0 0 .01
+exponential 10 77 1.2 0 0 .01
 polymer 50
 1
 32
 
-
 create_list all
 all
 
-isfs isfs.dat 24 24 xyz 0 0
+vhs vhslist.dat 2 100
 list all
+
+compare_gaussian gaussian.dat 70
+list all
+
+find_fast fast1 fast_count_list.dat
+list all
+
+strings strings.dat 70 .6 ./testfiles/sigma_matrix stringlist
+list fast1
 
 exit
 
@@ -19,6 +27,9 @@ isf isf.dat auto symmetric xyz 0 24 24
 list all
 
 exit
+
+isfs isfs.dat 24 24 xyz 0 0
+list all
 
 create_bin_list bins
 all 2 1 1
@@ -103,19 +114,7 @@ list all
 
 exit
 
-vhs vhslist.dat 2 100
-list all
 
-compare_gaussian gaussian.dat 70
-list all
-
-find_fast fast1 fast_count_list.dat
-list all
-
-strings strings.dat 70 .6 sigma_matrix stringlist
-list fast1
-
-exit
 
 
 displacement_map displacement_map 65 0 9

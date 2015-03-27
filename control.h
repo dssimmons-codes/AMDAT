@@ -181,7 +181,8 @@ class Control
     void displacement_dist();	//calculated distribution of particle displacement magnitudes to user-specified power
     void ngp();			//calculate non-gaussian parameter
     void compare_gaussian();	//compare self van hove to gaussian approximation for self van hove to find fast particles
-    void find_fast();		//find fast particles
+    void find_fast();		//find fast particles based on Gaussian comparison
+    void find_fast_fixedthreshold();		//find fast particles based on fixed distance threshold
     void radial_debye_waller();	//calculate Debye-Waller factor as a function of distance from the origin
     void strings();		//find strings
     void rgtensor_stats();	//calculate rg tensor statistics

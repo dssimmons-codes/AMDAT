@@ -283,6 +283,8 @@ int Control::execute_commands(int iIndex, int fIndex)
     {compare_gaussian();}
     else if(command == "find_fast")
     {find_fast();}
+    else if(command == "find_fast_fixedthreshold")
+    {find_fast_fixedthreshold;}
     else if(command == "radial_debye_waller")
     {radial_debye_waller();}
     else if(command == "strings")
@@ -2382,6 +2384,42 @@ void Control::find_fast()
 /*--------------------------------------------------------------------------------*/
 
 
+
+
+void Control::find_fast_fixedthreshold()
+{
+  string filename, runline;
+  Fast_Particles * fast_particles;
+  string listname;
+  int time_index;
+  float threshold;
+
+  Trajectory_List * trajpointer;
+
+  fast_particles = new Fast_Particles;
+
+  trajpointer=(Trajectory_List*)fast_particles;
+
+  listname=args[1];
+  filename = args[2];
+  time_index = atoi(args[3].c_str());
+  threshold = atof(args[4].c_str());
+
+//  getline(input,runline);
+  runline = read_line();
+  cout <<"\n"<< runline;
+
+
+  cout << "\nIdentifying 'fast' particles.";
+  fast_particles->set(analyte,time_index, threshold);
+  run_analysis(fast_particles, runline);
+  fast_particles->write_count(filename);
+
+  add_trajectorylist(trajpointer, listname);	//add trajectory list to array
+}
+
+
+/*--------------------------------------------------------------------------------*/
 
 void Control::radial_debye_waller()
 {

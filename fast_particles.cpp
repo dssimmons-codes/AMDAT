@@ -55,6 +55,27 @@ Fast_Particles::Fast_Particles(System * sys, Gaussian_Comparison * gc)
 }
 
 
+Fast_Particles::Fast_Particles(System * sys, int timeindex, float distance_threshold)
+{
+  int timeii;
+
+  system = sys;
+  displacement_time_index = timeindex;
+  mindistance = distance_threshold;
+  capacity=system->show_n_atoms()+system->show_n_molecules();
+  n_times = system->show_n_exponentials();
+
+  trajectories = new Trajectory ** [n_times];
+  n_trajectories = new int [n_times];
+  included = new Boolean_List [n_times];
+  for(timeii=0;timeii<n_times;timeii++)
+  {
+    trajectories[timeii] = new Trajectory * [capacity];
+    n_trajectories[timeii]=0;
+    included[timeii].set(sys);
+  }
+}
+
 
 void Fast_Particles::set(System * syst, Gaussian_Comparison * gc)
 {
@@ -65,8 +86,6 @@ void Fast_Particles::set(System * syst, Gaussian_Comparison * gc)
   gaussian_comparison = gc;
   displacement_time_index = gaussian_comparison->show_time_index();
   mindistance = gaussian_comparison->show_fastboundary();
-
-
 
 }
 
