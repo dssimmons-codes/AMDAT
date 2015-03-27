@@ -22,8 +22,9 @@ class Fast_Particles: public Exptime_Trajectory_List
   public:
     Fast_Particles();
     Fast_Particles(System * sys, Gaussian_Comparison * gc);
-    Fast_Particles(System * sys, int timeindex, float distancethreshold);	//construct to find fast particles based on user-specificed distance cutoff
+    Fast_Particles(System * sys, int timeindex, float distance_threshold);	//construct to find fast particles based on user-specificed distance cutoff
     void set(System *, Gaussian_Comparison *);		//construct to find fast_particles based on distance cutoff specified by crossover between actual and Gaussian Van Hove computed by Gaussian_Comparison
+    void set(System * sys, int timeindex, float distancethreshold);	//construct to find fast particles based on user-specificed distance cutoff
     
     Analysis_Type what_are_you(){Analysis_Type type = fast_particles; return type;};		//virtual method to report the type of analysis
     

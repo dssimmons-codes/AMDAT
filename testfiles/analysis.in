@@ -1,13 +1,21 @@
 system
 xyz_log
 /home/david/AMDATsync/trunk/testfiles/traj.xyz /home/david/AMDATsync/trunk/testfiles/log.lammps
-exponential 10 77 1.2 0 0 .01
+exponential 1 77 1.2 0 0 .01
 polymer 50
 1
 32
 
 create_list all
 all
+
+composition composition.dat -1
+list all
+
+structure_factor structure.dat symmetric xyz 0 0
+list all
+
+exit
 
 vhs vhslist.dat 2 100
 list all
@@ -20,6 +28,12 @@ list all
 
 strings strings.dat 70 .6 ./testfiles/sigma_matrix stringlist
 list fast1
+
+isfs isfs_string.dat 24 24 xyz 0 0
+list stringlist
+
+isfs isfs.dat 24 24 xyz 0 0
+list all
 
 exit
 

@@ -19,14 +19,15 @@ using namespace std;
 Structure_Factor::Structure_Factor()
 {
   int vectorcount;
-  trajlist1=0;
-  trajlist2=0;
+  trajectory_list=0;
+  trajectory_list2=0;
   n_wavenumbers=0;
   current_wavedensity=0;
   wavevectors=0;
   n_wavenumbers = 0;
   n_atoms=0;
   currenttime=0;
+  time_scheme=-1;
 
   structure_factor = new float [n_wavenumbers];
   wavedensity1 = new complex<float> * [n_wavenumbers];
@@ -49,15 +50,15 @@ Structure_Factor::Structure_Factor()
 
 /*---------------------------------------------------------------------------------*/
 // Standard Constructor
-Structure_Factor::Structure_Factor(System* sys, const Wave_Vectors * wv, bool fblock)
+Structure_Factor::Structure_Factor(System* sys, const Wave_Vectors * wv, int timescheme)
 {
   system = sys;
   int vectorcount;
-  trajlist1=0;
-  trajlist2=0;
+  trajectory_list=0;
+  trajectory_list2=0;
   current_wavedensity=0;
   wavevectors = wv;
-  fullblock=fblock;
+  time_scheme=timescheme;
   n_wavenumbers = wavevectors->show_n_wavenumbers();
   structure_factor = new float [n_wavenumbers];
   wavedensity1 = new complex<float> * [n_wavenumbers];
@@ -94,13 +95,13 @@ Structure_Factor::~Structure_Factor()
 
 
 Structure_Factor::Structure_Factor(const Structure_Factor & copy)
-:Analysis(copy)
+:Analysis_Onetime(copy)
 {
   int vectorcount;
-    fullblock = copy.fullblock;
+    time_scheme = copy.time_scheme;
     system = copy.system;
-    trajlist1=copy.trajlist1;
-    trajlist2=copy.trajlist2;
+    trajectory_list=copy.trajectory_list;
+    trajectory_list2=copy.trajectory_list2;
     n_wavenumbers=copy.n_wavenumbers;
     wavevectors=copy.wavevectors;
     n_atoms=copy.n_atoms;
@@ -137,10 +138,10 @@ Structure_Factor Structure_Factor::operator=(const Structure_Factor & copy)
     delete [] wavedensity1;
     delete [] wavedensity2;
 
-    fullblock = copy.fullblock;
+    time_scheme = copy.time_scheme;
     system = copy.system;
-    trajlist1=copy.trajlist1;
-    trajlist2=copy.trajlist2;
+    trajectory_list=copy.trajectory_list;
+    trajectory_list2=copy.trajectory_list2;
     n_wavenumbers=copy.n_wavenumbers;
     wavevectors=copy.wavevectors;
     n_atoms=copy.n_atoms;
@@ -164,32 +165,26 @@ Structure_Factor Structure_Factor::operator=(const Structure_Factor & copy)
   return *this;
 }
 
-/*calculates asymmetric structure factor*/
-void Structure_Factor::analyze(Trajectory_List * t_list1, Trajectory_List * t_list2)
+
+void Structure_Factor::preprocess()
 {
-  int timeii, wavenumberii,  wavevectorii;
-  int timeincrement, n_times;
-  int vectorcount;
-
-  trajlist1=t_list1;
-  trajlist2=t_list2;
-
-  //maxtime = system->show_n_timesteps();
-
-  n_times = system->show_n_timesteps();
-
+  int wavenumberii;
   n_atoms=0;
 
-  if(fullblock)
+  /*allocate memory for wavedensity and structure factor and zero out structure factor*/
+  for(wavenumberii=0;wavenumberii<n_wavenumbers;wavenumberii++)
   {
-    timeincrement = 1;
+    structure_factor[wavenumberii] = 0;
+    wavedensity1[wavenumberii]=new complex<float> [wavevectors->vectorcount(wavenumberii)];
   }
-  else
-  {
-    timeincrement = system->show_n_exponential_steps();
-  }
+}
 
-
+void Structure_Factor::preprocess2()
+{
+  int wavenumberii;
+  
+  n_atoms=0;
+  
   /*allocate memory for wavedensity and structure factor and zero out structure factor*/
   for(wavenumberii=0;wavenumberii<n_wavenumbers;wavenumberii++)
   {
@@ -197,11 +192,49 @@ void Structure_Factor::analyze(Trajectory_List * t_list1, Trajectory_List * t_li
     wavedensity1[wavenumberii]=new complex<float> [wavevectors->vectorcount(wavenumberii)];
     wavedensity2[wavenumberii]=new complex<float> [wavevectors->vectorcount(wavenumberii)];
   }
+}
 
 
-  for(timeii=0;timeii<n_times;timeii+=timeincrement)
-  {
-    //Zero out wave densities
+/*Calculates symmetric structure factor*/
+void Structure_Factor::timekernel(int timeii)
+{
+  int vectorcount;
+  
+   //Zero out wave densities
+    for(int wavenumberii=0;wavenumberii<n_wavenumbers;wavenumberii++)
+    {
+      vectorcount = wavevectors->vectorcount(wavenumberii);
+      for(int wavevectorii=0;wavevectorii<vectorcount;wavevectorii++)		//loop over wavevectors for this wavenumber
+      {
+        wavedensity1[wavenumberii][wavevectorii].real(0);
+        wavedensity1[wavenumberii][wavevectorii].imag(0);
+      }
+    }
+
+    /*calculate wave densities*/
+    currenttime=timeii;
+    current_wavedensity = wavedensity1;
+    analyze_wave_density(trajectory_list); 
+    //Calculate structure factor
+    for(int wavenumberii=0;wavenumberii<n_wavenumbers;wavenumberii++)
+    {
+      vectorcount = wavevectors->vectorcount(wavenumberii);
+      for(int wavevectorii=0;wavevectorii<vectorcount;wavevectorii++)
+      {
+        structure_factor[wavenumberii] += (wavedensity1[wavenumberii][wavevectorii].real()*wavedensity1[wavenumberii][wavevectorii].real() + wavedensity1[wavenumberii][wavevectorii].imag()*wavedensity1[wavenumberii][wavevectorii].imag())/(float(vectorcount));
+      }
+    }
+    n_atoms+=trajectory_list->show_n_trajectories(timeii);
+}
+
+
+//*Calculated asymmetric structure factor*//
+void Structure_Factor::timekernel2(int timeii)
+{
+  int wavenumberii, wavevectorii;
+  int vectorcount;
+  
+  //Zero out wave densities
     for(wavenumberii=0;wavenumberii<n_wavenumbers;wavenumberii++)
     {
       vectorcount = wavevectors->vectorcount(wavenumberii);
@@ -217,9 +250,9 @@ void Structure_Factor::analyze(Trajectory_List * t_list1, Trajectory_List * t_li
     /*calculate wave densities*/
     currenttime=timeii;
     current_wavedensity = wavedensity1;
-    analyze_wave_density(trajlist1);
+    analyze_wave_density(trajectory_list);
     current_wavedensity = wavedensity2;
-    analyze_wave_density(trajlist2);
+    analyze_wave_density(trajectory_list2);
 
     //Calculate structure factor
     for(wavenumberii=0;wavenumberii<n_wavenumbers;wavenumberii++)
@@ -231,80 +264,11 @@ void Structure_Factor::analyze(Trajectory_List * t_list1, Trajectory_List * t_li
       }
     }
 
-    n_atoms+=trajlist1->show_n_trajectories(timeii);
-  }
-
-  for(wavenumberii=0;wavenumberii<n_wavenumbers;wavenumberii++)
-  {
-    structure_factor[wavenumberii]/=float(n_atoms);
-  }
+    n_atoms+=trajectory_list->show_n_trajectories(timeii);
 }
 
-/*---------------------------------------------------------------------------------*/
-
-/*calculates symmetric structure factor*/
-void Structure_Factor::analyze(Trajectory_List * t_list1)
+void Structure_Factor::postprocess_list()
 {
-//  int timeii, wavenumberii,  wavevectorii;
-  int timeincrement, n_times;
-  int vectorcount;
-
-  trajlist1=t_list1;
-  trajlist2=0;
-
-  n_times = system->show_n_timesteps();
-
-  n_atoms=0;
-
-  if(fullblock)
-  {
-    timeincrement = 1;
-  }
-  else
-  {
-    timeincrement = system->show_n_exponential_steps();
-  }
-
-
-  /*allocate memory for wavedensity and structure factor and zero out structure factor*/
-  for(int wavenumberii=0;wavenumberii<n_wavenumbers;wavenumberii++)
-  {
-    structure_factor[wavenumberii] = 0;
-    wavedensity1[wavenumberii]=new complex<float> [wavevectors->vectorcount(wavenumberii)];
-  }
-
-
-//cout <<endl << timeincrement << endl;cout.flush();
-
-  for(int timeii=0;timeii<n_times;timeii+=timeincrement) 
-  {														
-    //Zero out wave densities
-    for(int wavenumberii=0;wavenumberii<n_wavenumbers;wavenumberii++)
-    {
-      vectorcount = wavevectors->vectorcount(wavenumberii);
-      for(int wavevectorii=0;wavevectorii<vectorcount;wavevectorii++)		//loop over wavevectors for this wavenumber
-      {
-        wavedensity1[wavenumberii][wavevectorii].real(0);
-        wavedensity1[wavenumberii][wavevectorii].imag(0);
-      }
-    }
-
-    /*calculate wave densities*/
-    currenttime=timeii;
-    current_wavedensity = wavedensity1;
-    analyze_wave_density(trajlist1); 
-    //Calculate structure factor
-    for(int wavenumberii=0;wavenumberii<n_wavenumbers;wavenumberii++)
-    {
-      vectorcount = wavevectors->vectorcount(wavenumberii);
-      for(int wavevectorii=0;wavevectorii<vectorcount;wavevectorii++)
-      {
-        structure_factor[wavenumberii] += (wavedensity1[wavenumberii][wavevectorii].real()*wavedensity1[wavenumberii][wavevectorii].real() + wavedensity1[wavenumberii][wavevectorii].imag()*wavedensity1[wavenumberii][wavevectorii].imag())/(float(vectorcount));
-      }
-    }
-    n_atoms+=trajlist1->show_n_trajectories(timeii);
-  }
-
   for(int wavenumberii=0;wavenumberii<n_wavenumbers;wavenumberii++)
   {
       if (float(n_atoms)!=0)
@@ -317,6 +281,7 @@ void Structure_Factor::analyze(Trajectory_List * t_list1)
     }
   }
 }
+
 
 void Structure_Factor::analyze_wave_density(Trajectory_List * t_list)
 {

@@ -9,13 +9,14 @@
 #include "analysis.h"
 #include "system.h"
 #include <string>
+#include "analysis_onetime.h"
 
 namespace std{
 
 
-class Composition : public Analysis
+class Composition: public Analysis_Onetime
 {
-    System * system;
+//    System * system;
     int n_atomtypes;
     int n_molecules;
     int n_times;
@@ -33,7 +34,7 @@ class Composition : public Analysis
 
     public:
     Composition();
-    Composition(System*,int n_xbins, int n_ybins, int n_zbins, float lx, float ly, float lz);
+    Composition(System*,int n_xbins, int n_ybins, int n_zbins, float lx, float ly, float lz, int timescheme=-1);
     Composition(const Composition &);
     ~Composition();
 
@@ -41,10 +42,9 @@ class Composition : public Analysis
     
     Analysis_Type what_are_you(){Analysis_Type type = composition; return type;};
     
-     void analyze(Trajectory_List *,Trajectory_List *){cout<<"Error: Trajectory list targets with two lists not implemented for this analysis method.\n";}; //analysis method for when two trajectory lists are needed
-    void analyze(Trajectory_List * t_list);
     void listkernel(Trajectory *);
-
+    void timekernel(int);
+    void postprocess_list();
     void write(string);
     bool isThreadSafe(){return false;};
     

@@ -91,6 +91,18 @@ void Fast_Particles::set(System * syst, Gaussian_Comparison * gc)
 
 
 
+void Fast_Particles::set(System * sys, int timeindex, float distance_threshold)
+{
+
+  int cap = sys->show_n_trajectories();
+  reset(sys,cap);
+
+  gaussian_comparison = 0;
+  displacement_time_index = timeindex;
+  mindistance = distance_threshold;
+
+}
+
 
 void Fast_Particles::analyze(Trajectory_List * t_list)
 {

@@ -284,7 +284,7 @@ int Control::execute_commands(int iIndex, int fIndex)
     else if(command == "find_fast")
     {find_fast();}
     else if(command == "find_fast_fixedthreshold")
-    {find_fast_fixedthreshold;}
+    {find_fast_fixedthreshold();}
     else if(command == "radial_debye_waller")
     {radial_debye_waller();}
     else if(command == "strings")
@@ -994,6 +994,19 @@ void Control::get_user_input(bool show_tips)
     Error(ss.str(), -6);
   }
 }
+
+
+/*Gives error if number of arguments does not match that expected*/
+ void Control::argcheck(int expected1, int expected2)
+ {
+ if(n_args!=expected1&&n_args!=expected2)
+  {
+    stringstream ss;
+    ss << "Incorrect number of arguments for command "<< args[0] <<".\n"<< n_args-1 << " arguments given, "<< expected1-1 << " or " << expected2-1 << " expected.";
+    Error(ss.str(), -6);
+  }
+}
+
 
 /*Same as previous function but returns true if the number is correct, and false if incorrect, for error handling. */
 bool Control::bool_argcheck(int expected)
@@ -1891,6 +1904,7 @@ void Control::structure_factor()
   int expected = 6;
   int listnum1, listnum2;
   bool fullblock=0;
+  int timescheme;
   float max_length_scale = 0;
   dynamic = 0;
 
@@ -1903,7 +1917,8 @@ if (n_args !=4)
   filename = args[1];			//name of file to which to save calculated data
   symmetry = args[2];			//determine if atom sets are the same or different
   plane = args[3];
-  fullblock = bool(atoi(args[5].c_str()));
+  //fullblock = bool(atoi(args[5].c_str()));
+  timescheme=atoi(args[5].c_str());
   max_length_scale = atof(args[4].c_str());
 
   /*Reading wave vectors from file*/
@@ -1918,10 +1933,10 @@ if (n_args !=4)
   n_args = tokenize(runline1, args);
   if (args[0]=="list" )
   {
-    Structure_Factor struc_fac(analyte,&wavevectors,fullblock);
+    Structure_Factor struc_fac(analyte,&wavevectors,timescheme);
     listname1 = args[1];
     //listnum1 = find_trajectorylist(listname1);
-    cout <<"\n"<< analyte->show_n_trajectories()<<"\t"<<wavevectors.show_n_wavenumbers()<<"\t"<<find_trajectorylist(listname1)->show_n_trajectories(0)<<"\t"<<fullblock<<"\t";cout.flush();
+    cout <<"\n"<< analyte->show_n_trajectories()<<"\t"<<wavevectors.show_n_wavenumbers()<<"\t"<<find_trajectorylist(listname1)->show_n_trajectories(0)<<"\t"<<timescheme<<"\t";cout.flush();
 
     if (symmetry=="symmetric")
     {
@@ -1959,7 +1974,7 @@ if (n_args !=4)
     {
       cout << "\nCalculating structure factor.";cout.flush();
       start = time(NULL);
-      Structure_Factor struc_fac(analyte,&wavevectors,fullblock);
+      Structure_Factor struc_fac(analyte,&wavevectors,timescheme);
       run_analysis <Structure_Factor> (struc_fac,runline1,filename);
       finish = time(NULL);
       cout << "\nCalculated structure factor in " << finish-start<<" seconds.";
@@ -2411,7 +2426,7 @@ void Control::find_fast_fixedthreshold()
 
 
   cout << "\nIdentifying 'fast' particles.";
-  fast_particles->set(analyte,time_index, threshold);
+  fast_particles->set(analyte, time_index, threshold);
   run_analysis(fast_particles, runline);
   fast_particles->write_count(filename);
 
@@ -3005,11 +3020,20 @@ void Control::composition()
   **/
     string runline;
   string filename;
-  int expected=2;
-
-  argcheck(expected);
+  int timescheme;
+  
+  argcheck(2,3);
   dynamic=0;
   filename=args[1];
+  
+  if(n_args==3)
+  {
+    timescheme=atoi(args[2].c_str());
+  }
+  else
+  {
+    timescheme=-1;
+  }
 
   int num_xbins, num_ybins, num_zbins;
   float lx, ly, lz;
@@ -3073,7 +3097,7 @@ void Control::composition()
      ly = (analyte->size()).show_y();
      lz = (analyte->size()).show_z();
   }
-     Composition comp(analyte,num_xbins,num_ybins,num_zbins,lx,ly,lz);
+     Composition comp(analyte,num_xbins,num_ybins,num_zbins,lx,ly,lz,timescheme);
      cout << "\nCalculating composition.\n"; cout.flush();
      start = time(NULL);
      run_analysis <Composition> (comp, runline, filename);

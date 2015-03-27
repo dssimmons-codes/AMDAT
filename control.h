@@ -117,6 +117,7 @@ class Control
     /*Some general methods*/
     void system();			//create system object with input file data
     void argcheck(int);			//check if the number of arguments to a analysis method is correct
+    void argcheck(int,int);		//check if the number of arguments to a analysis method is correct with two options for argument count
     bool bool_argcheck(int);    //check if the number of arguments to a analysis method is correct and returns true if it is
     void limit();			//set limit of how many time spacings to use per timegap
     void create_list();
