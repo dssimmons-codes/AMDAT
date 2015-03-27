@@ -57,6 +57,7 @@ class Analysis
     System * system;	//the system on which analysis is to be performed
     
     Trajectory_List * trajectory_list;			//Array of trajectory_lists used by this analysis tool
+    Trajectory_List * trajectory_list2;
     
     Tokenize tokenize;
     

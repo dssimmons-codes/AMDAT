@@ -10,6 +10,16 @@ polymer 50
 create_list all
 all
 
+isfs isfs.dat 24 24 xyz 0 0
+list all
+
+exit
+
+isf isf.dat auto symmetric xyz 0 24 24
+list all
+
+exit
+
 create_bin_list bins
 all 2 1 1
 
@@ -89,8 +99,7 @@ exit
 msd msd.dat
 list all
 
-isfs isfs.dat 24 24 xyz 0 0
-list all
+
 
 exit
 
