@@ -1,5 +1,5 @@
 /*Amorphous Molecular Dynamics Analysis Toolkit (AMDAT)*/
 /*Version information*/
 
-#define VERSION "version 0.500 (r67)"
+#define VERSION "0.510 (r72)"
 #define DATE "25Mar15"
