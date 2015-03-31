@@ -9,6 +9,15 @@ polymer 50
 create_list all
 all
 
+rdf rdf_sym.dat symmetric 100 -1 0
+list all
+
+rdf rdf_asym.dat asymmetric 100 -1 0
+list all
+list all
+
+exit
+
 composition composition.dat -1
 list all
 

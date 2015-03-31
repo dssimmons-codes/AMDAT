@@ -1,5 +1,5 @@
-/*Molecular Dynamics Analysis Toolkit (MDAT)*/
-/*Class to calculate mean-square-displacement*/
+/*Amorphous Molecular Dynamics Analysis Toolkit (AMDAT)*/
+/*Class to calculate radial_distribution_function from n^2 method*/
 /*Written by David S. Simmons*/
 
 #ifndef RADIAL_DISRIBUTION_FUNCTION
@@ -7,6 +7,7 @@
 
 #include "system.h"
 #include <sstream>
+#include "analysis_onetime.h"
 
 namespace std{
 
@@ -19,7 +20,7 @@ class Radial_Distribution_Function: public Analysis_Onetime
     float ** time_rdf;
     float * mean_rdf;
     int * n_atoms_i;
-    int * n_atoms_j;                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              
+    int * n_atoms_j;
     
     
   public:
@@ -31,23 +32,23 @@ class Radial_Distribution_Function: public Analysis_Onetime
     
     //Radial_Distribution_Function operator+ (const Radial_Distribution_Function &);
     
+    void set(System*sys, int nbins, int timescheme, float maxdistance=0);
+    
     //Analysis_Type what_are_you(){Analysis_Type type = mean_square_displacement; return type;};		//virtual method to report the type of analysis
     
-    float * normalized();
-    void write(string);
-    void set(System * sys){initialize(sys);};
-    
-    void preprocess(){trajectory_list2=trajectory_list}
-    void timekernel2(int timeii);
+    void preprocess(){trajectory_list2=trajectory_list;};
     void timekernel(int timeii){timekernel2(timeii);};
-    void list_displacementkernel(int,int,int);
+    void timekernel2(int timeii);
     void listkernel(Trajectory *, int, int, int);
+    void listkernel2(Trajectory *, Trajectory *, int, int, int);
     void postprocess_list();
+    void bin(int, float);
     
-    void bin_hook(Trajectory_List*,int,int,int);
-    void postprocess_bins();
+    void write(string);
     
-    float show(int t)const{return msd[t];};			//method to return one timestep of msd array
+    
+    
+    
 //	bool isThreadSafe(){return true;};
 };
 }

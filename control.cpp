@@ -51,6 +51,7 @@
 #include "error.h"
 #include "mean_velocity_unsteady.h"
 #include "mean_unsteady_displacement.h"
+#include "radial_distribution_function.h"
 
 using namespace std;
 
@@ -2042,7 +2043,7 @@ void Control::rdf()
       cout << "\nCalculating structure factor.\n";cout.flush();
       start = time(NULL);
       //calls bins
-      rad_dis_fun.analyze(trajectories[listname1,trajectories[listname2]);
+      rad_dis_fun.analyze(trajectories[listname1],trajectories[listname2]);
       finish = time(NULL);
       cout << "\nCalculated radial distribution function in " << finish-start<<" seconds.\n";
     }
@@ -3212,7 +3213,7 @@ void Control::unsteady_velocity()
   run_analysis <Mean_Velocity_Unsteady> (velocity,runline,filename); // pass run_analysis template the analysis type 'Mean_Square_Displacement'
 
   finish = time(NULL);
-  cout << "\Computed velocity in " << finish-start<<" seconds."<<endl;
+  cout << "\nComputed velocity in " << finish-start<<" seconds."<<endl;
 }
 
 
@@ -3236,7 +3237,7 @@ void Control::incremental_mean_displacement()
   run_analysis <Mean_Unsteady_Displacement> (mud,runline,filename); // pass run_analysis template the analysis type 'Mean_Square_Displacement'
 
   finish = time(NULL);
-  cout << "\Computed mean incremental displacement in " << finish-start<<" seconds."<<endl;
+  cout << "\nComputed mean incremental displacement in " << finish-start<<" seconds."<<endl;
 }
 
 

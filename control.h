@@ -177,6 +177,7 @@ class Control
     void isf_list();		//same as above but works with particle list instead of atom set
     void isfs();		//calculate self intermediate scattering function
     void structure_factor();	//calculate structure factor or intermediate scattering function as function of wavenumber at a given displacement time.
+    void rdf();
     void u2dist();		//calculate distribution of debye-waller factor (or displacement)
     void stiffness_dist();	//calculate distribbution of inverse debye-waller factor
     void displacement_dist();	//calculated distribution of particle displacement magnitudes to user-specified power

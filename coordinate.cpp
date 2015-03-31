@@ -8,6 +8,7 @@
 #include <stdio.h>
 #include <iostream>
 #include <stdlib.h>
+#include <cmath>
 
 using namespace std;
 
@@ -248,9 +249,9 @@ float Coordinate::length_unwrapped(const Coordinate& boxsize)const
 {
 	float length;
 	float minx, miny, minz;
-	minx = min(x,boxsize.x-x);
-	miny = min(y,boxsize.y-y);
-	minz = min(z,boxsize.z-z);
+	minx = min(abs(x),boxsize.x-abs(x));
+	miny = min(abs(y),boxsize.y-abs(y));
+	minz = min(abs(z),boxsize.z-abs(z));
 
 	length = pow((minx*minx+miny*miny+minz*minz),.5);
 
