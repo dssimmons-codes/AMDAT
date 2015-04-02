@@ -19,9 +19,6 @@ boolean_list.o fast_particles.o   displacement_map.o composition.o n_fold_order_
 system.o: system.cpp system.h molecule.h analysis.h atom_trajectory.h coordinate.h tokenize.h trajectory.h trajectory_set.h
 	$(CXX) $(CFLAGS) system.cpp -DTACC
 
-space-time_correlation_function.o: space-time_correlation_function.cpp space-time_correlation_function.h system.h coordinate.h molecule.h analysis.h atom_trajectory.h trajectory.h
-	$(CXX) $(CFLAGS) space-time_correlation_function.cpp -DTACC
-
 velocity_autocorrelation.o: velocity_autocorrelation.cpp velocity_autocorrelation.h mean_square_displacement.h system.h molecule.h atom_trajectory.h coordinate.h analysis.h trajectory.h
 	$(CXX) $(CFLAGS) velocity_autocorrelation.cpp -DTACC
 
@@ -35,9 +32,6 @@ displacement_distribution.o version.h boolean_list.o fast_particles.o   displace
 
 system.o: system.cpp system.h molecule.h analysis.h atom_trajectory.h coordinate.h tokenize.h trajectory.h trajectory_set.h
 	$(CXX) $(CFLAGS) system.cpp
-
-space-time_correlation_function.o: space-time_correlation_function.cpp space-time_correlation_function.h system.h coordinate.h molecule.h analysis.h atom_trajectory.h trajectory.h
-	$(CXX) $(CFLAGS) space-time_correlation_function.cpp -lfftw3 -lm 
 
 velocity_autocorrelation.o: velocity_autocorrelation.cpp velocity_autocorrelation.h mean_square_displacement.h system.h molecule.h atom_trajectory.h coordinate.h analysis.h trajectory.h
 	$(CXX) $(CFLAGS) velocity_autocorrelation.cpp -lfftw3 -lm
@@ -120,6 +114,9 @@ tokenize.o: tokenize.h tokenize.cpp
 	
 mean_square_displacement_2d.o: mean_square_displacement_2d.cpp mean_square_displacement_2d.h system.h molecule.h atom_trajectory.h coordinate.h analysis.h  trajectory.h
 	$(CXX) $(CFLAGS) mean_square_displacement_2d.cpp
+
+space-time_correlation_function.o: space-time_correlation_function.cpp space-time_correlation_function.h system.h coordinate.h molecule.h analysis.h atom_trajectory.h trajectory.h
+	$(CXX) $(CFLAGS) space-time_correlation_function.cpp
 
 strings.o: strings.h strings.cpp analysis.h atom_trajectory.h coordinate.h molecule.h trajectory.h progress.h system.h
 	$(CXX) $(CFLAGS) strings.cpp

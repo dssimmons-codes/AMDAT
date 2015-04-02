@@ -122,7 +122,8 @@ int Control::read_input_file(char * filename_input)
         if (line == "")
         { continue; }
     }
-
+    
+    tokenize.setflagmarker("\\");	//turn on flag checking for input file with "-" as flag marker
     n_args = tokenize(line, args);
     if(n_args==0)
     { continue; }
@@ -270,10 +271,10 @@ int Control::execute_commands(int iIndex, int fIndex)
     {structure_factor();}
     else if (command == "rdf")
     {rdf();}
+    else if (command == "structure_factor_from_rdf")
+    {structure_factor_from_rdf();}
     else if (command == "isf")
     {isf();}
-    else if (command == "isf_list")
-    {isf_list();}
     else if(command == "u2dist")
     {u2dist();}
     else if(command == "stiffness_dist")
@@ -336,6 +337,10 @@ int Control::execute_commands(int iIndex, int fIndex)
     {unsteady_velocity();}
     else if (command == "incremental_mean_displacement")
     {incremental_mean_displacement();}
+    else if (command == "write_analysis")
+    {write_analysis();}
+    else if (command == "delete_analysis")
+    {delete_analysis();}
     else if (command == "skip")
     {skip();}
     else if (command == "exit")
@@ -1346,7 +1351,7 @@ void Control::delete_multibody_list(string listname)
   Multibody_List * multibody_list;
 
   multibody_list = find_multibody_list(listname,1);
-  if(multibody_list=0)
+  if(multibody_list==0)
   {
     cout << "\nWarning: multibody_list " << listname << " does not exist and therefore cannot be deleted.";
   }
@@ -1569,11 +1574,19 @@ void Control::write_list_trajectory_full()
 /*Calculate and write to file mean square displacement as requested by user*/
 void Control::msd()
 {
-  string filename;
+  string filename, analysisname;
   string runline;
   int expected=2;
   argcheck(expected);
   dynamic = 1;
+  Mean_Square_Displacement * msdpointer;
+  
+  bool store = tokenize.isflagged("s");
+  if(store)
+  {
+    analysisname = tokenize["s"];
+  }
+  
 
   filename = args[1];
 
@@ -1585,10 +1598,26 @@ void Control::msd()
   Mean_Square_Displacement msd(analyte);
   cout << "\nCalculating mean square displacement.\n";cout.flush();
   start = time(NULL);
-  run_analysis <Mean_Square_Displacement> (msd,runline,filename); // pass run_analysis template the analysis type 'Mean_Square_Displacement'
+  msd = run_analysis <Mean_Square_Displacement> (msd,runline,filename); // pass run_analysis template the analysis type 'Mean_Square_Displacement'
 
   finish = time(NULL);
   cout << "\nCalculated mean square displacement in " << finish-start<<" seconds."<<endl;
+  
+  //store msd analysis method if appropriate
+  if(store)
+  {
+    msdpointer = new Mean_Square_Displacement;
+    *msdpointer=msd;
+    if(analyses.insert(analysisname,(Analysis*)(msdpointer)))
+    {
+      cout << "Saving msd analysis to analysis name " << analysisname << ".\n";
+    }
+    else
+    {
+      cout << "\nError: an analysis is already stored with name " << analysisname << ". New analysis not stored.\ns";
+      exit(0);
+    }
+  }
 }
 
 
@@ -2003,11 +2032,18 @@ void Control::structure_factor()
 
 void Control::rdf()
 {
-  string filename, symmetry, runline1, runline2, plane, listname1, listname2;
+  string filename, symmetry, runline1, runline2, plane, listname1, listname2, analysisname;
   int listnum1, listnum2;
   int timescheme, n_bins;
   float max_length_scale = 0;
   dynamic = 0;
+  Radial_Distribution_Function * rdfpointer;
+  
+  bool store = tokenize.isflagged("s");
+  if(store)
+  {
+    analysisname = tokenize["s"];
+  }
   
   argcheck(6);
   
@@ -2053,7 +2089,58 @@ void Control::rdf()
       exit(1);
     }
     rad_dis_fun.write(filename);
+    
+   //store rdf analysis method if appropriate
+  if(store)
+  {
+    rdfpointer = new Radial_Distribution_Function;
+    (*rdfpointer)=rad_dis_fun;
+    if(analyses.insert(analysisname,(Analysis*)(rdfpointer)))
+    {
+      cout << "Saving rdf analysis to analysis name " << analysisname << ".\n";
+    }
+    else
+    {
+      cout << "\nError: an analysis is already stored with name " << analysisname << ". New analysis not stored.\ns";
+      exit(0);
+    }
+  }
 }
+
+
+
+/*--------------------------------------------------------------------------------*/
+
+
+
+void Control::structure_factor_from_rdf()
+{
+  string filename, rdfname;
+  int n_bins;
+  argcheck(4);
+  
+  filename =  args[1];			//name of file to which to save calculated data
+  rdfname = args[3];			//name of saved rdf
+  n_bins = atoi(args[2].c_str());	//number of k's for which to compute structure factor
+  
+  if(analyses.count(rdfname))
+  {
+    if(analyses.at(rdfname)->what_are_you()==radial_distribution_function)
+    {
+      ((Radial_Distribution_Function*)(analyses.at(rdfname)))->structure_factor(filename,n_bins);
+    }
+    else
+    {
+      cout << "\Warning: analysis stored with name " << rdfname << " is not a radial distribution function. Structure factor not calculated.\ns";
+    }
+  }
+  else
+  {
+    cout << "\Warning: no analysis stored with name " << rdfname << ". Structure factor not calculated.\ns";
+  }
+}
+
+
 
 /*--------------------------------------------------------------------------------*/
 
@@ -2144,45 +2231,6 @@ void Control::isf()
   Intermediate_Scattering_Function is_fun(analyte, &wavedensity1, &wavedensity2,inner,outer,block_parallel);
   is_fun.write(filename);		//write intermediate scattering function to file
 
-}
-
-
-/*--------------------------------------------------------------------------------*/
-
-
-
-void Control::isf_list()
-{
-  #ifdef NEVER
-  string filename, wavevector_root, runline, method, structfac_filename, listname, plane;
-  int inner, outer, listindex;		//minimum and maximum wave vector indices to calculate
-
-  filename = args[1];			//name of file to which to save calculated data
-  listname = args[2];
-  plane = args[3];
-
-
-  cout << "\nDetermining wave vectors.";cout.flush();
-  Wave_Vectors wavevectors(analyte,plane);
-
-  Wave_Density wavedensity1(analyte,&wavevectors);
-
-  inner = atoi(args[4].c_str());
-  outer = atoi(args[5].c_str());
-
-  wavedensity1.set(analyte,&wavevectors,inner,outer);
-
-  cout << "\nCalculating fourier transform of density for first set of particles.";cout.flush();
-//  getline(input,runline);
-  runline = read_line();
-  cout <<"\n"<< runline;
-  run_analysis(&wavedensity1,runline);	//calculate wave density for first set of particles
-
-  listindex = find_atomlist(listname);
-  cout << "\nCalculating intermediate scattering function.";cout.flush();
-  Intermediate_Scattering_Function is_fun(analyte, atomlists[listindex], &wavedensity1, inner, outer);
-  is_fun.write(filename);		//write intermediate scattering function to file
-#endif
 }
 
 
@@ -3238,6 +3286,49 @@ void Control::incremental_mean_displacement()
 
   finish = time(NULL);
   cout << "\nComputed mean incremental displacement in " << finish-start<<" seconds."<<endl;
+}
+
+
+
+void Control::write_analysis()
+{
+  string analysisname, filename;
+  bool exists;
+  
+  argcheck(3);
+  analysisname = args[1]; 
+  filename = args[2];
+  
+  exists = analyses.count(analysisname);
+  if(exists)
+  {
+    (analyses.at(analysisname))->write(filename);
+  }
+  else
+  {
+    cout << "\nWarning: no stored analysis with name " << analysisname << ".\n";
+  }
+}
+
+
+
+void Control::delete_analysis()
+{
+  string analysisname;
+  bool exists;
+  argcheck(2);
+  analysisname=args[1];
+  exists = analyses.count(analysisname);
+  if(exists)
+  {
+    analyses.erase(analysisname);
+    cout << "\nDeleted stored analysis with name " << analysisname << ".\n";
+  }
+  else
+  {
+    cout << "\nWarning: no stored analysis with name " << analysisname << ".\n";
+  }
+  
 }
 
 

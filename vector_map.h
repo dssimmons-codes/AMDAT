@@ -30,6 +30,7 @@ class Vector_Map
     bool insert (const Keyclass& key ,const Dataclass & data); 
     Dataclass& operator[](const Keyclass & key);
     int count(const Keyclass & key) const;
+    void clear();
     
 };
 
@@ -150,6 +151,14 @@ int Vector_Map< Keyclass, Dataclass>::count(const Keyclass & key) const
   {
     return 1;
   }
+}
+
+
+template <class Keyclass, class Dataclass>
+void Vector_Map< Keyclass, Dataclass>::clear() 
+{
+  keyvector.clear();
+  datavector.clear();
 }
 
 

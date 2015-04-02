@@ -127,6 +127,8 @@ void Analysis::all()
 
 void Analysis::analyze(string runline)
 {
+  Tokenize tokenize;
+  
   int n_args;
   int args_used=0;
   int args_needed;

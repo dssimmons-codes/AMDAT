@@ -201,6 +201,8 @@ void Vector_Autocorrelation::set(System* sys, string bondfilename)
 
 void Vector_Autocorrelation::initialize(System* sys, string bondfilename)
 {
+  Tokenize tokenize;
+  
   string line;
   int n_args;
   string args [128];

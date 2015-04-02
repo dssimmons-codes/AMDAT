@@ -8,9 +8,6 @@
 #include <stdlib.h>
 #include <iostream>
 #include <math.h>
-#ifndef TACC
-#include <fftw3.h>
-#endif
 #include "version.h"
 
 using namespace std;

@@ -64,7 +64,6 @@ Van_Hove_Distinct::Van_Hove_Distinct(System*sys, Trajectory_List_Bins binnedtraj
       correlation[timeii][binii]=0;
     }
   }
-  
 }
 
 
@@ -158,9 +157,8 @@ void Van_Hove_Distinct::set(System*sys, int bin_count, float value_max)
 void Van_Hove_Distinct::analyze(Trajectory_List * t_list1)
 {
 
-  
-  trajectory_list[0]=t_list1[0];
-  trajectory_list[1]=t_list1[0];
+  trajectory_list=t_list1;
+  trajectory_list2=t_list1;
  
   system->displacement_list(this);
   postprocess_list();
@@ -169,14 +167,8 @@ void Van_Hove_Distinct::analyze(Trajectory_List * t_list1)
 
 void Van_Hove_Distinct::analyze(Trajectory_List * t_list1, Trajectory_List * t_list2)
 {
-  trajectory_list[0]=t_list1[0];
-  trajectory_list[1]=t_list2[0];
-  
-  if(!use_binned)
-  {
-    currentlist0=&trajectory_list[0];
-    currentlist1=&trajectory_list[1];
-  }
+  trajectory_list=t_list1;
+  trajectory_list2=t_list2;
   
   system->displacement_list(this);
   postprocess_list();
@@ -188,33 +180,16 @@ void Van_Hove_Distinct::analyze(Trajectory_List * t_list1, Trajectory_List * t_l
 
 void Van_Hove_Distinct::list_displacementkernel(int timegapii, int thisii, int nextii)
 {
-  int xii, yii, zii;	//bin of first trajectory_list
-
-  if(use_binned)
-  {
-    for(xii=0;xii<nx;xii++)
-    {
-      for(yii=0;yii<ny;yii++)
-      {
-	for(zii=0;zii<nz;zii++)
-	{
-	
-	
-	}
-      }
-    }
-  }
-  else
-  {
-    weighting[timegapii]+=trajectory_list[0].show_n_trajectories(thisii)*trajectory_list[1].show_n_trajectories(nextii);
+ 
+    weighting[timegapii]+=trajectory_list->show_n_trajectories(thisii);
 //    current_list1->listloop(this,timegapii, thisii, nextii);
-  }
+    trajectory_list->listloop(this,timegapii, thisii, nextii);
 }
 
 
 void Van_Hove_Distinct::listkernel(Trajectory* traj1, int timegapii, int thisii, int nextii)
 {
-//  current_list2->listloop(this, traj1, timegapii, thisii, nextii);
+  trajectory_list2->listloop2(this, traj1, timegapii, thisii, nextii);
 }
 
 
@@ -232,7 +207,6 @@ void Van_Hove_Distinct::listkernel2(Trajectory* traj1, Trajectory* traj2, int ti
   {
     weighting[timegapii]--;
   }
-  
-  
+
 }
 

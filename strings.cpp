@@ -393,6 +393,8 @@ void Strings::fraction_in_strings()
 /*allocate matrix of particle sizes and assign values*/
 void Strings::allocate_sig_matrix(string sig_file)
 {
+  Tokenize tokenize;
+  
     string line;
     line = "";
     int sig_tokens=0;

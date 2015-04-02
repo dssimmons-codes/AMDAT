@@ -26,6 +26,8 @@ N_Fold_Order_Parameter::N_Fold_Order_Parameter(System * sys, float ord, string s
   * @date 6/16/2012
   **/
 
+    Tokenize tokenize;
+    
     system = syst = sys;
     total_atoms = system->show_n_atoms();
     start_time = start;

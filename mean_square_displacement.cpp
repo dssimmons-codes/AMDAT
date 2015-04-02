@@ -181,7 +181,7 @@ void Mean_Square_Displacement::postprocess_list()
 
 /*Method to write MSD data to file*/
 
-void Mean_Square_Displacement::write(string filename)
+void Mean_Square_Displacement::write(string filename)const
 {
   int timeii;
 
@@ -189,7 +189,7 @@ void Mean_Square_Displacement::write(string filename)
 
   ofstream output(filename.c_str());
 
-  output << "Mean square displacement data created by AMDAT v." << VERSION << "\n";
+  output << "Mean square displacement data created bys AMDAT v." << VERSION << "\n";
   for(timeii=0;timeii<n_times;timeii++)
   {
     output << timetable[timeii]<<"\t"<<msd[timeii]<<"\n";

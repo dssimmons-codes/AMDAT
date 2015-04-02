@@ -96,9 +96,10 @@ class Control
     //int find_space-time_correlations();
     //void add_space-time_correlations();
 
-    //void * analyses [LISTSIZE];			//declare
-    //string analysis_names [LISTSIZE];
-    //int n_analyses;
+    /*Members to store, access, and use analysis objects*/
+    Vector_Map <string, Analysis*> analyses;			//object to hold list of saved analyses
+    void write_analysis();					//method to write results of saved analysis to filename
+    void delete_analysis();					//method to delete saved analysis
 
 
     /*Members to store and access trajectory_list objects*/
@@ -142,7 +143,7 @@ class Control
     /*Mark Mackura*/
     /* Methods and variables to handle bin lists */
     void create_bin_list();
-    template <class Analysis_type> void run_analysis(Analysis_type, string, string);
+    template <class Analysis_type> Analysis_type run_analysis(Analysis_type, string, string);
     void add_trajectorylist_bins(Trajectory_List_Bins *,string);
     int find_trajectorylist_bins(string);
     string trajectory_list_bin_names[LISTSIZE];				//custom name of binned trajectory list
@@ -177,7 +178,8 @@ class Control
     void isf_list();		//same as above but works with particle list instead of atom set
     void isfs();		//calculate self intermediate scattering function
     void structure_factor();	//calculate structure factor or intermediate scattering function as function of wavenumber at a given displacement time.
-    void rdf();
+    void rdf();			//calculate g(r) via n^2 route
+    void structure_factor_from_rdf();	//calculate S(q) from Fourier-Bessel transform of g(r)
     void u2dist();		//calculate distribution of debye-waller factor (or displacement)
     void stiffness_dist();	//calculate distribbution of inverse debye-waller factor
     void displacement_dist();	//calculated distribution of particle displacement magnitudes to user-specified power
@@ -220,7 +222,7 @@ class Control
 
 
 template <class Analysis_type>
-void Control::run_analysis(Analysis_type analyzer, string setline, string filename)
+Analysis_type Control::run_analysis(Analysis_type analyzer, string setline, string filename)
 {
      /** Method to run analysis_type as requested by user input file with bin support writing out results as calculations finish
      * @param Analysis_type - analysis type (Analysis child) to be used when duplicating object for bins
@@ -241,8 +243,8 @@ void Control::run_analysis(Analysis_type analyzer, string setline, string filena
      int bin_listnum;
      Trajectory_List_Bins * binned_trajectory_list_to_analyze;		//declare binned trajectory list to analyze
 
-     Tokenize tokenize(setline);
-     n_setargs = tokenize.count();
+     Tokenize runtokenize(setline);
+     n_setargs = runtokenize.count();
      //n_setargs = tokenize(setline, setargs);
      if ( n_setargs==0 )
      {
@@ -251,14 +253,14 @@ void Control::run_analysis(Analysis_type analyzer, string setline, string filena
      }
      else
      {
-	  command = tokenize(0);
+	  command = runtokenize(0);
 	  cout <<command<< endl;cout.flush();
      }
      if(command == "list")
      {
        if(n_setargs==2)
        {
-	  listname = tokenize(1);
+	  listname = runtokenize(1);
 	  //listnum = find_trajectorylist(listname);
 
 	  if(trajectories.count(listname))
@@ -274,9 +276,9 @@ void Control::run_analysis(Analysis_type analyzer, string setline, string filena
        }
        else if(n_setargs==3)
        {
-	  listname = tokenize(1);
+	  listname = runtokenize(1);
 	  //listnum = find_trajectorylist(listname);
-	  listname2 = tokenize(2);
+	  listname2 = runtokenize(2);
 	  //listnum2 = find_trajectorylist(listname2);
 
 	  if(trajectories.count(listname)&&trajectories.count(listname2))
@@ -300,12 +302,12 @@ void Control::run_analysis(Analysis_type analyzer, string setline, string filena
 	    exit(0);
 	  }
 	  //setargcheck(expected, n_setargs, command);
-	  bin_listname = tokenize(1);
+	  bin_listname = runtokenize(1);
 	  bin_listnum = find_trajectorylist_bins(bin_listname);
-	  listname = tokenize(2);
+	  listname = runtokenize(2);
 	  if (n_setargs==4)
 	  {
-	    use_persistence=bool(atoi(tokenize(3).c_str()));
+	    use_persistence=bool(atoi(runtokenize(3).c_str()));
 	  }
 	  //listnum = find_trajectorylist(listname);
 	  if (trajectories.count(listname))
@@ -338,6 +340,8 @@ void Control::run_analysis(Analysis_type analyzer, string setline, string filena
      //analyzer.analyze(setline);
      //analyzer.write(filename);
      }
+
+return analyzer;
 
 }
 

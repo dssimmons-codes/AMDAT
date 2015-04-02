@@ -32,7 +32,7 @@ class Mean_Square_Displacement: public Analysis
     Analysis_Type what_are_you(){Analysis_Type type = mean_square_displacement; return type;};		//virtual method to report the type of analysis
     
     float * normalized();
-    void write(string);
+    void write(string)const;
     void set(System * sys){initialize(sys);};
     
     void analyze(Trajectory_List *,Trajectory_List *){cout<<"Error: Trajectory list targets with two lists not implemented for this analysis method.\n";}; //analysis method for when two trajectory lists are needed

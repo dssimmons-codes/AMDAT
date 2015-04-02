@@ -335,3 +335,63 @@ void Radial_Distribution_Function::bin(int timestep, float distance)
 
   output.close();
  }
+ 
+ 
+ 
+ void Radial_Distribution_Function::structure_factor(string filename, int n_ks)
+ {
+   int timeii, kii, binii;
+   float * klist;
+   float * structure_fac;
+   float min_k;
+   float mean_rho=0;
+   Coordinate boxsize;
+   float boxvolume, rshell;
+   
+   for(timeii=0;timeii<n_times;timeii++)
+   {
+     boxsize = system->size(system_time(timeii));
+     boxvolume=boxsize.show_x()*boxsize.show_y()*boxsize.show_z();
+     mean_rho+=float(n_atoms_j[timeii])/boxvolume/n_times;
+   }
+   
+   min_k = 2.*PI/max_distance;
+   
+   klist = new float [n_ks];
+   structure_fac = new float [n_ks];
+   
+   for(kii=0;kii<n_ks;kii++)
+   {
+     klist[kii]=min_k*(kii+1);
+     structure_fac[kii]=0;
+     for(binii=0;binii<n_bins;binii++)
+     {
+       rshell = (float(binii)+0.5)*bin_size;						//determine mean radius of bin
+       structure_fac[kii]+=(mean_rdf[binii]-1)*rshell*sin(klist[kii]*rshell)/klist[kii]*bin_size;
+     }
+     structure_fac[kii]=1.+4.*PI*mean_rho*structure_fac[kii];
+   }
+   
+   ofstream output (filename.c_str());
+
+   cout << "\nWriting structure factor to file " <<filename<<".";cout.flush();
+
+  /*Write first row - list of bin numbers*/
+  output << "Structure factor data calculated from g(r) created by AMDAT v." << VERSION << "\n";
+  for(kii=0;kii<n_ks;kii++)
+  {
+    output << klist[kii] << "\t";
+  }
+  output << "\n";
+  
+  for(kii=0;kii<n_ks;kii++)
+  {
+    output << structure_fac[kii]  <<  "\t";
+  }
+  
+  output << "\n";
+
+  output.close();
+   
+ }
+ 

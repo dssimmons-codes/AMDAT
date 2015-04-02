@@ -7,9 +7,6 @@
 #include <stdlib.h>
 #include <iostream>
 #include <math.h>
-#ifndef TACC
-#include <fftw3.h>
-#endif
 #include "version.h"
 
 using namespace std;
@@ -149,11 +146,9 @@ Space-Time_Correlation_Function Space-Time_Correlation_Function::operator+ (cons
 /*------------------------------------------------------------------------------*/
 
 
-#ifndef TACC
 /*calculates and writes to file the spherically symmetric spacial fourier transform of the correlation data*/
 float** Space-Time_Correlation_Function::spherical_fourier(string filename, int minbin)
 {
-  #ifdef MANUAL
   float ** normal;				//define variable to hold normalized correlation data
   normal = normalized();			//calculate normalized correlation data
   float ** fourier;				//define pointer to array of fourier transformed data
@@ -221,71 +216,9 @@ float** Space-Time_Correlation_Function::spherical_fourier(string filename, int 
   output.close();
   
   return fourier;
-  #endif
-  
-  float ** normal;
-  normal = normalized();
-  double * fft_in;
-  fftw_complex *fft_out;
-  fftw_plan plan;
-  float ** transform;
-  int binii;
-  int tii;
-  int transformsize = n_bins-minbin;
-  double r;
-  double rmax;
-  
-  rmax = min_value + (n_bins+0.5)*bin_size;
-  
-  transform = new float * [n_times];
-  fft_in = new double[transformsize];
 
-  fft_out = (fftw_complex*) fftw_malloc(sizeof(fftw_complex) * (floor(transformsize/2)+1));
   
-  plan = fftw_plan_dft_r2c_1d(transformsize, fft_in, fft_out,FFTW_MEASURE);
-  
-  for(tii=0;tii<n_times;tii++)
-  {
-    for(binii=0;binii<transformsize;binii++)
-    {
-      r = min_value+(binii+0.5)*bin_size;	//calculate mean radius of current shell
-      fft_in[binii] = double(r*normal[tii][binii+minbin]);
-    }
-    
-    fftw_execute(plan);
-    
-    transform[tii]=new float [int(transformsize/2)-1];
-    
-    for(binii=0;binii<(int(transformsize/2)-1);binii++)
-    {
-      transform[tii][binii] = -4*PI*fft_out[binii][1]/((binii+1)*(2*PI/rmax)); 
-    }
-  }
-  //fftw_destroy_plan(plan);
-  
-  ofstream output (filename.c_str());		//open correlation file
-   
-  output << "\t";
-  for(binii=0;binii<(int(transformsize/2)-1);binii++)
-  {
-    output << (binii+1)*(2*PI/rmax) << "\t";
-  }
-  output << "\n";
-  
-  for(tii=0;tii<n_times;tii++)
-  {
-    output << timetable[tii] << "\t";
-    for(binii=0;binii<(int(transformsize/2)-1);binii++)
-    {
-      output << transform[tii][binii] << "\t";		//write bins at this time to file
-    }
-  output << "\n";
-  }
-  output.close();
-  
-  return transform;
 }
-#endif
 
 
 /*------------------------------------------------------------------------------*/

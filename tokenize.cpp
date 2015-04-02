@@ -13,19 +13,27 @@ using namespace std;
 
 Tokenize::Tokenize(string line)
 {
+  flagcheck=false;
+  flagmarker="";
   (*this)(line);
 };
 
 Tokenize::Tokenize(const Tokenize & copy)
 {
   tokens = copy.tokens;
+  flags = copy.flags;
+  flagmarker=copy.flagmarker;
+  flagcheck=copy.flagcheck;
 }
 
 Tokenize Tokenize::operator=(const Tokenize & copy)
 {
   if(this!=&copy)
   {
-    tokens=copy.tokens;
+    tokens = copy.tokens;
+    flags = copy.flags;
+    flagmarker=copy.flagmarker;
+    flagcheck=copy.flagcheck;
     return *this;
   }
 }
@@ -33,7 +41,7 @@ Tokenize Tokenize::operator=(const Tokenize & copy)
 vector <string> Tokenize::operator()(string line)
 {
   tokens.clear();
-  tokens.resize(0);
+  flags.clear();
 
   
   size_t token_start = 0;
@@ -61,7 +69,8 @@ vector <string> Tokenize::operator()(string line)
     {
       if(token_start!=line.length())		//check if there is any token left to copy
       {
-        tokens.push_back(line.substr(token_start));	//if so, pull token from line
+        parse_token(line,token_start);
+	//tokens.push_back(line.substr(token_start));	//if so, pull token from line
       }
       break;
     }
@@ -69,7 +78,7 @@ vector <string> Tokenize::operator()(string line)
     else if(next_space == line.npos)		//if there are no more spaces, use tab as next delimiter
     {token_end = next_tab;}
     
-    else if(next_tab == line.npos)		//if there are no more tabls, use space as next delimiter
+    else if(next_tab == line.npos)		//if there are no more tabs, use space as next delimiter
     {token_end = next_space;}
     
     else
@@ -81,7 +90,8 @@ vector <string> Tokenize::operator()(string line)
     token_size = token_end-token_start;	//determine token size
     if(int(token_size) != 0)		//check if token size is zero (as in the case of consecutive tabs/spaces).  If not, use these delimiters to get the next token
     {
-      tokens.push_back(line.substr(token_start,token_size));	//pull token from line
+      parse_token(line,token_start,token_end);
+      //tokens.push_back(line.substr(token_start,token_size));	//pull token from line
     } 
     
     token_start = token_end + 1;				//move up read start
@@ -90,6 +100,44 @@ vector <string> Tokenize::operator()(string line)
   return tokens;
 }
 
+
+
+
+void Tokenize::parse_token(string line, size_t token_start)
+{
+  string firstchar = line.substr(token_start,1);
+  string flagid, flag;
+  
+  if(flagcheck&&firstchar==flagmarker)
+  {
+    flagid = line.substr(token_start+1,1);
+    flag = line.substr(token_start+2);
+    flags.insert(flagid,flag);
+  }
+  else
+  {
+    tokens.push_back(line.substr(token_start));
+  }
+}
+
+
+
+void Tokenize::parse_token(string line, size_t token_start, size_t token_end)
+{
+  string firstchar = line.substr(token_start,1);
+  string flagid, flag;
+  
+  if(flagcheck&&firstchar==flagmarker)
+  {
+    flagid = line.substr(token_start+1,1);
+    flag = line.substr(token_start+2,token_end-token_start-2);
+    flags.insert(flagid,flag);
+  }
+  else
+  {
+    tokens.push_back(line.substr(token_start,token_end-token_start));
+  }
+}
 
 
 
@@ -132,6 +180,21 @@ int Tokenize::operator()(string*tokenarray, int maxsize)
   }
   
   return tokens.size();
+}
+
+
+string Tokenize::operator[](string flagid)
+{
+  int location;
+  location = flags.find(flagid);
+  if(location==-1)
+  {
+    return "";
+  }
+  else
+  {
+    return flags.at(flagid);
+  }
 }
 
 

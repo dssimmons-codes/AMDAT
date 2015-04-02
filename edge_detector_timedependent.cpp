@@ -4,9 +4,10 @@
 
 
 #include <stdlib.h>
+#include <omp.h>
 #include "edge_detector_timedependent.h"
 #include "version.h"
-#include <omp.h>
+
 
 using namespace std;
 
@@ -54,7 +55,6 @@ Edge_Detector_Timedependent Edge_Detector_Timedependent::operator=(const Edge_De
   if(this!=&copy)
   {
     system=copy.system;
-    tokenize=copy.tokenize;
     trajectory_list=copy.trajectory_list;
     n_times=copy.n_times;
     unit_vector=copy.unit_vector;

@@ -9,8 +9,27 @@ polymer 50
 create_list all
 all
 
-rdf rdf_sym.dat symmetric 100 -1 0
+rdf rdf_sym.dat symmetric 100 -1 0 \srdf1
 list all
+
+structure_factor_from_rdf sfac.dat 100 rdf1 
+
+structure_factor structure.dat symmetric xyz 0 0
+list all
+
+exit
+
+msd msd.dat -smsd1
+list all
+
+write_analysis msd1 msd1.dat
+
+delete_analysis msd1
+
+write_analysis msd1 msd1.dat
+
+exit
+
 
 rdf rdf_asym.dat asymmetric 100 -1 0
 list all

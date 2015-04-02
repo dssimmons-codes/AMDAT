@@ -132,8 +132,8 @@ System::System(vector<string> file_in, bool ensemble)
   
   read_trajectory(trajectory_type,file_in,fileline);
   n_molecules=moleculecountholder;
-  cout << "\n\nAfter trajectory pointer " <<  n_molecules << "\n\n";cout.flush();
-  cout << "\n\nAfter trajectory " <<  n_molecules[0] << "\n\n";cout.flush();
+  //cout << "\n\nAfter trajectory pointer " <<  n_molecules << "\n\n";cout.flush();
+  //cout << "\n\nAfter trajectory " <<  n_molecules[0] << "\n\n";cout.flush();
   cout << "\nTrajectory data read successfully."<<endl;
 
   
@@ -265,8 +265,8 @@ void System::read_trajectory(string trajectory_type, vector<string> file_in, str
     }
   }
   
-  cout << "\n\nEnd of readtrajectory pointer " <<  n_molecules << "\n\n";cout.flush();
-  cout << "\n\nEnd of readtrajectory " <<  n_molecules[0] << "\n\n";cout.flush();
+  //cout << "\n\nEnd of readtrajectory pointer " <<  n_molecules << "\n\n";cout.flush();
+  //cout << "\n\nEnd of readtrajectory " <<  n_molecules[0] << "\n\n";cout.flush();
   
   moleculecountholder=n_molecules;
   

@@ -47,7 +47,8 @@ enum Analysis_Type
   space_time_correlation_function,
   stiffness_dist,
   strings,
-  edge_detector_timedependent
+  edge_detector_timedependent,
+  radial_distribution_function
 };
 
 
@@ -58,8 +59,6 @@ class Analysis
     
     Trajectory_List * trajectory_list;			//Array of trajectory_lists used by this analysis tool
     Trajectory_List * trajectory_list2;
-    
-    Tokenize tokenize;
     
     virtual void preprocess(){};
     virtual void postprocess(){};		//method to automatically run after loop for postprocessing

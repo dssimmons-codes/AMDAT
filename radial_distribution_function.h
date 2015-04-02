@@ -34,7 +34,7 @@ class Radial_Distribution_Function: public Analysis_Onetime
     
     void set(System*sys, int nbins, int timescheme, float maxdistance=0);
     
-    //Analysis_Type what_are_you(){Analysis_Type type = mean_square_displacement; return type;};		//virtual method to report the type of analysis
+    Analysis_Type what_are_you(){Analysis_Type type = radial_distribution_function; return type;};		//virtual method to report the type of analysis
     
     void preprocess(){trajectory_list2=trajectory_list;};
     void timekernel(int timeii){timekernel2(timeii);};
@@ -46,6 +46,7 @@ class Radial_Distribution_Function: public Analysis_Onetime
     
     void write(string);
     
+    void structure_factor(string,int);
     
     
     
