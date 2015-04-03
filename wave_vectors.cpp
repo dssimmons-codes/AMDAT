@@ -582,13 +582,14 @@ void Wave_Vectors::calculate(Coordinate boxsize, float deltak, float kmax, int m
   
   for(kx=deltakx;kx<kmax;kx+=deltakx)
   {
-    kymax = pow(kmax*kmax-kx*kx,0.5)
+    kymax = pow(kmax*kmax-kx*kx,0.5);
     for(ky=deltaky;ky<kymax;ky+=deltaky)
     {
-      kzmax = pow(kmax*kmax-kz*kz,0.5)
+      kzmax = pow(kmax*kmax-kz*kz,0.5);
       for(kz=deltakyz;kz<kzmax;kz+=deltakz)
       {
-	k = pow(kx*kx+ky*ky+kz*kz,0.5)
+	k = pow(kx*kx+ky*ky+kz*kz,0.5);
+	
       }
     }
   }

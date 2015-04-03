@@ -48,6 +48,7 @@ class Wave_Vectors
     Wave_Vectors(System* sys);
     Wave_Vectors(System * sys, int shellcount=300);
     Wave_Vectors(System* sys, string plane, float max_length_scale=0);	//used for structure factor calculation
+   
     
     Wave_Vectors operator = (const Wave_Vectors &); //assignment operator
     
