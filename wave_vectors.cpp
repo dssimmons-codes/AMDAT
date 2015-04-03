@@ -25,16 +25,17 @@ Wave_Vectors::Wave_Vectors()
   plane = "";
   n_atoms_looped = 0;
   n_wavenumbers=99;
-  n_wavevectors=new int[n_wavenumbers];
-  approx_wavenumber=new float [n_wavenumbers];
-  binsize=new int [n_wavenumbers];
-  wavevector = new Coordinate*[n_wavenumbers];
+  //n_wavevectors=new int[n_wavenumbers];
+  //approx_wavenumber=new float [n_wavenumbers];
+  //binsize=new int [n_wavenumbers];
+  //wavevector = new Coordinate*[n_wavenumbers];
+  wavevector.resize(n_wavenumbers);
   for(int wavenumberii=0;wavenumberii<n_wavenumbers;wavenumberii++)
   {
-    n_wavevectors[wavenumberii]=0;
-    binsize[wavenumberii]=0;
-    approx_wavenumber[wavenumberii]=0;
-    wavevector[wavenumberii] = new Coordinate[binsize[wavenumberii]];
+    //n_wavevectors[wavenumberii]=0;
+    //binsize[wavenumberii]=0;
+    //approx_wavenumber[wavenumberii]=0;
+    //wavevector[wavenumberii] = new Coordinate[binsize[wavenumberii]];
     //wavevector[wavenumberii][n_wavevectors[wavenumberii]] = 0;
   }
 }
@@ -54,18 +55,19 @@ Wave_Vectors::Wave_Vectors(System * sys)
   delta_wavenumber = wavegrid_spacing/2.0;	//define the thickness of the wavenumber bins to be half a gridspacing
 
   //allocate memory
-  n_wavevectors = new int [n_wavenumbers];
-  wavevector = new Coordinate * [n_wavenumbers];
-  binsize = new int [n_wavenumbers];
-  approx_wavenumber = new float [n_wavenumbers];
+  //n_wavevectors = new int [n_wavenumbers];
+  //wavevector = new Coordinate * [n_wavenumbers];
+  wavevector.resize(n_wavenumbers);
+  //binsize = new int [n_wavenumbers];
+  //approx_wavenumber = new float [n_wavenumbers];
   for(wavenumberii=0;wavenumberii<n_wavenumbers;wavenumberii++)
   {
-    n_wavevectors[wavenumberii]=0;  //zero out the number of wave vectors per shell
+    //n_wavevectors[wavenumberii]=0;  //zero out the number of wave vectors per shell
     //vectorcount_estimate = (4.0/3.0)*PI*pow(delta_wavenumber/wavegrid_spacing,3.0)*(3*wavenumberii*wavenumberii+3*wavenumberii+1);
     //binsize[wavenumberii]=int(vectorcount_estimate*1.5);	//estimate number of vectors per shell
     //wavevector[wavenumberii] = new Coordinate [binsize[wavenumberii]];
-    binsize[wavenumberii]=0;
-    approx_wavenumber[wavenumberii]=wavegrid_spacing+delta_wavenumber*wavenumberii;
+    //binsize[wavenumberii]=0;
+    approx_wavenumber.push_back(wavegrid_spacing+delta_wavenumber*wavenumberii);
   }
   read_vectors();
 }
@@ -148,18 +150,19 @@ Wave_Vectors::Wave_Vectors(System * sys, string pl, float max_length_scale)
   delta_wavenumber = wavegrid_spacing/2.0;	//define the thickness of the wavenumber bins to be half a gridspacing
 
   //allocate memory
-  n_wavevectors = new int [n_wavenumbers];
-  wavevector = new Coordinate * [n_wavenumbers];
-  binsize = new int [n_wavenumbers];
-  approx_wavenumber = new float [n_wavenumbers];
+  //n_wavevectors = new int [n_wavenumbers];
+  //wavevector = new Coordinate * [n_wavenumbers];
+  wavevector.resize(n_wavenumbers);
+  //binsize = new int [n_wavenumbers];
+  //approx_wavenumber = new float [n_wavenumbers];
   for(wavenumberii=0;wavenumberii<n_wavenumbers;wavenumberii++)
   {
-    n_wavevectors[wavenumberii]=0;  //zero out the number of wave vectors per shell
+    //n_wavevectors[wavenumberii]=0;  //zero out the number of wave vectors per shell
     //vectorcount_estimate = (4.0/3.0)*PI*pow(delta_wavenumber/wavegrid_spacing,3.0)*(3*wavenumberii*wavenumberii+3*wavenumberii+1);
     //binsize[wavenumberii]=int(vectorcount_estimate*1.5);	//estimate number of vectors per shell
     //wavevector[wavenumberii] = new Coordinate [binsize[wavenumberii]];
-    binsize[wavenumberii]=0;
-    approx_wavenumber[wavenumberii]=wavegrid_spacing+delta_wavenumber*wavenumberii;
+    //binsize[wavenumberii]=0;
+    approx_wavenumber.push_back(wavegrid_spacing+delta_wavenumber*wavenumberii);
   }
   if (plane == "xyz")
   {
@@ -178,14 +181,14 @@ Wave_Vectors::Wave_Vectors(System * sys, string pl, float max_length_scale)
 Wave_Vectors::~Wave_Vectors()
 {
 //   cout<<"Destructing Wave_Vectors\n";cout.flush();
-  for(int wavenumberii=0;wavenumberii<n_wavenumbers;wavenumberii++)
-  {
-    delete [] wavevector[wavenumberii];
-  }
-  delete [] wavevector;
-  delete [] binsize;
-  delete [] n_wavevectors;
-  delete [] approx_wavenumber;
+//  for(int wavenumberii=0;wavenumberii<n_wavenumbers;wavenumberii++)
+//  {
+//    delete [] wavevector[wavenumberii];
+//  }
+//  delete [] wavevector;
+//  delete [] binsize;
+//  delete [] n_wavevectors;
+//  delete [] approx_wavenumber;
 }
 
 Wave_Vectors::Wave_Vectors(const Wave_Vectors & copy)
@@ -198,19 +201,21 @@ Wave_Vectors::Wave_Vectors(const Wave_Vectors & copy)
   n_atoms_looped = copy.n_atoms_looped;
   n_wavenumbers = copy.n_wavenumbers;
 
-  n_wavevectors = new int [n_wavenumbers];
-  approx_wavenumber = new float [n_wavenumbers];
-  binsize = new int [n_wavenumbers];
-  wavevector = new Coordinate*[n_wavenumbers];
-
-  for(int wavenumberii=0;wavenumberii<n_wavenumbers;wavenumberii++)
-  {
-    n_wavevectors[wavenumberii]=copy.n_wavevectors[wavenumberii];
-    binsize[wavenumberii]=copy.binsize[wavenumberii];
-    approx_wavenumber[wavenumberii]=copy.approx_wavenumber[wavenumberii];
-    wavevector[wavenumberii]= new Coordinate[binsize[wavenumberii]];
-    wavevector[wavenumberii][n_wavevectors[wavenumberii]]=copy.wavevector[wavenumberii][n_wavevectors[wavenumberii]];
-  }
+//  n_wavevectors = new int [n_wavenumbers];
+//  approx_wavenumber = new float [n_wavenumbers];
+//  binsize = new int [n_wavenumbers];
+//  wavevector = new Coordinate*[n_wavenumbers];
+  wavevector.resize(n_wavenumbers);
+  approx_wavenumber=copy.approx_wavenumber;
+  wavevector=copy.wavevector;
+//  for(int wavenumberii=0;wavenumberii<n_wavenumbers;wavenumberii++)
+//  {
+//    n_wavevectors[wavenumberii]=copy.n_wavevectors[wavenumberii];
+//    binsize[wavenumberii]=copy.binsize[wavenumberii];
+//    approx_wavenumber[wavenumberii]=copy.approx_wavenumber[wavenumberii];
+//    wavevector[wavenumberii]= new Coordinate[binsize[wavenumberii]];
+//    wavevector[wavenumberii][n_wavevectors[wavenumberii]]=copy.wavevector[wavenumberii][n_wavevectors[wavenumberii]];
+//  }
 }
 
 Wave_Vectors Wave_Vectors::operator = (const Wave_Vectors & copy)
@@ -224,29 +229,32 @@ Wave_Vectors Wave_Vectors::operator = (const Wave_Vectors & copy)
     plane = copy.plane;
     n_atoms_looped = copy.n_atoms_looped;
     n_wavenumbers = copy.n_wavenumbers;
+    
+    approx_wavenumber=copy.approx_wavenumber;
+    wavevector=copy.wavevector;
 
-    for(int wavenumberii=0;wavenumberii<n_wavenumbers;wavenumberii++)
-    {
-      delete [] wavevector[wavenumberii];
-    }
-    delete [] wavevector;
-    delete [] binsize;
-    delete [] n_wavevectors;
-    delete [] approx_wavenumber;
+//    for(int wavenumberii=0;wavenumberii<n_wavenumbers;wavenumberii++)
+//    {
+//      delete [] wavevector[wavenumberii];
+//    }
+//    delete [] wavevector;
+//    delete [] binsize;
+//    delete [] n_wavevectors;
+//    delete [] approx_wavenumber;
 
-    n_wavevectors = new int [n_wavenumbers];
-    approx_wavenumber = new float [n_wavenumbers];
-    binsize = new int [n_wavenumbers];
-    wavevector = new Coordinate*[n_wavenumbers];
+//    n_wavevectors = new int [n_wavenumbers];
+//    approx_wavenumber = new float [n_wavenumbers];
+//    binsize = new int [n_wavenumbers];
+//    wavevector = new Coordinate*[n_wavenumbers];
 
-    for(int wavenumberii=0;wavenumberii<n_wavenumbers;wavenumberii++)
-    {
-      n_wavevectors[wavenumberii]=copy.n_wavevectors[wavenumberii];
-      binsize[wavenumberii]=copy.binsize[wavenumberii];
-      approx_wavenumber[wavenumberii]=copy.approx_wavenumber[wavenumberii];
-      wavevector[wavenumberii]= new Coordinate[binsize[wavenumberii]];
-      wavevector[wavenumberii][n_wavevectors[wavenumberii]]=copy.wavevector[wavenumberii][n_wavevectors[wavenumberii]];
-    }
+//    for(int wavenumberii=0;wavenumberii<n_wavenumbers;wavenumberii++)
+//    {
+//      n_wavevectors[wavenumberii]=copy.n_wavevectors[wavenumberii];
+//      binsize[wavenumberii]=copy.binsize[wavenumberii];
+//      approx_wavenumber[wavenumberii]=copy.approx_wavenumber[wavenumberii];
+//      wavevector[wavenumberii]= new Coordinate[binsize[wavenumberii]];
+//      wavevector[wavenumberii][n_wavevectors[wavenumberii]]=copy.wavevector[wavenumberii][n_wavevectors[wavenumberii]];
+//    }
   }
   return *this;
 }
@@ -260,6 +268,7 @@ void Wave_Vectors::read_vectors_2d(string plane)
   int wavenumberii;
   ifstream vectorfile;
   float tempx, tempy, tempz;
+  Coordinate tempvec;
 
   cout << "\n";
   for(wavenumberii=0;wavenumberii<n_wavenumbers;wavenumberii++)
@@ -278,10 +287,10 @@ void Wave_Vectors::read_vectors_2d(string plane)
       vectorfile >> tempx;
       if(vectorfile.eof()){tempz=1; break;}  //check whether end of file has been reached.  This protects against blank lines at the end of the file tricking the loop check for end of file after the last vector.
       vectorfile >> tempy >> tempz;	//temporarily copy coordinates of vector from file
-      binsize[wavenumberii]++;
+      //binsize[wavenumberii]++;
     }
-    binsize[wavenumberii]++;
-    wavevector[wavenumberii] = new Coordinate [binsize[wavenumberii]];
+    //binsize[wavenumberii]++;
+    //wavevector[wavenumberii] = new Coordinate [binsize[wavenumberii]];
 
     vectorfile.close();
     vectorfile.open(filename.c_str());		//open file
@@ -289,28 +298,37 @@ void Wave_Vectors::read_vectors_2d(string plane)
 
     while(!vectorfile.eof())			//loop until end of file
     {
-      if(n_wavevectors[wavenumberii]>=binsize[wavenumberii])
-      {cout<<"Error: vector memory allocation error."; exit(1);}
+      //if(n_wavevectors[wavenumberii]>=binsize[wavenumberii])
+      //{cout<<"Error: vector memory allocation error."; exit(1);}
       vectorfile >> tempx;
       if(vectorfile.eof()){break;}  //check whether end of file has been reached.  This protects against blank lines at the end of the file tricking the loop check for end of file after the last vector.
       vectorfile >> tempy >> tempz;	//temporarily copy coordinates of vector from file
 
         if (plane=="xy")
         {
-          wavevector[wavenumberii][n_wavevectors[wavenumberii]].set(tempx,tempy,tempz);	//store vector in array
+//          wavevector[wavenumberii][n_wavevectors[wavenumberii]].set(tempx,tempy,tempz);	//store vector in array
+          tempvec.set(tempx,tempy,tempz);
+	  tempvec*= wavegrid_spacing;
+          wavevector[wavenumberii].push_back(tempvec);	//store vector in array
         }
         if (plane=="xz")
         {
-          wavevector[wavenumberii][n_wavevectors[wavenumberii]].set(tempx,tempz,tempy);	//store vector in array
+//          wavevector[wavenumberii][n_wavevectors[wavenumberii]].set(tempx,tempz,tempy);	//store vector in array
+	  tempvec.set(tempx,tempz,tempy);
+	  tempvec*= wavegrid_spacing;
+	  wavevector[wavenumberii].push_back(tempvec);	//store vector in array
         }
         if (plane=="yz")
         {
-          wavevector[wavenumberii][n_wavevectors[wavenumberii]].set(tempz,tempx,tempy);	//store vector in array
+//          wavevector[wavenumberii][n_wavevectors[wavenumberii]].set(tempz,tempx,tempy);	//store vector in array
+	  tempvec.set(tempz,tempx,tempy);
+	  tempvec*= wavegrid_spacing;
+	  wavevector[wavenumberii].push_back(tempvec);	//store vector in array
         }
 
-        wavevector[wavenumberii][n_wavevectors[wavenumberii]] *= wavegrid_spacing;		//scale vector appropriately
+//        wavevector[wavenumberii][n_wavevectors[wavenumberii]] *= wavegrid_spacing;		//scale vector appropriately
 //      if(wavenumberii==1){cout << n_wavevectors[wavenumberii] << "\t" << wavevector[wavenumberii][n_wavevectors[wavenumberii]].show_x() << "\t" << wavevector[wavenumberii][n_wavevectors[wavenumberii]].show_y() << "\t" << wavevector[wavenumberii][n_wavevectors[wavenumberii]].show_z() << "\n";}
-        n_wavevectors[wavenumberii]++;		//increment number of wavevectors stored.
+ //       n_wavevectors[wavenumberii]++;		//increment number of wavevectors stored.
 
     }
       vectorfile.close();
@@ -332,7 +350,9 @@ void Wave_Vectors::read_vectors_1d(string plane)
   int wavenumberii;
   ifstream vectorfile;
   float tempx, tempy, tempz;
-
+  Coordinate tempvec;
+  
+  
   cout << "\n";
   for(wavenumberii=0;wavenumberii<n_wavenumbers;wavenumberii++)
   {
@@ -350,10 +370,10 @@ void Wave_Vectors::read_vectors_1d(string plane)
       vectorfile >> tempx;
       if(vectorfile.eof()){tempz=1; break;}  //check whether end of file has been reached.  This protects against blank lines at the end of the file tricking the loop check for end of file after the last vector.
       vectorfile >> tempy >> tempz;	//temporarily copy coordinates of vector from file
-      binsize[wavenumberii]++;
+      //binsize[wavenumberii]++;
     }
-    binsize[wavenumberii]++;
-    wavevector[wavenumberii] = new Coordinate [binsize[wavenumberii]];
+    //binsize[wavenumberii]++;
+    //wavevector[wavenumberii] = new Coordinate [binsize[wavenumberii]];
 
     vectorfile.close();
     vectorfile.open(filename.c_str());		//open file
@@ -361,28 +381,37 @@ void Wave_Vectors::read_vectors_1d(string plane)
 
     while(!vectorfile.eof())			//loop until end of file
     {
-      if(n_wavevectors[wavenumberii]>=binsize[wavenumberii])
-      {cout<<"Error: vector memory allocation error."; exit(1);}
+      //if(n_wavevectors[wavenumberii]>=binsize[wavenumberii])
+      //{cout<<"Error: vector memory allocation error."; exit(1);}
       vectorfile >> tempx;
       if(vectorfile.eof()){break;}  //check whether end of file has been reached.  This protects against blank lines at the end of the file tricking the loop check for end of file after the last vector.
       vectorfile >> tempy >> tempz;	//temporarily copy coordinates of vector from file
 
         if (plane=="x")
         {
-          wavevector[wavenumberii][n_wavevectors[wavenumberii]].set(tempx,0,0);	//store vector in array
+          //wavevector[wavenumberii][n_wavevectors[wavenumberii]].set(tempx,0,0);	//store vector in array
+	  tempvec.set(tempx,0,0);
+	  tempvec*= wavegrid_spacing;
+	  wavevector[wavenumberii].push_back(tempvec);	//store vector in array
         }
         if (plane=="y")
         {
-          wavevector[wavenumberii][n_wavevectors[wavenumberii]].set(0,tempx,0);	//store vector in array
+//          wavevector[wavenumberii][n_wavevectors[wavenumberii]].set(0,tempx,0);	//store vector in array
+	  tempvec.set(0,tempx,0);
+	  tempvec*= wavegrid_spacing;
+	  wavevector[wavenumberii].push_back(tempvec);	//store vector in array
         }
         if (plane=="z")
         {
-          wavevector[wavenumberii][n_wavevectors[wavenumberii]].set(0,0,tempx);	//store vector in array
+	  tempvec.set(0,0,tempx);
+	  tempvec*= wavegrid_spacing;
+	  wavevector[wavenumberii].push_back(tempvec);	//store vector in array
+          //wavevector[wavenumberii][n_wavevectors[wavenumberii]].set(0,0,tempx);	//store vector in array
         }
 
-        wavevector[wavenumberii][n_wavevectors[wavenumberii]] *= wavegrid_spacing;		//scale vector appropriately
+//        wavevector[wavenumberii][n_wavevectors[wavenumberii]] *= wavegrid_spacing;		//scale vector appropriately
 //      if(wavenumberii==1){cout << n_wavevectors[wavenumberii] << "\t" << wavevector[wavenumberii][n_wavevectors[wavenumberii]].show_x() << "\t" << wavevector[wavenumberii][n_wavevectors[wavenumberii]].show_y() << "\t" << wavevector[wavenumberii][n_wavevectors[wavenumberii]].show_z() << "\n";}
-        n_wavevectors[wavenumberii]++;		//increment number of wavevectors stored.
+//        n_wavevectors[wavenumberii]++;		//increment number of wavevectors stored.
 
     }
       vectorfile.close();
@@ -403,6 +432,7 @@ void Wave_Vectors::read_vectors()
   int wavenumberii;
   ifstream vectorfile;
   float tempx, tempy, tempz;
+  Coordinate tempvec;
 
   cout << "\n";
   for(wavenumberii=0;wavenumberii<n_wavenumbers;wavenumberii++)
@@ -419,9 +449,9 @@ void Wave_Vectors::read_vectors()
     while(!vectorfile.eof())			//loop until end of file
     {
       vectorfile >> tempx >> tempy >> tempz;
-      binsize[wavenumberii]++;
+      //binsize[wavenumberii]++;
     }
-    wavevector[wavenumberii] = new Coordinate [binsize[wavenumberii]];
+    //wavevector[wavenumberii] = new Coordinate [binsize[wavenumberii]];
 
     vectorfile.close();
     vectorfile.open(filename.c_str());		//open file
@@ -429,16 +459,20 @@ void Wave_Vectors::read_vectors()
 
     while(!vectorfile.eof())			//loop until end of file
     {
-      if(n_wavevectors[wavenumberii]>=binsize[wavenumberii])
-      {cout<<"Error: vector memory allocation error."; exit(1);}
+      //if(n_wavevectors[wavenumberii]>=binsize[wavenumberii])
+      //{cout<<"Error: vector memory allocation error."; exit(1);}
       vectorfile >> tempx;
       if(vectorfile.eof()){break;}  //check whether end of file has been reached.  This protects against blank lines at the end of the file tricking the loop check for end of file after the last vector.
       vectorfile >> tempy >> tempz;	//temporarily copy coordinates of vector from file
+      
+      tempvec.set(tempx,tempy,tempz);
+      tempvec*= wavegrid_spacing;
+      wavevector[wavenumberii].push_back(tempvec);	//store vector in array
 
-      wavevector[wavenumberii][n_wavevectors[wavenumberii]].set(tempx,tempy,tempz);	//store vector in array
-      wavevector[wavenumberii][n_wavevectors[wavenumberii]] *= wavegrid_spacing;		//scale vector appropriately
+//      wavevector[wavenumberii][n_wavevectors[wavenumberii]].set(tempx,tempy,tempz);	//store vector in array
+//      wavevector[wavenumberii][n_wavevectors[wavenumberii]] *= wavegrid_spacing;		//scale vector appropriately
 //      if(wavenumberii==1){cout << n_wavevectors[wavenumberii] << "\t" << wavevector[wavenumberii][n_wavevectors[wavenumberii]].show_x() << "\t" << wavevector[wavenumberii][n_wavevectors[wavenumberii]].show_y() << "\t" << wavevector[wavenumberii][n_wavevectors[wavenumberii]].show_z() << "\n";}
-      n_wavevectors[wavenumberii]++;		//increment number of wavevectors stored.
+//      n_wavevectors[wavenumberii]++;		//increment number of wavevectors stored.
     }
         vectorfile.close();
   }
@@ -462,16 +496,16 @@ void Wave_Vectors::calculate(System * sys, int shellcount)
   delta_wavenumber = wavegrid_spacing/2.0;	//for now, just define the thickness of the wavenumber bins to be half a gridspacing
 
   //allocate memory
-  n_wavevectors = new int [n_wavenumbers];
-  wavevector = new Coordinate * [n_wavenumbers];
-  binsize = new int [n_wavenumbers];
-  for(wavenumberii=0;wavenumberii<n_wavenumbers;wavenumberii++)
-  {
-    n_wavevectors[wavenumberii]=0;  //zero out the number of wave vectors per shell
-    vectorcount_estimate = (4.0/3.0)*PI*pow(delta_wavenumber/wavegrid_spacing,3.0)*(3*wavenumberii*wavenumberii+3*wavenumberii+1);
-    wavevector[wavenumberii] = new Coordinate [int(vectorcount_estimate*2)];
-    binsize[wavenumberii]=vectorcount_estimate*2;
-  }
+//  n_wavevectors = new int [n_wavenumbers];
+//  wavevector = new Coordinate * [n_wavenumbers];
+//  binsize = new int [n_wavenumbers];
+//  for(wavenumberii=0;wavenumberii<n_wavenumbers;wavenumberii++)
+//  {
+//    n_wavevectors[wavenumberii]=0;  //zero out the number of wave vectors per shell
+//    vectorcount_estimate = (4.0/3.0)*PI*pow(delta_wavenumber/wavegrid_spacing,3.0)*(3*wavenumberii*wavenumberii+3*waveumberii+1);
+//    wavevector[wavenumberii] = new Coordinate [int(vectorcount_estimate*2)];
+//    binsize[wavenumberii]=vectorcount_estimate*2;
+//  }
 
 
   //loop over independent q vectors in grid, assigning each to the appropriate shell as determined for each geometry in bin().
@@ -486,3 +520,82 @@ void Wave_Vectors::calculate(System * sys, int shellcount)
     }
   }
 }
+
+
+float Wave_Vectors::show_mean_wavenumber(int index)const
+{
+  int vectorii;
+  float mean_wavenumber = 0;
+  for(vectorii=0;vectorii<wavevector[index].size();vectorii++)
+  {
+    mean_wavenumber+=wavevector[index][vectorii].length();
+  }
+  mean_wavenumber/=wavevector[index].size();
+  return mean_wavenumber;
+}
+
+
+
+float Wave_Vectors::show_stdev_wavenumber(int index)const
+{
+  int vectorii;
+  float variance=0;
+  float stdev;
+  float mean_wavenumber = show_mean_wavenumber(index);
+  for(vectorii=0;vectorii<wavevector[index].size();vectorii++)
+  {
+    variance+=pow((wavevector[index][vectorii].length()-mean_wavenumber),2.0);
+  }
+  variance/=wavevector[index].size();
+  stdev=pow(variance,0.5);
+  return stdev;
+}
+
+Coordinate Wave_Vectors::show_mean_wavevector(int index)const
+{
+  int vectorii;
+  Coordinate mean_wavevector(0,0,0);
+  for(vectorii=0;vectorii<wavevector[index].size();vectorii++)
+  {
+    mean_wavevector+=wavevector[index][vectorii];
+  }
+  mean_wavevector/=wavevector[index].size();
+  return mean_wavevector;
+}
+
+
+
+
+#ifdef NEVER
+void Wave_Vectors::calculate(Coordinate boxsize, float deltak, float kmax, int maxvectors)
+{
+  float kx, ky, kz, k;
+  float deltakx, deltaky, deltakz;
+  int n_kx, n_ky, n_kz
+  Coordinate boxsize;
+  float kymax, kzmax;
+  system=sys;
+  
+  deltakx=2*PI/boxsize.show_x();
+  deltaky=2*PI/boxsize.show_y();
+  deltakz=2*PI/boxsize.show_z();
+  
+  for(kx=deltakx;kx<kmax;kx+=deltakx)
+  {
+    kymax = pow(kmax*kmax-kx*kx,0.5)
+    for(ky=deltaky;ky<kymax;ky+=deltaky)
+    {
+      kzmax = pow(kmax*kmax-kz*kz,0.5)
+      for(kz=deltakyz;kz<kzmax;kz+=deltakz)
+      {
+	k = pow(kx*kx+ky*ky+kz*kz,0.5)
+      }
+    }
+  }
+  
+  
+
+  
+}
+
+#endif

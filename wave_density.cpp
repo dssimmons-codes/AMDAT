@@ -2,10 +2,12 @@
 /*Written by David S. Simmons*/
 
 #include <math.h>
-#include "wave_density.h"
+#include <vector>
 #include <stdio.h>
 #include <iostream>
 #include <stdlib.h>
+
+#include "wave_density.h"
 #include "version.h"
 
 using namespace std;
@@ -335,7 +337,7 @@ void Wave_Density::analyze(Trajectory_List * t_list)
 void Wave_Density::listkernel(Trajectory* current_trajectory)
 {
   int wavenumberii, vectorii;
-  Coordinate const * vectorlist;
+  vector<Coordinate>vectorlist;
   Coordinate coordinate;
   int vectorcount;
   float k_dot_r;

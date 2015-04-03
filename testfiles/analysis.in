@@ -1,6 +1,6 @@
 system
 xyz_log
-/home/david/AMDATsync/trunk/testfiles/traj.xyz /home/david/AMDATsync/trunk/testfiles/log.lammps
+/home/dss/amdatsvn/trunk/testfiles/traj.xyz /home/dss/amdatsvn/trunk/testfiles/log.lammps
 exponential 1 77 1.2 0 0 .01
 polymer 50
 1
@@ -9,13 +9,17 @@ polymer 50
 create_list all
 all
 
+structure_factor structure.dat symmetric xyz 0 0
+list all
+
+exit
+
 rdf rdf_sym.dat symmetric 100 -1 0 \srdf1
 list all
 
 structure_factor_from_rdf sfac.dat 100 rdf1 
 
-structure_factor structure.dat symmetric xyz 0 0
-list all
+
 
 exit
 

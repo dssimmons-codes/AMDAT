@@ -23,13 +23,18 @@ class Wave_Vectors
     int n_wavenumbers;
    
     
-    int * n_wavevectors;	//number of wavevectors for each wavenumber
-    float * approx_wavenumber;
-    int * binsize;		//stores allocation size of each 'bin' of wavevectors
-    Coordinate ** wavevector;	//list of wavevectors by wavenumber bin
+    //int * n_wavevectors;	//number of wavevectors for each wavenumber
+    //float * approx_wavenumber;
+    //int * binsize;		//stores allocation size of each 'bin' of wavevectors
+    //Coordinate ** wavevector;	//list of wavevectors by wavenumber bin
+    
+    vector<float> approx_wavenumber;
+    vector<vector<Coordinate>> wavevector; 
 
 
     void calculate (System * sys, int shellcount);
+    //void calculate (Coordinate boxsize, float deltak, float kmax, int maxvectors);
+
     virtual void bin (int, int, int){};
     void read_vectors();
     void read_vectors_2d(string);
@@ -46,11 +51,17 @@ class Wave_Vectors
     
     Wave_Vectors operator = (const Wave_Vectors &); //assignment operator
     
-    const Coordinate * vectorlist(int index)const{return wavevector[index];};
-    int vectorcount(int index)const{return n_wavevectors[index];};
+    
+    
+    vector<Coordinate> vectorlist(int index)const{return wavevector[index];};
+    int vectorcount(int index)const{return wavevector[index].size();};
     float show_delta_wavenumber()const{return delta_wavenumber;};
-    int show_n_wavenumbers()const{return n_wavenumbers;};
+    int show_n_wavenumbers()const{return wavevector.size();};
     float show_approx_wavenumber(int index)const{return approx_wavenumber[index];}
+    float show_mean_wavenumber(int index)const;		//return average wavenumber of vectors corresponding to wavenumber
+    float show_stdev_wavenumber(int index)const;
+    Coordinate show_mean_wavevector(int index)const;
+    
 };
 
 }

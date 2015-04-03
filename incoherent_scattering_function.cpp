@@ -2,10 +2,12 @@
 
 #include <math.h>
 #include <stdlib.h>
+#include <vector>
+#include <omp.h>
+
 #include "incoherent_scattering_function.h"
 #include "system.h"
 #include "version.h"
-#include <omp.h>
 
 using namespace std;
 
@@ -240,7 +242,7 @@ void Incoherent_Scattering_Function::listkernel(Trajectory* current_trajectory)
 {
 	int wavenumberii;
 	int wavevectorii;
-	Coordinate const * vectorlist;
+	vector<Coordinate>vectorlist;
 	int vectorcount;
 	Coordinate coordinate1;
 	Coordinate coordinate2;
@@ -269,7 +271,7 @@ void Incoherent_Scattering_Function::listkernel(Trajectory* current_trajectory, 
 {
 	int wavenumberii;
 	int wavevectorii;
-	Coordinate const * vectorlist;
+	vector<Coordinate>vectorlist;
 	int vectorcount;
 	Coordinate coordinate1;
 	Coordinate coordinate2;

@@ -291,7 +291,7 @@ void Structure_Factor::analyze_wave_density(Trajectory_List * t_list)
 void Structure_Factor::listkernel(Trajectory* current_trajectory)
 {
   int wavenumberii, vectorii;
-  Coordinate const * vectorlist;
+  vector<Coordinate>vectorlist;
   Coordinate coordinate;
   int vectorcount;
   float k_dot_r;
@@ -321,6 +321,7 @@ void Structure_Factor::listkernel(Trajectory* current_trajectory)
 void Structure_Factor::write(string filename)const
 {
   int binii;
+  Coordinate mean_wavevector;
 
   ofstream output (filename.c_str());
 
@@ -328,9 +329,11 @@ void Structure_Factor::write(string filename)const
 
   /*Write first row - list of bin numbers*/
   output << "Structure factor data created by AMDAT v." << VERSION << "\n";
+  output << "Nominal_q\tMean_q\tStddev_q\tMean_qx\tMean_qy\tMean_qz\tS(q)\n";
   for(binii=0;binii<n_wavenumbers;binii++)
   {
-    output << wavevectors->show_approx_wavenumber(binii) << "\t" << structure_factor[binii]  <<  endl;
+    mean_wavevector = wavevectors->show_mean_wavevector(binii);
+    output << wavevectors->show_approx_wavenumber(binii) << "\t" << wavevectors->show_mean_wavenumber(binii) << "\t" << wavevectors->show_stdev_wavenumber(binii) << "\t"<< mean_wavevector.show_x() << "\t" << mean_wavevector.show_y() << "\t" << mean_wavevector.show_z() << "\t" << structure_factor[binii]  <<  endl;
   }
   output << "\n";
 
