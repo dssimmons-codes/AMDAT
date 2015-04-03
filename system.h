@@ -14,6 +14,7 @@
 #include "trajectory_set.h"
 #include "trajectory.h"
 #include "analysis.h"
+#include "multibody_analysis.h"
 #include "tokenize.h"
 #include "vector_map.h"
 namespace std {
@@ -192,6 +193,10 @@ class System
     void displacement_list(Analysis*, bool fullblock=1)const;
     void displacement_list(Analysis*, int timegap, bool fullblock=1)const;
     void displacement_list(Analysis*, int timegap, int firstblock, int lastblock, bool fullblock=0)const;
+    
+    void displacement_list(Multibody_Analysis*, bool fullblock=1)const;
+    void displacement_list(Multibody_Analysis*, int timegap, bool fullblock=1)const;
+    void displacement_list(Multibody_Analysis*, int timegap, int firstblock, int lastblock, bool fullblock=0)const;
 
     /*Methods to perform analyses on subsets of atoms in system*/
     void loop_species_moleculecom(Analysis* analysis, int species_index)const;

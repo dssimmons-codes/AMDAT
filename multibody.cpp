@@ -46,6 +46,15 @@ Multibody::~Multibody()
 }
 
 
+
+/*method to return pointer to specified trajectory in multibody*/
+Trajectory * Multibody::operator()(int bodyindex)
+{
+  return trajectories[bodyindex];
+}
+
+
+
 /*equality operator*/
 Multibody Multibody::operator=(const Multibody & copy)
 {

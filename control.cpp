@@ -52,6 +52,7 @@
 #include "mean_velocity_unsteady.h"
 #include "mean_unsteady_displacement.h"
 #include "radial_distribution_function.h"
+#include "bond_autocorrelation_function.h"
 
 using namespace std;
 
@@ -331,6 +332,8 @@ int Control::execute_commands(int iIndex, int fIndex)
     {trajectory_list_decay();}
     else if (command == "gyration_radius")
     {gyration_radius();}
+    else if (command == "baf")
+    {baf();}
     else if (command == "find_edge")
     {find_edge();}
     else if (command == "unsteady_velocity")
@@ -3577,5 +3580,29 @@ void Control::gyration_radius()
   finish = time(NULL);
   cout << "\nCalculated gyration radius in " << finish-start<<" seconds."<<endl;
   gyrrad.write(filename);
+
+}
+
+
+void Control::baf()
+{
+  string filename, multibody_list_name;
+  Multibody_List * multibodylist;
+
+  int expected=3;
+  argcheck(expected);
+
+  filename = args[1];
+  multibody_list_name=args[2];
+
+  multibodylist = find_multibody_list(multibody_list_name);
+
+  Bond_Autocorrelation_Function bafun(analyte);
+  cout << "\nCalculating gyration radius.\n";cout.flush();
+  start = time(NULL);
+  bafun.analyze(multibodylist); // pass run_analysis template the analysis type 'Mean_Square_Displacement'
+  finish = time(NULL);
+  cout << "\nCalculated bond autocorrelation function in " << finish-start<<" seconds."<<endl;
+  bafun.write(filename);
 
 }

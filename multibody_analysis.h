@@ -30,7 +30,9 @@ class Multibody_Analysis
     virtual void listkernel(Multibody*,int,int,int){cout<<"Error: Multibody list targets not fully implemented for this analysis method.\n";};
     virtual void postprocess(){cout<<"Error: Multibody list targets not fully implemented for this analysis method.\n";};
     
-    virtual void write(string)const{cout<<"Error: No standard write method implemented for this multibody_analysis method.\n";};	
+    virtual void write(string)const{cout<<"Error: No standard write method implemented for this multibody_analysis method.\n";};
+    
+    virtual bool isThreadSafe() {return false;};
 };
 }
 

@@ -1,10 +1,20 @@
 system
 xyz_log
-/home/dss/amdatsvn/trunk/testfiles/traj.xyz /home/dss/amdatsvn/trunk/testfiles/log.lammps
-exponential 1 77 1.2 0 0 .01
+/home/david/AMDATsync/trunk/testfiles/traj.xyz /home/david/AMDATsync/trunk/testfiles/log.lammps
+exponential 100 77 1.2 0 0 .01
 polymer 50
 1
 32
+
+create_multibodies endtoend species_atomlist polymer 1 0 1 31
+
+baf baf.dat endtoend
+
+create_multibodies endpair species_atomlist polymer 1 0 1 1
+
+baf baf2.dat endpair
+
+exit
 
 create_list all
 all
@@ -108,7 +118,7 @@ create_multibodies mbodies all_molecule
 
 create_multibodies mbodies3 species_type polymer 1
 
-create_multibodies mbodies4 species_atomlist polymer 1 0 1 31
+
 
 gyration_radius gyrrad.dat mbodies
 

@@ -3584,6 +3584,104 @@ void System::displacement_list(Analysis* analysis, bool fullblock)const
 
 /*----------------------------------------------------------------------------------*/
 
+
+
+
+
+/*Method to loop over displacement times.  At each instance of the loop it passes the displacement time and two corresponding time indices to a displacementkernel method of an Analysis class.  If fullblock=1 (default), then for timegaps from one exponential block to another all times are used.  If fullblock = 0, crossblock timegaps only use the first timestep of each block.*/
+void System::displacement_list(Multibody_Analysis* analysis, bool fullblock)const
+{
+//	int blockii;
+//	int expii;
+
+//	int timegapii;						//index over displacement timestep
+//	int block_timegapii;
+	//int displacement_count;
+	if(analysis->isThreadSafe() && omp_get_max_threads() > 1)
+		cout << "\nAnalysis is thread safe, parallelizing." << endl;
+	else if(analysis->isThreadSafe() && omp_get_max_threads() == 1)
+		cout << "\nAnalysis is thread safe but only one thread is permitted, running serially." << endl;
+	else
+		cout << "\nAnalysis is not thread safe, running serially." << endl;
+
+	{
+		{
+			int thisii;
+			int nextii;
+			#pragma omp parallel for schedule(dynamic) if(analysis->isThreadSafe()) // TODO: Test if we can use the old loop
+			for(int timegapii=0;timegapii<n_exponential_steps;timegapii++)  //loop over exponential time step spacings within each block
+			{
+				int displacement_count=0;
+                bool abort = false;
+				for(int blockii=0;blockii<n_exponentials;blockii++)
+				{
+					if (!abort)
+					{
+						thisii = n_exponential_steps*blockii+int(frt);	//calculate starting index of this block
+						nextii = thisii+timegapii;		//calculate dispaced index
+						analysis->list_displacementkernel(timegapii,thisii,nextii);
+						#pragma omp atomic
+						displacement_count++;
+						abort = (displacement_count == displacement_limit && displacement_limit != 0);
+						#pragma omp flush(abort)
+					}
+					//if(displacement_count == displacement_limit) break;
+		//			cout << thisii << "\t" << nextii << "\n";
+				}
+			}
+			//cout << "Part 1 done!" << endl;
+		}
+//	cout << "exponential\n";
+
+
+
+		{
+
+			#pragma omp parallel for schedule(dynamic)  if(analysis->isThreadSafe()) // This makes this loop execute in parallel, splitting by time values.
+			for(int timegapii=n_exponential_steps; timegapii<n_timegaps-1+int(frt); timegapii++)  //loop over linear time step spacings between blocks
+			{
+				int displacement_count=0;
+				int block_timegapii = timegapii - n_exponential_steps + 1;
+				bool abort = false;
+
+				for(int expii=0;expii<((int(fullblock)*(n_exponential_steps-1))+1);expii++)
+				{
+					if (!abort)
+					{
+						for(int blockii=0; blockii<n_exponentials-block_timegapii; blockii++) // If this loop could be parallelized then you'd see even higher speed increases, but I've had a lot of data corruption when trying
+						{
+							if (!abort)
+							{
+								int thisii = n_exponential_steps*blockii+expii+int(frt);
+								int nextii = thisii + n_exponential_steps*block_timegapii;
+								analysis->list_displacementkernel(timegapii,thisii,nextii);
+								#pragma omp atomic
+								displacement_count++;
+								abort = (displacement_count == displacement_limit && displacement_limit != 0);
+								#pragma omp flush(abort)
+//								analysis->list_displacementkernel(timegapii,thisii,nextii);
+//								displacement_count++;
+//						//		if (displacement_count == displacement_limit) break;
+//								abort = (displacement_count == displacement_limit);
+//				//				cout << thisii << "\t" << nextii << "\n";
+							}
+						}
+					//	if (displacement_count == displacement_limit) break;
+					}
+				}
+			}
+		//	cout << "Part 2 done!" << endl;
+		}
+	}
+//	exit(1);
+
+	/*Run last displacement, which is from first to last configuration only.*/
+	if(!frt) {analysis->list_displacementkernel(n_timegaps-1,0,n_timesteps-1);}
+}
+
+
+/*----------------------------------------------------------------------------------*/
+
 #ifdef NEVER
 
 /*Method to loop over times to produce a single displacement time for a particle list.  It passes the displacement time and two corresponding time indices to a displacementkernel method of an Analysis class.  If fullblock=1 (default), then for timegaps from one exponential block to another all times are used.  If fullblock = 0, crossblock timegaps only use the first timestep of each block.*/
@@ -3711,6 +3809,69 @@ void System::displacement_list(Analysis* analysis, int timegapii, bool fullblock
 /*----------------------------------------------------------------------------------*/
 
 
+
+
+/*Method to loop over times to produce a single displacement time for a trajectory list.  It passes the displacement time and two corresponding time indices to a displacementkernel method of an Analysis class.  If fullblock=1 (default), then for timegaps from one exponential block to another all times are used.  If fullblock = 0, crossblock timegaps only use the first timestep of each block.*/
+void System::displacement_list(Multibody_Analysis* analysis, int timegapii, bool fullblock)const
+{
+	int blockii;
+	int expii;
+	int thisii;
+	int nextii;
+	int block_timegapii;
+	int displacement_count;
+
+	if(timegapii<n_exponential_steps)
+	{
+		displacement_count=0;
+		for(blockii=0;blockii<n_exponentials;blockii++)
+		{
+			thisii = n_exponential_steps*blockii+int(frt);	//calculate starting index of this block
+			nextii = thisii+timegapii;		//calculate dispaced index
+			//analysis->list_displacementkernel(timegapii,thisii,nextii,particle_list);
+			analysis->list_displacementkernel(timegapii,thisii,nextii);
+			displacement_count++;
+			if(displacement_count == displacement_limit) break;
+
+		}
+	}
+	else if(timegapii>=n_exponential_steps&&timegapii<n_timegaps-1+int(frt))
+	{
+		displacement_count=0;
+		block_timegapii = timegapii - n_exponential_steps + 1;
+		for(expii=0;expii<((int(fullblock)*(n_exponential_steps-1))+1);expii++)
+		{
+			for(blockii=0; blockii<n_exponentials-block_timegapii; blockii++)
+			{
+				thisii = n_exponential_steps*blockii+expii+int(frt);
+				nextii = thisii + n_exponential_steps*block_timegapii;
+				//analysis->list_displacementkernel(timegapii,thisii,nextii,particle_list);
+				analysis->list_displacementkernel(timegapii,thisii,nextii);
+				displacement_count++;
+				if(displacement_count == displacement_limit) break;
+			}
+
+			if(displacement_count == displacement_limit) break;
+		}
+	}
+	else if(timegapii==n_timegaps-1+int(frt))
+	{
+		//analysis->list_displacementkernel(n_timegaps-1,0,n_timesteps-1,particle_list);
+		analysis->list_displacementkernel(n_timegaps-1,0,n_timesteps-1);
+	}
+	else
+	{
+		Error( "Requested timegap out of range.", 0);
+	}
+}
+
+
+
+
+
+/*----------------------------------------------------------------------------------*/
+
+
 /*Method to loop over times to produce a single displacement time for a trajectory list, using only a specified range of blocks.  It passes the displacement time and two corresponding time indices to a displacementkernel method of an Analysis class.  If fullblock=1 (default), then for timegaps from one exponential block to another all times are used.  If fullblock = 0, crossblock timegaps only use the first timestep of each block.*/
 void System::displacement_list(Analysis* analysis, int timegapii, int firstblock, int lastblock, bool fullblock)const
 {
@@ -3768,6 +3929,72 @@ void System::displacement_list(Analysis* analysis, int timegapii, int firstblock
 		Error("Requested timegap out of range.",0);
 	}
 }
+
+
+
+
+/*----------------------------------------------------------------------------------*/
+
+
+/*Method to loop over times to produce a single displacement time for a trajectory list, using only a specified range of blocks.  It passes the displacement time and two corresponding time indices to a displacementkernel method of an Analysis class.  If fullblock=1 (default), then for timegaps from one exponential block to another all times are used.  If fullblock = 0, crossblock timegaps only use the first timestep of each block.*/
+void System::displacement_list(Multibody_Analysis* analysis, int timegapii, int firstblock, int lastblock, bool fullblock)const
+{
+	int blockii;
+	int expii;
+	int thisii;
+	int nextii;
+	int block_timegapii;
+	int displacement_count;
+
+	if(firstblock<0){Error( "First block cannot be less than zero.", 0);}
+	if(lastblock>=n_exponentials){Error("Last block greater than number of blocks",0);}
+
+	if(timegapii<n_exponential_steps)
+	{
+		displacement_count=0;
+		for(blockii=firstblock;blockii<=lastblock;blockii++)
+		{
+			thisii = n_exponential_steps*blockii+int(frt);	//calculate starting index of this block
+			nextii = thisii+timegapii;		//calculate dispaced index
+			//analysis->list_displacementkernel(timegapii,thisii,nextii,particle_list);
+			analysis->list_displacementkernel(timegapii,thisii,nextii);
+			displacement_count++;
+			if(displacement_count == displacement_limit) break;
+
+		}
+	}
+	else if(timegapii>=n_exponential_steps&&timegapii<n_timegaps-1+int(frt))
+	{
+		displacement_count=0;
+		block_timegapii = timegapii - n_exponential_steps + 1;
+		//if(lastblock>n_exponentials-block_timegapii){lastblock-n_exponentials-block_timegapii;}
+		for(expii=0;expii<((int(fullblock)*(n_exponential_steps-1))+1);expii++)
+		{
+			for(blockii=firstblock; blockii<lastblock; blockii++)
+			{
+				thisii = n_exponential_steps*blockii+expii+int(frt);
+				nextii = thisii + n_exponential_steps*block_timegapii;
+				//analysis->list_displacementkernel(timegapii,thisii,nextii,particle_list);
+				analysis->list_displacementkernel(timegapii,thisii,nextii);
+				displacement_count++;
+				if(displacement_count == displacement_limit) break;
+			}
+
+			if(displacement_count == displacement_limit) break;
+		}
+	}
+	else if(timegapii==n_timegaps-1+int(frt))
+	{
+		//analysis->list_displacementkernel(n_timegaps-1,0,n_timesteps-1,particle_list);
+		analysis->list_displacementkernel(n_timegaps-1,0,n_timesteps-1);
+	}
+	else
+	{
+		Error("Requested timegap out of range.",0);
+	}
+}
+
+
 
 
 
