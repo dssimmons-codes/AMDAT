@@ -114,6 +114,7 @@ class Control
     Multibody_List* find_multibody_list(string,bool allow_nofind=0)const;
     void add_multibody_list(Multibody_List*,string);
     void delete_multibody_list(string);
+    void combine_multibody_lists();
     
     /*Some general methods*/
     void system();			//create system object with input file data

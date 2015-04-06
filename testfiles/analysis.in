@@ -6,11 +6,21 @@ polymer 50
 1
 32
 
+create_multibodies bond1 species_atomlist polymer 1 0 1 1
+create_multibodies bond2 species_atomlist polymer 1 1 1 2
+create_multibodies bond3 species_atomlist polymer 1 2 1 3
+
+combine_multibody_lists bonds bond1 bond2 bond3
+
+baf baf.dat bonds
+
+exit
+
 create_multibodies endtoend species_atomlist polymer 1 0 1 31
 
 baf baf.dat endtoend
 
-create_multibodies endpair species_atomlist polymer 1 0 1 1
+
 
 baf baf2.dat endpair
 

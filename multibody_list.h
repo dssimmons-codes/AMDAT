@@ -40,7 +40,7 @@ namespace std{
       Multibody_List (System * sys, Multibody_Set * multibodyset);
 
 
-      Multibody_List operator + (const Multibody_List &); //combine two Multibody_Lists
+      Multibody_List operator + (const Multibody_List &) const; //combine two Multibody_Lists
       void set(System * sys, Multibody_Set * multibodyset);
 
       int show_n_bodies(){return n_bodies;}; //return number of bodies in multibodies in list if they all contain the same number of bodies. Return -1 if they are not all the same or -2 if it has not been determined.

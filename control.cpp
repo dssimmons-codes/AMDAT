@@ -216,6 +216,10 @@ int Control::execute_commands(int iIndex, int fIndex)
     {
       create_multibodies();
     }
+    else if (command == "combine_multibody_lists")
+    {
+      combine_multibody_lists();
+    }
     else if (command == "trajectories_from_multibodies")
     {
       trajectories_from_multibodies();
@@ -1363,6 +1367,32 @@ void Control::delete_multibody_list(string listname)
     multibody_lists.erase(listname);
     delete [] multibody_list;
   }
+}
+
+
+
+/*--------------------------------------------------------------------------------*/
+
+
+void Control::combine_multibody_lists()
+{
+    int argii;
+    string newlistname;
+
+    Multibody_List * new_multibody_list;
+    new_multibody_list = new Multibody_List;
+
+    newlistname=args[1];
+
+    new_multibody_list=find_multibody_list(args[2]);
+
+    for(argii=3;argii<n_args;argii++)
+    {
+        (*new_multibody_list)=(*new_multibody_list)+(*find_multibody_list(args[argii]));
+    }
+
+    add_multibody_list(new_multibody_list,newlistname);
+
 }
 
 

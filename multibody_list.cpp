@@ -151,9 +151,70 @@ void Multibody_List::set(System * syst, Multibody_Set * multibodyset)
 
 
 
-Multibody_List Multibody_List::operator+(const Multibody_List &)
+Multibody_List Multibody_List::operator+(const Multibody_List & comparison) const
 {
+    int internal_time1, internal_time2;		//variables to hold internal Trajectory_List time indexes
+    int new_internal_time = 0;			//variable to hold internal Trajectory_List time index for new Trajectory_List
+    int last_internal_time1 = -1;			//variable to hold previous value of internal Trajectory_List time index
+    int last_internal_time2 = -1;			//variable to hold previous value of internal Trajectory_List time index
+    int n_internal_times;				//number of internal times for new Trajectory_List object
+    int multibodyii;
 
+
+    /*check if system objects are the same for the two Multibody_Lists; if not, return error*/
+    if(sys!=comparison.sys)
+    {
+        cout << "Error: list systems do not match.\n";
+        exit(1);
+    }
+
+    /*loop to count the number of independent internal times the new Multibody_List must have*/
+    for(int system_timeii=0;system_timeii<sys->show_n_timesteps();system_timeii++)
+    {
+        internal_time1 = convert_time(system_timeii);
+        internal_time2 = comparison.convert_time(system_timeii);
+
+        if((internal_time1!=last_internal_time1)||(internal_time2!=last_internal_time2))
+        {
+            new_internal_time++;
+        }
+
+        last_internal_time1=internal_time1;
+        last_internal_time2=internal_time2;
+    }
+    n_internal_times = new_internal_time;
+
+
+    new_internal_time = -1;
+    last_internal_time1 = -1;
+    last_internal_time2 = -1;
+    
+    Multibody_List new_list(sys, n_internal_times);
+    
+
+    /*calculate new time_conversion table and new inclusion list based on intersection of two trajectories*/
+    for(int system_timeii=0;system_timeii<sys->show_n_timesteps();system_timeii++)
+    {
+        internal_time1 = convert_time(system_timeii);
+        internal_time2 = comparison.convert_time(system_timeii);
+
+        if((internal_time1!=last_internal_time1)||(internal_time2!=last_internal_time2))
+        {
+            new_internal_time++;
+	    new_list.multibodies[new_internal_time]=multibodies[internal_time1];
+	    for(multibodyii=0;multibodyii<comparison.multibodies[internal_time2].size();multibodyii++)
+	    {
+	      (new_list.multibodies[new_internal_time]).push_back(comparison.multibodies[internal_time2][multibodyii]);
+	    }
+        }
+
+        new_list.time_conversion[system_timeii]=new_internal_time;//set value in time conversion table to current new_internal_time for this system_timeii
+
+        last_internal_time1=internal_time1;
+        last_internal_time2=internal_time2;
+    }
+
+    return new_list;
 }
 
 /*Determines whether all multibodies in the list have the same number of bodies.*/
