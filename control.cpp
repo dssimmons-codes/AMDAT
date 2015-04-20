@@ -2437,7 +2437,7 @@ void Control::ngp()
   run_analysis(&msd, runline);
   Non_Gaussian_Parameter ngpar(analyte, &msd);
   //run_analysis(&ngpar, runline);
-  run_analysis <Non_Gaussian_Parameter> (ngpar,runline,filename); // pass run_analysis template the analysis type
+  ngpar=run_analysis <Non_Gaussian_Parameter> (ngpar,runline,filename); // pass run_analysis template the analysis type
   //ngpar.write(filename);
   cout << "\n Peak time index of non-Gaussian parameter is " << ngpar.max() << ".";
 

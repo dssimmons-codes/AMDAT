@@ -14,10 +14,10 @@ class Mean_Square_Displacement: public Analysis
 {
     int n_times;
     float * msd;
-    int * weighting;
+    float * weighting;
     float * timetable;
     void initialize(System*);                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  
-    int atomcount;
+    float atomcount;
     
     /*internal calculation variables*/
     int currenttime, nexttime, currenttimegap;

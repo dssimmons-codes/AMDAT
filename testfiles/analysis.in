@@ -1,10 +1,18 @@
 system
 xyz_log
 /home/david/AMDATsync/trunk/testfiles/traj.xyz /home/david/AMDATsync/trunk/testfiles/log.lammps
-exponential 100 77 1.2 0 0 .01
+exponential 40 77 1.2 0 0 .01
 polymer 50
 1
 32
+
+create_list all
+all
+
+msd msd_critical1.dat
+list all
+
+exit
 
 create_multibodies bond1 species_atomlist polymer 1 0 1 1
 create_multibodies bond2 species_atomlist polymer 1 1 1 2

@@ -18,7 +18,7 @@ Mean_Square_Displacement::Mean_Square_Displacement()
 
    //allocate memory for mean square displacement data
   msd = new float [n_times];
-  weighting = new int [n_times];
+  weighting = new float [n_times];
 
   atomcount = 0;
 }
@@ -35,7 +35,7 @@ Mean_Square_Displacement::Mean_Square_Displacement(const Mean_Square_Displacemen
   atomcount = copy.atomcount;
 
   msd = new float [n_times];
-  weighting = new int [n_times];
+  weighting = new float [n_times];
 
   timetable = system->displacement_times();
 
@@ -58,7 +58,7 @@ Mean_Square_Displacement::Mean_Square_Displacement(System*sys)
 
    //allocate memory for mean square displacement data
   msd = new float [n_times];
-  weighting = new int [n_times];
+  weighting = new float [n_times];
 
   timetable = system->displacement_times();
   for(timeii=0;timeii<n_times;timeii++)
@@ -90,7 +90,7 @@ Mean_Square_Displacement Mean_Square_Displacement::operator = (const Mean_Square
   delete [] weighting;
 
   msd = new float [n_times];
-  weighting = new int [n_times];
+  weighting = new float [n_times];
 
   timetable = system->displacement_times();
 
@@ -120,7 +120,7 @@ void Mean_Square_Displacement::initialize(System* sys)
   delete [] weighting;
 
   msd = new float [n_times];
-  weighting = new int [n_times];
+  weighting = new float [n_times];
 
   timetable = system->displacement_times();
   for(timeii=0;timeii<n_times;timeii++)
@@ -138,7 +138,7 @@ void Mean_Square_Displacement::initialize(System* sys)
 void Mean_Square_Displacement::analyze(Trajectory_List * t_list)
 {
   trajectory_list=t_list;
-  system->displacement_list(this);
+  system->displacement_list(this,false);
   postprocess_list();
 }
 

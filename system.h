@@ -190,12 +190,12 @@ class System
     void displacement_loop(Analysis*, Trajectory *, int, bool fullblock=1)const;
 
     /*loops over time spacings for use with new trajectory lists*/
-    void displacement_list(Analysis*, bool fullblock=1)const;
-    void displacement_list(Analysis*, int timegap, bool fullblock=1)const;
+    void displacement_list(Analysis*, bool fullblock=0)const;
+    void displacement_list(Analysis*, int timegap, bool fullblock=0)const;
     void displacement_list(Analysis*, int timegap, int firstblock, int lastblock, bool fullblock=0)const;
     
-    void displacement_list(Multibody_Analysis*, bool fullblock=1)const;
-    void displacement_list(Multibody_Analysis*, int timegap, bool fullblock=1)const;
+    void displacement_list(Multibody_Analysis*, bool fullblock=0)const;
+    void displacement_list(Multibody_Analysis*, int timegap, bool fullblock=0)const;
     void displacement_list(Multibody_Analysis*, int timegap, int firstblock, int lastblock, bool fullblock=0)const;
 
     /*Methods to perform analyses on subsets of atoms in system*/

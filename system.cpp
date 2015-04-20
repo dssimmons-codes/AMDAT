@@ -3499,18 +3499,19 @@ void System::displacement_list(Analysis* analysis, bool fullblock)const
 //	int timegapii;						//index over displacement timestep
 //	int block_timegapii;
 	//int displacement_count;
+	#ifdef NEVER
 	if(analysis->isThreadSafe() && omp_get_max_threads() > 1)
 		cout << "\nAnalysis is thread safe, parallelizing." << endl;
 	else if(analysis->isThreadSafe() && omp_get_max_threads() == 1)
 		cout << "\nAnalysis is thread safe but only one thread is permitted, running serially." << endl;
 	else
 		cout << "\nAnalysis is not thread safe, running serially." << endl;
-
+	#endif
 	{
 		{
 			int thisii;
 			int nextii;
-			#pragma omp parallel for schedule(dynamic) if(analysis->isThreadSafe()) // TODO: Test if we can use the old loop
+			//#pragma omp parallel for schedule(dynamic) if(analysis->isThreadSafe()) // TODO: Test if we can use the old loop
 			for(int timegapii=0;timegapii<n_exponential_steps;timegapii++)  //loop over exponential time step spacings within each block
 			{
 				int displacement_count=0;
@@ -3522,10 +3523,10 @@ void System::displacement_list(Analysis* analysis, bool fullblock)const
 						thisii = n_exponential_steps*blockii+int(frt);	//calculate starting index of this block
 						nextii = thisii+timegapii;		//calculate dispaced index
 						analysis->list_displacementkernel(timegapii,thisii,nextii);
-						#pragma omp atomic
+						//#pragma omp atomic
 						displacement_count++;
 						abort = (displacement_count == displacement_limit && displacement_limit != 0);
-						#pragma omp flush(abort)
+						//#pragma omp flush(abort)
 					}
 					//if(displacement_count == displacement_limit) break;
 		//			cout << thisii << "\t" << nextii << "\n";
@@ -3539,7 +3540,7 @@ void System::displacement_list(Analysis* analysis, bool fullblock)const
 
 		{
 
-			#pragma omp parallel for schedule(dynamic)  if(analysis->isThreadSafe()) // This makes this loop execute in parallel, splitting by time values.
+			//#pragma omp parallel for schedule(dynamic)  if(analysis->isThreadSafe()) // This makes this loop execute in parallel, splitting by time values.
 			for(int timegapii=n_exponential_steps; timegapii<n_timegaps-1+int(frt); timegapii++)  //loop over linear time step spacings between blocks
 			{
 				int displacement_count=0;
@@ -3557,10 +3558,10 @@ void System::displacement_list(Analysis* analysis, bool fullblock)const
 								int thisii = n_exponential_steps*blockii+expii+int(frt);
 								int nextii = thisii + n_exponential_steps*block_timegapii;
 								analysis->list_displacementkernel(timegapii,thisii,nextii);
-								#pragma omp atomic
+								//#pragma omp atomic
 								displacement_count++;
 								abort = (displacement_count == displacement_limit && displacement_limit != 0);
-								#pragma omp flush(abort)
+								//#pragma omp flush(abort)
 //								analysis->list_displacementkernel(timegapii,thisii,nextii);
 //								displacement_count++;
 //						//		if (displacement_count == displacement_limit) break;

@@ -48,7 +48,7 @@ Displacement_Distribution::Displacement_Distribution(System* sys, float pow, int
 void Displacement_Distribution::analyze(Trajectory_List* t_list)
 {
   trajectory_list = t_list;
-  system->displacement_list(this, time_index);
+  system->displacement_list(this, time_index,false);
   postprocess_list();
 }
 

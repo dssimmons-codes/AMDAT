@@ -63,7 +63,7 @@ void Displacement_Map::analyze(Trajectory_List* t_list)
 
   currentblock = 0;
 
-  system->displacement_list(this, time_index,firstblock,lastblock);
+  system->displacement_list(this, time_index,firstblock,lastblock,false);
   postprocess_list();
 }
 

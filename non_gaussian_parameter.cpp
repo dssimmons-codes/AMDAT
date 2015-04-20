@@ -18,7 +18,7 @@ Non_Gaussian_Parameter::Non_Gaussian_Parameter()
   msd = 0;
   
   ngp = new float [n_times];
-  weighting = new int [n_times];
+  weighting = new long int [n_times];
   timetable = 0;
   for(int timeii=0;timeii<n_times;timeii++)
   {
@@ -37,7 +37,7 @@ Non_Gaussian_Parameter::Non_Gaussian_Parameter(const Non_Gaussian_Parameter & co
   msd = copy.msd;
   
   ngp = new float [n_times];
-  weighting = new int [n_times];
+  weighting = new long int [n_times];
   timetable = system -> displacement_times();
   for(int timeii=0;timeii<n_times;timeii++)
   {
@@ -57,7 +57,7 @@ Non_Gaussian_Parameter Non_Gaussian_Parameter::operator =(const Non_Gaussian_Par
   msd = copy.msd;
   
   ngp = new float [n_times];
-  weighting = new int [n_times];
+  weighting = new long int [n_times];
   timetable = system -> displacement_times();
   for(int timeii=0;timeii<n_times;timeii++)
   {
@@ -80,7 +80,7 @@ Non_Gaussian_Parameter::Non_Gaussian_Parameter(System* sys, const Mean_Square_Di
 
   //allocate memory for ngp data and msd data
   ngp = new float [n_times];
-  weighting = new int [n_times];
+  weighting = new long int [n_times];
   timetable = system -> displacement_times();
   for(timeii=0;timeii<n_times;timeii++)
   {
@@ -95,7 +95,7 @@ void Non_Gaussian_Parameter::analyze(Trajectory_List * t_list)
 {
 
 	trajectory_list=t_list;
-	system->displacement_list(this);
+	system->displacement_list(this,false);
 	postprocess_list();
 }
 

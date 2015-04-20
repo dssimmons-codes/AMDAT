@@ -15,7 +15,7 @@ class Non_Gaussian_Parameter: public Analysis
 {
     int n_times;
     float * ngp;
-    int * weighting;
+    long int * weighting;
     Mean_Square_Displacement const * msd;
     float * timetable;
     int atomcount;
