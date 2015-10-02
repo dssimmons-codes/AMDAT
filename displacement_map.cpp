@@ -23,19 +23,12 @@ Displacement_Map::Displacement_Map(System* sys, int timespacing, int blockstart,
   maxdisplacement = maxdisp;
 
   n_times = lastblock-firstblock+1;
-  n_trajectories = syst->show_n_trajectories();
   time = system->displacement_times()[time_index];
 
   included = new Boolean_List[n_times];
-  values = new float * [n_times];
   for(int timeii=0;timeii<n_times;timeii++)
   {
     included[timeii].set(syst);
-    values[timeii] = new float [n_trajectories];
-    for(int trajii=0;trajii<n_trajectories;trajii++)
-    {
-      values[timeii][trajii]=0.0;
-    }
   }
 
 

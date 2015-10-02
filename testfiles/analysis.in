@@ -1,7 +1,7 @@
 system
 xyz_log
 /home/david/AMDATsync/trunk/testfiles/traj.xyz /home/david/AMDATsync/trunk/testfiles/log.lammps
-exponential 40 77 1.2 0 0 .01
+exponential 1 77 1.2 0 0 .01
 polymer 50
 1
 32
@@ -9,8 +9,35 @@ polymer 50
 create_list all
 all
 
-msd msd_critical1.dat
+displacement_list displacement_stats.dat displacement_list 70
 list all
+
+exit
+
+msd msd_all.dat
+list all
+
+vhs vhslist.dat 2 100
+list all
+
+compare_gaussian gaussian.dat 70
+list all
+
+find_fast fast1 fast_count_list.dat
+list all
+
+strings strings.dat 70 .6 ./testfiles/sigma_matrix stringlist
+list fast1
+
+msd msd_strings.dat
+list stringlist
+
+msd msd_fast.dat
+list fast1
+
+exit
+
+
 
 exit
 

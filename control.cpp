@@ -53,6 +53,7 @@
 #include "mean_unsteady_displacement.h"
 #include "radial_distribution_function.h"
 #include "bond_autocorrelation_function.h"
+#include "displacement_list.h"
 
 using namespace std;
 
@@ -240,6 +241,10 @@ int Control::execute_commands(int iIndex, int fIndex)
     {
       mean_displacement();
     }
+    else if (command == "displacement_list")
+    {
+      displacement_list();
+    }
     else if (command == "vac_function")
     {
       vacf();
@@ -318,6 +323,8 @@ int Control::execute_commands(int iIndex, int fIndex)
     {write_bin_xyz();}
     else if (command == "thresholded_list")
     {thresholded_list();}
+    else if(command == "value_list")
+    {process_value_list();}
     else if (command == "composition")
     {composition();}
     else if (command == "nfold")
@@ -1716,6 +1723,38 @@ void Control::mean_displacement()
 
 
 /*--------------------------------------------------------------------------------*/
+/*Create value list of particle displacements at a specified timegap*/
+void Control::displacement_list()
+{
+  string listname,filename;
+  string runline;
+  int timegap_index;
+  int expected = 4;
+  argcheck(expected);
+  
+  filename = args[1];
+  listname = args[2];
+  timegap_index = atoi(args[3].c_str());
+  
+  runline = read_line();
+  cout << "\n" << runline;
+  
+  Displacement_List*dlist_pointer;
+  dlist_pointer = new Displacement_List();
+  Displacement_List dlist(analyte,timegap_index);
+  
+  cout << "Calculating list of displacement scalars.\n";
+  start = time(NULL);
+ 
+  dlist=run_analysis<Displacement_List>(dlist,runline,filename);
+  (*dlist_pointer)=dlist;
+  add_value_list(dlist_pointer,listname);
+  finish = time(NULL);
+  cout << "\nCalculated list of displacement scalars in " << finish-start<<" seconds.";
+}
+
+
+/*--------------------------------------------------------------------------------*/
 
 /*Calculate and write to file velocity autocorrelation function as requested by user*/
 void Control::vacf()
@@ -3101,6 +3140,36 @@ else
 
 
 
+void Control::process_list()
+{
+  string keyword;
+  
+  keyword = args[1];
+  
+  if(keyword == "threshold_value")
+  {
+    thresholded_list();
+  }
+  else if(keyword == "threshold_percentile")
+  {
+    percentiled_list();
+  }
+  else if(keyword == "write_pdb")
+  {
+  }
+  else if(keyword == "write_statistics")
+  {
+  }
+  else if(keyword == "write_distribution")
+  {
+  }
+  else if(keyword == "write_data")
+  {
+  }
+}
+
+
+
 void Control::thresholded_list()
 {
   /** creates a thresholded trajectory list from an analysis value list
@@ -3112,19 +3181,17 @@ void Control::thresholded_list()
   //string runline;
   int av_listnum;
   float threshold1;
-  int expected=5;
   float threshold2;
   string thresh_command;
 
 
 
-  av_listname = args[1];
-  t_listname = args[2];//user-input name of list
-  thresh_command = args[3];
-  threshold1 = atof(args[4].c_str());
-  if (n_args==5){threshold2=0;}
-  else if(n_args==6){threshold2=atof(args[5].c_str());}
-  else {argcheck(expected);}
+  av_listname = args[2];
+  t_listname = args[3];//user-input name of list
+  thresh_command = args[4];
+  threshold1 = atof(args[5].c_str());
+  if (n_args==6){threshold2=0;}
+  else if(n_args==7){threshold2=atof(args[6].c_str());}
 
   //getline(input,runline);
 
@@ -3146,6 +3213,52 @@ else {cout<< "thresholding commmand unrecognized. command can only be greater, l
    cout<<"\nTrajectory list "<<t_listname<<" created with "<<trajpointer->show_n_trajectories(0)<< " trajectories.";
 
 }
+
+
+
+void Control::percentiled_list()
+{
+  /** creates a thresholded trajectory list from an analysis value list
+  * @author Daniel Hunsicker
+  * @date 6/13/2012
+  **/
+  string av_listname;
+  string t_listname;
+  //string runline;
+  int av_listnum;
+  float threshold1;
+  float threshold2;
+  string thresh_command;
+
+  
+  av_listname = args[2];
+  t_listname = args[3];//user-input name of list
+  thresh_command = args[4];
+  threshold1 = atof(args[5].c_str());
+  if (n_args==6){threshold2=0;}
+  else if(n_args==7){threshold2=atof(args[6].c_str());}
+
+  //getline(input,runline);
+
+
+
+  cout << "\nGenerating thresholded trajectory list" << endl;
+
+  Trajectory_List * trajpointer;
+   trajpointer = new Trajectory_List();
+  av_listnum = find_value_list(av_listname);
+
+if(thresh_command=="greater"){value_lists[av_listnum]->percentile_t_list(bool(1),threshold1,trajpointer);}
+else if(thresh_command=="less"){value_lists[av_listnum]->percentile_t_list(bool(0),threshold1,trajpointer);}
+else if (thresh_command=="between"){value_lists[av_listnum]->percentile_t_list(threshold1,threshold2,trajpointer);}
+else {cout<< "thresholding commmand unrecognized. command can only be greater, less or between\n";}
+
+  add_trajectorylist(trajpointer, t_listname);	//add trajectory list to array
+
+   cout<<"\nTrajectory list "<<t_listname<<" created with "<<trajpointer->show_n_trajectories(0)<< " trajectories.";
+
+}
+
 
 
 void Control::composition()

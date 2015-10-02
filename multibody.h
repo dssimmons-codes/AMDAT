@@ -21,6 +21,7 @@ namespace std
 
     int n_trajectories;
     Trajectory ** trajectories;
+    Coordinate relative_image_index; //stores relative image flag for each body in the multibody at its reference time of creation so that any calculation involving the relative internal relationships of the body within the multibody correctly compute their relative separation vectors at all times (should always consist of three ints);
 
     //int multibody_ID;
 

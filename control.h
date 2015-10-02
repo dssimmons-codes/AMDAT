@@ -168,6 +168,7 @@ class Control
     void msd();			//calculate mean square displacement
     void msd_2d();		//calculate 2d mean square displacement
     void mean_displacement();	//calculate mean displacement - primary purpose is identification of momentum buildup
+    void displacement_list();	//create value list of particle displacement scalars
     void vacf();		//calculate velocity autocorrelation function
     void vacf_fourier();	//calculate fourier transform of velocity autocorrelation function
     void calc_vhs();		//calculate self van hove
@@ -193,7 +194,6 @@ class Control
     void rgtensor_stats();	//calculate rg tensor statistics
     void nfold();		//calculate n-fold orientational order parameter
     void composition();     	//writes a file detailing the compostion of the system
-    void thresholded_list();	//generates a list thresholded from an analysis value list
     void clustered_list();	//generates a list clustered from a trajectoory list
     void invert_list();     //inverts a trajectory_list
     void displacement_map();
@@ -208,6 +208,10 @@ class Control
     void gyration_radius();		//calculate mean gyration radius of multibody list
     void baf();
     void incremental_mean_displacement();	//calculates mean displacement between adjacent frames
+    void process_value_list();
+    void thresholded_list();	//generates a trajectory list thresholded from an analysis value list based on cutoff values
+    void percentiled_list();	//generates a trajectory list thresholded from an analysis value list based on cutoff percentiles
+	
 
   public:
     Control(char *,string*,string*,int,string);		//constructor

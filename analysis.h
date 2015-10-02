@@ -48,7 +48,8 @@ enum Analysis_Type
   stiffness_dist,
   strings,
   edge_detector_timedependent,
-  radial_distribution_function
+  radial_distribution_function,
+  displacement_list
 };
 
 

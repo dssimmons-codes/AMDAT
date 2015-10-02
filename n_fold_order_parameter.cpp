@@ -44,7 +44,6 @@ N_Fold_Order_Parameter::N_Fold_Order_Parameter(System * sys, float ord, string s
     string plane;
     plane = orientation;
     order = ord;
-    n_trajectories=system->show_n_trajectories();
 
     if(plane=="xy") distancefun = &Coordinate::length_xy;
     else if(plane=="xz") distancefun = &Coordinate::length_xz;
@@ -58,15 +57,9 @@ N_Fold_Order_Parameter::N_Fold_Order_Parameter(System * sys, float ord, string s
     set_time_conv();
     
     included = new Boolean_List[n_times];
-    values = new float * [n_times];
     for(int timeii=0;timeii<n_times;timeii++)
     {
       included[timeii].set(syst);
-      values[timeii] = new float [n_trajectories];
-      for(int trajii=0;trajii<n_trajectories;trajii++)
-      {
-	values[timeii][trajii]=0.0;
-      }
     }
 
     param_total_current = new float [n_times];
