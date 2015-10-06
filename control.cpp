@@ -3156,6 +3156,7 @@ void Control::process_value_list()
   }
   else if(keyword == "write_pdb")
   {
+    value_list_to_pdb();
   }
   else if(keyword == "write_statistics")
   {
@@ -3270,6 +3271,39 @@ else {cout<< "thresholding commmand unrecognized. command can only be greater, l
 
 }
 
+
+void Control::value_list_to_pdb()
+{
+  string value_listname, filestem;
+  float max;
+  int valuetimeindex, positiontimeindex;
+  int value_listnum;
+  float time;
+  
+  value_listname = args[2];
+  filestem = args[3];
+  valuetimeindex = atoi(args[4].c_str());
+  positiontimeindex = atoi(args[5].c_str());
+  
+  value_listnum = find_value_list(value_listname);
+  if(value_listnum==-1)
+  {
+    cout << "\nError: value_list name " <<value_listname<<" not found.\n";
+    exit(0);
+  }
+  
+  cout << "\Writing value list to PDB" << endl;
+  if(n_args==6)
+  {
+    value_lists[value_listnum]->write_pdb(valuetimeindex, filestem, positiontimeindex);
+  }
+  else if(n_args==7)
+  {
+    max = atof(args[6].c_str());
+    value_lists[value_listnum]->write_pdb(valuetimeindex, filestem, positiontimeindex, max);
+  }
+  
+}
 
 
 void Control::composition()

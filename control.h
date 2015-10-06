@@ -211,6 +211,7 @@ class Control
     void process_value_list();
     void thresholded_list();	//generates a trajectory list thresholded from an analysis value list based on cutoff values
     void percentiled_list();	//generates a trajectory list thresholded from an analysis value list based on cutoff percentiles
+    void value_list_to_pdb();
 	
 
   public:

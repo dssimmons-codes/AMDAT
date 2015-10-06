@@ -1,7 +1,7 @@
 system
 xyz_log
 /home/david/AMDATsync/trunk/testfiles/traj.xyz /home/david/AMDATsync/trunk/testfiles/log.lammps
-exponential 10 77 1.2 0 0 .01
+exponential 1 77 1.2 0 0 .01
 polymer 50
 1
 32
@@ -11,6 +11,10 @@ all
 
 displacement_list displacement_stats.dat displacement_list 70
 list all
+
+value_list write_pdb displacement_list displacementpdb 0 0
+
+exit
 
 value_list threshold_percentile displacement_list list1 greater 5 
 
@@ -26,6 +30,9 @@ value_list threshold_percentile displacement_list list6 less 95
 
 value_list threshold_percentile displacement_list list7 between 45 55 
 
+
+
+exit
 
 msd msd_all.dat
 list all
