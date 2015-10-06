@@ -3140,7 +3140,7 @@ else
 
 
 
-void Control::process_list()
+void Control::process_value_list()
 {
   string keyword;
   
@@ -3218,10 +3218,7 @@ else {cout<< "thresholding commmand unrecognized. command can only be greater, l
 
 void Control::percentiled_list()
 {
-  /** creates a thresholded trajectory list from an analysis value list
-  * @author Daniel Hunsicker
-  * @date 6/13/2012
-  **/
+
   string av_listname;
   string t_listname;
   //string runline;
@@ -3247,10 +3244,24 @@ void Control::percentiled_list()
   Trajectory_List * trajpointer;
    trajpointer = new Trajectory_List();
   av_listnum = find_value_list(av_listname);
+  if(av_listnum==-1)
+  {
+    cout << "\nError: value_list name " <<av_listname<<" not found.\n";
+    exit(0);
+  }
 
-if(thresh_command=="greater"){value_lists[av_listnum]->percentile_t_list(bool(1),threshold1,trajpointer);}
-else if(thresh_command=="less"){value_lists[av_listnum]->percentile_t_list(bool(0),threshold1,trajpointer);}
-else if (thresh_command=="between"){value_lists[av_listnum]->percentile_t_list(threshold1,threshold2,trajpointer);}
+if(thresh_command=="greater")
+{
+  value_lists[av_listnum]->percentile_t_list(bool(1),threshold1,trajpointer);
+}
+else if(thresh_command=="less")
+{
+  value_lists[av_listnum]->percentile_t_list(bool(0),threshold1,trajpointer);
+}
+else if (thresh_command=="between")
+{
+  value_lists[av_listnum]->percentile_t_list(threshold1,threshold2,trajpointer);
+}
 else {cout<< "thresholding commmand unrecognized. command can only be greater, less or between\n";}
 
   add_trajectorylist(trajpointer, t_listname);	//add trajectory list to array

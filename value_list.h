@@ -1157,8 +1157,10 @@ bool Value_List<valType>::threshold(int timeii, int trajii,valType low, valType 
 template <class valType>
 void Value_List<valType>::construct_t_list(bool greater, valType thresh, Trajectory_List* t_list)
 {
-    Boolean_List* thresholded;
-    thresholded = new Boolean_List [n_times];
+  update_size();  
+  
+  Boolean_List* thresholded;
+    thresholded = new Boolean_List [syst->show_n_timesteps()];
     bool threshbool=0;
 
 
@@ -1167,7 +1169,7 @@ void Value_List<valType>::construct_t_list(bool greater, valType thresh, Traject
         thresholded[timeii].set(syst);
     }
 
-    update_size();
+    
     int n_trajectories = syst->show_n_trajectories();
 
         for (int timeii=0; timeii<n_times;timeii++)
@@ -1195,8 +1197,10 @@ void Value_List<valType>::construct_t_list(bool greater, valType thresh, Traject
 template <class valType>
 void Value_List<valType>::construct_t_list(valType low, valType high,Trajectory_List* t_list)
 {
-    Boolean_List* thresholded;
-    thresholded = new Boolean_List [n_times];
+  update_size();  
+  
+  Boolean_List* thresholded;
+    thresholded = new Boolean_List [syst->show_n_timesteps()];
     bool threshbool=0;
 
 
@@ -1205,7 +1209,7 @@ void Value_List<valType>::construct_t_list(valType low, valType high,Trajectory_
         thresholded[timeii].set(syst);
     }
 
-    update_size();
+    
     int n_trajectories = syst->show_n_trajectories();
 
     for (int timeii=0; timeii<n_times;timeii++)
@@ -1228,17 +1232,19 @@ void Value_List<valType>::construct_t_list(valType low, valType high,Trajectory_
 template <class valType>
 void Value_List<valType>::percentile_t_list(bool greater, float percentile, Trajectory_List* t_list)
 {
+    update_size();
+    
     Boolean_List* thresholded;
-    thresholded = new Boolean_List [n_times];
+    thresholded = new Boolean_List [syst->show_n_timesteps()];
     bool threshbool=0;
     int timeii, trajii;
     
     vector<valType> temp_vals;
     
-    valType * threshold;
-    threshold = new valType [n_times];
+    valType * thresh;
+    thresh = new valType [n_times];
 
-    update_size();
+    
     
     for(timeii=0; timeii<n_times; timeii++)
     {
@@ -1254,11 +1260,11 @@ void Value_List<valType>::percentile_t_list(bool greater, float percentile, Traj
       
       if(greater)
       {
-	threshold[timeii]=temp_vals[int(ceil(temp_vals.size()*percentile/100.0))];
+	thresh[timeii]=temp_vals[int(ceil(temp_vals.size()*percentile/100.0))];
       }
       else
       {
-	threshold[timeii]=temp_vals[int(floor(temp_vals.size()*percentile/100.0))];
+	thresh[timeii]=temp_vals[int(floor(temp_vals.size()*percentile/100.0))];
       }
     }
 
@@ -1273,7 +1279,7 @@ void Value_List<valType>::percentile_t_list(bool greater, float percentile, Traj
         {
             for (int trajii=0;trajii<n_trajectories;trajii++)
             {
-                threshbool = threshold(timeii,trajii,greater,threshold[timeii]);
+                threshbool = threshold(timeii,trajii,greater,thresh[timeii]);
                 thresholded[timeii](trajii,threshbool);
 
             }
@@ -1292,8 +1298,10 @@ void Value_List<valType>::percentile_t_list(bool greater, float percentile, Traj
 template <class valType>
 void Value_List<valType>::percentile_t_list(float low_percentile, float high_percentile,Trajectory_List* t_list)
 {
+    update_size();
+  
     Boolean_List* thresholded;
-    thresholded = new Boolean_List [n_times];
+    thresholded = new Boolean_List [syst->show_n_timesteps()];
     bool threshbool=0;
     int timeii,trajii;
     
@@ -1303,8 +1311,6 @@ void Value_List<valType>::percentile_t_list(float low_percentile, float high_per
     valType * high;
     low = new valType [n_times];
     high = new valType [n_times];
-    
-    update_size();
     
     if(low_percentile<0||high_percentile<0)
     {
@@ -1354,7 +1360,7 @@ void Value_List<valType>::percentile_t_list(float low_percentile, float high_per
     {
         for (int trajii=0;trajii<n_trajectories;trajii++)
         {
-            threshbool = threshold(timeii,trajii,low,high);
+            threshbool = threshold(timeii,trajii,low[timeii],high[timeii]);
             thresholded[timeii](trajii,threshbool);
         }
     }
