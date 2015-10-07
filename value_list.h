@@ -23,7 +23,7 @@ namespace std
 template <class valType>
 class Value_List
 {
-  
+
 protected:
   System * syst;
 
@@ -38,8 +38,11 @@ protected:
 
   bool threshold(int, int, bool, valType)const;
   bool threshold(int, int, valType, valType)const;
-  
+
   void update_size();
+
+  virtual float change(int trajindex,int time1,int time2);//returns a figure of merit quantifying the extent to which a trajectory's value has changed between two specified times
+
 
   public:
 
@@ -58,22 +61,22 @@ protected:
   //bool is_included(int trajii){return included(int trajii);};
 
   int n_included()const;
-  float mean()const;
-  float power_mean(float power)const;
-  float variance()const;
-  valType max()const;	
+  virtual float mean()const;
+  virtual float power_mean(float power)const;
+  virtual float variance()const;
+  valType max()const;
   valType min()const;
-  void distribution(string filename, float max, int n_bins)const;	//new - code this
+  virtual void distribution(string filename, float max, int n_bins)const;	//new - code this
 
-  Value_List operator * (float)const;						
-  void operator *= (float);	
+  Value_List operator * (float)const;
+  void operator *= (float);
   //Value_List operator * (const Value_List&)const;
-  //void operator *= (const Value_List&);				
-  Value_List power(float);	
-  float static_crosscorrelation(const Value_List&)const;
-  void dynamic_crosscorrelation_function(string filename, const Value_List&)const;
-  void dynamic_autocorrelation_function(string filename)const;
-  
+  //void operator *= (const Value_List&);
+  Value_List power(float);
+  virtual float static_crosscorrelation(const Value_List&)const;
+  virtual void dynamic_crosscorrelation_function(string filename, const Value_List&)const;
+  virtual void dynamic_autocorrelation_function(string filename)const;
+
 
   int convert_time(int timeii)const{return time_conversion[timeii];};	//convert requested time (Where the index is the time index from the system object) to internal time index
 
@@ -82,14 +85,14 @@ protected:
   string write_pdb(int, string, int, string*,valType)const;
   string write_pdb(int, string, int,valType)const;
   void write_data_file(string filename)const;
-  
+
   void construct_t_list(bool, valType,Trajectory_List*);
   void construct_t_list(valType, valType,Trajectory_List*);
   void percentile_t_list(bool, float,Trajectory_List*);
   void percentile_t_list(float, float,Trajectory_List*);
 
   virtual void set_time_conv(){};
-  
+
  // Value_List operator *(Trajectory_List)const;
 };
 
@@ -99,7 +102,7 @@ Value_List<valType>::Value_List()
 {
   syst = 0;
   n_times = 0;
-  
+
   included = new Boolean_List[n_times];
   time_conversion = new int [0];
   defined_times = new bool [0];
@@ -114,13 +117,13 @@ Value_List<valType>::Value_List(System * sys)
 {
   syst=sys;
   n_times = syst->show_n_timesteps();
-  
+
   included = new Boolean_List[n_times];
   for(int timeii=0;timeii<n_times;timeii++)
   {
     included[timeii].set(syst);
   }
-  
+
   time_conversion = new int [syst->show_n_timesteps()];
   defined_times = new bool [syst->show_n_timesteps()];
   for(int timeii=0;syst->show_n_timesteps();timeii++)
@@ -128,14 +131,14 @@ Value_List<valType>::Value_List(System * sys)
     time_conversion[timeii]=timeii;
     defined_times[timeii]=1;
   }
-  
+
 }
 
 template <class valType>
 Value_List<valType>::Value_List(const Value_List<valType>& copy)
 {
   int timeii;
-  
+
   syst=copy.syst;
   n_times = copy.n_times;
 
@@ -147,7 +150,7 @@ Value_List<valType>::Value_List(const Value_List<valType>& copy)
   {
 	  included[timeii] = copy.included[timeii];
   }
-  
+
   for(timeii=0;timeii<syst->show_n_timesteps();timeii++)
   {
     time_conversion[timeii] = copy.time_conversion[timeii];
@@ -174,7 +177,7 @@ Value_List<valType> Value_List<valType>::operator = (const Value_List<valType> &
     {
       included[timeii] = copy.included[timeii];
     }
-  
+
     for(timeii=0;timeii<syst->show_n_timesteps();timeii++)
     {
       time_conversion[timeii] = copy.time_conversion[timeii];
@@ -203,14 +206,14 @@ void Value_List<valType>::set(System * sys)
 
   syst=sys;
   n_times = syst->show_n_timesteps();
-  
+
   included = new Boolean_List[n_times];
   values = new valType * [n_times];
   for(int timeii=0;timeii<n_times;timeii++)
   {
     included[timeii].set(syst);
   }
-  
+
   time_conversion = new int [syst->show_n_timesteps()];
   defined_times = new bool [syst->show_n_timesteps()];
   for(int timeii=0;syst->show_n_timesteps();timeii++)
@@ -358,7 +361,7 @@ void Value_List<valType>::distribution(string filename, float max, int n_bins)co
 			if(bin>n_bins)bin=n_bins;
 			dist[binii]++;
 			weighting+=int(included[timeii](trajii));
-		}	
+		}
 	}
 
 	for(binii=0;binii<=n_bins;binii++)
@@ -371,7 +374,7 @@ template <class valType>
 Value_List<valType> Value_List<valType>::operator * (float multiplier)const
 {
 	Value_List<valType> templist(*this);
-	
+
 	for(int timeii=0;timeii<n_times;timeii++)
 	{
 		for(int trajii=0;trajii<values[timeii].size();trajii++)
@@ -397,14 +400,14 @@ Value_List<valType> Value_List<valType>::operator * (const Value_List & multipli
     cout << "Error: Value_Lists to be multiplied have different systems.\n";
     exit(0);
   }
-  
+
   Value_List<valType> templist(*this);
 //  for(timeii=0;timeii<syst->show_n_timesteps();timeii++)
 //  {
 //    templist.defined_times[timeii]=defined_times[timeii]&&multiplier.defined_times[timeii];
 //    overlap_times+=int(defined_times[timeii]&&multiplier.defined_times[timeii])
 //  }
-  
+
   for(int timeii=0;timeii<n_times;timeii++)
   {
     for(int trajii=0;trajii<values[timeii].size();trajii++)
@@ -415,7 +418,7 @@ Value_List<valType> Value_List<valType>::operator * (const Value_List & multipli
       }
     }
   }
-  
+
   return templist;
 }
 
@@ -428,7 +431,7 @@ void Value_List<valType>::operator *= (const Value_List & multiplier)
 	  cout << "Error: Value_Lists to be multiplied have different systems.\n";
 	  exit(0);
 	}
-  
+
 	for(int timeii=0;timeii<n_times;timeii++)
 	{
 		for(int trajii=0;trajii<values[timeii].size();trajii++)
@@ -483,17 +486,17 @@ float Value_List<valType>::static_crosscorrelation(const Value_List& target)cons
 {
   float correlation=0;
   int n_atoms=0;
-  
+
   if(syst!=target.syst)
   {
     cout << "Error: Value_Lists to be multiplied have different systems.\n";
     exit(0);
   }
-  
+
   int n_trajectories = syst->show_n_trajectories();
   ((Value_List<valType>)(*this)).update_size();
   ((Value_List<valType>)(target)).update_size();
-  
+
   for(int timeii=0;timeii<syst->show_n_timesteps();timeii++)
   {
     for(int trajii=0;trajii<n_trajectories;trajii++)
@@ -505,9 +508,9 @@ float Value_List<valType>::static_crosscorrelation(const Value_List& target)cons
       }
     }
   }
-  
+
   correlation/=(float(n_atoms)*mean()*target.mean());
-  
+
   return correlation;
 }
 
@@ -519,26 +522,26 @@ void Value_List<valType>::dynamic_crosscorrelation_function(string filename, con
   int block_timegapii;
   int displacement_count;
   bool fullblock=0;
-  float * timetable; 
+  float * timetable;
   ofstream output;
-  
+
   if(syst!=target.syst)
   {
     cout << "Error: Value_Lists to be multiplied have different systems.\n";
     exit(0);
   }
-  
-  
+
+
   int displacement_limit = syst->show_displacement_limit();
   int n_timegaps = syst->show_n_timegaps();
   int n_exponential_steps = syst->show_n_exponential_steps();
   bool frt = syst->show_frt();
   int n_exponentials = syst->show_n_exponentials();
-  
+
   int n_trajectories = syst->show_n_trajectories();
   ((Value_List<valType>)(*this)).update_size();
   ((Value_List<valType>)(target)).update_size();
-  
+
   float * correlation;
   int * n_atoms;
   correlation = new float [n_timegaps];
@@ -548,7 +551,7 @@ void Value_List<valType>::dynamic_crosscorrelation_function(string filename, con
     correlation[timegapii]=0;
     n_atoms[timegapii]=0;
   }
-  
+
   for(timegapii=0;timegapii<n_exponential_steps;timegapii++)  //loop over exponential time step spacings within each block
   {
     displacement_count=0;
@@ -556,7 +559,7 @@ void Value_List<valType>::dynamic_crosscorrelation_function(string filename, con
     {
       thisii = convert_time(n_exponential_steps*blockii+int(frt));	//calculate starting index of this block
       nextii = target.convert_time(n_exponential_steps*blockii+int(frt)+timegapii);		//calculate dispaced index
-      
+
       for(int trajii=0;trajii<n_trajectories;trajii++)
       {
 	if(included[thisii](trajii)&&target.included[nextii](trajii))
@@ -607,9 +610,9 @@ void Value_List<valType>::dynamic_crosscorrelation_function(string filename, con
       }
     }
   }
-  
+
   timetable = syst->displacement_times();
-  
+
   output.open(filename.c_str(),ios::out | ios::app);
   for(timegapii=0;timegapii<n_timegaps;timegapii++)
   {
@@ -630,18 +633,18 @@ int blockii, expii, thisii, nextii;
   int block_timegapii;
   int displacement_count;
   bool fullblock=0;
-  float * timetable; 
+  float * timetable;
   ofstream output;
-  
+
   int displacement_limit = syst->show_displacement_limit();
   int n_timegaps = syst->show_n_timegaps();
   int n_exponential_steps = syst->show_n_exponential_steps();
   bool frt = syst->show_frt();
   int n_exponentials = syst->show_n_exponentials();
-  
+
   ((Value_List<valType>)(*this)).update_size();
   int n_trajectories = syst->show_n_trajectories();
-  
+
   float * correlation;
   int * n_atoms;
   correlation = new float [n_timegaps];
@@ -651,7 +654,7 @@ int blockii, expii, thisii, nextii;
     correlation[timegapii]=0;
     n_atoms[timegapii]=0;
   }
-  
+
   for(timegapii=0;timegapii<n_exponential_steps;timegapii++)  //loop over exponential time step spacings within each block
   {
     displacement_count=0;
@@ -688,7 +691,7 @@ int blockii, expii, thisii, nextii;
 	    correlation[timegapii]+=float(values[thisii][trajii])*float(values[nextii][trajii]);
 	    n_atoms[timegapii]++;
 	  }
-	}    
+	}
 	displacement_count++;
 	if(displacement_count == displacement_limit) break;
       }
@@ -709,17 +712,17 @@ int blockii, expii, thisii, nextii;
       }
     }
   }
-  
+
   timetable = syst->displacement_times();
-  
+
   output.open(filename.c_str(),ios::out | ios::app);
-  
+
   for(timegapii=0;timegapii<n_timegaps;timegapii++)
   {
     correlation[timegapii]/=(float(n_atoms[timegapii])*mean()*mean());
     output << timetable[timegapii]<< "\t" << correlation[timegapii]<<"\n";
   }
-  
+
   output.close();
 }
 
@@ -730,18 +733,18 @@ Value_List<valType> Value_List<valType>::operator *(Trajectory_List t_list)const
 {
   int system_timeii;
   int internal_time1, internal_time2;
-  
+
   Value_List temp;
-  
+
   update_size();
-  
+
   temp.syst = syst;
-  
+
   temp.time_conversion = new int [syst->show_n_timesteps()];
   temp.defined_times = new bool [syst->show_n_timesteps()];
-  
+
   temp.n_times = n_times;
-  
+
   /*loop to count the number of independent internal times the new Value_list must have*/
   for(system_timeii=0;system_timeii<syst->show_n_timesteps();system_timeii++)
   {
@@ -758,15 +761,15 @@ Value_List<valType> Value_List<valType>::operator *(Trajectory_List t_list)const
   }
   n_internal_times = new_internal_time;
 
-  
+
   temp.included = new Boolean_List[n_internal_times];
   temp.values = new valType * [n_internal_times];
   for(int timeii=0;timeii<n_internal_times;timeii++)
   {
     temp.included[timeii].set(syst);
   }
-  
-  
+
+
   new_internal_time = -1;
   last_internal_time1 = -1;
   last_internal_time2 = -1;
@@ -792,14 +795,14 @@ Value_List<valType> Value_List<valType>::operator *(Trajectory_List t_list)const
     last_internal_time2=internal_time2;
   }
 
-  
-  
+
+
   for(int timeii=0;syst->show_n_trajectories();timeii++)
   {
     temp.defined_times[timeii]=defined_times[timeii];
   }
-  
-  
+
+
   return temp;
 }
 
@@ -823,7 +826,7 @@ string Value_List<valType>::write_pdb(int valtime, string file_name_stem, int ti
     filename = file_name_stem.append(".");
     filename = filename.append(time_str);
     filename = filename.append(".pdb");
-    
+
     int timeii=convert_time(valtime);
 
     FILE * pdbfile;
@@ -904,7 +907,7 @@ string Value_List<valType>::write_pdb(int valtime, string file_name_stem, int ti
     atomnames[17] = "Ar";
 
     int timeii=convert_time(valtime);
-    
+
     time_out << time;
     time_str = time_out.str();
 
@@ -969,7 +972,7 @@ string Value_List<valType>::write_pdb(int valtime, string file_name_stem, int ti
     filename = filename.append(".pdb");
 
     int timeii=convert_time(valtime);
-    
+
     FILE * pdbfile;
     pdbfile = fopen (filename.c_str(),"w");
 
@@ -1045,7 +1048,7 @@ string Value_List<valType>::write_pdb(int valtime, string file_name_stem, int ti
     atomnames[15] = "S";
     atomnames[16] = "Cl";
     atomnames[17] = "Ar";
-    
+
     int timeii=convert_time(valtime);
 
     time_out << time;
@@ -1094,7 +1097,7 @@ string Value_List<valType>::write_pdb(int valtime, string file_name_stem, int ti
 template <class valType>
 void Value_List<valType>::write_data_file(string filename)const
 {
-  
+
 }
 
 
@@ -1157,8 +1160,8 @@ bool Value_List<valType>::threshold(int timeii, int trajii,valType low, valType 
 template <class valType>
 void Value_List<valType>::construct_t_list(bool greater, valType thresh, Trajectory_List* t_list)
 {
-  update_size();  
-  
+  update_size();
+
   Boolean_List* thresholded;
     thresholded = new Boolean_List [syst->show_n_timesteps()];
     bool threshbool=0;
@@ -1169,7 +1172,7 @@ void Value_List<valType>::construct_t_list(bool greater, valType thresh, Traject
         thresholded[timeii].set(syst);
     }
 
-    
+
     int n_trajectories = syst->show_n_trajectories();
 
         for (int timeii=0; timeii<n_times;timeii++)
@@ -1197,8 +1200,8 @@ void Value_List<valType>::construct_t_list(bool greater, valType thresh, Traject
 template <class valType>
 void Value_List<valType>::construct_t_list(valType low, valType high,Trajectory_List* t_list)
 {
-  update_size();  
-  
+  update_size();
+
   Boolean_List* thresholded;
     thresholded = new Boolean_List [syst->show_n_timesteps()];
     bool threshbool=0;
@@ -1209,7 +1212,7 @@ void Value_List<valType>::construct_t_list(valType low, valType high,Trajectory_
         thresholded[timeii].set(syst);
     }
 
-    
+
     int n_trajectories = syst->show_n_trajectories();
 
     for (int timeii=0; timeii<n_times;timeii++)
@@ -1233,19 +1236,19 @@ template <class valType>
 void Value_List<valType>::percentile_t_list(bool greater, float percentile, Trajectory_List* t_list)
 {
     update_size();
-    
+
     Boolean_List* thresholded;
     thresholded = new Boolean_List [syst->show_n_timesteps()];
     bool threshbool=0;
     int timeii, trajii;
-    
+
     vector<valType> temp_vals;
-    
+
     valType * thresh;
     thresh = new valType [n_times];
 
-    
-    
+
+
     for(timeii=0; timeii<n_times; timeii++)
     {
       temp_vals.clear();
@@ -1257,7 +1260,7 @@ void Value_List<valType>::percentile_t_list(bool greater, float percentile, Traj
 	}
       }
       sort(temp_vals.begin(),temp_vals.end());
-      
+
       if(greater)
       {
 	thresh[timeii]=temp_vals[int(ceil(temp_vals.size()*percentile/100.0))];
@@ -1299,19 +1302,19 @@ template <class valType>
 void Value_List<valType>::percentile_t_list(float low_percentile, float high_percentile,Trajectory_List* t_list)
 {
     update_size();
-  
+
     Boolean_List* thresholded;
     thresholded = new Boolean_List [syst->show_n_timesteps()];
     bool threshbool=0;
     int timeii,trajii;
-    
+
     vector<valType> temp_vals;
-    
+
     valType * low;
     valType * high;
     low = new valType [n_times];
     high = new valType [n_times];
-    
+
     if(low_percentile<0||high_percentile<0)
     {
       cout << "\nError: percentile thresholds must be non-negative.\n";
@@ -1328,8 +1331,8 @@ void Value_List<valType>::percentile_t_list(float low_percentile, float high_per
       exit(0);
     }
 
-    
-    
+
+
     for(timeii=0; timeii<n_times; timeii++)
     {
       temp_vals.clear();
@@ -1341,19 +1344,19 @@ void Value_List<valType>::percentile_t_list(float low_percentile, float high_per
 	}
       }
       sort(temp_vals.begin(),temp_vals.end());
-      
+
       low[timeii]=temp_vals[int(ceil(temp_vals.size()*low_percentile/100.0))];
       high[timeii]=temp_vals[int(floor(temp_vals.size()*high_percentile/100.0))];
 
     }
-    
-    
+
+
     for (int timeii=0; timeii<n_times;timeii++)
     {
         thresholded[timeii].set(syst);
     }
 
-    
+
     int n_trajectories = syst->show_n_trajectories();
 
     for (int timeii=0; timeii<n_times;timeii++)
@@ -1381,5 +1384,21 @@ void Value_List<valType>::update_size()
     values.resize(syst->show_n_trajectories());
   }
 }
+}
+
+template <class valType>
+float Value_List<valType>::change(int trajindex,int time1,int time2)
+{
+    float difference;
+
+    if(included[time1](trajindex)&&included[time2](trajindex))
+    {
+            difference = float(values[time1,trajindex]-values[time2,trajindex]);
+    }
+    else
+    {
+        difference = nan("");
+    }
+    return difference;
 }
 #endif
