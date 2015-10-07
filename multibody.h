@@ -8,6 +8,8 @@
 
 #include "trajectory.h"
 #include "coordinate.h"
+#include "trajmath.h"
+#include "rgtensor.h"
 
 
 namespace std
@@ -35,10 +37,10 @@ namespace std
       ~Multibody();
       Multibody operator =(const Multibody &);
       Trajectory * operator()(int bodyindex);	//return pointer to trajectory indicated by bodyindex or null pointer if invalid index
-      
+
       Multibody(int n_bodies);		//construct multibody with n_bodies initially corresponding to null pointers
       Multibody(int n_bodies,Trajectory** bodies);
-      
+
       void set(System * sys);
       void set(int n_bodies, Trajectory** bodies);
       void set(int body_index, Trajectory * body){trajectories[body_index]=body;};	//set pointer to one of the bodies
@@ -52,6 +54,7 @@ namespace std
       int show_n_bodies()const{return n_trajectories;};
 
       float square_gyration_radius(int timeii);
+      sixfloat gyr_tensor(int timeii);
       //threefloat principle_axes(int timeii);
 
   };

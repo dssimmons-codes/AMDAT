@@ -26,15 +26,15 @@ Multibody::Multibody()
 Multibody::Multibody(const Multibody & copy)
 {
   int trajectoryii;
-  
+
   n_trajectories = copy.n_trajectories;
   trajectories = new Trajectory* [n_trajectories];
-  
+
   /*Copy over pointers to trajectories in multibody*/
   for(trajectoryii=0;trajectoryii<n_trajectories;trajectoryii++)
   {
     trajectories[trajectoryii]=copy.trajectories[trajectoryii];
-  }  
+  }
 }
 
 
@@ -59,19 +59,19 @@ Trajectory * Multibody::operator()(int bodyindex)
 Multibody Multibody::operator=(const Multibody & copy)
 {
   int trajectoryii;
-  
+
   if(this!=&copy)
   {
     n_trajectories = copy.n_trajectories;
     trajectories = new Trajectory* [n_trajectories];
-  
+
     /*Copy over pointers to trajectories in multibody*/
     for(trajectoryii=0;trajectoryii<n_trajectories;trajectoryii++)
     {
       trajectories[trajectoryii]=copy.trajectories[trajectoryii];
-    }  
+    }
   }
-  
+
   return *this;
 }
 
@@ -82,15 +82,15 @@ Multibody Multibody::operator=(const Multibody & copy)
 Multibody::Multibody(int n_bodies)
 {
   int trajectoryii;
-  
+
   n_trajectories=n_bodies;
   trajectories = new Trajectory* [n_trajectories];
-  
+
   /*Copy over pointers to trajectories in multibody*/
   for(trajectoryii=0;trajectoryii<n_trajectories;trajectoryii++)
   {
     trajectories[trajectoryii]=0;
-  }  
+  }
 }
 
 
@@ -99,15 +99,15 @@ Multibody::Multibody(int n_bodies)
 Multibody::Multibody(int n_bodies, Trajectory ** bodies)
 {
   int trajectoryii;
-  
+
   n_trajectories=n_bodies;
   trajectories = new Trajectory* [n_trajectories];
-  
+
   /*Copy over pointers to trajectories in multibody*/
   for(trajectoryii=0;trajectoryii<n_trajectories;trajectoryii++)
   {
     trajectories[trajectoryii]=bodies[trajectoryii];
-  }  
+  }
 }
 
 
@@ -122,16 +122,16 @@ void Multibody::set(int n_bodies, Trajectory ** bodies)
 {
   int trajectoryii;
   delete [] trajectories;
-  
+
   n_trajectories=n_bodies;
   trajectories = new Trajectory* [n_trajectories];
-  
+
   /*Copy over pointers to trajectories in multibody*/
   for(trajectoryii=0;trajectoryii<n_trajectories;trajectoryii++)
   {
     trajectories[trajectoryii]=bodies[trajectoryii];
-  }  
-  
+  }
+
 }
 
 
@@ -143,19 +143,19 @@ void Multibody::center_of_mass_trajectory()
   mass=0;
   int trajectoryii,timeii;
   n_timesteps = system->show_n_timesteps();
-  
+
   /*Calculate total mass of multibody*/
   for(trajectoryii=0;trajectoryii<n_trajectories;trajectoryii++)
   {
     mass+=trajectories[trajectoryii]->show_mass();
   }
-  
+
   type=0;
-  
+
   /*Determine center of mass of multibody at each time based upon unwrapped coordinates and write to */
   for(timeii=0;timeii<n_timesteps;timeii++)
   {
-    
+
     /*calculate center of mass at current time*/
     com.set(0,0,0);
     for(trajectoryii=0;trajectoryii<n_trajectories;trajectoryii++)
@@ -163,10 +163,10 @@ void Multibody::center_of_mass_trajectory()
       com+=((trajectories[trajectoryii]->show_unwrapped(timeii))*trajectories[trajectoryii]->show_mass());
     }
     com/=mass;
-    
+
     set_unwrapped(com,timeii);		//set center of mass trajectory coordinate at current time
   }
-  
+
   /*determine wrapped coordinates from unwrapped coordinates*/
   wrap(system->time_dependent_size(),system->time_dependent_boundaries());
 }
@@ -179,27 +179,27 @@ void Multibody::centroid_trajectory()
   mass=0;
   int trajectoryii,timeii;
   n_timesteps = system->show_n_timesteps();
-  
+
   /*Calculate total mass of multibody*/
   for(trajectoryii=0;trajectoryii<n_trajectories;trajectoryii++)
   {
     mass+=trajectories[trajectoryii]->show_mass();
   }
-  
+
   type=0;
-  
+
   /*Determine centroid of multibody at each time based upon unwrapped coordinates and write to */
   for(timeii=0;timeii<n_timesteps;timeii++)
   {
-    
+
     /*calculate centroid at current time*/
     cen=calculate_centroid(timeii);
     set_unwrapped(cen,timeii);		//set center of mass trajectory coordinate at current time
   }
-  
+
   /*determine wrapped coordinates from unwrapped coordinates*/
   wrap(system->time_dependent_size(),system->time_dependent_boundaries());
- 
+
 }
 
 
@@ -207,13 +207,13 @@ Coordinate Multibody::calculate_centroid(int timeii)const
 {
   int bodyii;
   Coordinate centroid(0,0,0);
-  
+
   for(bodyii=0;bodyii<n_trajectories;bodyii++)
   {
     centroid += (trajectories[bodyii]->show_unwrapped(timeii));
   }
   centroid/=n_trajectories;
-  
+
   return centroid;
 }
 
@@ -224,15 +224,63 @@ float Multibody::square_gyration_radius(int timeii)
   int bodyii;
   Coordinate centroid(0,0,0);
   float gyration_radius=0;
-  
+
   centroid=calculate_centroid(timeii);
-  
+
   for(bodyii=0;bodyii<n_trajectories;bodyii++)
   {
     gyration_radius+=(trajectories[bodyii]->show_unwrapped(timeii)-centroid).length_sq();
   }
   gyration_radius/=n_trajectories;
-  
+
   return gyration_radius;
-  
+
+}
+
+sixfloat Multibody::gyr_tensor(int timeii)
+{
+    Coordinate * coordinates;
+    int trajii;
+    sixfloat g_tensor;
+
+    coordinates = new coordinate [n_trajectories];
+
+    for(trajii=0;trajii<n_trajectories;trajii++)
+    {
+        coordinates[trajii]=trajectories[timeii][trajii]->show_unwrapped(timeii);
+    }
+
+    gyr_tensor(const Coordinate * coordinates,  n_trajectories, g_tensor);
+
+    return g_tensor;
+}
+
+threefloat Multibody::principle_axes(int timeii)
+{
+  TNT::Array1D<float> eigvals;
+  TNT::Array2D<float> rgarray(3,3,0.0);
+  threefloat axes;
+
+  sixfloat rgtensor;
+  rgeensor = gyrtensor(timeii);
+
+  rgarray[0][0]=rgtensor[blockii][timeii][0];
+  rgarray[1][0]=rgtensor[blockii][timeii][1];
+  rgarray[2][0]=rgtensor[blockii][timeii][2];
+  rgarray[0][1]=rgtensor[blockii][timeii][1];
+  rgarray[1][1]=rgtensor[blockii][timeii][3];
+  rgarray[2][1]=rgtensor[blockii][timeii][4];
+  rgarray[0][2]=rgtensor[blockii][timeii][2];
+  rgarray[1][2]=rgtensor[blockii][timeii][4];
+  rgarray[2][2]=rgtensor[blockii][timeii][5];
+
+  JAMA::Eigenvalue <float> eigmat(rgarray);
+
+  eigmat.getRealEigenvalues(eigvals);
+
+  axes[0]=pow(eigvals[0],0.5);
+  axes[1]=pow(eigvals[1],0.5);
+  axes[2]=pow(eigvals[2],0.5);
+
+  return axes;
 }
