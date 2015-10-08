@@ -53,7 +53,7 @@ class Control
     void set_constant(string, string);      // Sets a constant to a given value
     static string replace_constants(string); // A function that replaces the constants in the given string with their values
     string get_constant(string);             //Gets the value of a constant by name
-    
+
     /*Methods enabling advanced scripting in input file*/
     /*Michael Marvin*/
     void shell_command(); 			// executes a Linux command
@@ -70,8 +70,8 @@ class Control
     float process_expression(string);
 	float eval_terms(string, float, float);
     void get_user_input(bool);               // Pauses execution and allows the user to input commands on-the-fly
-    
-    
+
+
     /*Members dealing with parallelization*/
     int MAXTHREADS;
     void change_processors();
@@ -115,7 +115,7 @@ class Control
     void add_multibody_list(Multibody_List*,string);
     void delete_multibody_list(string);
     void combine_multibody_lists();
-    
+
     /*Some general methods*/
     void system();			//create system object with input file data
     void argcheck(int);			//check if the number of arguments to a analysis method is correct
@@ -207,12 +207,13 @@ class Control
     /*Multibody analysis method calls*/
     void gyration_radius();		//calculate mean gyration radius of multibody list
     void baf();
+    void orientational_correlation();
     void incremental_mean_displacement();	//calculates mean displacement between adjacent frames
     void process_value_list();
     void thresholded_list();	//generates a trajectory list thresholded from an analysis value list based on cutoff values
     void percentiled_list();	//generates a trajectory list thresholded from an analysis value list based on cutoff percentiles
     void value_list_to_pdb();
-	
+
 
   public:
     Control(char *,string*,string*,int,string);		//constructor
@@ -339,7 +340,7 @@ Analysis_type Control::run_analysis(Analysis_type analyzer, string setline, stri
 		    cout << "\nBinned Trajectory list '"<<bin_listname<<"' not found.";
 		    exit(1);
 	   }
-	}	 
+	}
      else
      {
      cout << "\nError: Command " << command << " not understood. Acceptable options are list or bin_list." << endl;

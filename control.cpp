@@ -124,7 +124,7 @@ int Control::read_input_file(char * filename_input)
         if (line == "")
         { continue; }
     }
-    
+
     tokenize.setflagmarker("\\");	//turn on flag checking for input file with "-" as flag marker
     n_args = tokenize(line, args);
     if(n_args==0)
@@ -345,6 +345,8 @@ int Control::execute_commands(int iIndex, int fIndex)
     {gyration_radius();}
     else if (command == "baf")
     {baf();}
+    else if (command == "orientational_correlation")
+    {orientational_correlation();}
     else if (command == "find_edge")
     {find_edge();}
     else if (command == "unsteady_velocity")
@@ -1556,20 +1558,20 @@ void Control::create_multibodies()
   string multibody_list_name;
   Multibody_Set* multibody_set_pointer;
   Multibody_List* new_multibody_list;
-  
+
   new_multibody_list=new Multibody_List;
 
 
   multibody_list_name = args[1];
- 
-  
+
+
   multibody_set_pointer = analyte->create_multibody_set (multibody_list_name, n_args, args);    //create multibody set with name that is the same as the multibody list. This is where the multibodies are created.
 
 
 
   new_multibody_list->set(analyte,multibody_set_pointer);
   add_multibody_list(new_multibody_list,multibody_list_name);
-  
+
 }
 
 
@@ -1620,13 +1622,13 @@ void Control::msd()
   argcheck(expected);
   dynamic = 1;
   Mean_Square_Displacement * msdpointer;
-  
+
   bool store = tokenize.isflagged("s");
   if(store)
   {
     analysisname = tokenize["s"];
   }
-  
+
 
   filename = args[1];
 
@@ -1642,7 +1644,7 @@ void Control::msd()
 
   finish = time(NULL);
   cout << "\nCalculated mean square displacement in " << finish-start<<" seconds."<<endl;
-  
+
   //store msd analysis method if appropriate
   if(store)
   {
@@ -1731,21 +1733,21 @@ void Control::displacement_list()
   int timegap_index;
   int expected = 4;
   argcheck(expected);
-  
+
   filename = args[1];
   listname = args[2];
   timegap_index = atoi(args[3].c_str());
-  
+
   runline = read_line();
   cout << "\n" << runline;
-  
+
   Displacement_List*dlist_pointer;
   dlist_pointer = new Displacement_List();
   Displacement_List dlist(analyte,timegap_index);
-  
+
   cout << "Calculating list of displacement scalars.\n";
   start = time(NULL);
- 
+
   dlist=run_analysis<Displacement_List>(dlist,runline,filename);
   (*dlist_pointer)=dlist;
   add_value_list(dlist_pointer,listname);
@@ -2110,29 +2112,29 @@ void Control::rdf()
   float max_length_scale = 0;
   dynamic = 0;
   Radial_Distribution_Function * rdfpointer;
-  
+
   bool store = tokenize.isflagged("s");
   if(store)
   {
     analysisname = tokenize["s"];
   }
-  
+
   argcheck(6);
-  
+
   filename = args[1];			//name of file to which to save calculated data
   symmetry = args[2];			//determine if atom sets are the same or different
   n_bins = atoi(args[3].c_str());
   timescheme=atoi(args[4].c_str());
   max_length_scale = atof(args[5].c_str());
-  
+
   Radial_Distribution_Function rad_dis_fun(analyte,n_bins,timescheme,max_length_scale);
-  
+
   //  getline(input,runline1);
   runline1 = read_line();
   cout <<"\n"<< runline1;
   n_args = tokenize(runline1, args);
   listname1 = args[1];
-  
+
   if (symmetry=="symmetric")
     {
       cout << "\nCalculating radial distribution function.\n";cout.flush();
@@ -2161,7 +2163,7 @@ void Control::rdf()
       exit(1);
     }
     rad_dis_fun.write(filename);
-    
+
    //store rdf analysis method if appropriate
   if(store)
   {
@@ -2190,11 +2192,11 @@ void Control::structure_factor_from_rdf()
   string filename, rdfname;
   int n_bins;
   argcheck(4);
-  
+
   filename =  args[1];			//name of file to which to save calculated data
   rdfname = args[3];			//name of saved rdf
   n_bins = atoi(args[2].c_str());	//number of k's for which to compute structure factor
-  
+
   if(analyses.count(rdfname))
   {
     if(analyses.at(rdfname)->what_are_you()==radial_distribution_function)
@@ -3143,9 +3145,9 @@ else
 void Control::process_value_list()
 {
   string keyword;
-  
+
   keyword = args[1];
-  
+
   if(keyword == "threshold_value")
   {
     thresholded_list();
@@ -3228,7 +3230,7 @@ void Control::percentiled_list()
   float threshold2;
   string thresh_command;
 
-  
+
   av_listname = args[2];
   t_listname = args[3];//user-input name of list
   thresh_command = args[4];
@@ -3279,19 +3281,19 @@ void Control::value_list_to_pdb()
   int valuetimeindex, positiontimeindex;
   int value_listnum;
   float time;
-  
+
   value_listname = args[2];
   filestem = args[3];
   valuetimeindex = atoi(args[4].c_str());
   positiontimeindex = atoi(args[5].c_str());
-  
+
   value_listnum = find_value_list(value_listname);
   if(value_listnum==-1)
   {
     cout << "\nError: value_list name " <<value_listname<<" not found.\n";
     exit(0);
   }
-  
+
   cout << "\Writing value list to PDB" << endl;
   if(n_args==6)
   {
@@ -3302,7 +3304,7 @@ void Control::value_list_to_pdb()
     max = atof(args[6].c_str());
     value_lists[value_listnum]->write_pdb(valuetimeindex, filestem, positiontimeindex, max);
   }
-  
+
 }
 
 
@@ -3315,11 +3317,11 @@ void Control::composition()
     string runline;
   string filename;
   int timescheme;
-  
+
   argcheck(2,3);
   dynamic=0;
   filename=args[1];
-  
+
   if(n_args==3)
   {
     timescheme=atoi(args[2].c_str());
@@ -3411,16 +3413,16 @@ void Control::find_edge()
   dynamic = 0;
   float vectorx,vectory,vectorz;
   Coordinate vector;
-  
+
   filename = args[1];
   vectorx = atof(args[2].c_str());
   vectory = atof(args[3].c_str());
   vectorz = atof(args[4].c_str());
   vector.set(vectorx,vectory,vectorz);
-  
+
   runline = read_line();
   cout <<"\n"<< runline;
-  
+
   Edge_Detector_Timedependent edge(analyte,vector);
   cout << "\nFinding edge.\n";cout.flush();
   start = time(NULL);
@@ -3440,12 +3442,12 @@ void Control::unsteady_velocity()
   int expected=2;
   argcheck(expected);
   dynamic = 0;
-  
+
   filename = args[1];
-  
+
   runline = read_line();
   cout <<"\n"<< runline;
-  
+
   Mean_Velocity_Unsteady velocity(analyte);
   cout << "\nComputing mean velocity.\n";cout.flush();
   start = time(NULL);
@@ -3464,12 +3466,12 @@ void Control::incremental_mean_displacement()
   int expected=2;
   argcheck(expected);
   dynamic = 0;
-  
+
   filename = args[1];
-  
+
   runline = read_line();
   cout <<"\n"<< runline;
-  
+
   Mean_Unsteady_Displacement mud(analyte);
   cout << "\nComputing mean incremental displacement.\n";cout.flush();
   start = time(NULL);
@@ -3485,11 +3487,11 @@ void Control::write_analysis()
 {
   string analysisname, filename;
   bool exists;
-  
+
   argcheck(3);
-  analysisname = args[1]; 
+  analysisname = args[1];
   filename = args[2];
-  
+
   exists = analyses.count(analysisname);
   if(exists)
   {
@@ -3519,7 +3521,7 @@ void Control::delete_analysis()
   {
     cout << "\nWarning: no stored analysis with name " << analysisname << ".\n";
   }
-  
+
 }
 
 
@@ -3793,4 +3795,33 @@ void Control::baf()
   cout << "\nCalculated bond autocorrelation function in " << finish-start<<" seconds."<<endl;
   bafun.write(filename);
 
+}
+
+void Control::orientational_correlation()
+{
+  string filename, multibody_list_name;
+  Multibody_List * multibodylist;
+  float x,y,z;
+  Coordinate vec();
+
+
+  int expected=6;
+  argcheck(expected);
+
+  filename = args[1];
+  multibody_list_name=args[2];
+  x = atof(args[3].c_str());
+  y = atof(args[4].c_str());
+  z = atof(args[5].c_str());
+
+  vec.set(x,y,z);
+  multibodylist = find_multibody_list(multibody_list_name);
+
+  Orientational_Correlation oc(analyte,vec);
+  cout << "\nCalculating gyration radius.\n";cout.flush();
+  start = time(NULL);
+  oc.analyze(multibodylist); // pass run_analysis template the analysis type 'Mean_Square_Displacement'
+  finish = time(NULL);
+  cout << "\nCalculated bond autocorrelation function in " << finish-start<<" seconds."<<endl;
+  oc.write(filename);
 }
