@@ -1,13 +1,20 @@
 system
 xyz_log
 /home/david/AMDATsync/trunk/testfiles/traj.xyz /home/david/AMDATsync/trunk/testfiles/log.lammps
-exponential 1 77 1.2 0 0 .01
+exponential 10 77 1.2 0 0 .01
 polymer 50
 1
 32
 
 create_list all
 all
+
+create_multibodies endtoendvector species_atomlist polymer 1 0 1 1
+
+orientational_correlation orientational_correlation.dat endtoendvector 0 0 1 
+
+exit
+
 
 displacement_list displacement_stats.dat displacement_list 70
 list all

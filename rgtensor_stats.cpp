@@ -11,6 +11,7 @@ with time variant trajectory lists*/
 #include "rgtensor_stats.h"
 #include "version.h"
 #include <math.h>
+#include "system.h"
 
 using namespace std;
 

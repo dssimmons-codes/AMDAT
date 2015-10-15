@@ -54,6 +54,8 @@
 #include "radial_distribution_function.h"
 #include "bond_autocorrelation_function.h"
 #include "displacement_list.h"
+#include "orientational_correlation.h"
+#include "coordinate.h"
 
 using namespace std;
 
@@ -3802,7 +3804,7 @@ void Control::orientational_correlation()
   string filename, multibody_list_name;
   Multibody_List * multibodylist;
   float x,y,z;
-  Coordinate vec();
+  Coordinate vec;
 
 
   int expected=6;

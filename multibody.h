@@ -54,7 +54,7 @@ namespace std
       int show_n_bodies()const{return n_trajectories;};
 
       float square_gyration_radius(int timeii);
-      sixfloat gyr_tensor(int timeii);
+      void gyr_tensor(int timeii, sixfloat*);
       //threefloat principle_axes(int timeii);
 
   };

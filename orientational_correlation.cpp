@@ -20,7 +20,7 @@ Orientational_Correlation::Orientational_Correlation()
   n_times=0;
 
   correlation = new float [n_times];
-  weighting = new int [n_times];
+  weighting = new float [n_times];
   overall_correlation = 0;
   weighting = 0;
   correlated_vector.set(0,0,0);
@@ -36,7 +36,7 @@ Orientational_Correlation::Orientational_Correlation(const Orientational_Correla
   multibody_list = copy.multibody_list;
 
   correlation = new float [n_times];
-  weighting = new int [n_times];
+  weighting = new float [n_times];
   for(timeii=0;timeii<n_times;timeii++)
   {
     correlation[timeii] = copy.correlation[timeii];
@@ -54,7 +54,7 @@ Orientational_Correlation::Orientational_Correlation(System*sys)
   system = sys;
   n_times = system->show_n_timesteps();
   correlation = new float [n_times];
-  weighting = new int [n_times];
+  weighting = new float [n_times];
   for(timeii=0;timeii<n_times;timeii++)
   {
     correlation[timeii] = 0;
@@ -71,7 +71,7 @@ Orientational_Correlation::Orientational_Correlation(System*sys, Coordinate vec)
   system = sys;
   n_times = system->show_n_timesteps();
   correlation = new float [n_times];
-  weighting = new int [n_times];
+  weighting = new float [n_times];
   for(timeii=0;timeii<n_times;timeii++)
   {
     correlation[timeii] = 0;
@@ -95,7 +95,7 @@ Orientational_Correlation Orientational_Correlation::operator = (const Orientati
   multibody_list = copy.multibody_list;
 
   correlation = new float [n_times];
-  weighting = new int [n_times];
+  weighting = new float [n_times];
   for(timeii=0;timeii<n_times;timeii++)
   {
     correlation[timeii] = copy.correlation[timeii];
@@ -126,7 +126,7 @@ void Orientational_Correlation::analyze(Multibody_List * t_list)
 
 void Orientational_Correlation::listkernel(Multibody* current_multibody, int timegapii,int thisii, int nextii)
 {
-  float dotproduct=  (((*current_multibody)(1)->show_unwrapped(thisii)-(*current_multibody)(0)->show_unwrapped(thisii)).unit_vector())&(correlated_vector).unit_vector());	//compute dot product between unit vectors at initial and later times
+  float dotproduct=  (((*current_multibody)(1)->show_unwrapped(thisii)-(*current_multibody)(0)->show_unwrapped(thisii)).unit_vector())&((correlated_vector).unit_vector());	//compute dot product between unit vectors at initial and later times
   correlation[thisii]+=0.5*(3.0*dotproduct*dotproduct - 1.0);	//increment baf by second legendre polynomial of dot product above
 }
 
@@ -159,7 +159,7 @@ void Orientational_Correlation::write(string filename)const
   output << "Orientation correlation function data created by AMDAT v." << VERSION << "\n";
   output << "Mean correlation with vector " << correlated_vector.show_x() << " " <<correlated_vector.show_y() << correlated_vector.show_z()<<"\n";
 
-    output << "overall\t"<<overall_correlatoin[timeii]<<"\n";
+    output << "overall\t"<<overall_correlation<<"\n";
 
     for(timeii=0;timeii<n_times;timeii++)
   {

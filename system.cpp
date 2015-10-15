@@ -4425,7 +4425,7 @@ Multibody_Set* System::create_multibody_set (string setname, int n_args, string*
     if(n_args==4)
     {
       speciesindex = show_species_index(args[3]);
-      multibodysetpointer=create_multibody_set();
+      multibodysetpointer=create_multibody_set(speciesindex);
     }
     else
     {

@@ -1,4 +1,4 @@
-/*Molecular Dynamics Analysis Toolkit (MDAT)*/
+/*Amorphous Molecular Dynamics Analysis Toolkit (MDAT)*/
 /*Class to calculate multibody mean gyration radius*/
 /*Written by David S. Simmons*/
 

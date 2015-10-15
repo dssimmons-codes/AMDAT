@@ -237,24 +237,23 @@ float Multibody::square_gyration_radius(int timeii)
 
 }
 
-sixfloat Multibody::gyr_tensor(int timeii)
+void Multibody::gyr_tensor(int timeii, sixfloat* g_tensor)
 {
     Coordinate * coordinates;
     int trajii;
-    sixfloat g_tensor;
 
-    coordinates = new coordinate [n_trajectories];
+    coordinates = new Coordinate [n_trajectories];
 
     for(trajii=0;trajii<n_trajectories;trajii++)
     {
-        coordinates[trajii]=trajectories[timeii][trajii]->show_unwrapped(timeii);
+        coordinates[trajii]=trajectories[trajii]->show_unwrapped(timeii);
     }
 
-    gyr_tensor(const Coordinate * coordinates,  n_trajectories, g_tensor);
+    gyration_tensor(coordinates,  n_trajectories, g_tensor);
 
-    return g_tensor;
 }
 
+#ifdef NEVER
 threefloat Multibody::principle_axes(int timeii)
 {
   TNT::Array1D<float> eigvals;
@@ -284,3 +283,4 @@ threefloat Multibody::principle_axes(int timeii)
 
   return axes;
 }
+#endif

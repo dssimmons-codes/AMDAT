@@ -1384,7 +1384,6 @@ void Value_List<valType>::update_size()
     values.resize(syst->show_n_trajectories());
   }
 }
-}
 
 template <class valType>
 float Value_List<valType>::change(int trajindex,int time1,int time2)
@@ -1393,12 +1392,14 @@ float Value_List<valType>::change(int trajindex,int time1,int time2)
 
     if(included[time1](trajindex)&&included[time2](trajindex))
     {
-            difference = float(values[time1,trajindex]-values[time2,trajindex]);
+            difference = float(values[time1][trajindex]-values[time2][trajindex]);
     }
     else
     {
         difference = nan("");
     }
     return difference;
+}
+
 }
 #endif

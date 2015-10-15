@@ -12,6 +12,7 @@
 #include "tntjama/jama_eig.h"
 #include <stdlib.h>
 #include "version.h"
+#include "system.h"
 
 using namespace std;
 

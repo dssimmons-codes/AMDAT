@@ -2,12 +2,18 @@
 /*Trajectory_RgTensor class: calculates time-dependent Rg Tensor for a trajectory*/
 /*Written by David S. Simmons*/
 
-#include "system.h"
+//#include "system.h"
 #include "trajmath.h"
 //#include <tnt.h>
 #include "tntjama/tnt.h"
+#include "trajectory.h"
+
+#ifndef RGTENSOR
+#define RGTENSOR
 
 namespace std {
+  
+  class System;
 
 typedef float threefloat [3];
   
@@ -42,3 +48,4 @@ class RgTensor
 };
 
 }
+#endif
