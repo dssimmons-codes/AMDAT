@@ -56,6 +56,7 @@
 #include "displacement_list.h"
 #include "orientational_correlation.h"
 #include "coordinate.h"
+#include "multibody_region.h"
 
 using namespace std;
 
@@ -226,6 +227,10 @@ int Control::execute_commands(int iIndex, int fIndex)
     else if (command == "trajectories_from_multibodies")
     {
       trajectories_from_multibodies();
+    }
+    else if(command == "region_multibody_list")
+    {
+      region_multibody_list();
     }
     else if (command == "combine_trajectories")
     {
@@ -1552,6 +1557,40 @@ void Control::trajectories_from_multibodies()
 }
 
 
+void Control::region_multibody_list()
+{
+  string new_multibody_list_name, target_multibody_list_name, statistics_file;
+  float xlo,ylo,zlo,xhi,yhi,zhi;
+  int expected = 10;
+  argcheck(expected);
+  
+  Multibody_Region * mbr;
+  mbr = new Multibody_Region;
+  Multibody_List * target_multibodylist;
+  Coordinate lo, hi;
+  
+  new_multibody_list_name = args[1];
+  target_multibody_list_name = args[2];
+  xlo = atof(args[3].c_str());
+  ylo = atof(args[4].c_str());
+  zlo = atof(args[5].c_str());
+  xhi = atof(args[6].c_str());
+  yhi = atof(args[7].c_str());
+  zhi = atof(args[8].c_str());
+  lo.set(xlo,ylo,zlo);
+  hi.set(xhi,yhi,zhi);
+  
+  statistics_file=args[9];
+  
+  target_multibodylist = find_multibody_list(target_multibody_list_name);
+  (*mbr)=Multibody_Region(analyte,lo,hi);
+  mbr->analyze(target_multibodylist);
+  add_multibody_list((Multibody_List*)mbr, new_multibody_list_name);
+  
+  mbr->write(statistics_file);
+  
+  
+}
 
 
 /*--------------------------------------------------------------------------------*/

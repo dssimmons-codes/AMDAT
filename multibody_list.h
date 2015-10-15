@@ -16,6 +16,7 @@ namespace std{
 
   class Multibody_List
   {
+    protected:
     System * sys;
 
     vector<vector<Multibody*>> multibodies;

@@ -323,3 +323,17 @@ void Coordinate::smallest(const Coordinate * coordlist, int listsize)
     if(coordlist[coordii].z<z) z=coordlist[coordii].z;
   }
 }
+
+
+bool Coordinate::within(const Coordinate& low, const Coordinate & high)
+{
+  if(x<=high.x&&y<=high.y&&z<=high.z&&x>=low.x&&y>=low.y&&z>=low.z)
+  {
+    return true;
+  }
+  else
+  {
+    return false;
+  }
+  
+}

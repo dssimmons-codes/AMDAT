@@ -1,7 +1,7 @@
 system
 xyz_log
 /home/david/AMDATsync/trunk/testfiles/traj.xyz /home/david/AMDATsync/trunk/testfiles/log.lammps
-exponential 10 77 1.2 0 0 .01
+exponential 1 77 1.2 0 0 .01
 polymer 50
 1
 32
@@ -11,15 +11,26 @@ all
 
 create_multibodies endtoendvector species_atomlist polymer 1 0 1 1
 
-orientational_correlation orientational_correlation.dat endtoendvector 0 0 1 
+trajectories_from_multibodies eevector_traj endtoendvector centroid
 
-trajectories_from_multibodies eevectors endtoendvector centroid
+region_multibody_list eevectorbin endtoendvector -100 -100 -100 100 100 100 eevectorstats.dat
 
-write_list_trajectory eevectors eevectortrajectory.xyz
+orientational_correlation orientational_correlation_binned.dat eevectorbin 0 0 1 
+
+exit
+
+
+
+write_list_trajectory eevectorbins_traj eevectorbintrajectory.xyz
 
 
 exit
 
+orientational_correlation orientational_correlation.dat endtoendvector 0 0 1 
+
+
+
+write_list_trajectory eevector_traj eevectortrajectory.xyz
 
 displacement_list displacement_stats.dat displacement_list 70
 list all

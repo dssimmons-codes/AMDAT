@@ -208,11 +208,15 @@ class Control
     void gyration_radius();		//calculate mean gyration radius of multibody list
     void baf();
     void orientational_correlation();
+    void region_multibody_list();	//creates new multibody list based on region
+    
+    
     void incremental_mean_displacement();	//calculates mean displacement between adjacent frames
     void process_value_list();
     void thresholded_list();	//generates a trajectory list thresholded from an analysis value list based on cutoff values
     void percentiled_list();	//generates a trajectory list thresholded from an analysis value list based on cutoff percentiles
     void value_list_to_pdb();
+    
 
 
   public:
