@@ -256,13 +256,14 @@ void Trajectory::unwrap(const Coordinate & box_size)
 void Trajectory::wrap(const Coordinate * box_size,Coordinate ** box_boundaries)
 {
 	int timeii;				//index over timesteps
-	if(!is_wrapped)				//only wrap if wrapped coordinates do not yet exist
+	if(!is_wrapped&&is_unwrapped)				//only wrap if wrapped coordinates do not yet exist but unwrapped do
 	{
 		delete [] coordinates;			//delete null memory assignment
 		coordinates = new Coordinate[n_timesteps];	//and allocate necessary memory for wrapped coordinates
 
 		for(timeii=0;timeii<n_timesteps;timeii++)		//loop over time to build wrapped coordinate set
 		{
+		  coordinates[timeii]=unwrapped[timeii];
 		  coordinates[timeii]-=box_size[timeii]*((coordinates[timeii]-box_boundaries[timeii][0])/box_size[timeii]).coord_floor();
 		}
 		is_wrapped = 1;			//note wrapped state
