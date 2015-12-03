@@ -12,6 +12,8 @@
 using namespace std;
 
 
+
+
 Trajectory_List::Trajectory_List(int timecount, int cap)
 {
 
@@ -579,7 +581,7 @@ Trajectory_List Trajectory_List::operator|| (const Trajectory_List & comparison)
   /*create new trajectory list and return*/
    new_list.set(sys,n_internal_times,newcapacity,temp_included,temp_time_conversion);
 
-   delete temp_included;
+   delete [] temp_included;
    delete [] temp_time_conversion;
 
    return new_list;

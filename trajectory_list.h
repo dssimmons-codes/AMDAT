@@ -44,7 +44,7 @@ class Trajectory_List
     void addtrajectory(int, Trajectory*);
 
   public:
-    Trajectory_List(int timecount = 0, int cap = 0);
+    Trajectory_List(int timecount = 1, int cap = 0);
     Trajectory_List(System* sys, int timecount, int cap, Boolean_List * boollist, int*time_conversion);
     ~Trajectory_List();
     Trajectory_List(const Trajectory_List &); // MEM - copy constructor

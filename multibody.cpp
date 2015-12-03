@@ -16,8 +16,12 @@ using namespace std;
 /*Default constructor*/
 Multibody::Multibody()
 {
-  n_trajectories = 0;
-  trajectories = new Trajectory* [n_trajectories];
+  //trajectories = new Trajectory* [n_trajectories];
+}
+
+Multibody::Multibody(System * sys)
+{
+  system=sys;
 }
 
 
@@ -27,14 +31,14 @@ Multibody::Multibody(const Multibody & copy)
 {
   int trajectoryii;
 
-  n_trajectories = copy.n_trajectories;
-  trajectories = new Trajectory* [n_trajectories];
+  trajectories=copy.trajectories;
+  //trajectories = new Trajectory* [n_trajectories];
 
   /*Copy over pointers to trajectories in multibody*/
-  for(trajectoryii=0;trajectoryii<n_trajectories;trajectoryii++)
-  {
-    trajectories[trajectoryii]=copy.trajectories[trajectoryii];
-  }
+  //for(trajectoryii=0;trajectoryii<n_trajectories;trajectoryii++)
+  //{
+  //  trajectories[trajectoryii]=copy.trajectories[trajectoryii];
+  //}
 }
 
 
@@ -42,7 +46,7 @@ Multibody::Multibody(const Multibody & copy)
 /*Destructor*/
 Multibody::~Multibody()
 {
-  delete [] trajectories;
+  //delete [] trajectories;
 }
 
 
@@ -62,14 +66,14 @@ Multibody Multibody::operator=(const Multibody & copy)
 
   if(this!=&copy)
   {
-    n_trajectories = copy.n_trajectories;
-    trajectories = new Trajectory* [n_trajectories];
+    trajectories=copy.trajectories;
+    //trajectories = new Trajectory* [n_trajectories];
 
     /*Copy over pointers to trajectories in multibody*/
-    for(trajectoryii=0;trajectoryii<n_trajectories;trajectoryii++)
-    {
-      trajectories[trajectoryii]=copy.trajectories[trajectoryii];
-    }
+    //for(trajectoryii=0;trajectoryii<n_trajectories;trajectoryii++)
+    //{
+    //  trajectories[trajectoryii]=copy.trajectories[trajectoryii];
+    //}
   }
 
   return *this;
@@ -83,8 +87,9 @@ Multibody::Multibody(int n_bodies)
 {
   int trajectoryii;
 
-  n_trajectories=n_bodies;
-  trajectories = new Trajectory* [n_trajectories];
+  int n_trajectories=n_bodies;
+  trajectories.resize(n_trajectories);
+  //trajectories = new Trajectory* [n_trajectories];
 
   /*Copy over pointers to trajectories in multibody*/
   for(trajectoryii=0;trajectoryii<n_trajectories;trajectoryii++)
@@ -100,8 +105,9 @@ Multibody::Multibody(int n_bodies, Trajectory ** bodies)
 {
   int trajectoryii;
 
-  n_trajectories=n_bodies;
-  trajectories = new Trajectory* [n_trajectories];
+  int n_trajectories=n_bodies;
+  trajectories.resize(n_trajectories);
+  //trajectories = new Trajectory* [n_trajectories];
 
   /*Copy over pointers to trajectories in multibody*/
   for(trajectoryii=0;trajectoryii<n_trajectories;trajectoryii++)
@@ -121,10 +127,10 @@ void Multibody::set(System*sys)
 void Multibody::set(int n_bodies, Trajectory ** bodies)
 {
   int trajectoryii;
-  delete [] trajectories;
+  trajectories.clear();
 
-  n_trajectories=n_bodies;
-  trajectories = new Trajectory* [n_trajectories];
+  int n_trajectories=n_bodies;
+  trajectories.resize(n_trajectories);
 
   /*Copy over pointers to trajectories in multibody*/
   for(trajectoryii=0;trajectoryii<n_trajectories;trajectoryii++)
@@ -143,6 +149,7 @@ void Multibody::center_of_mass_trajectory()
   mass=0;
   int trajectoryii,timeii;
   n_timesteps = system->show_n_timesteps();
+  int n_trajectories=trajectories.size();
 
   /*Calculate total mass of multibody*/
   for(trajectoryii=0;trajectoryii<n_trajectories;trajectoryii++)
@@ -179,6 +186,7 @@ void Multibody::centroid_trajectory()
   mass=0;
   int trajectoryii,timeii;
   n_timesteps = system->show_n_timesteps();
+  int n_trajectories=trajectories.size();
 
   /*Calculate total mass of multibody*/
   for(trajectoryii=0;trajectoryii<n_trajectories;trajectoryii++)
@@ -207,6 +215,7 @@ Coordinate Multibody::calculate_centroid(int timeii)const
 {
   int bodyii;
   Coordinate centroid(0,0,0);
+  int n_trajectories=trajectories.size();
 
   for(bodyii=0;bodyii<n_trajectories;bodyii++)
   {
@@ -224,6 +233,7 @@ float Multibody::square_gyration_radius(int timeii)
   int bodyii;
   Coordinate centroid(0,0,0);
   float gyration_radius=0;
+  int n_trajectories=trajectories.size();
 
   centroid=calculate_centroid(timeii);
 
@@ -241,6 +251,7 @@ void Multibody::gyr_tensor(int timeii, sixfloat* g_tensor)
 {
     Coordinate * coordinates;
     int trajii;
+    int n_trajectories=trajectories.size();
 
     coordinates = new Coordinate [n_trajectories];
 
@@ -284,3 +295,22 @@ threefloat Multibody::principle_axes(int timeii)
   return axes;
 }
 #endif
+
+
+bool Multibody::trajectory_check(Trajectory* check)
+{
+  
+  for(int bodyii=0;bodyii<trajectories.size();bodyii++)
+  {
+    if(trajectories[bodyii]==check)
+    {
+      return true;
+    }
+  }
+  return false;
+}
+
+void add_body(Trajectory* new_trajectory)
+{
+  trajectories.push_back(new_trajectory);
+}

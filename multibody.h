@@ -6,6 +6,8 @@
 #ifndef MULTIBODY
 #define MULTIBODY
 
+#include <vector>
+
 #include "trajectory.h"
 #include "coordinate.h"
 #include "trajmath.h"
@@ -21,8 +23,9 @@ namespace std
   {
     System * system;
 
-    int n_trajectories;
-    Trajectory ** trajectories;
+    //int n_trajectories;
+    //Trajectory ** trajectories;
+    vector<Trajectory*> trajectories;
     Coordinate relative_image_index; //stores relative image flag for each body in the multibody at its reference time of creation so that any calculation involving the relative internal relationships of the body within the multibody correctly compute their relative separation vectors at all times (should always consist of three ints);
 
     //int multibody_ID;
@@ -30,6 +33,10 @@ namespace std
     //void calculate_mass;
     //void calculate_center_of_mass();
     Coordinate calculate_centroid(int timeii)const;
+    
+    
+    int tref;				//reference time at which multibody is defined within consistent image flags
+    Coordinate * image_offsets;		//image flag offsets to get consistent (properly wrapped) multibody at tref
 
     public:
       Multibody();
@@ -51,11 +58,14 @@ namespace std
       void center_of_mass_trajectory();
       void centroid_trajectory();
 
-      int show_n_bodies()const{return n_trajectories;};
+      int show_n_bodies()const{return trajectories.size();};
 
       float square_gyration_radius(int timeii);
       void gyr_tensor(int timeii, sixfloat*);
       //threefloat principle_axes(int timeii);
+      
+      bool trajectory_check(Trajectory*);	//returns true if this multibody contains the specified trajectory; returns false otherwise
+      void add_body(Trajectory*);
 
   };
 

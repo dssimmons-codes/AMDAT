@@ -1307,7 +1307,7 @@ void Control::combine_trajectories()
 
     newlistname=args[1];
 
-    new_trajectory_list=find_trajectorylist(args[2]);
+    (*new_trajectory_list)=(*find_trajectorylist(args[2]));
 
     for(argii=3;argii<n_args;argii++)
     {

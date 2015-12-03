@@ -1,0 +1,92 @@
+
+
+#include <stdlib.h>
+#include <iostream>
+#include <fstream>
+#include <math.h>
+#include <sstream>
+#include "string_multibodies.h"
+#include "version.h"
+
+
+
+ void String_Multibodies::analyze(Trajectory_List*t_list)
+{
+	trajectory_list=t_list;
+	system->displacement_list(this, timegap);
+	postprocess_list();
+}
+
+
+
+ void String_Multibodies::list_displacementkernel(int timegapii, int thisii, int nextii)
+{
+	trajectories_considered+=(trajectory_list[0]).show_n_trajectories(thisii);
+	trajindex=0;
+	int n_trajectories = trajectory_list->show_n_trajectories(thisii);
+
+	delete [] stringID;
+		
+	stringID = new int [n_trajectories];
+	for(int trajii=0;trajii<n_trajectories;trajii++)
+	{
+	  stringID[trajii]=-1;
+	}
+	trajindex=-1;
+	
+	(trajectory_list[0]).listloop(this,thistime);
+}
+
+
+
+void String_Multibodies::listkernel(Trajectory* trajectory1, int timegapii, int thisii, int nextii)
+{
+    int trajii;
+    Trajectory * trajectory2;
+    
+    int n_trajectories = trajectory_list->show_n_trajectories(thisii);
+    int currenttime = int(float(thistime)/float(system->show_n_exponential_steps()));
+    
+    trajindex++;
+    
+    for(trajii=0;trajii<n_trajectories;trajii++)
+    {
+      trajectory2 = (*trajectory_list)(thistime, trajii);
+      if(trajectory2!=trajectory1)
+      {
+	
+	
+	distance = (trajectory1->show_coordinate(thisii)-trajectory2->show_coordinate(nextii)).length_unwrapped(system->size(thistime));
+	if(distance<threshold*sigmatrix[trajtype1][trajtype2])
+	{
+	  if(stringID[currenttime][trajectory1ID]==-1 && stringID[currenttime][trajectory2ID]==-1)	//if neither atom is in a string
+	  {
+	    /*create new string*/
+	    string_multibodies[currenttime].push_back(system);
+	    string_validity.push_back(true);
+	    string_multibodies[currenttime][string_multibodies[currenttime].size()].add_body(trajectory1);
+	    string_multibodies[currenttime][string_multibodies[currenttime].size()].add_body(trajectory2);
+	    stringID[trajindex] =  string_multibodies[currenttime].size();
+	    stringID[trajii] = string_multibodies[currenttime].size();
+	  }
+	  else if(stringID[trajindex]==-1 && stringID[trajii]>=0)	//if atom 2 is in a string but atom 1 is not
+	  {
+	    string_multibodies[currenttime][stringID[trajii]].addbody(trajectory1);
+	    stringID[trajindex] =  stringID[trajii];
+	  }
+	  else if(stringID[trajindex]>=0 && stringID[trajii]==-1)	//if atom 1 is in a string but atom 2 is not
+	  {
+	    string_multibodies[currenttime][stringID[trajindex]].addbody(trajectory2);
+	    stringID[trajii] =  stringID[trajindex];
+	  }
+	  else if(stringID[trajindex]>=0 && stringID[trajii]>0)		//if both atoms are in strings but not the same string
+	  {
+	    string_multibodies[currenttime][stringID[trajindex]].absorb_multibody(string_multibodies[currenttime][stringID[trajii]]);
+	    string_validity[stringID[trajii]]=false;
+	    //need to switch string_ID for trajectories that were merged in
+	  }
+	}
+	
+      }
+    }
+}
