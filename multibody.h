@@ -66,6 +66,7 @@ namespace std
       
       bool trajectory_check(Trajectory*);	//returns true if this multibody contains the specified trajectory; returns false otherwise
       void add_body(Trajectory*);
+      void absorb_multibody(const Multibody &);
 
   };
 
