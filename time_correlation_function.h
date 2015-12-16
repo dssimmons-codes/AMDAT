@@ -41,6 +41,7 @@ class Space-Time_Correlation_Function: public Analysis
     //Space-Time_Correlation_Function operator = (Space-Time_Correlation_Function);
     
     void write(string filename)const;
+    void write(ofstream& output)const;
     
     float** spherical_fourier(string, int);
     

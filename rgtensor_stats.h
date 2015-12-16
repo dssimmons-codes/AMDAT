@@ -46,6 +46,7 @@ class RgTensor_Stats:public Analysis
     void listkernel(Trajectory*);
     
     void write(string);
+    void write(ofstream&)const;
     void write_rel_asphericity_dist(string);
     void write_gyration_rad_dist(string);
     

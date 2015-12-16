@@ -37,6 +37,7 @@ class Velocity_Autocorrelation
     void initialize(Mean_Square_Displacement*,int);
     void fourier_transform();
     void write(string)const;
+    void write(ofstream&)const;
     void write_fourier(string)const;
 
 };

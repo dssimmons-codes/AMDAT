@@ -110,3 +110,20 @@ int binii;
     output << (float(binii)+.5)*bin_size<<"\t"<<n_atoms[binii]<<"\t"<<density[binii]<<"\t"<<msd[binii]<<"\n";
   }
 }
+
+
+void Radial_Debye_Waller::write(ofstream& output)const
+{
+int binii;
+
+  cout << "\nWriting radial debye waller data to file.";
+
+  output << "Radial Debye-Waller data created by MDAT v." << VERSION << "\n";
+  output <<"time="<< system->show_time(time_index) <<"\n";
+  output <<"radius\tn_atoms\tdensity\tmsd\n";
+
+  for(binii=0;binii<n_bins;binii++)
+  {
+    output << (float(binii)+.5)*bin_size<<"\t"<<n_atoms[binii]<<"\t"<<density[binii]<<"\t"<<msd[binii]<<"\n";
+  }
+}

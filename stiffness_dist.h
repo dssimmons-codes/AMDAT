@@ -33,6 +33,7 @@ class Stiffness_Dist: public Analysis
     
 
     void write(string)const;			//write distribution to file
+    void write(ofstream&)const;
     
     void analyze(Trajectory_List* t_list);
     void list_displacementkernel(int timegapii, int thisii, int nextii);

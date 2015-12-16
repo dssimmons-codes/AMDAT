@@ -35,6 +35,7 @@ public:
     void postprocess_list();
 
     void write(string) const;
+    void write(ofstream&)const;
 
 };
 

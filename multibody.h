@@ -45,6 +45,7 @@ namespace std
       Multibody operator =(const Multibody &);
       Trajectory * operator()(int bodyindex);	//return pointer to trajectory indicated by bodyindex or null pointer if invalid index
 
+      Multibody(System *);
       Multibody(int n_bodies);		//construct multibody with n_bodies initially corresponding to null pointers
       Multibody(int n_bodies,Trajectory** bodies);
 

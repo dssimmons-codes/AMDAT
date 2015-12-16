@@ -106,7 +106,6 @@ class Control
     Vector_Map <string, Trajectory_List*> trajectories;
     Trajectory_List* find_trajectorylist(string, bool allow_nofind=0)const;
     void add_trajectorylist(Trajectory_List*, string);
-    void trajectories_from_multibodies();
     void combine_trajectories();
 
     /*Members to store and access multibody_list objects*/

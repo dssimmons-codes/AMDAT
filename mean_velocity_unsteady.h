@@ -32,6 +32,7 @@ class Mean_Velocity_Unsteady: public Analysis
     
     float * normalized();
     void write(string);
+    void write(ofstream&)const;
     void set(System * sys){initialize(sys);};
     
     void analyze(Trajectory_List *,Trajectory_List *){cout<<"Error: Trajectory list targets with two lists not implemented for this analysis method.\n";}; //analysis method for when two trajectory lists are needed

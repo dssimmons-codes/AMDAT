@@ -269,6 +269,36 @@ void Space_Time_Correlation_Function::write(string filename)const
 }
 
 
+void Space_Time_Correlation_Function::write(ofstream& output)const
+{
+  int timeii;
+  int binii;
+  
+  output << "Correlation data created by AMDAT v." << VERSION << "\n"; 
+  output << n_bins << " bins\n";
+  output << n_times << " times\n\n";
+  
+  cout << "\nWriting correlation function to file." ;
+  
+  output << "\t";
+  
+  for(binii=0;binii<n_bins;binii++)
+  {
+    output << bin_size/2+float(binii)*bin_size << "\t";		//write bins at this time to file
+  }
+  output << "\n";
+  
+  for(timeii=0;timeii<n_times;timeii++)
+  {
+   output << timetable[timeii] << "\t";
+    for(binii=0;binii<n_bins-1;binii++)
+    {
+      output << correlation[timeii][binii] << "\t";		//write bins at this time to file
+    }
+    output << correlation[timeii][n_bins-1] << "\n";		//write last bin at this time to file
+  }
+}
+
 
 /*------------------------------------------------------------------------------*/
 

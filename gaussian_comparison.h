@@ -46,6 +46,7 @@ class Gaussian_Comparison
     void set(System* sys, const Non_Gaussian_Parameter* ngp, const Van_Hove_Self* vhs, const Mean_Square_Displacement* msd);
     void set(System* sys, int time_in, const Van_Hove_Self* vhs, const Mean_Square_Displacement* msd);
     void write(string)const;
+    void write(ofstream&)const;
     
     Analysis_Type what_are_you(){Analysis_Type type = gaussian_comparison; return type;};		//virtual method to report the type of analysis
     

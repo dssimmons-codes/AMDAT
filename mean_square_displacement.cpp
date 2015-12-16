@@ -197,6 +197,18 @@ void Mean_Square_Displacement::write(string filename)const
 }
 
 
+void Mean_Square_Displacement::write(ofstream& output)const
+{
+  int timeii;
+
+  cout << "\nWriting msd to file.";
+
+  output << "Mean square displacement data created by AMDAT v." << VERSION << "\n";
+  for(timeii=0;timeii<n_times;timeii++)
+  {
+    output << timetable[timeii]<<"\t"<<msd[timeii]<<"\n";
+  }
+}
 
 void Mean_Square_Displacement::bin_hook(Trajectory_List * t_list, int timegapii, int thisii, int nextii)
 {

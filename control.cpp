@@ -224,10 +224,6 @@ int Control::execute_commands(int iIndex, int fIndex)
     {
       combine_multibody_lists();
     }
-    else if (command == "trajectories_from_multibodies")
-    {
-      trajectories_from_multibodies();
-    }
     else if(command == "region_multibody_list")
     {
       region_multibody_list();
@@ -1400,7 +1396,7 @@ void Control::combine_multibody_lists()
 
     newlistname=args[1];
 
-    new_multibody_list=find_multibody_list(args[2]);
+    (*new_multibody_list)=(*find_multibody_list(args[2]));
 
     for(argii=3;argii<n_args;argii++)
     {
@@ -1519,44 +1515,6 @@ void Control::create_list()
 
 
 
-
-void Control::trajectories_from_multibodies()
-{
-  string trajectory_list_name, multibody_set_name, centertypename;
-  bool centertype;
-  Trajectory_Set * trajectory_set_pointer;
-  Static_Trajectory_List * new_trajectory_list;
-
-  new_trajectory_list = new Static_Trajectory_List;
-
-  trajectory_list_name = args[1];
-  multibody_set_name = args[2];
-  centertypename = args[3];
-
-  if(centertypename == "centroid")
-  {
-    centertype = 0;
-  }
-  else if(centertypename == "com")
-  {
-    centertype = 1;
-  }
-  else
-  {
-    cout << "\n Type of multibody center '" << centertypename << "' not recognized. Allowable options are 'centroid' and 'com'";
-    exit (0);
-  }
-
-  trajectory_set_pointer = analyte->create_trajectory_set(trajectory_list_name,multibody_set_name,centertype);
-
-  new_trajectory_list->set(analyte,trajectory_set_pointer);
-
-
-  add_trajectorylist(new_trajectory_list, trajectory_list_name);
-
-}
-
-
 void Control::region_multibody_list()
 {
   string new_multibody_list_name, target_multibody_list_name, statistics_file;
@@ -1596,22 +1554,45 @@ void Control::region_multibody_list()
 /*--------------------------------------------------------------------------------*/
 void Control::create_multibodies()
 {
-  string multibody_list_name;
+  string multibody_list_name, trajectory_list_name, centertypename;
+  bool centertype;
   Multibody_Set* multibody_set_pointer;
   Multibody_List* new_multibody_list;
+  Trajectory_Set * trajectory_set_pointer;
+  Static_Trajectory_List * new_trajectory_list;
 
+  new_trajectory_list = new Static_Trajectory_List;
   new_multibody_list=new Multibody_List;
 
 
   multibody_list_name = args[1];
-
+  centertypename = args[2];
+  
+  trajectory_list_name = multibody_list_name;
 
   multibody_set_pointer = analyte->create_multibody_set (multibody_list_name, n_args, args);    //create multibody set with name that is the same as the multibody list. This is where the multibodies are created.
 
-
-
   new_multibody_list->set(analyte,multibody_set_pointer);
   add_multibody_list(new_multibody_list,multibody_list_name);
+
+  if(centertypename == "centroid")
+  {
+    centertype = 0;
+  }
+  else if(centertypename == "com")
+  {
+    centertype = 1;
+  }
+  else
+  {
+    cout << "\n Type of multibody center '" << centertypename << "' not recognized. Allowable options are 'centroid' and 'com'";
+    exit (0);
+  }
+
+  trajectory_set_pointer = analyte->create_trajectory_set(trajectory_list_name,multibody_list_name,centertype);
+
+  new_trajectory_list->set(analyte,trajectory_set_pointer);
+  add_trajectorylist(new_trajectory_list, trajectory_list_name);
 
 }
 

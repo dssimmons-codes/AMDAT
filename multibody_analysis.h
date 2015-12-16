@@ -5,6 +5,8 @@
 #ifndef MULTIBODY_ANALYSIS
 #define MULTIBODY_ANALYSIS
 
+#include <string.h>
+#include <stdio.h>
 #include <iostream>
 
 #include "multibody_list.h"
@@ -31,6 +33,7 @@ class Multibody_Analysis
     virtual void postprocess(){cout<<"Error: Multibody list targets not fully implemented for this analysis method.\n";};
     
     virtual void write(string)const{cout<<"Error: No standard write method implemented for this multibody_analysis method.\n";};
+    virtual void write(ofstream&)const{cout<<"Error: No standard write method implemented for this multibody_analysis method.\n";};
     
     virtual bool isThreadSafe() {return false;};
 };

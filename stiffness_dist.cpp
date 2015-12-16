@@ -121,3 +121,27 @@ void Stiffness_Dist::write(string filename)const
 	output.close();
   
 }
+
+void Stiffness_Dist::write(ofstream& output)const
+{
+	int binii;
+  
+	cout << "\nWriting distribution of molecular stiffnesses to file." ;
+  
+	output << "Stiffness distribution data created by MDAT v." << VERSION << "\n"; 
+	output << "MSD time = " << time << "\n";
+	output << "Mean_stiffness\t" << mean <<"\n";
+	output << "Variance\t" << variance<<"\n\n";
+	output << "Log-mean_stiffness\t"<<log_mean<<"\n";
+	output << "Log-variance\t"<<log_variance<<"\n";
+  
+	for(binii=0;binii<n_bins;binii++)
+	{
+		output << (float(binii)+0.5)*binsize << "\t" << distribution[binii] << "\n"; 
+	}
+  
+	output << "Last bin includes overflow.";
+  
+	output.close();
+  
+}

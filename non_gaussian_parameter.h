@@ -33,6 +33,7 @@ class Non_Gaussian_Parameter: public Analysis
     Analysis_Type what_are_you(){Analysis_Type type = non_gaussian_parameter; return type;};		//virtual method to report the type of analysis
     
     void write(string)const;
+    void write(ofstream&)const;
     int max()const;
 
      void analyze(Trajectory_List *,Trajectory_List *){cout<<"Error: Trajectory list targets with two lists not implemented for this analysis method.\n";}; //analysis method for when two trajectory lists are needed

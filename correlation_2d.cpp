@@ -500,3 +500,31 @@ void Correlation_2D::write(string filename)const
   }
   output.close();
 }
+
+void Correlation_2D::write(ofstream& output)const
+{
+  int timeii, binii;
+
+  cout << "\nWriting to file."<<endl;
+
+  /*Write first row - list of bin numbers*/
+  output << "Correlation data created by AMDAT v." << VERSION << "\n";
+  output << "\t";
+  for(binii=first_bin_index;binii<=last_bin_index;binii++)
+  {
+    output << wavevectors->show_approx_wavenumber(binii) << "\t";  //error here
+  }
+  output << "\n";
+
+  /*Write correlation function to file*/
+  for(timeii=firsttime;timeii<=lasttime;timeii++)
+  {
+    output << timetable[timeii] << "\t"; 	//first column is time data
+    for(binii=0;binii<n_spacebins;binii++)
+    {
+      output << correlation[timeii][binii] << "\t";
+//      output << correlation[timeii][binii] << "\t"; //print unnormalized data to file
+    }
+    output << "\n";
+  }
+}

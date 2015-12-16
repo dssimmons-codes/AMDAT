@@ -196,6 +196,18 @@ void Bond_Autocorrelation_Function::write(string filename)const
   }
 }
 
+void Bond_Autocorrelation_Function::write(ofstream& output)const
+{
+  int timeii;
+
+  cout << "\nWriting baf to file.";
+
+  output << "Bond autocorrelation function data created bys AMDAT v." << VERSION << "\n";
+  for(timeii=0;timeii<n_times;timeii++)
+  {
+    output << timetable[timeii]<<"\t"<<baf[timeii]<<"\n";
+  }
+}
 
 #ifdef NEVER
 void Bond_Autocorrelation_Function::bin_hook(Trajectory_List * t_list, int timegapii, int thisii, int nextii)

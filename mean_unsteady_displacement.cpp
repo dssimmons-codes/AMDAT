@@ -175,3 +175,17 @@ void Mean_Unsteady_Displacement::write(string filename)
     output << system->show_time(timeii)<<"\t"<<md[timeii].show_x()<<"\t"<<md[timeii].show_y()<<"\t"<<md[timeii].show_z()<<"\n";
   }
 }
+
+
+void Mean_Unsteady_Displacement::write(ofstream& output)const
+{
+  int timeii;
+
+  cout << "\nWriting mean incremental displacement to file.";
+
+  output << "Mean incremental displacement data created by AMDAT v." << VERSION << "\n";
+  for(timeii=0;timeii<n_times;timeii++)
+  {
+    output << system->show_time(timeii)<<"\t"<<md[timeii].show_x()<<"\t"<<md[timeii].show_y()<<"\t"<<md[timeii].show_z()<<"\n";
+  }
+}

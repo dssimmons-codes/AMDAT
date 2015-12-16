@@ -507,6 +507,33 @@ void Strings::write(string filename)const
 }
 
 
+
+void Strings::write(ofstream& output)const
+{
+	int lengthii;
+
+	cout << "\nWriting string data to file.";
+	output << "String data created by AMDAT v." << VERSION << "\n";
+
+	output << "time\tmean_strings\tmean_length\tmean_length(counting1)\torder_parameter";
+	for(lengthii=0;lengthii<=maxstringatoms;lengthii++)
+	{
+		output << "\t" << lengthii;
+	}
+
+	output << "\n";
+	
+		output << timetable << "\t" << mean_strings << "\t" << mean_length<<"\t"<<order_parameter*mean_length+(1-order_parameter)<<"\t"<<order_parameter;
+		
+		for(lengthii=0;lengthii<=maxstringatoms;lengthii++)
+		{
+			output << "\t" << length_distribution[lengthii];
+		}
+		output << "\n";
+
+}
+
+
 /*-----------------------------------------------------------------------------------*/
 
 

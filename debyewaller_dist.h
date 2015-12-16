@@ -31,6 +31,7 @@ class DebyeWaller_Dist: public Analysis
     Analysis_Type what_are_you(){Analysis_Type type = debyewaller_dist; return type;};		//virtual method to report the type of analysis
     
     void write(string)const;			//write distribution to file
+    void write(ofstream&)const;
     
     void analyze(Trajectory_List* t_list);
     void list_displacementkernel(int timegapii, int thisii, int nextii);

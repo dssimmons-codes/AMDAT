@@ -168,6 +168,24 @@ void Orientational_Correlation::write(string filename)const
 }
 
 
+void Orientational_Correlation::write(ofstream& output)const
+{
+  int timeii;
+
+  cout << "\nWriting orientational_correlation to file.";
+
+  output << "Orientation correlation function data created by AMDAT v." << VERSION << "\n";
+  output << "Mean correlation with vector " << correlated_vector.show_x() << " " <<correlated_vector.show_y() << correlated_vector.show_z()<<"\n";
+
+    output << "overall\t"<<overall_correlation<<"\n";
+
+    for(timeii=0;timeii<n_times;timeii++)
+  {
+    output << system->show_time(timeii)<<"\t"<<correlation[timeii]<<"\n";
+  }
+}
+
+
 #ifdef NEVER
 void Bond_Autocorrelation_Function::bin_hook(Trajectory_List * t_list, int timegapii, int thisii, int nextii)
 {

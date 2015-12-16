@@ -17,6 +17,7 @@
 
 #include <string>
 #include <stdio.h>
+#include <iostream>
 #include "trajectory_list.h"
 #include "tokenize.h"
 
@@ -97,6 +98,7 @@ class Analysis
     
     
     virtual void write(string)const{cout<<"Error: No standard write method implemented for this analysis method.\n";};		//generic method for writing results to file
+    virtual void write(ofstream&)const{cout<<"Error: No standard write method implemented for this analysis method.\n";}
     
     /*Methods for employing the loops implemented in class System over various sets of atoms*/
     /*TODO: MOVE TO TRAJECTORY LISTS AND REMOVE FROM HERE*/

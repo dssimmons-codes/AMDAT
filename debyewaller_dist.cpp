@@ -115,3 +115,25 @@ void DebyeWaller_Dist::write(string filename)const
   output.close();
 
 }
+
+void DebyeWaller_Dist::write(ofstream& output)const
+{
+  int binii;
+
+
+  cout << "\nWriting distribution of mean-square dispalcements to file.";
+
+  output << "MSD distribution created by MDAT v." << VERSION << "\n";
+  output << "MSD time = " << time << "\n";
+  output << "Mean_stiffness\t" << mean <<"\n";
+  output << "Variance\t" << variance<<"\n\n";
+
+  for(binii=0;binii<n_bins;binii++)
+  {
+    output << (float(binii)+0.5)*binsize << "\t" << distribution[binii] << "\n";
+  }
+
+  output << "Last bin includes overflow.";
+
+}
+

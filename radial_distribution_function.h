@@ -45,6 +45,7 @@ class Radial_Distribution_Function: public Analysis_Onetime
     void bin(int, float);
     
     void write(string);
+    void write(ofstream& output)const;
     
     void structure_factor(string,int);
     

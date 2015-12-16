@@ -44,6 +44,7 @@ class Space_Time_Correlation_Function: public Analysis
     //Space-Time_Correlation_Function operator = (Space-Time_Correlation_Function);
     
     void write(string filename)const;
+    void write(ofstream& output)const;
     
     virtual void calculate_spatial_inverse(int n_wavenums);		//virtual method to calculate spatial inverse correlation
     void write_spatial_inverse(string filename)const;

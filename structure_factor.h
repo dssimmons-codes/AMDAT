@@ -45,6 +45,7 @@ class Structure_Factor:public Analysis_Onetime
     void analyze_wave_density(Trajectory_List * t_list);
     void listkernel(Trajectory* current_trajectory);
     void write(string filename)const;
+    void write(ofstream& output)const;
     //bool isThreadSafe(){return true;};    
 };
 

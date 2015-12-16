@@ -54,6 +54,7 @@ class Correlation_2D:public Analysis
     Correlation_2D operator | (const Correlation_2D &) const;
     
     void write(string filename) const;
+    void write(ofstream& output) const;
 };
 
 }

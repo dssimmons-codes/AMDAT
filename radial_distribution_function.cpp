@@ -337,6 +337,31 @@ void Radial_Distribution_Function::bin(int timestep, float distance)
  }
  
  
+  void Radial_Distribution_Function::write(ofstream& output)const
+ {
+  int binii;
+
+  cout << "\nWriting rdf to file.";
+
+  /*Write first row - list of bin numbers*/
+  output << "Radial distribution function data created by AMDAT v." << VERSION << "\n";
+  for(binii=0;binii<n_bins;binii++)
+  {
+    output << float(binii)*bin_size+bin_size/2 << "\t";
+  }
+  output << "\n";
+  
+  for(binii=0;binii<n_bins;binii++)
+  {
+    output << mean_rdf[binii]  <<  "\t";
+  }
+  
+  output << "\n";
+
+ }
+
+ 
+ 
  
  void Radial_Distribution_Function::structure_factor(string filename, int n_ks)
  {

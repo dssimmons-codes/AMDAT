@@ -262,3 +262,19 @@ void Composition::write(string filename)
 //    }
 }
 
+void Composition::write(ofstream& output)
+{
+
+    cout << "\nWriting composition to file."<< endl;
+
+    output << "Composition data created by AMDAT v." << VERSION << endl << endl;
+
+    for (int typeii=0; typeii<n_atomtypes;typeii++)
+    {
+    output << "composition of species "<< typeii+1 <<":\t" << time_average_comp[typeii] << endl;
+
+    }
+    output << "number density:\t"<< average_density << endl;
+    output << "particles:\t"<< total_atoms << endl;
+    output <<endl;
+}

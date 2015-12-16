@@ -34,6 +34,7 @@ class Mean_Displacement: public Analysis
     
     float * normalized();
     void write(string);
+    void write(ofstream&)const;
 
     void set(System * sys){initialize(sys);};
     

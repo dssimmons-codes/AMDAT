@@ -44,6 +44,7 @@ class Vector_Autocorrelation: public Analysis
     
     void set(System*,string);
     void write(string filename);
+    void write(ofstream& output)const;
     void list_displacementkernel(int,int,int);
     
 };

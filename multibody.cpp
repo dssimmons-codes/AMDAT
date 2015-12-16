@@ -310,7 +310,7 @@ bool Multibody::trajectory_check(Trajectory* check)
   return false;
 }
 
-void add_body(Trajectory* new_trajectory)
+void Multibody::add_body(Trajectory* new_trajectory)
 {
   trajectories.push_back(new_trajectory);
 }

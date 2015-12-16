@@ -301,3 +301,30 @@ void Gaussian_Comparison::write(string filename)const
   }
   output.close();
 }
+
+void Gaussian_Comparison::write(ofstream& output)const
+{
+  int binii;
+
+  cout << "\nWriting fractions of slow and fast particles and comparison between gaussian and actual self van hove to file.";
+  
+  if(errorstate){output << "Warning: program cannot identify two crossing points between self Van Hove and Gaussian approximation self Van Hove.  Fractions of slow and fast particles will be incorrect.\n";}
+  
+  output << "Gaussian comparison data created by MDAT v." << VERSION << "\n"; 
+  output << "t*\n" << system->displacement_times()[time_index] << "\n";
+  output << "Slow_Cutoff: " << pow(slowboundary,0.5) << "\n";
+  output << "Fast_Cutoff: " << pow(fastboundary,0.5) << "\n";
+  output << "\t" << "Slow_Fraction"<<"\t"<<"Fast_Fraction\n";
+  output << "Gaussian" << "\t" << gaussian_slowfraction << "\t" << gaussian_fastfraction<<"\n";
+  output << "Actual" << "\t" << slowfraction << "\t" << fastfraction << "\n";
+  output << "Excess" << "\t" << slowfraction - gaussian_slowfraction << "\t" << fastfraction - gaussian_fastfraction << "\n\n";
+  
+  output << "Self_Van_Hove*shellvolume\n";
+  
+  output << "radius\tgaussian\tactual\n";
+  
+  for(binii=0;binii<n_bins;binii++)
+  {
+    output << (binii+.5)*bin_size << "\t" << gaussian_approx[binii] << "\t" << van_hove[binii] << "\n";
+  }
+}

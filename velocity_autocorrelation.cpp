@@ -157,6 +157,21 @@ void Velocity_Autocorrelation::write(string filename)const
   output.close();
 }
 
+void Velocity_Autocorrelation::write(ofstream& output)const
+{
+  int timeii;
+  
+  cout << "\nWriting velocity autocorrelation function to file.";
+ 
+  output << "Velocity autocorrelation function data created by MDAT v." << VERSION << "\n"; 
+  output << "\nThis algorithm assumes linearly spaced timesteps with spacing given by timestep in input file.\n Exponential or block time spacing schemes will yield incorrect results; be careful.\n";
+  for(timeii=0;timeii<n_times;timeii++)
+  {
+      output << timetable[timeii]<<"\t"<<vac[timeii]<<"\n";
+  };
+}
+
+
 
 void Velocity_Autocorrelation::write_fourier(string filename)const
 {

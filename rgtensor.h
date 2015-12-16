@@ -43,6 +43,7 @@ class RgTensor
     void show_eigenvalues(int timeii,threefloat eigout){eigout=mean_eigenvalues[timeii];};
     float show_eigenvalues(int timeii,int ii){return mean_eigenvalues[timeii][ii];};
     void write(string);
+    void write(ofstream&)const;
 
     
 };

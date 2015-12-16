@@ -173,3 +173,17 @@ void Mean_Velocity_Unsteady::write(string filename)
     output << system->show_time(timeii)<<"\t"<<mean_velocity[timeii].show_x()<<"\t"<<mean_velocity[timeii].show_y()<<"\t"<<mean_velocity[timeii].show_z()<<"\n";
   }
 }
+
+
+void Mean_Velocity_Unsteady::write(ofstream& output)const
+{
+  int timeii;
+
+  cout << "\nWriting mean velocity to file.";
+
+  output << "Mean velocity data created by AMDAT v." << VERSION << "\n";
+  for(timeii=0;timeii<n_times;timeii++)
+  {
+    output << system->show_time(timeii)<<"\t"<<mean_velocity[timeii].show_x()<<"\t"<<mean_velocity[timeii].show_y()<<"\t"<<mean_velocity[timeii].show_z()<<"\n";
+  }
+}

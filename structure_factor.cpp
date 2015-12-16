@@ -339,3 +339,24 @@ void Structure_Factor::write(string filename)const
 
   output.close();
 }
+
+
+void Structure_Factor::write(ofstream& output)const
+{
+  int binii;
+  Coordinate mean_wavevector;
+
+
+  cout << "\nWriting to file.";
+
+  /*Write first row - list of bin numbers*/
+  output << "Structure factor data created by AMDAT v." << VERSION << "\n";
+  output << "Nominal_q\tMean_q\tStddev_q\tMean_qx\tMean_qy\tMean_qz\tS(q)\n";
+  for(binii=0;binii<n_wavenumbers;binii++)
+  {
+    mean_wavevector = wavevectors->show_mean_wavevector(binii);
+    output << wavevectors->show_approx_wavenumber(binii) << "\t" << wavevectors->show_mean_wavenumber(binii) << "\t" << wavevectors->show_stdev_wavenumber(binii) << "\t"<< mean_wavevector.show_x() << "\t" << mean_wavevector.show_y() << "\t" << mean_wavevector.show_z() << "\t" << structure_factor[binii]  <<  endl;
+  }
+  output << "\n";
+
+}

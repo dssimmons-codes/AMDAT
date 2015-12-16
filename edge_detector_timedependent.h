@@ -38,6 +38,7 @@ class Edge_Detector_Timedependent : public Analysis
     void listkernel(Trajectory *,int timegapii, int thisii, int nextii);
 
     void write(string);
+    void write(ofstream&)const;
     bool isThreadSafe(){return false;};
     
 

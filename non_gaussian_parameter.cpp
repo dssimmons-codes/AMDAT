@@ -155,6 +155,18 @@ void Non_Gaussian_Parameter::write(string filename)const
   }
 }
 
+void Non_Gaussian_Parameter::write(ofstream& output)const
+{
+  int timeii;
+
+  cout << "\nWriting non-Gaussian parameter to file.";
+
+  output << "Non-Gaussian parameter data created by AMDAT v." << VERSION << "\n";
+  for(timeii=0;timeii<n_times;timeii++)
+  {
+    output << timetable[timeii]<<"\t"<<ngp[timeii]<<"\n";
+  }
+}
 
 
 int Non_Gaussian_Parameter::max()const

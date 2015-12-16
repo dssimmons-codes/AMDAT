@@ -37,6 +37,7 @@ class Gyration_Radius: public Multibody_Analysis
     void postprocess();
     
     void write(string);
+    void write(ofstream&)const;
     
     //void bin_hook(Trajectory_List*,int,int,int);
     //void postprocess_bins();

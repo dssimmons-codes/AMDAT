@@ -381,3 +381,57 @@ void N_Fold_Order_Parameter::write(string filename)
         output << "max n_fold = " << max_param << endl;
 
 }
+
+
+
+void N_Fold_Order_Parameter::write(ofstream& output)const
+{
+  /** Writes to data file
+  * @author Daniel Hunsicker
+  * @date 6/16/2012
+  **/
+    string map_file;
+    string thresh_pdb_stem;
+    string map_thresh_file;
+    cout << "\nWriting hop to file." << endl;
+
+    output << "Hexatic order parameter data created by AMDAT v." << VERSION << endl << endl;
+
+    output << "The time average n_fold order parameter for the system is " << time_average_param << endl << endl;
+
+
+    for(int timeii=0;timeii<n_times;timeii++)
+    {
+
+        if( timeii>=start_time && timeii<=end_time )
+        {
+            map_file = write_pdb(timeii,pdb_stem, timeii, species_name);
+            output << "Map of the n_fold order parameter was written to "<< map_file << endl;
+        }
+
+    }
+
+    output << endl;
+
+    float binsize;
+    binsize=1/float(n_bins);
+
+    output << "distribution of the average n_fold order parameter over time." << endl;
+    output << endl;
+
+
+    for(int binii=0;binii<n_bins+1;binii++)
+    {
+        float bin;
+        bin = float(binii)*binsize;
+        output << bin << "\t" << distribution[binii] << endl;
+
+    }
+        output << "overflow\t" << distribution[n_bins+1]<<endl;
+
+
+        output <<endl;
+
+        output << "max n_fold = " << max_param << endl;
+
+}

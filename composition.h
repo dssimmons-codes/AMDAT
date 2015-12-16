@@ -46,6 +46,7 @@ class Composition: public Analysis_Onetime
     void timekernel(int);
     void postprocess_list();
     void write(string);
+    void write(ofstream&);
     bool isThreadSafe(){return false;};
     
     

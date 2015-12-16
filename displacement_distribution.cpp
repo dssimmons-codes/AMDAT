@@ -116,3 +116,25 @@ void Displacement_Distribution::write(string filename)const
   output.close();
 
 }
+
+
+
+void Displacement_Distribution::write(ofstream& output)const
+{
+  int binii;
+
+  cout << "\nWriting distribution of particle displacement magnitudes to the "<<power<<" power to file.";
+
+  output << "Particle displacement distribution to the "<< power <<  " power created by AMDAT v." << VERSION << "\n";
+  output << "Last bin includes overflow.";
+  output << "time = " << time << "\n";
+  output << "Mean\t" << mean <<"\n";
+  output << "Variance\t" << variance<<"\n\n";
+
+  for(binii=0;binii<n_bins;binii++)
+  {
+    output << (float(binii)+0.5)*binsize << "\t" << distribution[binii] << "\n";
+  }
+
+
+}

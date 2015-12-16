@@ -42,6 +42,7 @@ class Bond_Autocorrelation_Function: public Multibody_Analysis
     void postprocess_list();
     
     void write(string) const;
+    void write(ofstream&) const;
     
     //void bin_hook(Trajectory_List*,int,int,int);
     //void postprocess_bins();

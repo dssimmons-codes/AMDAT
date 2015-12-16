@@ -232,3 +232,20 @@ void RgTensor_Stats::write(string filename)
     output << times[timeii] << "\t" << eigenvalues[timeii][0] << "\t" << eigenvalues[timeii][1] << "\t" << eigenvalues[timeii][2] << "\n";
   }
 }
+
+
+void RgTensor_Stats::write(ofstream& output)const
+{
+  int timeii;
+  float * times;
+  
+  cout << "Writing gyration tensor eigenvalues to file.\n";
+  output << "Gyration tensor data created by AMDAT v." << VERSION << "\n";  
+  
+  times = system->displacement_times();
+  
+  for(timeii=1;timeii<n_times;timeii++)
+  {
+    output << times[timeii] << "\t" << eigenvalues[timeii][0] << "\t" << eigenvalues[timeii][1] << "\t" << eigenvalues[timeii][2] << "\n";
+  }
+}

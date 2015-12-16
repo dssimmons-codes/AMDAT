@@ -61,6 +61,7 @@ class Strings: public Analysis
     void preprocess(){};
     void initialize(System* sys, int timegap1, float thresh, string sigmatrixname, int maximum_strings, int maximum_stringatoms);
     void write(string)const;		//write string statistics
+    void write(ofstream&)const;
     void write_trajectories(string);	//write strings to trajectory files, with each time block getting its own file
     void write_jump(string, int)const;		//write all two timeframes for each string to file, with the first frame being the first frame of the block and the second frame being specified by the value of last_timegap.
     

@@ -30,6 +30,7 @@ class Radial_Debye_Waller: public Analysis
     Analysis_Type what_are_you(){Analysis_Type type = radial_debye_waller; return type;};		//virtual method to report the type of analysis
     
     void write(string);
+    void write(ofstream&)const;
     
     void analyze(Trajectory_List * t_list);
     void list_displacementkernel(int,int,int);

@@ -294,6 +294,47 @@ void Space-Time_Correlation_Function::write(string filename)const
 
 
 
+
+void Space-Time_Correlation_Function::write(ofstream& output)const
+{
+  int timeii;
+  int binii;
+  
+  float ** normal;				//temporarily store normalized correlation
+  
+  normal = normalized();
+  
+  output << "Correlation data created by AMDAT v." << VERSION << "\n"; 
+  output << n_bins << " bins\n";
+  output << n_times << " times\n\n";
+  
+  cout << "\nWriting correlation function to file." ;
+  
+  output << "\t";
+  
+  for(binii=0;binii<n_bins;binii++)
+  {
+    output << min_value+bin_size/2+float(binii)*bin_size << "\t";		//write bins at this time to file
+  }
+  output << "\n";
+  
+  for(timeii=0;timeii<n_times;timeii++)
+  {
+   output << timetable[timeii] << "\t";
+    for(binii=0;binii<n_bins-1;binii++)
+    {
+      output << normal[timeii][binii] << "\t";		//write bins at this time to file
+//      output << correlation[timeii][binii] << "\t";		//write bins at this time to file
+    }
+    output << normal[timeii][n_bins-1] << "\n";		//write last bin at this time to file
+//    output << correlation[timeii][n_bins-1] << "\n";		//write last bin at this time to file
+    delete [] (normal[timeii]);				//deallocate temporary memory for normalized correlation at this time
+  }
+  delete [] normal;					//deallocate temporary memory for normalized correlation
+}
+
+
+
 void Space-Time_Correlation_Function::postprocess_list()
 {
   int timeii;

@@ -56,6 +56,7 @@ class N_Fold_Order_Parameter : public Value_List<float>, public Analysis
     void analyze(Trajectory_List * t_list);
     void listkernel(Trajectory *);
     void write(string);
+    void write(ofstream&)const;
     void find_ordered();
     void set_time_conv();
 

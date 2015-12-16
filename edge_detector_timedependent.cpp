@@ -113,3 +113,16 @@ void Edge_Detector_Timedependent::write(string filename)
     }
 }
 
+void Edge_Detector_Timedependent::write(ofstream& output)const
+{
+
+    cout << "\nWriting edge to file." << endl;
+
+    output << "Edge data created by AMDAT v." << VERSION << "\n";
+    output << "Unit vector is " <<  unit_vector.show_x() << "\t" <<unit_vector.show_y() << "\t" << unit_vector.show_z() << "\n";
+    output << "time\tx\ty\tz\n";
+    for (int timeii=0; timeii<n_times;timeii++)
+    {
+      output << system->show_time(timeii) << "\t" << time_dependent_edge[timeii].show_x() << "\t"<<time_dependent_edge[timeii].show_y()<<"\t"<<time_dependent_edge[timeii].show_z()<<"\n";
+    }
+}

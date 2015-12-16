@@ -202,6 +202,18 @@ void Displacement_List::write(string filename)const
 }
 
 
+void Displacement_List::write(ofstream& output)const
+{
+  int timeii;
+
+  cout << "\nWriting msd to file.";
+
+  output << "Displacement data created by AMDAT v." << VERSION << "\n";
+  output << "Timegap " << syst->displacement_times(timegap)<< "\n";
+  output << "Mean_displacement " << mean() << "\n";
+  output << "Mean_square_displacement " << power_mean(2) << "\n";
+}
+
 
 void Displacement_List::bin_hook(Trajectory_List * t_list, int timegapii, int thisii, int nextii)
 {

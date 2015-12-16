@@ -4408,78 +4408,78 @@ Multibody_Set* System::create_multibody_set (string setname, int n_args, string*
   int* type;
   int* index;
 
-  if(args[2] == "all_molecule")
+  if(args[3] == "all_molecule")
   {
-    if(n_args==3)
+    if(n_args==4)
     {
       multibodysetpointer=create_multibody_set();
     }
     else
     {
-      cout<<"\nError:incorrect number of arguments for multibody_set type all_molecule. 3 expected.";
+      cout<<"\nError:incorrect number of arguments for multibody_set type all_molecule. 4 expected.";
       exit(1);
     }
   }
-  else if(args[2] == "species_molecule")
+  else if(args[3] == "species_molecule")
   {
-    if(n_args==4)
+    if(n_args==5)
     {
-      speciesindex = show_species_index(args[3]);
+      speciesindex = show_species_index(args[4]);
       multibodysetpointer=create_multibody_set(speciesindex);
     }
     else
     {
-      cout<<"\nError:incorrect number of arguments for multibody_set type species_molecule. 4 expected.";
+      cout<<"\nError:incorrect number of arguments for multibody_set type species_molecule. 5 expected.";
       exit(1);
     }
   }
-  else if(args [2] == "species_type")
+  else if(args [3] == "species_type")
   {
-    if(n_args==5)
+    if(n_args==6)
     {
-      speciesindex = show_species_index(args[3]);
-      atomtypeindex = show_atomtype_index(args[4]);
+      speciesindex = show_species_index(args[4]);
+      atomtypeindex = show_atomtype_index(args[5]);
       multibodysetpointer=create_multibody_set(speciesindex,atomtypeindex);
     }
     else
     {
-      cout<<"\nError:incorrect number of arguments for multibody_set type species_type. 5 expected.";
+      cout<<"\nError:incorrect number of arguments for multibody_set type species_type. 6 expected.";
       exit(1);
     }
 
   }
-  else if(args [2] == "species_atomlist")
+  else if(args [3] == "species_atomlist")
   {
-    if(n_args>5&&n_args/2==int(float(n_args)/2.0+.51))	//check that there are enough arguments and an even number of arguments
+    if(n_args>6&&(n_args-1)/2==int(float(n_args-1)/2.0+.51))	//check that there are enough arguments and an even number of arguments
     {
-      n_bodies = (n_args-4)/2;
+      n_bodies = (n_args-5)/2;
       type = new int [n_bodies];
-      speciesindex = show_species_index(args[3]);
+      speciesindex = show_species_index(args[4]);
       if(speciesindex==-1)
       {
-	cout<<"\nError:"<<args[3]<<" is invalid species selection.";
+	cout<<"\nError:"<<args[4]<<" is invalid species selection.";
       }
       index = new int [n_bodies];
       for(int bodyii=0;bodyii<n_bodies;bodyii++)
       {
-	type[bodyii] = show_atomtype_index(args[bodyii*2+4]);
+	type[bodyii] = show_atomtype_index(args[bodyii*2+5]);
         if(type[bodyii]==-1)
         {
 	  cout<<"\nError:"<<type[bodyii]<<" is invalid type selection.";
         }
-	index[bodyii] = atoi(args[bodyii*2+5].c_str());
+	index[bodyii] = atoi(args[bodyii*2+6].c_str());
       }
       multibodysetpointer=create_multibody_set(speciesindex,n_bodies,type,index);
     }
     else
     {
-      cout<<"\nError:incorrect number of arguments for multibody_set type species_type. An even number 6 or greater is expected.";
+      cout<<"\nError:incorrect number of arguments for multibody_set type species_type. An odd number 7 or greater is expected.";
       exit(1);
     }
   }
   else
   {
-    cout << "\nError: Create_Multibodies keyword " << args[2] << " does not exist. Options are all_molecules, species_molecules, species_type, and species_atomlist.";
+    cout << "\nError: Create_Multibodies keyword " << args[3] << " does not exist. Options are all_molecules, species_molecules, species_type, and species_atomlist.";
     exit(1);
   }
 

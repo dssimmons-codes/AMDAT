@@ -133,7 +133,24 @@ void RgTensor::write(string filename)
   float * times;
   
   ofstream output(filename.c_str());
-  output << "Single particle gyration tensor data created by MDAT v." << VERSION << "\n"; 
+  output << "Single particle gyration tensor data created by AMDAT v." << VERSION << "\n"; 
+  
+  times = system->displacement_times();
+  
+  for(timeii=0;timeii<maxtimes;timeii++)
+  {
+    //output << times[timeii] << "\t" << mean_eigenvalues[timeii][0] << "\t" << mean_eigenvalues[timeii][1] << "\t" << mean_eigenvalues[timeii][2] << "\n";
+    output << times[timeii] << "\t" << eigenvalues[0][timeii][0] << "\t" << eigenvalues[0][timeii][1] << "\t" << eigenvalues[0][timeii][2] << "\n";
+  }
+}
+
+
+void RgTensor::write(ofstream& output)const
+{
+  int timeii;
+  float * times;
+  
+  output << "Single particle gyration tensor data created by AMDAT v." << VERSION << "\n"; 
   
   times = system->displacement_times();
   

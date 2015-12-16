@@ -364,3 +364,32 @@ void Vector_Autocorrelation::write(string filename)
 }
 
 
+
+
+void Vector_Autocorrelation::write(ofstream& output)const
+{
+  int timeii, vectorii;
+
+  cout << "\nWriting vector time-autocorrelation function to file.\n";
+  
+  output << "Vector time-autocorrelation data created by AMDAT v." << VERSION << "\n";
+
+  output << "\ntime\ttotal_correlation\torientational_correlation\n";
+
+  for(timeii=0;timeii<n_times;timeii++)
+  {
+    output << timetable[timeii]<<"\t"<<correlation[timeii]<<"\t"<<orientational_correlation[timeii]<<"\n";
+  }
+
+  output << "Calculated for the following vectors:\n";
+
+  output<<"species\tatomtype1\tatomindex1\tatomtype2\tatomindex2\n";
+
+  for(vectorii=0;vectorii<n_vectors;vectorii++)
+  {
+    output << vector_specieslist[vectorii]<<"\t"<<vector_type1list[vectorii]<<"\t"<<vector_index1list[vectorii]<<"\t"<<vector_type2list[vectorii]<<"\t"<<vector_index2list[vectorii]<<"\n";
+  }
+
+}
+
+

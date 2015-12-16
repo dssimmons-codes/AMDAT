@@ -95,3 +95,12 @@ void Gyration_Radius::write(string filename)
   
   output << gyration_radius;
 }
+
+void Gyration_Radius::write(ofstream& output)const
+{
+  cout << "\nWriting gyration radius to file.";
+
+  output << "Gyration radius calculated by AMDAT v." << VERSION << "\n";
+  
+  output << gyration_radius;
+}
