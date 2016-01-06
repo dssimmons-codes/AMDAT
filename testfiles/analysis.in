@@ -1,7 +1,7 @@
 system
 xyz_log
 /home/david/AMDATsync/trunk/testfiles/traj.xyz /home/david/AMDATsync/trunk/testfiles/log.lammps
-exponential 1 77 1.2 0 0 .01
+exponential 10 77 1.2 0 0 .01
 polymer 50
 1
 32
@@ -9,17 +9,63 @@ polymer 50
 create_list all
 all
 
-create_multibodies endtoendvector species_atomlist polymer 1 0 1 1
+create_multibodies endtoendvector centroid species_atomlist polymer 1 0 1 31
 
-trajectories_from_multibodies eevector_traj endtoendvector centroid
+create_multibodies bond1 centroid species_atomlist polymer 1 0 1 1
+create_multibodies bond2 centroid species_atomlist polymer 1 1 1 2
+create_multibodies bond3 centroid species_atomlist polymer 1 2 1 3
+create_multibodies bond4 centroid species_atomlist polymer 1 3 1 4
+create_multibodies bond5 centroid species_atomlist polymer 1 4 1 5
+create_multibodies bond6 centroid species_atomlist polymer 1 5 1 6
+create_multibodies bond7 centroid species_atomlist polymer 1 6 1 7
+create_multibodies bond8 centroid species_atomlist polymer 1 7 1 8
+create_multibodies bond9 centroid species_atomlist polymer 1 8 1 9
+create_multibodies bond10 centroid species_atomlist polymer 1 9 1 10
+create_multibodies bond11 centroid species_atomlist polymer 1 10 1 11
+create_multibodies bond12 centroid species_atomlist polymer 1 11 1 12
+create_multibodies bond13 centroid species_atomlist polymer 1 12 1 13
+create_multibodies bond14 centroid species_atomlist polymer 1 13 1 14
+create_multibodies bond15 centroid species_atomlist polymer 1 14 1 15
+create_multibodies bond16 centroid species_atomlist polymer 1 15 1 16
+create_multibodies bond17 centroid species_atomlist polymer 1 16 1 17
+create_multibodies bond18 centroid species_atomlist polymer 1 17 1 18
+create_multibodies bond19 centroid species_atomlist polymer 1 18 1 19
+create_multibodies bond20 centroid species_atomlist polymer 1 19 1 20
+create_multibodies bond21 centroid species_atomlist polymer 1 20 1 21
+create_multibodies bond22 centroid species_atomlist polymer 1 21 1 22
+create_multibodies bond23 centroid species_atomlist polymer 1 22 1 23
+create_multibodies bond24 centroid species_atomlist polymer 1 23 1 24
+create_multibodies bond25 centroid species_atomlist polymer 1 24 1 25
+create_multibodies bond26 centroid species_atomlist polymer 1 25 1 26
+create_multibodies bond27 centroid species_atomlist polymer 1 26 1 27
+create_multibodies bond28 centroid species_atomlist polymer 1 27 1 28
+create_multibodies bond29 centroid species_atomlist polymer 1 28 1 29
+create_multibodies bond30 centroid species_atomlist polymer 1 29 1 30
+create_multibodies bond31 centroid species_atomlist polymer 1 30 1 31
+
+create_multibodies chain centroid species_atomlist polymer 1 0 1 1 1 2 1 3 1 4 1 5 1 6 1 7 1 8 1 9 1 10 1 11 1 12 1 13 1 14 1 15 1 16 1 17 1 18 1 19 1 20 1 21 1 22 1 23 1 24 1 25 1 26 1 27 1 28 1 29 1 30 1 31
+
+combine_multibody_lists bonds bond1 bond2 bond3 bond4 bond5 bond6 bond7 bond8 bond9 bond10 bond11 bond12 bond13 bond14 bond15 bond16 bond17 bond18 bond19 bond20 bond21 bond22 bond23 bond24 bond25 bond26 bond27 bond28 bond29 bond30 bond31
+combine_trajectories bonds bond1 bond2 bond3 bond4 bond5 bond6 bond7 bond8 bond9 bond10 bond11 bond12 bond13 bond14 bond15 bond16 bond17 bond18 bond19 bond20 bond21 bond22 bond23 bond24 bond25 bond26 bond27 bond28 bond29 bond30 bond31
+
+
+isfs isfs_bonds.dat 24 24 xyz 0 0
+list bonds
+
+isfs isfs_centroid.dat 24 24 xyz 0 0
+list chain
+
+exit
+baf orientational_correlation_ee.dat endtoendvector
+baf orientational_correlation_bond.dat bonds
+
+isfs isfs.dat 24 24 xyz 0 0
+list all
+
 
 region_multibody_list eevectorbin endtoendvector -100 -100 -100 100 100 100 eevectorstats.dat
 
 orientational_correlation orientational_correlation_binned.dat eevectorbin 0 0 1 
-
-exit
-
-
 
 write_list_trajectory eevectorbins_traj eevectorbintrajectory.xyz
 
