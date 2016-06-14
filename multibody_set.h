@@ -36,7 +36,7 @@ class Multibody_Set: public Trajectory_Set
     int show_n_multibodies(){return n_multibodies;};
     
     /*Method to compute COM or centroid trajectories for all multibodies in set*/
-    void compute_trajectories(bool centertype);
+    void compute_trajectories(bool centertype, int traj_type);
 
     /*Replace trajectory_set methods to instead use the multibody list*/
     Trajectory * show_trajectory(int index){return &multibodies[index];};

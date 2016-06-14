@@ -1,53 +1,283 @@
 system
 xyz_log
 /home/david/AMDATsync/trunk/testfiles/traj.xyz /home/david/AMDATsync/trunk/testfiles/log.lammps
-exponential 10 77 1.2 0 0 .01
+exponential 100 77 1.2 0 0 .01
 polymer 50
 1
 32
 
-create_list all
-all
 
-create_multibodies endtoendvector centroid species_atomlist polymer 1 0 1 31
+create_multibodies bead1 bead centroid species_atomlist polymer 1 0
+create_multibodies bead2 bead centroid species_atomlist polymer 1 1
+create_multibodies bead3 bead centroid species_atomlist polymer 1 2
+create_multibodies bead4 bead centroid species_atomlist polymer 1 3
+create_multibodies bead5 bead centroid species_atomlist polymer 1 4
+create_multibodies bead6 bead centroid species_atomlist polymer 1 5
+create_multibodies bead7 bead centroid species_atomlist polymer 1 6
+create_multibodies bead8 bead centroid species_atomlist polymer 1 7
+create_multibodies bead9 bead centroid species_atomlist polymer 1 8
+create_multibodies bead10 bead centroid species_atomlist polymer 1 9 
+create_multibodies bead11 bead centroid species_atomlist polymer 1 10
+create_multibodies bead12 bead centroid species_atomlist polymer 1 11
+create_multibodies bead13 bead centroid species_atomlist polymer 1 12
+create_multibodies bead14 bead centroid species_atomlist polymer 1 13
+create_multibodies bead15 bead centroid species_atomlist polymer 1 14
+create_multibodies bead16 bead centroid species_atomlist polymer 1 15
+create_multibodies bead17 bead centroid species_atomlist polymer 1 16
+create_multibodies bead18 bead centroid species_atomlist polymer 1 17
+create_multibodies bead19 bead centroid species_atomlist polymer 1 18
+create_multibodies bead20 bead centroid species_atomlist polymer 1 19
+create_multibodies bead21 bead centroid species_atomlist polymer 1 20
+create_multibodies bead22 bead centroid species_atomlist polymer 1 21
+create_multibodies bead23 bead centroid species_atomlist polymer 1 22
+create_multibodies bead24 bead centroid species_atomlist polymer 1 23
+create_multibodies bead25 bead centroid species_atomlist polymer 1 24
+create_multibodies bead26 bead centroid species_atomlist polymer 1 25
+create_multibodies bead27 bead centroid species_atomlist polymer 1 26
+create_multibodies bead28 bead centroid species_atomlist polymer 1 27
+create_multibodies bead29 bead centroid species_atomlist polymer 1 28
+create_multibodies bead30 bead centroid species_atomlist polymer 1 29
+create_multibodies bead31 bead centroid species_atomlist polymer 1 30
+create_multibodies bead32 bead centroid species_atomlist polymer 1 31
 
-create_multibodies bond1 centroid species_atomlist polymer 1 0 1 1
-create_multibodies bond2 centroid species_atomlist polymer 1 1 1 2
-create_multibodies bond3 centroid species_atomlist polymer 1 2 1 3
-create_multibodies bond4 centroid species_atomlist polymer 1 3 1 4
-create_multibodies bond5 centroid species_atomlist polymer 1 4 1 5
-create_multibodies bond6 centroid species_atomlist polymer 1 5 1 6
-create_multibodies bond7 centroid species_atomlist polymer 1 6 1 7
-create_multibodies bond8 centroid species_atomlist polymer 1 7 1 8
-create_multibodies bond9 centroid species_atomlist polymer 1 8 1 9
-create_multibodies bond10 centroid species_atomlist polymer 1 9 1 10
-create_multibodies bond11 centroid species_atomlist polymer 1 10 1 11
-create_multibodies bond12 centroid species_atomlist polymer 1 11 1 12
-create_multibodies bond13 centroid species_atomlist polymer 1 12 1 13
-create_multibodies bond14 centroid species_atomlist polymer 1 13 1 14
-create_multibodies bond15 centroid species_atomlist polymer 1 14 1 15
-create_multibodies bond16 centroid species_atomlist polymer 1 15 1 16
-create_multibodies bond17 centroid species_atomlist polymer 1 16 1 17
-create_multibodies bond18 centroid species_atomlist polymer 1 17 1 18
-create_multibodies bond19 centroid species_atomlist polymer 1 18 1 19
-create_multibodies bond20 centroid species_atomlist polymer 1 19 1 20
-create_multibodies bond21 centroid species_atomlist polymer 1 20 1 21
-create_multibodies bond22 centroid species_atomlist polymer 1 21 1 22
-create_multibodies bond23 centroid species_atomlist polymer 1 22 1 23
-create_multibodies bond24 centroid species_atomlist polymer 1 23 1 24
-create_multibodies bond25 centroid species_atomlist polymer 1 24 1 25
-create_multibodies bond26 centroid species_atomlist polymer 1 25 1 26
-create_multibodies bond27 centroid species_atomlist polymer 1 26 1 27
-create_multibodies bond28 centroid species_atomlist polymer 1 27 1 28
-create_multibodies bond29 centroid species_atomlist polymer 1 28 1 29
-create_multibodies bond30 centroid species_atomlist polymer 1 29 1 30
-create_multibodies bond31 centroid species_atomlist polymer 1 30 1 31
+combine_multibody_lists beads bead1 bead2 bead3 bead4 bead5 bead6 bead7 bead8 bead9 bead10 bead11 bead12 bead13 bead14 bead15 bead16 bead17 bead18 bead19 bead20 bead21 bead22 bead23 bead24 bead25 bead26 bead27 bead28 bead29 bead30 bead31 bead32
+combine_trajectories beads bead1 bead2 bead3 bead4 bead5 bead6 bead7 bead8 bead9 bead10 bead11 bead12 bead13 bead14 bead15 bead16 bead17 bead18 bead19 bead20 bead21 bead22 bead23 bead24 bead25 bead26 bead27 bead28 bead29 bead30 bead31 bead32
 
-create_multibodies chain centroid species_atomlist polymer 1 0 1 1 1 2 1 3 1 4 1 5 1 6 1 7 1 8 1 9 1 10 1 11 1 12 1 13 1 14 1 15 1 16 1 17 1 18 1 19 1 20 1 21 1 22 1 23 1 24 1 25 1 26 1 27 1 28 1 29 1 30 1 31
+ngp ngp_mb.dat
+list beads
+
+vhs vhslist_mb.dat 2 100
+list beads
+
+compare_gaussian gaussian_mb.dat 70
+list beads
+
+find_fast fastmbead fast_count_list_mb.dat
+list beads
+
+strings strings_mbead.dat 70 .6 ./testfiles/sigma_matrix_mbead stringlist
+list fastmbead
+
+exit
+
+create_multibodies endtoendvector ee centroid species_atomlist polymer 1 0 1 31
+
+create_multibodies bond1 bond centroid species_atomlist polymer 1 0 1 1
+create_multibodies bond2 bond centroid species_atomlist polymer 1 1 1 2
+create_multibodies bond3 bond centroid species_atomlist polymer 1 2 1 3
+create_multibodies bond4 bond centroid species_atomlist polymer 1 3 1 4
+create_multibodies bond5 bond centroid species_atomlist polymer 1 4 1 5
+create_multibodies bond6 bond centroid species_atomlist polymer 1 5 1 6
+create_multibodies bond7 bond centroid species_atomlist polymer 1 6 1 7
+create_multibodies bond8 bond centroid species_atomlist polymer 1 7 1 8
+create_multibodies bond9 bond centroid species_atomlist polymer 1 8 1 9
+create_multibodies bond10 bond centroid species_atomlist polymer 1 9 1 10
+create_multibodies bond11 bond centroid species_atomlist polymer 1 10 1 11
+create_multibodies bond12 bond centroid species_atomlist polymer 1 11 1 12
+create_multibodies bond13 bond centroid species_atomlist polymer 1 12 1 13
+create_multibodies bond14 bond centroid species_atomlist polymer 1 13 1 14
+create_multibodies bond15 bond centroid species_atomlist polymer 1 14 1 15
+create_multibodies bond16 bond centroid species_atomlist polymer 1 15 1 16
+create_multibodies bond17 bond centroid species_atomlist polymer 1 16 1 17
+create_multibodies bond18 bond centroid species_atomlist polymer 1 17 1 18
+create_multibodies bond19 bond centroid species_atomlist polymer 1 18 1 19
+create_multibodies bond20 bond centroid species_atomlist polymer 1 19 1 20
+create_multibodies bond21 bond centroid species_atomlist polymer 1 20 1 21
+create_multibodies bond22 bond centroid species_atomlist polymer 1 21 1 22
+create_multibodies bond23 bond centroid species_atomlist polymer 1 22 1 23
+create_multibodies bond24 bond centroid species_atomlist polymer 1 23 1 24
+create_multibodies bond25 bond centroid species_atomlist polymer 1 24 1 25
+create_multibodies bond26 bond centroid species_atomlist polymer 1 25 1 26
+create_multibodies bond27 bond centroid species_atomlist polymer 1 26 1 27
+create_multibodies bond28 bond centroid species_atomlist polymer 1 27 1 28
+create_multibodies bond29 bond centroid species_atomlist polymer 1 28 1 29
+create_multibodies bond30 bond centroid species_atomlist polymer 1 29 1 30
+create_multibodies bond31 bond centroid species_atomlist polymer 1 30 1 31
 
 combine_multibody_lists bonds bond1 bond2 bond3 bond4 bond5 bond6 bond7 bond8 bond9 bond10 bond11 bond12 bond13 bond14 bond15 bond16 bond17 bond18 bond19 bond20 bond21 bond22 bond23 bond24 bond25 bond26 bond27 bond28 bond29 bond30 bond31
 combine_trajectories bonds bond1 bond2 bond3 bond4 bond5 bond6 bond7 bond8 bond9 bond10 bond11 bond12 bond13 bond14 bond15 bond16 bond17 bond18 bond19 bond20 bond21 bond22 bond23 bond24 bond25 bond26 bond27 bond28 bond29 bond30 bond31
 
+ngp ngp_mb.dat
+list bonds
+
+vhs vhslist_mb.dat 2 100
+list bonds
+
+compare_gaussian gaussian_mb.dat 70
+list bonds
+
+find_fast fastmb fast_count_list_mb.dat
+list bonds
+
+strings strings_mb.dat 70 .6 ./testfiles/sigma_matrix_mb stringlist
+list fastmb
+
+create_list all
+all
+
+
+create_multibodies endtoendvector ee centroid species_atomlist polymer 1 0 1 31
+
+
+
+create_list all
+all
+
+
+ngp ngp.dat
+list all
+
+vhs vhslist.dat 2 100
+list all
+
+compare_gaussian gaussian.dat 70
+list all
+
+find_fast fast fast_count_list.dat
+list all
+
+strings strings.dat 70 .6 ./testfiles/sigma_matrix stringlist
+list fast
+
+
+exit
+create_multibodies bondb1 centroid species_atomlist polymer 1 0 1 2
+create_multibodies bondb2 centroid species_atomlist polymer 1 1 1 3
+create_multibodies bondb3 centroid species_atomlist polymer 1 2 1 4
+create_multibodies bondb4 centroid species_atomlist polymer 1 3 1 5
+create_multibodies bondb5 centroid species_atomlist polymer 1 4 1 6
+create_multibodies bondb6 centroid species_atomlist polymer 1 5 1 7
+create_multibodies bondb7 centroid species_atomlist polymer 1 6 1 8
+create_multibodies bondb8 centroid species_atomlist polymer 1 7 1 9
+create_multibodies bondb9 centroid species_atomlist polymer 1 8 1 10
+create_multibodies bondb10 centroid species_atomlist polymer 1 9 1 11
+create_multibodies bondb11 centroid species_atomlist polymer 1 10 1 12
+create_multibodies bondb12 centroid species_atomlist polymer 1 11 1 13
+create_multibodies bondb13 centroid species_atomlist polymer 1 12 1 14
+create_multibodies bondb14 centroid species_atomlist polymer 1 13 1 15
+create_multibodies bondb15 centroid species_atomlist polymer 1 14 1 16
+create_multibodies bondb16 centroid species_atomlist polymer 1 15 1 17
+create_multibodies bondb17 centroid species_atomlist polymer 1 16 1 18
+create_multibodies bondb18 centroid species_atomlist polymer 1 17 1 19
+create_multibodies bondb19 centroid species_atomlist polymer 1 18 1 20
+create_multibodies bondb20 centroid species_atomlist polymer 1 19 1 21
+create_multibodies bondb21 centroid species_atomlist polymer 1 20 1 22
+create_multibodies bondb22 centroid species_atomlist polymer 1 21 1 23
+create_multibodies bondb23 centroid species_atomlist polymer 1 22 1 24
+create_multibodies bondb24 centroid species_atomlist polymer 1 23 1 25
+create_multibodies bondb25 centroid species_atomlist polymer 1 24 1 26
+create_multibodies bondb26 centroid species_atomlist polymer 1 25 1 27
+create_multibodies bondb27 centroid species_atomlist polymer 1 26 1 28
+create_multibodies bondb28 centroid species_atomlist polymer 1 27 1 29
+create_multibodies bondb29 centroid species_atomlist polymer 1 28 1 30
+create_multibodies bondb30 centroid species_atomlist polymer 1 29 1 31
+
+
+
+create_multibodies bondc1 centroid species_atomlist polymer 1 0 1 3
+create_multibodies bondc2 centroid species_atomlist polymer 1 1 1 4
+create_multibodies bondc3 centroid species_atomlist polymer 1 2 1 5
+create_multibodies bondc4 centroid species_atomlist polymer 1 3 1 6
+create_multibodies bondc5 centroid species_atomlist polymer 1 4 1 7
+create_multibodies bondc6 centroid species_atomlist polymer 1 5 1 8
+create_multibodies bondc7 centroid species_atomlist polymer 1 6 1 9
+create_multibodies bondc8 centroid species_atomlist polymer 1 7 1 10
+create_multibodies bondc9 centroid species_atomlist polymer 1 8 1 11
+create_multibodies bondc10 centroid species_atomlist polymer 1 9 1 12
+create_multibodies bondc11 centroid species_atomlist polymer 1 10 1 13
+create_multibodies bondc12 centroid species_atomlist polymer 1 11 1 14
+create_multibodies bondc13 centroid species_atomlist polymer 1 12 1 15
+create_multibodies bondc14 centroid species_atomlist polymer 1 13 1 16
+create_multibodies bondc15 centroid species_atomlist polymer 1 14 1 17
+create_multibodies bondc16 centroid species_atomlist polymer 1 15 1 18
+create_multibodies bondc17 centroid species_atomlist polymer 1 16 1 19
+create_multibodies bondc18 centroid species_atomlist polymer 1 17 1 20
+create_multibodies bondc19 centroid species_atomlist polymer 1 18 1 21
+create_multibodies bondc20 centroid species_atomlist polymer 1 19 1 22
+create_multibodies bondc21 centroid species_atomlist polymer 1 20 1 23
+create_multibodies bondc22 centroid species_atomlist polymer 1 21 1 24
+create_multibodies bondc23 centroid species_atomlist polymer 1 22 1 25
+create_multibodies bondc24 centroid species_atomlist polymer 1 23 1 26
+create_multibodies bondc25 centroid species_atomlist polymer 1 24 1 27
+create_multibodies bondc26 centroid species_atomlist polymer 1 25 1 28
+create_multibodies bondc27 centroid species_atomlist polymer 1 26 1 29
+create_multibodies bondc28 centroid species_atomlist polymer 1 27 1 30
+create_multibodies bondc29 centroid species_atomlist polymer 1 28 1 31
+
+create_multibodies bondd1 centroid species_atomlist polymer 1 0 1 4
+create_multibodies bondd2 centroid species_atomlist polymer 1 1 1 5
+create_multibodies bondd3 centroid species_atomlist polymer 1 2 1 6
+create_multibodies bondd4 centroid species_atomlist polymer 1 3 1 7
+create_multibodies bondd5 centroid species_atomlist polymer 1 4 1 8
+create_multibodies bondd6 centroid species_atomlist polymer 1 5 1 9
+create_multibodies bondd7 centroid species_atomlist polymer 1 6 1 10
+create_multibodies bondd8 centroid species_atomlist polymer 1 7 1 11
+create_multibodies bondd9 centroid species_atomlist polymer 1 8 1 12
+create_multibodies bondd10 centroid species_atomlist polymer 1 9 1 13
+create_multibodies bondd11 centroid species_atomlist polymer 1 10 1 14
+create_multibodies bondd12 centroid species_atomlist polymer 1 11 1 15
+create_multibodies bondd13 centroid species_atomlist polymer 1 12 1 16
+create_multibodies bondd14 centroid species_atomlist polymer 1 13 1 17
+create_multibodies bondd15 centroid species_atomlist polymer 1 14 1 18
+create_multibodies bondd16 centroid species_atomlist polymer 1 15 1 19
+create_multibodies bondd17 centroid species_atomlist polymer 1 16 1 20
+create_multibodies bondd18 centroid species_atomlist polymer 1 17 1 21
+create_multibodies bondd19 centroid species_atomlist polymer 1 18 1 22
+create_multibodies bondd20 centroid species_atomlist polymer 1 19 1 23
+create_multibodies bondd21 centroid species_atomlist polymer 1 20 1 24
+create_multibodies bondd22 centroid species_atomlist polymer 1 21 1 25
+create_multibodies bondd23 centroid species_atomlist polymer 1 22 1 26
+create_multibodies bondd24 centroid species_atomlist polymer 1 23 1 27
+create_multibodies bondd25 centroid species_atomlist polymer 1 24 1 28
+create_multibodies bondd26 centroid species_atomlist polymer 1 25 1 29
+create_multibodies bondd27 centroid species_atomlist polymer 1 26 1 30
+create_multibodies bondd28 centroid species_atomlist polymer 1 27 1 31
+
+create_multibodies bonde1 centroid species_atomlist polymer 1 0 1 5
+create_multibodies bonde2 centroid species_atomlist polymer 1 1 1 6
+create_multibodies bonde3 centroid species_atomlist polymer 1 2 1 7
+create_multibodies bonde4 centroid species_atomlist polymer 1 3 1 8
+create_multibodies bonde5 centroid species_atomlist polymer 1 4 1 9
+create_multibodies bonde6 centroid species_atomlist polymer 1 5 1 10
+create_multibodies bonde7 centroid species_atomlist polymer 1 6 1 11
+create_multibodies bonde8 centroid species_atomlist polymer 1 7 1 12
+create_multibodies bonde9 centroid species_atomlist polymer 1 8 1 13
+create_multibodies bonde10 centroid species_atomlist polymer 1 9 1 14
+create_multibodies bonde11 centroid species_atomlist polymer 1 10 1 15
+create_multibodies bonde12 centroid species_atomlist polymer 1 11 1 16
+create_multibodies bonde13 centroid species_atomlist polymer 1 12 1 17
+create_multibodies bonde14 centroid species_atomlist polymer 1 13 1 18
+create_multibodies bonde15 centroid species_atomlist polymer 1 14 1 19
+create_multibodies bonde16 centroid species_atomlist polymer 1 15 1 20
+create_multibodies bonde17 centroid species_atomlist polymer 1 16 1 21
+create_multibodies bonde18 centroid species_atomlist polymer 1 17 1 22
+create_multibodies bonde19 centroid species_atomlist polymer 1 18 1 23
+create_multibodies bonde20 centroid species_atomlist polymer 1 19 1 24
+create_multibodies bonde21 centroid species_atomlist polymer 1 20 1 25
+create_multibodies bonde22 centroid species_atomlist polymer 1 21 1 26
+create_multibodies bonde23 centroid species_atomlist polymer 1 22 1 27
+create_multibodies bonde24 centroid species_atomlist polymer 1 23 1 28
+create_multibodies bonde25 centroid species_atomlist polymer 1 24 1 29
+create_multibodies bonde26 centroid species_atomlist polymer 1 25 1 30
+create_multibodies bonde27 centroid species_atomlist polymer 1 26 1 31
+
+combine_multibody_lists bonds bond1 bond2 bond3 bond4 bond5 bond6 bond7 bond8 bond9 bond10 bond11 bond12 bond13 bond14 bond15 bond16 bond17 bond18 bond19 bond20 bond21 bond22 bond23 bond24 bond25 bond26 bond27 bond28 bond29 bond30 bond31
+combine_multibody_lists bondsb bondb1 bondb2 bondb3 bondb4 bondb5 bondb6 bondb7 bondb8 bondb9 bondb10 bondb11 bondb12 bondb13 bondb14 bondb15 bondb16 bondb17 bondb18 bondb19 bondb20 bondb21 bondb22 bondb23 bondb24 bondb25 bondb26 bondb27 bondb28 bondb29 bondb30
+combine_multibody_lists bondsc bondc1 bondc2 bondc3 bondc4 bondc5 bondc6 bondc7 bondc8 bondc9 bondc10 bondc11 bondc12 bondc13 bondc14 bondc15 bondc16 bondc17 bondc18 bondc19 bondc20 bondc21 bondc22 bondc23 bondc24 bondc25 bondc26 bondc27 bondc28 bondc29
+combine_multibody_lists bondsd bondd1 bondd2 bondd3 bondd4 bondd5 bondd6 bondd7 bondd8 bondd9 bondd10 bondd11 bondd12 bondd13 bondd14 bondd15 bondd16 bondd17 bondd18 bondd19 bondd20 bondd21 bondd22 bondd23 bondd24 bondd25 bondd26 bondd27 bondd28
+combine_multibody_lists bondse bonde1 bonde2 bonde3 bonde4 bonde5 bonde6 bonde7 bonde8 bonde9 bonde10 bonde11 bonde12 bonde13 bonde14 bonde15 bonde16 bonde17 bonde18 bonde19 bonde20 bonde21 bonde22 bonde23 bonde24 bonde25 bonde26 bonde27
+
+baf orientational_correlation_ee.dat endtoendvector
+baf orientational_correlation_bond.dat bonds
+baf orientational_correlation_bondb.dat bondsb
+baf orientational_correlation_bondc.dat bondsc
+baf orientational_correlation_bondd.dat bondsd
+baf orientational_correlation_bonde.dat bondse
+
+exit
+create_multibodies chain centroid species_atomlist polymer 1 0 1 1 1 2 1 3 1 4 1 5 1 6 1 7 1 8 1 9 1 10 1 11 1 12 1 13 1 14 1 15 1 16 1 17 1 18 1 19 1 20 1 21 1 22 1 23 1 24 1 25 1 26 1 27 1 28 1 29 1 30 1 31
+
+combine_trajectories bonds bond1 bond2 bond3 bond4 bond5 bond6 bond7 bond8 bond9 bond10 bond11 bond12 bond13 bond14 bond15 bond16 bond17 bond18 bond19 bond20 bond21 bond22 bond23 bond24 bond25 bond26 bond27 bond28 bond29 bond30 bond31
 
 isfs isfs_bonds.dat 24 24 xyz 0 0
 list bonds
@@ -56,8 +286,6 @@ isfs isfs_centroid.dat 24 24 xyz 0 0
 list chain
 
 exit
-baf orientational_correlation_ee.dat endtoendvector
-baf orientational_correlation_bond.dat bonds
 
 isfs isfs.dat 24 24 xyz 0 0
 list all

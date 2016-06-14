@@ -143,7 +143,7 @@ void Multibody::set(int n_bodies, Trajectory ** bodies)
 
 
 /*return center of mass trajectory of multibody*/
-void Multibody::center_of_mass_trajectory()
+void Multibody::center_of_mass_trajectory(int trajtype)
 {
   Coordinate com;
   mass=0;
@@ -157,7 +157,7 @@ void Multibody::center_of_mass_trajectory()
     mass+=trajectories[trajectoryii]->show_mass();
   }
 
-  type=0;
+  type=trajtype;
 
   /*Determine center of mass of multibody at each time based upon unwrapped coordinates and write to */
   for(timeii=0;timeii<n_timesteps;timeii++)
@@ -180,7 +180,7 @@ void Multibody::center_of_mass_trajectory()
 
 
 /*return centroid trajectory of multibody*/
-void Multibody::centroid_trajectory()
+void Multibody::centroid_trajectory(int trajtype)
 {
   Coordinate cen;
   mass=0;
@@ -194,7 +194,7 @@ void Multibody::centroid_trajectory()
     mass+=trajectories[trajectoryii]->show_mass();
   }
 
-  type=0;
+  type=trajtype;
 
   /*Determine centroid of multibody at each time based upon unwrapped coordinates and write to */
   for(timeii=0;timeii<n_timesteps;timeii++)

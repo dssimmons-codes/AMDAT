@@ -73,6 +73,10 @@ Boolean_List::~Boolean_List()
 }
 /*END NEW SECTION*/
 
+int Boolean_List::show_size()const
+{
+  return included.size();
+}
 
 
 Boolean_List Boolean_List::operator= (const Boolean_List & copy)
@@ -80,11 +84,17 @@ Boolean_List Boolean_List::operator= (const Boolean_List & copy)
 
    if(this!=&copy)
    {
+     int max_trajectories;
      system = copy.system;
      //delete [] included;
      //included = new bool [system->show_n_trajectories()];
-     included.resize(system->show_n_trajectories());
-     for(int trajii=0;trajii<system->show_n_trajectories();trajii++)
+     update_size();
+     max_trajectories = system->show_n_trajectories();
+     if(copy.show_size()<max_trajectories)
+     {
+       max_trajectories=copy.show_size();
+     }
+     for(int trajii=0;trajii<max_trajectories;trajii++)
      {
        included[trajii]=copy.included[trajii];
      }
@@ -252,7 +262,7 @@ int Boolean_List::show_n_included()const
   int trajii;
   int n_included=0;
 
-  for(trajii=0;trajii<system->show_n_trajectories();trajii++)
+  for(trajii=0;trajii<included.size();trajii++)
   {
     n_included+=int(included[trajii]);
   }

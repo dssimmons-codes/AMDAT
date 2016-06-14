@@ -102,9 +102,13 @@ Trajectory_List Trajectory_List::operator = (const Trajectory_List & copy)
       trajectories[timeii]=new Trajectory* [capacity];
       n_trajectories[timeii]=copy.n_trajectories[timeii];
       included[timeii]=copy.included[timeii];
-      for(int trajii=0; trajii<capacity; trajii++)
+      for(int trajii=0; trajii<n_trajectories[timeii]; trajii++)
       {
 	trajectories[timeii][trajii]=copy.trajectories[timeii][trajii];
+      }
+      for(int trajii=n_trajectories[timeii]; trajii<capacity; trajii++)
+      {
+	trajectories[timeii][trajii]=0;
       }
     }
 

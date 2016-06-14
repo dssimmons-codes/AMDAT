@@ -334,10 +334,9 @@ void System::xyz_prep(vector<string> file_in, string fileline)
 //  line=Control::replace_constants(line);
   line = Control::read_line();
   args = tokenize(line);
-  atomtype_name = new string [n_atomtypes];
   for(typeii=0;typeii<n_atomtypes;typeii++)
   {
-    atomtype_name[typeii] = args[typeii];
+    atomtype_name.push_back(args[typeii]);
   }
 
   /*read in atomtype counts for each species*/
@@ -481,10 +480,9 @@ void System::xyz_prep_withlog(vector<string> file_in, string fileline)
   line = Control::read_line();
   args = tokenize(line);
   n_atomtypes = args.size();
-  atomtype_name = new string [n_atomtypes];
   for(typeii=0;typeii<n_atomtypes;typeii++)
   {
-    atomtype_name[typeii] = args[typeii];
+    atomtype_name.push_back(args[typeii]);
   }
 
   /*read in atomtype counts for each species*/
@@ -900,10 +898,9 @@ void System::custom_prep(vector<string> file_in, string fileline)
   line = Control::read_line();
   args = tokenize(line);
   n_atomtypes = args.size();
-  atomtype_name = new string [n_atomtypes];
   for(typeii=0;typeii<n_atomtypes;typeii++)
   {
-    atomtype_name[typeii] = args[typeii];
+    atomtype_name.push_back(args[typeii]);
   }
 
   /*read in atomtype counts for each species*/
@@ -1846,10 +1843,9 @@ void System::custom_byid_prep(vector<string> file_in, string fileline)
   line = Control::read_line();
   args = tokenize(line);
   n_atomtypes = args.size();
-  atomtype_name = new string [n_atomtypes];
   for(typeii=0;typeii<n_atomtypes;typeii++)
   {
-    atomtype_name[typeii] = args[typeii];
+    atomtype_name.push_back(args[typeii]);
   }
 
   /*read in atomtype counts for each species*/
@@ -2806,7 +2802,6 @@ int** System::read_gro(string filename)
   species_name = new string [max_species];
   n_molecules = new int [max_species];
   natoms = new int*[max_species];
-  atomtype_name = new string [max_types];
   this_molecule_count = new int [max_types];
 
   /*open .gro file*/
@@ -2877,7 +2872,8 @@ int** System::read_gro(string filename)
       type_match = show_atomtype_index(current_type);
       if(type_match==-1)
       {
-        atomtype_name[n_atomtypes]=current_type;	//add atom type to list
+        atomtype_name.push_back(current_type);		//add atom type to list
+	//atomtype_name[n_atomtypes]=current_type;	//add atom type to list
         natoms[show_species_index(current_species)][n_atomtypes]++;		//increment count of this atom type in this species
 
         n_atomtypes++;					//increment atom type count
@@ -3300,7 +3296,7 @@ int System::show_atomtype_index(string name) const
 {
   int typeii;
   int atomtype_index = -1;
-  for(typeii=0;typeii<n_atomtypes;typeii++)
+  for(typeii=0;typeii<atomtype_name.size();typeii++)
   {
     if(atomtype_name[typeii]==name)
     {
@@ -3310,6 +3306,47 @@ int System::show_atomtype_index(string name) const
   }
 
   return atomtype_index;
+}
+
+
+/*-----------------------------------------------------------------------------------*/
+
+
+bool System::atomtype_exists(string name) const
+{
+  int typeii;
+  int atomtype_index = -1;
+  for(typeii=0;typeii<atomtype_name.size();typeii++)
+  {
+    if(atomtype_name[typeii]==name)
+    {
+      return true;
+    }
+  }
+
+  return false;
+}
+
+
+
+/*-----------------------------------------------------------------------------------*/
+
+
+int System::add_atomtype(string name)
+{
+  int typeii;
+  int atomtype_index = -1;
+  for(typeii=0;typeii<atomtype_name.size();typeii++)
+  {
+    if(atomtype_name[typeii]==name)
+    {
+      return atomtype_index;
+    }
+  }
+
+  atomtype_name.push_back(name);
+  
+  return atomtype_name.size()-1;
 }
 
 
@@ -4408,78 +4445,78 @@ Multibody_Set* System::create_multibody_set (string setname, int n_args, string*
   int* type;
   int* index;
 
-  if(args[3] == "all_molecule")
+  if(args[4] == "all_molecule")
   {
-    if(n_args==4)
+    if(n_args==5)
     {
       multibodysetpointer=create_multibody_set();
     }
     else
     {
-      cout<<"\nError:incorrect number of arguments for multibody_set type all_molecule. 4 expected.";
+      cout<<"\nError:incorrect number of arguments for multibody_set type all_molecule. 5 expected.";
       exit(1);
     }
   }
-  else if(args[3] == "species_molecule")
+  else if(args[4] == "species_molecule")
   {
-    if(n_args==5)
+    if(n_args==6)
     {
-      speciesindex = show_species_index(args[4]);
+      speciesindex = show_species_index(args[5]);
       multibodysetpointer=create_multibody_set(speciesindex);
     }
     else
     {
-      cout<<"\nError:incorrect number of arguments for multibody_set type species_molecule. 5 expected.";
+      cout<<"\nError:incorrect number of arguments for multibody_set type species_molecule. 6 expected.";
       exit(1);
     }
   }
-  else if(args [3] == "species_type")
+  else if(args [4] == "species_type")
   {
-    if(n_args==6)
+    if(n_args==7)
     {
-      speciesindex = show_species_index(args[4]);
-      atomtypeindex = show_atomtype_index(args[5]);
+      speciesindex = show_species_index(args[5]);
+      atomtypeindex = show_atomtype_index(args[6]);
       multibodysetpointer=create_multibody_set(speciesindex,atomtypeindex);
     }
     else
     {
-      cout<<"\nError:incorrect number of arguments for multibody_set type species_type. 6 expected.";
+      cout<<"\nError:incorrect number of arguments for multibody_set type species_type. 7 expected.";
       exit(1);
     }
 
   }
-  else if(args [3] == "species_atomlist")
+  else if(args [4] == "species_atomlist")
   {
-    if(n_args>6&&(n_args-1)/2==int(float(n_args-1)/2.0+.51))	//check that there are enough arguments and an even number of arguments
+    if(n_args>7&&(n_args)/2==int(float(n_args)/2.0+.51))	//check that there are enough arguments and an even number of arguments
     {
       n_bodies = (n_args-5)/2;
       type = new int [n_bodies];
-      speciesindex = show_species_index(args[4]);
+      speciesindex = show_species_index(args[5]);
       if(speciesindex==-1)
       {
-	cout<<"\nError:"<<args[4]<<" is invalid species selection.";
+	cout<<"\nError:"<<args[5]<<" is invalid species selection.";
       }
       index = new int [n_bodies];
       for(int bodyii=0;bodyii<n_bodies;bodyii++)
       {
-	type[bodyii] = show_atomtype_index(args[bodyii*2+5]);
+	type[bodyii] = show_atomtype_index(args[bodyii*2+6]);
         if(type[bodyii]==-1)
         {
 	  cout<<"\nError:"<<type[bodyii]<<" is invalid type selection.";
         }
-	index[bodyii] = atoi(args[bodyii*2+6].c_str());
+	index[bodyii] = atoi(args[bodyii*2+7].c_str());
       }
       multibodysetpointer=create_multibody_set(speciesindex,n_bodies,type,index);
     }
     else
     {
-      cout<<"\nError:incorrect number of arguments for multibody_set type species_type. An odd number 7 or greater is expected.";
+      cout<<"\nError:incorrect number of arguments for multibody_set type species_type. An even number 8 or greater is expected.";
       exit(1);
     }
   }
   else
   {
-    cout << "\nError: Create_Multibodies keyword " << args[3] << " does not exist. Options are all_molecules, species_molecules, species_type, and species_atomlist.";
+    cout << "\nError: Create_Multibodies keyword " << args[4] << " does not exist. Options are all_molecules, species_molecules, species_type, and species_atomlist.";
     exit(1);
   }
 
@@ -4633,14 +4670,26 @@ void System::delete_multibody_set(string setname)
 
 
 /*Method to create new trajectory set and add to necessary storage containers*/
-Trajectory_Set* System::create_trajectory_set(string setname, string multibodysetname, bool centertype)
+Trajectory_Set* System::create_trajectory_set(string setname, string multibodysetname, string traj_typename, bool centertype)
 {
   Multibody_Set * multibody_set;
   Trajectory_Set * new_trajectory_set;
+  bool current_atomtype;
+  
+  int traj_typeindex;
+  current_atomtype=atomtype_exists(traj_typename);
+  if(current_atomtype)
+  {
+    traj_typeindex=show_atomtype_index(traj_typename);
+  }
+  else
+  {
+    traj_typeindex=add_atomtype(traj_typename);
+  }
   
   multibody_set = find_multibody_set(multibodysetname);
   
-  multibody_set->compute_trajectories(centertype);	//define new trajectories from multibodies
+  multibody_set->compute_trajectories(centertype, traj_typeindex+1);	//define new trajectories from multibodies
   
   add_trajectories(multibody_set);		//add trajectories to master list of trajectories and update boolean lists
    

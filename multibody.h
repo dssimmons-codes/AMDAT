@@ -56,8 +56,8 @@ namespace std
 
       //void show_coordinates(int timeii,Coordinate* list);			//returns list of coordinates of trajectories at time ii. Coordinates are returned via Coordinate* list, which must be of length equal to n_trajectories;
 
-      void center_of_mass_trajectory();
-      void centroid_trajectory();
+      void center_of_mass_trajectory(int trajtype=0);
+      void centroid_trajectory(int trajtype=0);
 
       int show_n_bodies()const{return trajectories.size();};
 

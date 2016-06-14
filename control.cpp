@@ -1554,7 +1554,7 @@ void Control::region_multibody_list()
 /*--------------------------------------------------------------------------------*/
 void Control::create_multibodies()
 {
-  string multibody_list_name, trajectory_list_name, centertypename;
+  string multibody_list_name, trajectory_list_name, trajectory_type_name, centertypename;
   bool centertype;
   Multibody_Set* multibody_set_pointer;
   Multibody_List* new_multibody_list;
@@ -1566,7 +1566,8 @@ void Control::create_multibodies()
 
 
   multibody_list_name = args[1];
-  centertypename = args[2];
+  trajectory_type_name = args[2];
+  centertypename = args[3];
   
   trajectory_list_name = multibody_list_name;
 
@@ -1589,7 +1590,7 @@ void Control::create_multibodies()
     exit (0);
   }
 
-  trajectory_set_pointer = analyte->create_trajectory_set(trajectory_list_name,multibody_list_name,centertype);
+  trajectory_set_pointer = analyte->create_trajectory_set(trajectory_list_name,multibody_list_name,trajectory_type_name, centertype);
 
   new_trajectory_list->set(analyte,trajectory_set_pointer);
   add_trajectorylist(new_trajectory_list, trajectory_list_name);
@@ -2227,12 +2228,12 @@ void Control::structure_factor_from_rdf()
     }
     else
     {
-      cout << "\Warning: analysis stored with name " << rdfname << " is not a radial distribution function. Structure factor not calculated.\ns";
+      cout << "\nWarning: analysis stored with name " << rdfname << " is not a radial distribution function. Structure factor not calculated.\n";
     }
   }
   else
   {
-    cout << "\Warning: no analysis stored with name " << rdfname << ". Structure factor not calculated.\ns";
+    cout << "\nWarning: no analysis stored with name " << rdfname << ". Structure factor not calculated.\n";
   }
 }
 

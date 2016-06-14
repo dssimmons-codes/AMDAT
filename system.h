@@ -30,7 +30,7 @@ class System
     int n_species;				//number of molecular species
     int n_atomtypes;				//number of types of atoms in system
     string * species_name;
-    string * atomtype_name;
+    vector <string> atomtype_name;
     int * atoms_per_species;
     int total_molecules;			//total number of molecules in system
     int * n_molecules;				//array of number of molecules of each species
@@ -131,7 +131,7 @@ class System
     void delete_multibody_set(string);
 
 
-    Trajectory_Set* create_trajectory_set(string setname, string multibodysetname, bool centertype);	//centertype = 1 for centroid or 0 for COM
+    Trajectory_Set* create_trajectory_set(string setname, string multibodysetname, string traj_typename,  bool centertype);	//centertype = 1 for centroid or 0 for COM
     Trajectory_Set* find_trajectory_set(string setname, bool allow_nofind)const;
     void add_trajectory_set(string trajectory_set_name,Trajectory_Set* trajectory_set);
     void add_trajectories (Trajectory_Set * new_trajectories);
@@ -156,10 +156,16 @@ class System
     Molecule* show_molecule(int moleculeID)const{return moleculelist[moleculeID];};	//return pointer to molecule via moleculeID
     Trajectory* show_trajectory(int trajectoryID)const{return trajectorylist[trajectoryID];};	//return pointer to trajectory via trajectoryID
     Molecule* show_molecule(int species_index, int molecule_index)const{return &molecules[species_index][molecule_index];};		//return molecule from master list of molecules
+    
     int show_species_index(string) const;
     int show_atomtype_index(string) const;
+    bool atomtype_exists (string) const;
+    int add_atomtype(string);
+    int show_n_atomtypes()const{return n_atomtypes;};	//return number of atomtypes including only atomtypes existing at time of trajectory file read in
+    int show_n_expanded_atomtypes()const {return atomtype_name.size();};	//return number of trajectory types including newly defined trajectories
+    
     Coordinate show_unwrapped(int species_index, int molecule_index, int atom_type, int atom_index, int timestep) const;	//returns a single unwrapped coordinate of a given atom
-    int show_n_atomtypes()const{return n_atomtypes;};
+    
 
 
     /*-------------Methods to return information about time scheme------------*/

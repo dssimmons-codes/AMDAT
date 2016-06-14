@@ -97,18 +97,19 @@ Multibody* Multibody_Set::show_multibody(int index)
 }
 
 
-void Multibody_Set::compute_trajectories(bool centertype)
+void Multibody_Set::compute_trajectories(bool centertype, int trajtype)
 {
   int trajii;
+  
   for(trajii=0;trajii<n_multibodies;trajii++)
   {
     if(centertype)
     {
-      multibodies[trajii].center_of_mass_trajectory();
+      multibodies[trajii].center_of_mass_trajectory(trajtype);
     }
     else
     {
-      multibodies[trajii].centroid_trajectory();
+      multibodies[trajii].centroid_trajectory(trajtype);
     }
   }
 }

@@ -40,7 +40,7 @@ void Strings::initialize(System * sys, int timegap1, float thresh, string sigmat
 	maxstrings = maximum_strings;
 	maxstringatoms = maximum_stringatoms;
 	timegap=timegap1;
-	n_trajectories = system->show_n_atoms()+system->show_n_molecules();
+	n_trajectories = system->show_n_trajectories();
 
 	allocate_sig_matrix(sigmatrixname);
 	
@@ -399,8 +399,10 @@ void Strings::allocate_sig_matrix(string sig_file)
     line = "";
     int sig_tokens=0;
     string * sig_ARGS;
+    int matsize, lineii, argii, type1index, type2index;
+    int * type_index;
     
-    n_atomtypes = system->show_n_atomtypes();
+    n_atomtypes = system->show_n_expanded_atomtypes();
     sig_ARGS =new string [n_atomtypes+1];
 
     string * species_name;
@@ -408,53 +410,78 @@ void Strings::allocate_sig_matrix(string sig_file)
 
     ifstream file(sig_file.c_str());
 
+    
+    sigmatrix=new float* [n_atomtypes];
+	for(lineii=0;lineii<n_atomtypes;lineii++)
+	{
+	  sigmatrix[lineii]=new float[n_atomtypes];
+	  for(argii=0;argii<n_atomtypes;argii++)
+	  {
+	    sigmatrix[lineii][argii]=0;
+	  }
+	}
+    
+    
     if (file.is_open())
     {
+       
         //get first line of matrix
         getline (file,line);
         sig_tokens = tokenize(line, sig_ARGS);
-        species_name = new string [sig_tokens];
-        species_name[0] = sig_ARGS[0];
+        matsize = sig_tokens-1;
+	
+	if(matsize>n_atomtypes)
+	{
+	  cout<<"\nError: matrix size is greater than number of trajectory types.\n";
+	  exit(0);
+	}
+	
+		
+	type_index = new int [matsize];
+	
+	if(!system->atomtype_exists(sig_ARGS[0]))
+	{
+	  cout << "\nError: Trajectory type " << sig_ARGS[0] << " not found.\n";
+	  exit(0);
+	}
+        type_index[0] = system->show_atomtype_index(sig_ARGS[0]);
 
-        // initialize matrix
-        sigmatrix = new float * [n_atomtypes];
-        for (int argii=0; argii<n_atomtypes; argii++)
-        {
-            sigmatrix[argii] = new float [n_atomtypes];
-        }
+	for(lineii=1;lineii<matsize;lineii++)
+	{
+	  if(file.eof())
+	  {
+	    cout<<"\nError: Sigma matrix is not square.\n";
+	    exit(0);
+	  }
+	  getline (file,line);
+	  sig_tokens = tokenize(line, sig_ARGS);
+	  if(sig_tokens!=matsize+1)
+	  {
+	    cout<<"\nError: Sigma matrix is not square.\n";
+	    exit(0);
+	  }
+	  
 
-
-        //set all elements to 0
-        for (int arg1ii=0;arg1ii<n_atomtypes;arg1ii++)
-        {
-            for (int arg2ii=0;arg2ii<n_atomtypes;arg2ii++)
-            {
-                sigmatrix[arg1ii][arg2ii] = 0;
-            }
-        }
-
-        //input first row of the matrix
-        for(int argsii=1; argsii<=system->show_n_atomtypes(); argsii++)
-        {
-            stringstream ss(sig_ARGS[argsii]);
-            ss>>sigmatrix[0][argsii-1];
-        }
-
-        //input rest of the matrix
-        for(int lineii=1;lineii<system->show_n_atomtypes(); lineii++)
-        {
-
-            getline (file,line);
-            sig_tokens = tokenize(line, sig_ARGS);
-
-            species_name[lineii] = sig_ARGS[0];
-
-            for(int argsii=1; argsii<=system->show_n_atomtypes(); argsii++)
-            {
-                stringstream ss(sig_ARGS[argsii]);
-                ss>>sigmatrix[lineii][argsii-1];
-            }
-        }
+	  if(!system->atomtype_exists(sig_ARGS[0]))
+	  {
+	    cout << "\nError: Trajectory type " << sig_ARGS[0] << " not found.\n";
+	    exit(0);
+	  }
+          type_index[0] = system->show_atomtype_index(sig_ARGS[0]);
+	}
+	
+	file.clear();
+	file.seekg(0,ios::beg);
+	
+	for(lineii=0;lineii<matsize;lineii++)
+	{
+	  getline (file,line);
+	  sig_tokens = tokenize(line, sig_ARGS);
+	  for(argii=1; argii<= matsize; argii++)
+	  {
+	    sigmatrix[type_index[lineii]][type_index[argii-1]]=atof(sig_ARGS[argii].c_str());
+	  }
+	}
     }
     else
     {
