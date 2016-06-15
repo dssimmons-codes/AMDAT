@@ -1,5 +1,5 @@
 /*Amorphous Molecular Dynamics Analysis Toolkit (AMDAT)*/
 /*Version information*/
 
-#define VERSION "r96"
-#define DATE "14Jun16"
+#define VERSION "r97"
+#define DATE "15Jun16"
