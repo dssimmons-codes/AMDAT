@@ -29,9 +29,9 @@
 
 
 
-#define ARGMAX 100
+#define ARGMAX 1000
 
-#define LISTSIZE 100
+#define LISTSIZE 1000
 
 namespace std{
 

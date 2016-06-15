@@ -20,7 +20,7 @@
 using namespace std;
 
 #include "progress.h"
-#define LISTSIZE 100
+#define LISTSIZE 1000
 
 bool fileoutput;
 
