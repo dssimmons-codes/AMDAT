@@ -39,6 +39,7 @@ class Coordinate
     bool operator > (const Coordinate&)const;
     Coordinate integer()const;		//truncate decimals
     Coordinate coord_floor()const;			//floor command
+    Coordinate coord_round()const;		//round;
     float length() const;			//returns vector length
     float length_xy() const;
     float length_yz() const;

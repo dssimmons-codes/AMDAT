@@ -310,7 +310,25 @@ bool Multibody::trajectory_check(Trajectory* check)
   return false;
 }
 
+
+
+Coordinate Multibody::consistent_position(int trajii, int timeii)
+{
+  return ((trajectories[trajii])->show_coordinate(tref))+((system->size(timeii))*relative_image_index[trajii])+(trajectories[trajii])->displacement_vector(tref,timeii);
+}
+
 void Multibody::add_body(Trajectory* new_trajectory)
 {
+  Coordinate def;
   trajectories.push_back(new_trajectory);
+  tref=0;
+  relative_image_index.push_back(def);
+}
+
+void Multibody::add_body(Trajectory* new_trajectory, Coordinate imageoffset, int reftime)
+{
+  trajectories.push_back(new_trajectory);
+  tref=reftime;
+  relative_image_index.push_back(imageoffset.integer());
+  
 }

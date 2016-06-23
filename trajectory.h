@@ -61,6 +61,7 @@ class Trajectory
     float distance_xy(int,int)const;		//calculate spatial distance between two timesteps in xy plane
     float distance_xz(int,int)const;		//calculate spatial distance between two timesteps in xz plane
     float distance_yz(int,int)const;		//calculate spatial distance between two timesteps in yz plane
+    Coordinate displacement_vector(int,int)const;	//return vector displacement between two times
     
     Coordinate show_unwrapped(int T)const{return unwrapped[T];};			
     Coordinate * show_unwrapped()const{return unwrapped;};					//method to return array of displacement
@@ -68,7 +69,7 @@ class Trajectory
     Coordinate * show_coordinates()const{return coordinates;};
     Coordinate * show_coordinates(int*timelist, int listsize)const;		//returns list of coordinates at requested times
     const Coordinate & show_velocity(int T)const{return velocity[T];}			//method to return velocity
-
+    Coordinate show_image_index(Coordinate, int)const;	//return image indices at time
     
     float show_mass()const{return mass;};				//method to show mass
     bool check_unwrapped()const{return is_unwrapped;};			//check whether unwrapped coordinates are present

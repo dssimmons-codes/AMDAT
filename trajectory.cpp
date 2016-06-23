@@ -332,6 +332,27 @@ float Trajectory::distance_yz(int first_time, int second_time)const
 
 /*--------------------------------------------------------------------------------------*/
 
+
+
+Coordinate Trajectory::displacement_vector(int time1, int time2)const
+{
+  return unwrapped[time2]-unwrapped[time1];
+}
+
+
+/*--------------------------------------------------------------------------------------*/
+
+
+Coordinate Trajectory::show_image_index(Coordinate boxsize, int timeii)const
+{
+  return ((unwrapped[timeii]-coordinates[timeii])/boxsize).coord_round();
+}
+
+
+
+/*--------------------------------------------------------------------------------------*/
+
+
 /*Method to write trajectory to file*/
 void Trajectory::write(string filename)
 {

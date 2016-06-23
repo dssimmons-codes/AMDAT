@@ -201,6 +201,19 @@ Coordinate Coordinate::coord_floor()const
   return temp;
 }
 
+
+Coordinate Coordinate::coord_round()const
+{
+  Coordinate temp;
+  
+  temp.x = round(x);
+  temp.y = round(y);
+  temp.z = round(z);
+  
+  return temp;
+  
+}
+
 /*Methods to calculate in-box vector length*/
 float Coordinate::length()const
 {

@@ -275,15 +275,16 @@ void Molecule::ID_to_atoms()
 Multibody Molecule::create_multibody()const
 {
   int typeii,atomii;
-  int bodyii=0;
+  //int bodyii=0;
   
   Multibody multibody(total_atoms);
   for(typeii=0;typeii<n_atomtypes;typeii++)
   {
     for(atomii=0;atomii<n_atoms[typeii];atomii++)
     {
-      multibody.set(bodyii,&(atoms[typeii][atomii]));
-      bodyii++;
+      multibody.add_body(&(atoms[typeii][atomii]));
+      //multibody.set(bodyii,&(atoms[typeii][atomii]));
+      //bodyii++;
     }
   }
   

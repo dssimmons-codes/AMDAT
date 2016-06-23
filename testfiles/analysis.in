@@ -1,6 +1,6 @@
 system
 xyz_log
-/home/david/AMDATsync/trunk/testfiles/traj.xyz /home/david/AMDATsync/trunk/testfiles/log.lammps
+/home/dss/amdatsvn/trunk/testfiles/traj.xyz /home/dss/amdatsvn/trunk/testfiles/log.lammps
 exponential 100 77 1.2 0 0 .01
 polymer 50
 1
@@ -429,7 +429,7 @@ exit
 composition composition.dat -1
 list all
 
-structure_factor structure.dat symmetric xyz 0 0
+composition composition.dat -1
 list all
 
 exit

@@ -26,7 +26,8 @@ namespace std
     //int n_trajectories;
     //Trajectory ** trajectories;
     vector<Trajectory*> trajectories;
-    Coordinate relative_image_index; //stores relative image flag for each body in the multibody at its reference time of creation so that any calculation involving the relative internal relationships of the body within the multibody correctly compute their relative separation vectors at all times (should always consist of three ints);
+    int tref;				//reference time at which multibody is defined within consistent image flags
+    vector<Coordinate> relative_image_index; //stores relative image flag for each body in the multibody at its reference time of creation so that any calculation involving the relative internal relationships of the body within the multibody correctly compute their relative separation vectors at all times (should always consist of three ints);
 
     //int multibody_ID;
 
@@ -34,9 +35,9 @@ namespace std
     //void calculate_center_of_mass();
     Coordinate calculate_centroid(int timeii)const;
     
+    Coordinate consistent_position(int trajii,int timeii);	//returns position of specified trajectory at specified time, using image of each particle such that the multibody does not wrap a boundary
     
-    int tref;				//reference time at which multibody is defined within consistent image flags
-    Coordinate * image_offsets;		//image flag offsets to get consistent (properly wrapped) multibody at tref
+    
 
     public:
       Multibody();
@@ -52,6 +53,8 @@ namespace std
       void set(System * sys);
       void set(int n_bodies, Trajectory** bodies);
       void set(int body_index, Trajectory * body){trajectories[body_index]=body;};	//set pointer to one of the bodies
+      //void set(int body_index, Trajectory * body, Coordinate imageoffset)	//set pointer to one of the bodies while setting its image offsets
+      
       //Coordinate shortvector(int trajii1,int trajii2,int timeii);		//Returns shortest vector between two trajectories at a given time (first trajectory index, second trajectory index, time)
 
       //void show_coordinates(int timeii,Coordinate* list);			//returns list of coordinates of trajectories at time ii. Coordinates are returned via Coordinate* list, which must be of length equal to n_trajectories;
@@ -67,6 +70,7 @@ namespace std
       
       bool trajectory_check(Trajectory*);	//returns true if this multibody contains the specified trajectory; returns false otherwise
       void add_body(Trajectory*);
+      void add_body(Trajectory*, Coordinate, int);
       void absorb_multibody(const Multibody &);
 
   };
