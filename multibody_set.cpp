@@ -70,6 +70,22 @@ Multibody_Set::Multibody_Set(int multibody_count)
 
 
 
+void Multibody_Set::set(vector<Multibody> mbodies)
+{
+  int mbodyii;
+  delete [] multibodies;
+  
+  n_multibodies = mbodies.size();
+  multibodies = new Multibody [n_multibodies];
+  
+  for(mbodyii=0;mbodyii<n_multibodies;mbodyii++)
+  {
+    multibodies[bodyii]=mbodies[bodyii];
+  }
+}
+
+
+
 /*reset number of multibodies and reinitialize array of multibodies*/
 void Multibody_Set::set(System* system, int multibody_count)
 {

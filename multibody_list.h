@@ -39,10 +39,12 @@ namespace std{
 
       Multibody_List(System * sys, int timecount);    //construct Multibody_List, setting the total number of times in the list.
       Multibody_List (System * sys, Multibody_Set * multibodyset);
+      Multibody_List (System*sys, int timecount, Multibody_Set ** multibodysets, int*time_conversion);
 
 
       Multibody_List operator + (const Multibody_List &) const; //combine two Multibody_Lists
       void set(System * sys, Multibody_Set * multibodyset);
+      void set (System*sys, int timecount, Multibody_Set ** multibodysets, int*time_con);
 
       int show_n_bodies(){return n_bodies;}; //return number of bodies in multibodies in list if they all contain the same number of bodies. Return -1 if they are not all the same or -2 if it has not been determined.
       int show_n_multibodies(int timeii){return multibodies[convert_time(timeii)].size();};   //return number of multibodies in list at a given time

@@ -119,7 +119,33 @@ Multibody_List::Multibody_List(System * syst, Multibody_Set * multibodyset)
     check_n_bodies();
 }
 
-
+/*Method that resets object with system and a pointer to a list of Multibody_Set onjects - fully creates list with multibodies in it*/
+Multibody_List::Multibody_List(System * syst, int timecount, Multibody_Set ** multibodysets, int*time_con)
+{
+    int multibodyii;
+    
+    sys = syst;
+    n_times = timecount;
+    multibodies.clear();
+    multibodies.resize(n_times);
+    time_conversion = new int[sys->show_n_timesteps()];
+    
+    for(int timeii=0;timeii<sys->show_n_timesteps();timeii++)
+    {
+        time_conversion[timeii]=time_con[timeii];
+    }
+    
+    for(int timeii=0;timeii<n_times;timeii++)
+    {
+      multibodies[timeii].resize(multibodysets[timeii]->show_n_multibodies());
+      for(multibodyii=0;multibodyii<multibodysets[timeii]->show_n_multibodies();multibodyii++)
+      {
+	multibodies[timeii][multibodyii]=multibodysets[timeii]->show_multibody(multibodyii);
+      }
+      
+    }
+    check_n_bodies();
+}
 
 /*Method that resets object with system and a pointer to a Multibody_Set - fully creates list with multibodies in it*/
 /*This is comparable to a static trajectory list in that it defines only one list of multibodies that is the same for all times in the system*/
@@ -149,6 +175,37 @@ void Multibody_List::set(System * syst, Multibody_Set * multibodyset)
     check_n_bodies();
 }
 
+
+
+/*Method that resets object with system and a pointer to a list of Multibody_Set onjects - fully creates list with multibodies in it*/
+void Multibody_List::set(System * syst, int timecount, Multibody_Set ** multibodysets, int*time_con)
+{
+    int multibodyii;
+    
+    delete [] time_conversion;
+    
+    sys = syst;
+    n_times = timecount;
+    multibodies.clear();
+    multibodies.resize(n_times);
+    time_conversion = new int[sys->show_n_timesteps()];
+    
+    for(int timeii=0;timeii<sys->show_n_timesteps();timeii++)
+    {
+        time_conversion[timeii]=time_con[timeii];
+    }
+    
+    for(int timeii=0;timeii<n_times;timeii++)
+    {
+      multibodies[timeii].resize(multibodysets[timeii]->show_n_multibodies());
+      for(multibodyii=0;multibodyii<multibodysets[timeii]->show_n_multibodies();multibodyii++)
+      {
+	multibodies[timeii][multibodyii]=multibodysets[timeii]->show_multibody(multibodyii);
+      }
+      
+    }
+    check_n_bodies();
+}
 
 
 Multibody_List Multibody_List::operator+(const Multibody_List & comparison) const

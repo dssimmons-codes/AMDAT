@@ -350,3 +350,15 @@ bool Coordinate::within(const Coordinate& low, const Coordinate & high)
   }
   
 }
+
+bool Coordinate::operator!=(const Coordinate& comparator)
+{
+  return(x!=comparator.x||y!=comparator.y||z!=comparator.z);
+}
+
+
+
+bool Coordinate::operator==(const Coordinate& comparator)
+{
+  return(x==comparator.x&&y==comparator.y&&z==comparator.z);
+}

@@ -43,6 +43,8 @@ class Trajectory
     Trajectory();	//default constructor
     Trajectory(int timesteps);	//constructor to instantiate coordinate array without defining it
     Trajectory(int,Coordinate *);	//constructor to instantiate coordinate array with full definition
+    //Trajectory(const Multibody &);	//copy constructor
+    //Trajectory operator =(const Multibody&);
    ~Trajectory();			//destructor
     
     virtual void set(int,int,float m=1);		//change number of timesteps and reallocate memory accordingly
@@ -69,7 +71,7 @@ class Trajectory
     Coordinate * show_coordinates()const{return coordinates;};
     Coordinate * show_coordinates(int*timelist, int listsize)const;		//returns list of coordinates at requested times
     const Coordinate & show_velocity(int T)const{return velocity[T];}			//method to return velocity
-    Coordinate show_image_index(Coordinate, int)const;	//return image indices at time
+    Coordinate show_image_index(Coordinate boxsize, int timeii)const;	//return image indices at time
     
     float show_mass()const{return mass;};				//method to show mass
     bool check_unwrapped()const{return is_unwrapped;};			//check whether unwrapped coordinates are present

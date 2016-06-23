@@ -35,19 +35,19 @@ namespace std
     //void calculate_center_of_mass();
     Coordinate calculate_centroid(int timeii)const;
     
-    Coordinate consistent_position(int trajii,int timeii);	//returns position of specified trajectory at specified time, using image of each particle such that the multibody does not wrap a boundary
+    Coordinate consistent_position(int trajii,int timeii)const;	//returns position of specified trajectory at specified time, using image of each particle such that the multibody does not wrap a boundary. Any computation involving internal degrees of freedom of the multibody should use this method to obtain particle coordinates.
     
     
 
     public:
       Multibody();
       Multibody(const Multibody &);
-      ~Multibody();
+      //~Multibody();
       Multibody operator =(const Multibody &);
       Trajectory * operator()(int bodyindex);	//return pointer to trajectory indicated by bodyindex or null pointer if invalid index
 
       Multibody(System *);
-      Multibody(int n_bodies);		//construct multibody with n_bodies initially corresponding to null pointers
+      Multibody(int n_bodies);		//effectively the same as the default constructor
       Multibody(int n_bodies,Trajectory** bodies);
 
       void set(System * sys);
@@ -70,7 +70,8 @@ namespace std
       
       bool trajectory_check(Trajectory*);	//returns true if this multibody contains the specified trajectory; returns false otherwise
       void add_body(Trajectory*);
-      void add_body(Trajectory*, Coordinate, int);
+      void set_reftime(int reftime){tref=reftime;};			//set reference time index for correct wrapping/unwrapping of internal degrees of freedom
+      void add_body(Trajectory*, Coordinate);
       void absorb_multibody(const Multibody &);
 
   };

@@ -4540,7 +4540,7 @@ Multibody_Set* System::create_multibody_set()
   {
     for(moleculeii=0;moleculeii<n_molecules[speciesii];moleculeii++)
     {
-      new_multibody_set->set_multibody(multibodyii,molecules[speciesii][moleculeii].create_multibody());	//request molecule to create multibody and copy it to multibody_set
+      new_multibody_set->set_multibody(multibodyii,molecules[speciesii][moleculeii].create_multibody(box_size[0]));	//request molecule to create multibody and copy it to multibody_set
       multibodyii++;		//increment count of multibodeis created
     }
   }
@@ -4561,7 +4561,7 @@ Multibody_Set* System::create_multibody_set(int speciesii)
 
     for(moleculeii=0;moleculeii<n_molecules[speciesii];moleculeii++)
     {
-      new_multibody_set->set_multibody(multibodyii,molecules[speciesii][moleculeii].create_multibody());	//request molecule to create multibody and copy it to multibody_set
+      new_multibody_set->set_multibody(multibodyii,molecules[speciesii][moleculeii].create_multibody(box_size[0]));	//request molecule to create multibody and copy it to multibody_set
       multibodyii++;		//increment count of multibodeis created
     }
 
@@ -4581,7 +4581,7 @@ Multibody_Set* System::create_multibody_set(int speciesii, int type)
 
     for(moleculeii=0;moleculeii<n_molecules[speciesii];moleculeii++)
     {
-      new_multibody_set->set_multibody(multibodyii,molecules[speciesii][moleculeii].create_multibody(type));	//request molecule to create multibody and copy it to multibody_set
+      new_multibody_set->set_multibody(multibodyii,molecules[speciesii][moleculeii].create_multibody(type,box_size[0]));	//request molecule to create multibody and copy it to multibody_set
       multibodyii++;		//increment count of multibodeis created
     }
 
@@ -4602,7 +4602,7 @@ Multibody_Set* System::create_multibody_set(int speciesii, int n_bodies, int * t
 
     for(moleculeii=0;moleculeii<n_molecules[speciesii];moleculeii++)
     {
-      new_multibody_set->set_multibody(multibodyii,molecules[speciesii][moleculeii].create_multibody(n_bodies, typeii, index));	//request molecule to create multibody and copy it to multibody_set
+      new_multibody_set->set_multibody(multibodyii,molecules[speciesii][moleculeii].create_multibody(n_bodies, typeii, index,box_size[0]));	//request molecule to create multibody and copy it to multibody_set
       multibodyii++;		//increment count of multibodeis created
     }
 
@@ -4659,7 +4659,7 @@ void System::delete_multibody_set(string setname)
     multibody_set = find_multibody_set(setname,1);
     if(multibody_set=0)
     {
-        cout << "\nWarning: multibody_list " << setname << " does not exist and therefore cannot be deleted.";
+        cout << "\nWarning: multibody_set " << setname << " does not exist and therefore cannot be deleted.";
     }
     else
     {

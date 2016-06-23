@@ -27,11 +27,15 @@ class Multibody_Set: public Trajectory_Set
     ~Multibody_Set();					//destructor
     Multibody_Set operator =(const Multibody_Set &);	//equality operator
     Multibody_Set(int multibody_count);			//constructor to set number of multibodies
+    
 
-    /*Methods to define a multibody in the array of multibodies*/
+
+    /*Methods to define one or more multibodies in the array of multibodies*/
     void set_multibody(int multibody_index, int n_bodies, Trajectory** bodies){multibodies[multibody_index].set(n_bodies,bodies);};
     void set_multibody(int multibody_index, const Multibody & multibody){multibodies[multibody_index]=multibody;};
+    
     void set(System * system, int multibody_count);		//reset number of multibodies and reinitialize array of multibodies
+    void set(vector<Multibody> mbodies);		//define set of multibodies based on vector of multibodies
     Multibody * show_multibody(int index);
     int show_n_multibodies(){return n_multibodies;};
     

@@ -59,6 +59,9 @@ class Coordinate
     
     void smallest(const Coordinate *, int);		//from a list of coordinates, sets this coordinate to  the smallest values of x, y, and z in the list
     bool within(const Coordinate& low, const Coordinate & high);	//returns true if this coordinate is within the rectangular prism with low and high as lower and upper corners; returns false otherwise
+    
+    bool operator!=(const Coordinate&);
+    bool operator==(const Coordinate&);
 };
 
 }

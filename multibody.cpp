@@ -28,10 +28,13 @@ Multibody::Multibody(System * sys)
 
 /*Copy constructor*/
 Multibody::Multibody(const Multibody & copy)
+//:Trajectory(copy)
 {
   int trajectoryii;
 
   trajectories=copy.trajectories;
+  tref=copy.tref;
+  relative_image_index=copy.relative_image_index;
   //trajectories = new Trajectory* [n_trajectories];
 
   /*Copy over pointers to trajectories in multibody*/
@@ -42,13 +45,12 @@ Multibody::Multibody(const Multibody & copy)
 }
 
 
-
+#ifdef NEVER
 /*Destructor*/
 Multibody::~Multibody()
 {
-  //delete [] trajectories;
 }
-
+#endif
 
 
 /*method to return pointer to specified trajectory in multibody*/
@@ -66,7 +68,10 @@ Multibody Multibody::operator=(const Multibody & copy)
 
   if(this!=&copy)
   {
+    //Trajectory::operator=(copy);
     trajectories=copy.trajectories;
+    tref=copy.tref;
+    relative_image_index=copy.relative_image_index;
     //trajectories = new Trajectory* [n_trajectories];
 
     /*Copy over pointers to trajectories in multibody*/
@@ -88,14 +93,15 @@ Multibody::Multibody(int n_bodies)
   int trajectoryii;
 
   int n_trajectories=n_bodies;
-  trajectories.resize(n_trajectories);
+  //trajectories.resize(n_trajectories);
+  tref=-1;
   //trajectories = new Trajectory* [n_trajectories];
 
   /*Copy over pointers to trajectories in multibody*/
-  for(trajectoryii=0;trajectoryii<n_trajectories;trajectoryii++)
-  {
-    trajectories[trajectoryii]=0;
-  }
+  //for(trajectoryii=0;trajectoryii<n_trajectories;trajectoryii++)
+  //{
+   // trajectories[trajectoryii]=0;
+  //}
 }
 
 
@@ -106,14 +112,14 @@ Multibody::Multibody(int n_bodies, Trajectory ** bodies)
   int trajectoryii;
 
   int n_trajectories=n_bodies;
-  trajectories.resize(n_trajectories);
+  //trajectories.resize(n_trajectories);
   //trajectories = new Trajectory* [n_trajectories];
 
   /*Copy over pointers to trajectories in multibody*/
-  for(trajectoryii=0;trajectoryii<n_trajectories;trajectoryii++)
-  {
-    trajectories[trajectoryii]=bodies[trajectoryii];
-  }
+  //for(trajectoryii=0;trajectoryii<n_trajectories;trajectoryii++)
+  //{
+ //   trajectories[trajectoryii]=bodies[trajectoryii];
+ // }
 }
 
 
@@ -167,7 +173,8 @@ void Multibody::center_of_mass_trajectory(int trajtype)
     com.set(0,0,0);
     for(trajectoryii=0;trajectoryii<n_trajectories;trajectoryii++)
     {
-      com+=((trajectories[trajectoryii]->show_unwrapped(timeii))*trajectories[trajectoryii]->show_mass());
+      //com+=((trajectories[trajectoryii]->show_unwrapped(timeii))*trajectories[trajectoryii]->show_mass());
+      com+=consistent_position(trajectoryii,timeii)*trajectories[trajectoryii]->show_mass();
     }
     com/=mass;
 
@@ -216,12 +223,13 @@ Coordinate Multibody::calculate_centroid(int timeii)const
   int bodyii;
   Coordinate centroid(0,0,0);
   int n_trajectories=trajectories.size();
-
   for(bodyii=0;bodyii<n_trajectories;bodyii++)
   {
-    centroid += (trajectories[bodyii]->show_unwrapped(timeii));
+    //centroid += (trajectories[bodyii]->show_unwrapped(timeii));
+    centroid+=consistent_position(bodyii,timeii);
   }
-  centroid/=n_trajectories;
+  centroid/=float(n_trajectories);
+  //centroid=trajectories[bodyii-1]->show_unwrapped(timeii);
 
   return centroid;
 }
@@ -239,9 +247,10 @@ float Multibody::square_gyration_radius(int timeii)
 
   for(bodyii=0;bodyii<n_trajectories;bodyii++)
   {
-    gyration_radius+=(trajectories[bodyii]->show_unwrapped(timeii)-centroid).length_sq();
+    //gyration_radius+=(trajectories[bodyii]->show_unwrapped(timeii)-centroid).length_sq();
+    gyration_radius+=(consistent_position(bodyii,timeii)-centroid).length_sq();
   }
-  gyration_radius/=n_trajectories;
+  gyration_radius/=float(n_trajectories);
 
   return gyration_radius;
 
@@ -257,7 +266,8 @@ void Multibody::gyr_tensor(int timeii, sixfloat* g_tensor)
 
     for(trajii=0;trajii<n_trajectories;trajii++)
     {
-        coordinates[trajii]=trajectories[trajii]->show_unwrapped(timeii);
+        //coordinates[trajii]=trajectories[trajii]->show_unwrapped(timeii);
+	coordinates[trajii]=consistent_position(trajii,timeii);
     }
 
     gyration_tensor(coordinates,  n_trajectories, g_tensor);
@@ -312,23 +322,21 @@ bool Multibody::trajectory_check(Trajectory* check)
 
 
 
-Coordinate Multibody::consistent_position(int trajii, int timeii)
+Coordinate Multibody::consistent_position(int trajii, int timeii)const
 {
-  return ((trajectories[trajii])->show_coordinate(tref))+((system->size(timeii))*relative_image_index[trajii])+(trajectories[trajii])->displacement_vector(tref,timeii);
+  return ((trajectories[trajii])->show_coordinate(tref))+((system->size(tref))*relative_image_index[trajii])+(trajectories[trajii])->displacement_vector(tref,timeii);
 }
 
-void Multibody::add_body(Trajectory* new_trajectory)
+void Multibody::add_body(Trajectory* new_trajectory)	//add body, assuming that relative image index is 0 and tref is 0 (usually will not produce robustly useful results)
 {
-  Coordinate def;
+  Coordinate def(0,0,0);
   trajectories.push_back(new_trajectory);
-  tref=0;
   relative_image_index.push_back(def);
 }
 
-void Multibody::add_body(Trajectory* new_trajectory, Coordinate imageoffset, int reftime)
+void Multibody::add_body(Trajectory* new_trajectory, Coordinate imageoffset)
 {
   trajectories.push_back(new_trajectory);
-  tref=reftime;
-  relative_image_index.push_back(imageoffset.integer());
+  relative_image_index.push_back(imageoffset);
   
 }

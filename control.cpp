@@ -224,7 +224,15 @@ int Control::execute_commands(int iIndex, int fIndex)
     {
       combine_multibody_lists();
     }
-    else if(command == "region_multibody_list")
+    //else if (command == "delete_multibodies") //implementing this would cause serious problems
+    //{
+    //  delete_multibodies();
+    //}
+    else if (command == "delete_multibody_list")
+    {
+      delete_multibody_list();
+    }
+    else if (command == "region_multibody_list")
     {
       region_multibody_list();
     }
@@ -1365,8 +1373,13 @@ void Control::add_multibody_list(Multibody_List* multibody_list,string multibody
 
 /*--------------------------------------------------------------------------------*/
 
-void Control::delete_multibody_list(string listname)
+void Control::delete_multibody_list()
 {
+  
+  string listname;
+  
+  listname=args[1];
+  
   Multibody_List * multibody_list;
 
   multibody_list = find_multibody_list(listname,1);
@@ -1407,6 +1420,18 @@ void Control::combine_multibody_lists()
 
 }
 
+/*--------------------------------------------------------------------------------*/
+
+
+void Control::delete_multibodies()
+{
+   string multibody_set_name;
+   
+   multibody_set_name=args[1];
+   
+   analyte->delete_multibody_set(multibody_set_name);
+}
+
 
 /*--------------------------------------------------------------------------------*/
 
@@ -1444,6 +1469,8 @@ void Control::add_value_list(Value_List<float> * av_list, string listname)
   value_list_names[listnum]=listname;
 
 }
+
+
 
 
 
@@ -1599,6 +1626,21 @@ void Control::create_multibodies()
 
 
 
+#ifdef NEVER
+void Control::strings_to_multibodies()
+{
+  
+  
+  
+  run_analysis(&stringlist,runline);
+  
+  stringlist.create_multibody_sets()
+  
+  
+}
+
+
+#endif
 
 /*--------------------------------------------------------------------------------*/
 

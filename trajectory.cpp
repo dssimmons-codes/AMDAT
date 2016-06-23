@@ -23,7 +23,7 @@ Trajectory::Trajectory()
   n_timesteps=0;
   type=-1;
   trajectory_ID=-1;
-  mass=-1;
+  mass=1;
   coordinates = new Coordinate[1];
   unwrapped = new Coordinate[1];
   velocity=new Coordinate[1];
@@ -72,6 +72,30 @@ Trajectory::Trajectory(int timesteps, Coordinate * coordinatelist)
 	trajectory_ID = NULL;
 	mass = 1;							//set default mass to 1
 }
+
+
+/*--------------------------------------------------------------------------------------*/
+
+#ifdef NEVER
+Trajectory::Trajectory(const Trajectory & copy)
+{
+  trajtype=copy.trajtype;
+  is_unwrapped=copy.is_unwrapped;
+  is_wrapped=copy.is_wrapped;
+  is_velocity=copy.is_velocity;
+  n_timesteps=copy.n_timestepsl
+  type=copy.type;
+  trajectory_ID=copy.trajectory_ID;
+  mass=copy.mass;
+  
+  
+  
+}
+
+
+
+
+#endif
 
 /*--------------------------------------------------------------------------------------*/
 

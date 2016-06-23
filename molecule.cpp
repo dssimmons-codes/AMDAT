@@ -272,17 +272,18 @@ void Molecule::ID_to_atoms()
 
 
 /*return multibody consisting of all atoms in molecule*/
-Multibody Molecule::create_multibody()const
+Multibody Molecule::create_multibody(Coordinate boxsize)const
 {
   int typeii,atomii;
   //int bodyii=0;
   
   Multibody multibody(total_atoms);
+  multibody.set_reftime(0);
   for(typeii=0;typeii<n_atomtypes;typeii++)
   {
     for(atomii=0;atomii<n_atoms[typeii];atomii++)
     {
-      multibody.add_body(&(atoms[typeii][atomii]));
+      multibody.add_body(&(atoms[typeii][atomii]),(atoms[typeii][atomii]).show_image_index(boxsize,0));
       //multibody.set(bodyii,&(atoms[typeii][atomii]));
       //bodyii++;
     }
@@ -294,15 +295,17 @@ Multibody Molecule::create_multibody()const
 
 
 /*return multibody consisting of all atoms of type typeii in molecule*/
-Multibody Molecule::create_multibody(int typeii)const
+Multibody Molecule::create_multibody(int typeii, Coordinate boxsize)const
 {
   int atomii;
   int bodyii=0;
   
   Multibody multibody(n_atoms[typeii]);
-  for(atomii=0;atomii<n_atoms[typeii];atomii++)
+   multibody.set_reftime(0);
+ for(atomii=0;atomii<n_atoms[typeii];atomii++)
   {
-    multibody.set(bodyii,&(atoms[typeii][atomii]));
+    //multibody.set(bodyii,&(atoms[typeii][atomii]));
+    multibody.add_body(&(atoms[typeii][atomii]),(atoms[typeii][atomii]).show_image_index(boxsize,0));
     bodyii++;
   }
   
@@ -314,15 +317,17 @@ Multibody Molecule::create_multibody(int typeii)const
 
 
 /*return multibody consisting of atoms specified by a list of types and indices*/
-Multibody Molecule::create_multibody(int n_bodies, int * typeii, int * index)const
+Multibody Molecule::create_multibody(int n_bodies, int * typeii, int * index, Coordinate boxsize)const
 {
   int atomii;
   int bodyii=0;
   
   Multibody multibody(n_bodies);
+  multibody.set_reftime(0);
   for(atomii=0;atomii<n_bodies;atomii++)
   {
-    multibody.set(bodyii,&(atoms[typeii[atomii]][index[atomii]]));
+    //multibody.set(bodyii,&(atoms[typeii[atomii]][index[atomii]]));
+    multibody.add_body(&(atoms[typeii[atomii]][index[atomii]]),(atoms[typeii[atomii]][index[atomii]]).show_image_index(boxsize,0));
     bodyii++;
   }
   

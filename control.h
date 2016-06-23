@@ -112,8 +112,9 @@ class Control
     Vector_Map<string,Multibody_List*> multibody_lists;
     Multibody_List* find_multibody_list(string,bool allow_nofind=0)const;
     void add_multibody_list(Multibody_List*,string);
-    void delete_multibody_list(string);
+    void delete_multibody_list();
     void combine_multibody_lists();
+    void delete_multibodies();
 
     /*Some general methods*/
     void system();			//create system object with input file data
@@ -159,10 +160,10 @@ class Control
     Value_List<float> * value_lists [LISTSIZE];		//array of value list objects
     string value_list_names [LISTSIZE];		//custom name of value list
     int n_value_lists;
-
     int find_value_list(string);		//return index of value list with given custom name
     void add_value_list(Value_List<float>*, string);
-
+    //void delete_value_list(string);
+    
     /*Analysis method calls*/
     void msd();			//calculate mean square displacement
     void msd_2d();		//calculate 2d mean square displacement

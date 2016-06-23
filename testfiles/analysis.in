@@ -1,7 +1,7 @@
 system
 xyz_log
-/home/dss/amdatsvn/trunk/testfiles/traj.xyz /home/dss/amdatsvn/trunk/testfiles/log.lammps
-exponential 100 77 1.2 0 0 .01
+/home/david/AMDATsync/trunk/testfiles/traj.xyz /home/david/AMDATsync/trunk/testfiles/log.lammps
+exponential 1 77 1.2 0 0 .01
 polymer 50
 1
 32
@@ -43,19 +43,30 @@ create_multibodies bead32 bead centroid species_atomlist polymer 1 31
 combine_multibody_lists beads bead1 bead2 bead3 bead4 bead5 bead6 bead7 bead8 bead9 bead10 bead11 bead12 bead13 bead14 bead15 bead16 bead17 bead18 bead19 bead20 bead21 bead22 bead23 bead24 bead25 bead26 bead27 bead28 bead29 bead30 bead31 bead32
 combine_trajectories beads bead1 bead2 bead3 bead4 bead5 bead6 bead7 bead8 bead9 bead10 bead11 bead12 bead13 bead14 bead15 bead16 bead17 bead18 bead19 bead20 bead21 bead22 bead23 bead24 bead25 bead26 bead27 bead28 bead29 bead30 bead31 bead32
 
-ngp ngp_mb.dat
+msd msd_mb_test.dat
 list beads
 
-vhs vhslist_mb.dat 2 100
+create_list all
+all
+
+msd msd_monomers_test.dat
+list all
+
+exit
+
+ngp ngp_mb2.dat
 list beads
 
-compare_gaussian gaussian_mb.dat 70
+vhs vhslist_mb2.dat 2 100
 list beads
 
-find_fast fastmbead fast_count_list_mb.dat
+compare_gaussian gaussian_mb2.dat 70
 list beads
 
-strings strings_mbead.dat 70 .6 ./testfiles/sigma_matrix_mbead stringlist
+find_fast fastmbead fast_count_list_mb2.dat
+list beads
+
+strings strings_mbead2.dat 70 .6 ./testfiles/sigma_matrix_mbead stringlist
 list fastmbead
 
 exit

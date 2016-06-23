@@ -24,8 +24,8 @@
 	trajectories_considered+=(trajectory_list[0]).show_n_trajectories(thisii);
 	trajindex=0;
 	n_trajectories = trajectory_list->show_n_trajectories(thisii);
-	int currenttime = int(float(thistime)/float(system->show_n_exponential_steps()));
-	
+	int currenttime = int(float(thisii)/float(system->show_n_exponential_steps()));
+	string_multibodies.push(back);
 	delete [] stringID;
 	
 	//assign memory to track array of string associated with each particle
@@ -36,7 +36,7 @@
 	}
 	trajindex=-1;
 	
-	//loop overall trajectories, adding, growing, or concatenating strings associated with each
+	//loop over all trajectories, adding, growing, or concatenating strings associated with each
 	(trajectory_list[0]).listloop(this,thistime);
 	
 	//eliminated discarded strings
@@ -103,7 +103,6 @@ void String_Multibodies::listkernel(Trajectory* trajectory1, int timegapii, int 
 }
 
 
-
 int String_Multibodies mass_switch_ID(int oldID, int newID)
 {
   int changed=0;
@@ -117,3 +116,4 @@ int String_Multibodies mass_switch_ID(int oldID, int newID)
   }
   return changed;
 }
+

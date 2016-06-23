@@ -22,7 +22,7 @@ Atom_Trajectory::Atom_Trajectory()
   n_timesteps=0;
   type=-1;
   trajectory_ID=-1;
-  mass=-1;
+  mass=1;
   coordinates = new Coordinate[1];
   unwrapped = new Coordinate[1];
   velocity=new Coordinate[1];

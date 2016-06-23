@@ -18,7 +18,7 @@ class String_Multibodies: public Analysis
   
     vector<vector<Multibody>> string_multibodies;
     
-    //data members that change during calculation and have not permanent value
+    //data members that change during calculation and have no permanent value
     int * stringID;
     int trajindex;
     vector<bool> string_validity;	//during string computation, stores 1 if a string is good and 0 if it should be discarded because it has been merged into another string
