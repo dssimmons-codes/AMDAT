@@ -1626,22 +1626,6 @@ void Control::create_multibodies()
 
 
 
-#ifdef NEVER
-void Control::strings_to_multibodies()
-{
-  
-  
-  
-  run_analysis(&stringlist,runline);
-  
-  stringlist.create_multibody_sets()
-  
-  
-}
-
-
-#endif
-
 /*--------------------------------------------------------------------------------*/
 
 

@@ -5,18 +5,17 @@
 #define STRING_MULTIBODIES
 
 #include "multibody.h"
+#include "provisional_multibodies.h"
 
 namespace std{
   
-class String_Multibodies: public Analysis
+class String_Multibodies: public Analysis: public Provisional_Multibodies
 {
     int timegap;
     float ** sigmatrix;		//stores particle sizes
     float threshold;
     
     int trajectories_considered;
-  
-    vector<vector<Multibody>> string_multibodies;
     
     //data members that change during calculation and have no permanent value
     int * stringID;
@@ -32,6 +31,14 @@ class String_Multibodies: public Analysis
     float order_parameter;		
     
   public:
+    
+    String_Multibodies();
+    String_Multibodies(const String_Multibodies&);
+    ~String_Multibodies();
+    String_Multibodies operator=(const String_Multibodies&);
+    
+    
+    
     void analyze(Trajectory_List*);
     void list_displacementkernel(int,int,int);
     void listkernel(Trajectory*,int,int,int);

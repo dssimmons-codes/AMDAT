@@ -380,6 +380,53 @@ void Trajectory_List::set(System* syst, int timecount, int cap, Boolean_List * b
 }
 
 
+//Method to initialize trajectory list based on vector of trajectory sets
+void Trajectory_List::set(System * syst, vector<Trajectory_Set*> trajectory_sets, int*time_conv)
+{
+  int trajii, timeii;
+  
+  sys=syst;
+  //system=const_cast<System*>(sys);
+  
+  for(int timeii=0;timeii<n_times;timeii++)
+  {
+	delete [] trajectories[timeii];
+  }
+  delete [] trajectories;
+  delete [] n_trajectories;
+  delete [] time_conversion;
+  delete [] included;
+  
+  n_atomtypes = sys->show_n_atomtypes();
+  n_times=trajectory_sets.size();
+  
+  capacity=sys->show_n_trajectories();
+  
+  
+  trajectories = new Trajectory ** [n_times];
+  n_trajectories = new int [n_times];
+  included = new Boolean_List [n_times];
+  time_conversion=new int [sys->show_n_timesteps()];
+  
+  for(timeii=0;timeii<n_times;timeii++)
+  {
+    n_trajectories [timeii] = trajectory_sets[timeii]->show_n_trajectories();
+    included[timeii].set(sys);
+    trajectories[timeii] = new Trajectory * [n_trajectories[timeii]];
+    for(trajii=0;trajii<n_trajectories[timeii];trajii++)
+    {
+      trajectories[timeii][trajii]=trajectory_sets[timeii]->show_trajectory(trajii);
+      (included[timeii])(trajectory_sets[timeii]->show_trajectory(trajii)->show_trajectory_ID(),1);
+    }
+  }
+  
+  for(int timeii=0;timeii<sys->show_n_timesteps();timeii++)
+  {
+    time_conversion[timeii]=time_conv[timeii];
+  }
+}
+
+
 void Trajectory_List::addtrajectory(int time, Trajectory* traj)
 {
     trajectories[time][n_trajectories[time]]=traj;

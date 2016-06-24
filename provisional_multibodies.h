@@ -1,38 +1,45 @@
-
+/*Amorphous Molecular Dynamics Analysis Toolkit (AMDAT)*/
+/*Provisional_Multibodies class - provides parent class for any analysis method that needs to create multibodies*/
+/*Written by David S. Simmons*/
 
 
 #ifndef PROVISIONAL_MULTIBODIES
 #define PROVISIONAL_MULTIBODIES
 
+#include "multibody.h"
+#include "multibody_set.h"
+#include <vector>
+#include <sstream>
+#include <stdlib.h>
+
 namespace std
 {
 
+class Control;
+class System;
+  
 class Provisional_Multibodies
 {
+  protected:
     vector<vector<Multibody>> multibodies;
     vector<Multibody_Set*> set_pointers;
+    string basename;
     vector<string> set_names;
-
+    int*time_conversion;
+   
+    void create_multibody_sets();
+    void add_sets_to_system(System* syst, string setname, string traj_typename, bool centertype);	//need to code functionality to add sets to system data structures
+    void add_lists_to_control(System * syst, Control* control);
   public:
     
-    void create_multibody_sets();
-    void add_sets_to_system();	//need to code functionality to add sets to system data structures
+    Provisional_Multibodies();
+    Provisional_Multibodies(const Provisional_Multibodies&);
+    Provisional_Multibodies operator=(const Provisional_Multibodies&);
+    
+    void convert(System* syst, Control* control, string setname, string traj_typename, bool centertype)
   
 };
 
-void create_multibody_sets()
-{
-  Multibody_Set * mbset;
-  int timeii;
-  
-  for(timeii=0;timeii<multibodies.size();timeii++)
-  {
-    mbset = new Multibody_Set;
-    mbset.set(multibodies[timeii]);   
-    set_pointers[timeii]=mbset;
-  }
-  
-}
 
 }
 

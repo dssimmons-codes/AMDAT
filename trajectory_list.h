@@ -8,6 +8,7 @@
 #include <iostream>
 #include "trajectory.h"
 #include "boolean_list.h"
+#include "trajectory_set.h"
 
 namespace std{
 
@@ -51,6 +52,9 @@ class Trajectory_List
 
 
     void set(System* sys, int timecount, int cap, Boolean_List * boollist, int*time_conv);
+    void set(System * syst, vector<Trajectory_Set*> trajectory_sets, int*time_conv);		//initialize trajectory list based on vector of trajectory sets
+    
+    
     Trajectory* operator () (int trajii);				//return a requested trajectory at the first time stored
     Trajectory* operator () (int timeii, int trajii);		//return a requested trajectory at a given time
     bool is_included(int timeii,int trajii);                              //returns 1 if trajectory is included at that time

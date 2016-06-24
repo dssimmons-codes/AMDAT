@@ -5,8 +5,17 @@
 #include <fstream>
 #include <math.h>
 #include <sstream>
-#include "string_multibodies.h"
+#include "multibodies.h"
 #include "version.h"
+
+
+
+
+
+
+
+
+
 
 
 
@@ -25,7 +34,7 @@
 	trajindex=0;
 	n_trajectories = trajectory_list->show_n_trajectories(thisii);
 	int currenttime = int(float(thisii)/float(system->show_n_exponential_steps()));
-	string_multibodies.push(back);
+	multibodies.push(back);
 	delete [] stringID;
 	
 	//assign memory to track array of string associated with each particle
@@ -40,11 +49,11 @@
 	(trajectory_list[0]).listloop(this,thistime);
 	
 	//eliminated discarded strings
-	for(int stringii=string_multibodies[currenttime].size()-1;stringii>=0;stringii--)
+	for(int stringii=multibodies[currenttime].size()-1;stringii>=0;stringii--)
 	{
 	  if(string_validity[stringii]=0)
 	  {
-	    string_multibodies[currenttime][stringii].erase();
+	    multibodies[currenttime][stringii].erase();
 	  }
 	}
 }
@@ -73,26 +82,26 @@ void String_Multibodies::listkernel(Trajectory* trajectory1, int timegapii, int 
 	  if(stringID[currenttime][trajectory1ID]==-1 && stringID[currenttime][trajectory2ID]==-1)	//if neither atom is in a string
 	  {
 	    /*create new string*/
-	    string_multibodies[currenttime].push_back(system);
+	    multibodies[currenttime].push_back(system);
 	    string_validity.push_back(true);
-	    string_multibodies[currenttime][string_multibodies[currenttime].size()].add_body(trajectory1);
-	    string_multibodies[currenttime][string_multibodies[currenttime].size()].add_body(trajectory2);
-	    stringID[trajindex] =  string_multibodies[currenttime].size()-1;
-	    stringID[trajii] = string_multibodies[currenttime].size()-1;
+	    multibodies[currenttime][multibodies[currenttime].size()].add_body(trajectory1);
+	    multibodies[currenttime][multibodies[currenttime].size()].add_body(trajectory2);
+	    stringID[trajindex] =  multibodies[currenttime].size()-1;
+	    stringID[trajii] = multibodies[currenttime].size()-1;
 	  }
 	  else if(stringID[trajindex]==-1 && stringID[trajii]>=0)	//if atom 2 is in a string but atom 1 is not
 	  {
-	    string_multibodies[currenttime][stringID[trajii]].addbody(trajectory1);
+	    multibodies[currenttime][stringID[trajii]].addbody(trajectory1);
 	    stringID[trajindex] =  stringID[trajii];
 	  }
 	  else if(stringID[trajindex]>=0 && stringID[trajii]==-1)	//if atom 1 is in a string but atom 2 is not
 	  {
-	    string_multibodies[currenttime][stringID[trajindex]].addbody(trajectory2);
+	    multibodies[currenttime][stringID[trajindex]].addbody(trajectory2);
 	    stringID[trajii] =  stringID[trajindex];
 	  }
 	  else if(stringID[trajindex]>=0 && stringID[trajii]>0)		//if both atoms are in strings but not the same string
 	  {
-	    string_multibodies[currenttime][stringID[trajindex]].absorb_multibody(string_multibodies[currenttime][stringID[trajii]]);
+	    multibodies[currenttime][stringID[trajindex]].absorb_multibody(multibodies[currenttime][stringID[trajii]]);
 	    string_validity[stringID[trajii]]=false;
 	    mass_switch_ID(stringID[trajii],stringID[trajindex]);
 	  }

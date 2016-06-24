@@ -178,9 +178,10 @@ void Multibody_List::set(System * syst, Multibody_Set * multibodyset)
 
 
 /*Method that resets object with system and a pointer to a list of Multibody_Set onjects - fully creates list with multibodies in it*/
-void Multibody_List::set(System * syst, int timecount, Multibody_Set ** multibodysets, int*time_con)
+void Multibody_List::set(System * syst, vector<Multibody_Set*> multibodysets, int*time_con)
 {
     int multibodyii;
+    int timecount = multibodysets.size();
     
     delete [] time_conversion;
     

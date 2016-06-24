@@ -80,7 +80,7 @@ void Multibody_Set::set(vector<Multibody> mbodies)
   
   for(mbodyii=0;mbodyii<n_multibodies;mbodyii++)
   {
-    multibodies[bodyii]=mbodies[bodyii];
+    multibodies[mbodyii]=mbodies[mbodyii];
   }
 }
 
