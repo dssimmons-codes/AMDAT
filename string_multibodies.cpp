@@ -5,51 +5,47 @@
 #include <fstream>
 #include <math.h>
 #include <sstream>
-#include "multibodies.h"
+#include "multibody.h"
 #include "version.h"
+#include "string_multibodies.h"
+#include "system.h"
+
+
+using namespace std;
 
 
 
-
-
-
-
-
-
-String_Multibodies::String_Multibodies()
+String_Multibodies::String_Multibodies():Dynamic_Cluster_Multibodies()
 {
-  system=0;
-  timegap=-1;
-  threshold=-1;
-  n_times=0;
-  time_conversion=new int [1];
-  n_atomtypes=0;
+  threshold=0;
+  n_atomtypes=1;
+  sigmatrix=new float*[1];
+  sigmatrix[0]=new float[1];
   
 }
 
 
-String_Multibodies(const String_Multibodies& copy):Provisional_Multibodies(copy)
+String_Multibodies::String_Multibodies(const String_Multibodies& copy):Dynamic_Cluster_Multibodies(copy)
 {
-    system=copy.system;
-    timegap=copy.timegap;
-    threshold=thresh;
+  int typeii, type2ii;
+  
+    threshold=copy.threshold;
     n_times=copy.n_times;
+    
+    for(typeii=0;typeii<n_atomtypes;typeii++)
+    {
+      delete [] sigmatrix[typeii];
+    }
+    delete [] sigmatrix;
+    
     n_atomtypes=copy.n_atomtypes;
-    
-    if(system!=0)
+    sigmatrix = new float* [n_atomtypes];
+    for(typeii=0;typeii<n_atomtypes;typeii++)
     {
-      time_conversion=new int [system->show_n_timesteps()];
-      for(timeii=0;timeii<system->show_n_timesteps();timeii++)
-      {
-	time_conversion[timeii]=int(float(timeii-sys->show_frt())/float(system->show_n_exponential_steps()));
-      }
-    }
-    else
-    {
-      time_conversion = new int [1];
+      sigmatrix[typeii] = new float [n_atomtypes];
     }
     
-    basename=copy.basetime;
+    basename=copy.basename;
     for(int typeii=0;typeii<n_atomtypes;typeii++)
     {
       for(int type2ii=0;type2ii<n_atomtypes;type2ii++)
@@ -59,29 +55,42 @@ String_Multibodies(const String_Multibodies& copy):Provisional_Multibodies(copy)
     }
 }
 
-~String_Multibodies():~Provisional_Multibodies();
+String_Multibodies::~String_Multibodies()
 {
-  delete [] stringID;
+  for(int typeii=0;typeii<n_atomtypes;typeii++)
+    {
+      delete [] sigmatrix[typeii];
+    }
+    delete [] sigmatrix;
   
 }
 
 
-String_Multibodies operator=(const String_Multibodies& copy)
+String_Multibodies String_Multibodies::operator=(const String_Multibodies& copy)
 {
   if(this!=&copy)
   {
+    int typeii, type2ii;
+    
     system=copy.system;
     timegap=copy.timegap;
-    threshold=thresh;
+    threshold=copy.threshold;
     n_times=copy.n_times;
+    
+    for(typeii=0;typeii<n_atomtypes;typeii++)
+    {
+      delete [] sigmatrix[typeii];
+    }
+    delete [] sigmatrix;
+    
     n_atomtypes=copy.n_atomtypes;
     
     if(system!=0)
     {
       time_conversion=new int [system->show_n_timesteps()];
-      for(timeii=0;timeii<system->show_n_timesteps();timeii++)
+      for(int timeii=0;timeii<system->show_n_timesteps();timeii++)
       {
-	time_conversion[timeii]=int(float(timeii-sys->show_frt())/float(system->show_n_exponential_steps()));
+	time_conversion[timeii]=int(float(timeii-system->show_frt())/float(system->show_n_exponential_steps()));
       }
     }
     else
@@ -89,7 +98,7 @@ String_Multibodies operator=(const String_Multibodies& copy)
       time_conversion = new int [1];
     }
     
-    basename=copy.basetime;
+    basename=copy.basename;
     for(int typeii=0;typeii<n_atomtypes;typeii++)
     {
       for(int type2ii=0;type2ii<n_atomtypes;type2ii++)
@@ -103,18 +112,9 @@ String_Multibodies operator=(const String_Multibodies& copy)
 }
 
 
-String_Multibodies(System * syst, int tgap, float thresh, string sigmatrixname)
+String_Multibodies::String_Multibodies(System * syst, int tgap, float thresh, string sigmatrixname):Dynamic_Cluster_Multibodies(syst,tgap)
 {
-  system=syst;
-  timegap=tgap;
   threshold=thresh;
-  n_times=system->show_n_exponentials();
-  time_conversion=new int [system->show_n_timesteps()];
-  for(timeii=0;timeii<system->show_n_timesteps();timeii++)
-  {
-    time_conversion[timeii]=int(float(timeii-sys->show_frt())/float(system->show_n_exponential_steps()));
-  }
-  basename="";
   allocate_sig_matrix(sigmatrixname);
 }
 
@@ -225,112 +225,15 @@ void String_Multibodies::allocate_sig_matrix(string sig_file)
 }
 
 
-
- void String_Multibodies::analyze(Trajectory_List*t_list)
+bool String_Multibodies::clustered_check(Trajectory* trajectory1, Trajectory* trajectory2, int thisii, int nextii)
 {
-	trajectory_list=t_list;
-	system->displacement_list(this, timegap);
-	postprocess_list();
+  bool check;
+  int trajtype1, trajtype2;
+  
+  distance = (trajectory1->show_coordinate(thisii)-trajectory2->show_coordinate(nextii)).length_unwrapped(system->size(thisii));
+  check= (distance<threshold*sigmatrix[trajtype1][trajtype2])
+  return check;
 }
 
-
-
- void String_Multibodies::list_displacementkernel(int timegapii, int thisii, int nextii)
-{
-	trajectories_considered+=(trajectory_list[0]).show_n_trajectories(thisii);
-	trajindex=0;
-	n_trajectories = trajectory_list->show_n_trajectories(thisii);
-	int currenttime = int(float(thisii)/float(system->show_n_exponential_steps()));
-	multibodies.push_back();
-	delete [] stringID;
-	
-	//assign memory to track array of string associated with each particle
-	stringID = new int [n_trajectories];
-	for(int trajii=0;trajii<n_trajectories;trajii++)
-	{
-	  stringID[trajii]=-1;
-	}
-	trajindex=-1;
-	
-	//loop over all trajectories, adding, growing, or concatenating strings associated with each
-	(trajectory_list[0]).listloop(this,thistime);
-	
-	//eliminated discarded strings
-	for(int stringii=multibodies[currenttime].size()-1;stringii>=0;stringii--)
-	{
-	  if(string_validity[stringii]=0)
-	  {
-	    multibodies[currenttime][stringii].erase();
-	  }
-	}
-}
-
-
-
-void String_Multibodies::listkernel(Trajectory* trajectory1, int timegapii, int thisii, int nextii)
-{
-    int trajii;
-    Trajectory * trajectory2;
-    
-    int currenttime = int(float(thistime)/float(system->show_n_exponential_steps()));
-    
-    trajindex++;
-    
-    for(trajii=0;trajii<n_trajectories;trajii++)
-    {
-      trajectory2 = (*trajectory_list)(thistime, trajii);
-      if(trajectory2!=trajectory1)
-      {
-	
-	
-	distance = (trajectory1->show_coordinate(thisii)-trajectory2->show_coordinate(nextii)).length_unwrapped(system->size(thistime));
-	if(distance<threshold*sigmatrix[trajtype1][trajtype2])
-	{
-	  if(stringID[currenttime][trajectory1ID]==-1 && stringID[currenttime][trajectory2ID]==-1)	//if neither atom is in a string
-	  {
-	    /*create new string*/
-	    multibodies[currenttime].push_back(system);
-	    string_validity.push_back(true);
-	    multibodies[currenttime][multibodies[currenttime].size()].add_body(trajectory1);
-	    multibodies[currenttime][multibodies[currenttime].size()].add_body(trajectory2);
-	    stringID[trajindex] =  multibodies[currenttime].size()-1;
-	    stringID[trajii] = multibodies[currenttime].size()-1;
-	  }
-	  else if(stringID[trajindex]==-1 && stringID[trajii]>=0)	//if atom 2 is in a string but atom 1 is not
-	  {
-	    multibodies[currenttime][stringID[trajii]].addbody(trajectory1);
-	    stringID[trajindex] =  stringID[trajii];
-	  }
-	  else if(stringID[trajindex]>=0 && stringID[trajii]==-1)	//if atom 1 is in a string but atom 2 is not
-	  {
-	    multibodies[currenttime][stringID[trajindex]].addbody(trajectory2);
-	    stringID[trajii] =  stringID[trajindex];
-	  }
-	  else if(stringID[trajindex]>=0 && stringID[trajii]>0)		//if both atoms are in strings but not the same string
-	  {
-	    multibodies[currenttime][stringID[trajindex]].absorb_multibody(multibodies[currenttime][stringID[trajii]]);
-	    string_validity[stringID[trajii]]=false;
-	    mass_switch_ID(stringID[trajii],stringID[trajindex]);
-	  }
-	}
-	
-      }
-    }
-}
-
-
-int String_Multibodies mass_switch_ID(int oldID, int newID)
-{
-  int changed=0;
-  for(int trajii=0;trajii<n_trajectories;trajii++)
-  {
-    if(stringID[trajii]== oldID)
-    {
-      stringID[trajii]==newID;
-      changed++;
-    }
-  }
-  return changed;
-}
 
 

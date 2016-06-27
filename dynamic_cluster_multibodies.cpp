@@ -16,7 +16,7 @@
 
 using namespace std;
 
-Dynamic_Cluster_Multibodies::Dynamic_Cluster_Multibodies():Provisional_Multibodies()
+Dynamic_Cluster_Multibodies::Dynamic_Cluster_Multibodies():Provisional_Multibodies(), Analysis()
 {
   timegap = -1;
   trajectories_considered=0;
@@ -24,11 +24,24 @@ Dynamic_Cluster_Multibodies::Dynamic_Cluster_Multibodies():Provisional_Multibodi
 }
 
 
-Dynamic_Cluster_Multibodies::Dynamic_Cluster_Multibodies(const Dynamic_Cluster_Multibodies&copy):Provisional_Multibodies(copy)
+Dynamic_Cluster_Multibodies::Dynamic_Cluster_Multibodies(const Dynamic_Cluster_Multibodies&copy):Provisional_Multibodies(copy), Analysis(copy)
 {
     timegap=copy.timegap;
     trajectories_considered=copy.trajectories_considered;
     multibodyID=new int [1];
+    
+    if(system!=0)
+    {
+      time_conversion=new int [system->show_n_timesteps()];
+      for(int timeii=0;timeii<system->show_n_timesteps();timeii++)
+      {
+	time_conversion[timeii]=int(float(timeii-system->show_frt())/float(system->show_n_exponential_steps()));
+      }
+    }
+    else
+    {
+      time_conversion = new int [1];
+    }
 }
 
 
@@ -43,10 +56,38 @@ Dynamic_Cluster_Multibodies Dynamic_Cluster_Multibodies::operator=(const Dynamic
   if(this!=&copy)
   {
     Provisional_Multibodies::operator=(copy);
+    Analysis::operator=(copy);
     timegap=copy.timegap;
     trajectories_considered=copy.trajectories_considered;
+    
+    if(system!=0)
+    {
+      time_conversion=new int [system->show_n_timesteps()];
+      for(int timeii=0;timeii<system->show_n_timesteps();timeii++)
+      {
+	time_conversion[timeii]=int(float(timeii-system->show_frt())/float(system->show_n_exponential_steps()));
+      }
+    }
+    else
+    {
+      time_conversion = new int [1];
+    }
   }
   return *this;
+}
+
+Dynamic_Cluster_Multibodies::Dynamic_Cluster_Multibodies(System*syst, int tgap)
+{
+  system=syst;
+  tgap=timegap;
+  time_conversion=new int [system->show_n_timesteps()];
+  for(int timeii=0;timeii<system->show_n_timesteps();timeii++)
+  {
+    time_conversion[timeii]=int(float(timeii-system->show_frt())/float(system->show_n_exponential_steps()));
+  }
+  n_times=system->show_n_exponentials();
+  
+
 }
 
 
@@ -163,3 +204,4 @@ int Dynamic_Cluster_Multibodies::mass_switch_ID(int oldID, int newID)
   }
   return changed;
 }
+

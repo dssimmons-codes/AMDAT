@@ -32,6 +32,8 @@ class Dynamic_Cluster_Multibodies: public Analysis, public Provisional_Multibodi
     ~Dynamic_Cluster_Multibodies();
     Dynamic_Cluster_Multibodies operator=(const Dynamic_Cluster_Multibodies&);
     
+    Dynamic_Cluster_Multibodies(System*, int);
+    
     void analyze(Trajectory_List*);
     void list_displacementkernel(int,int,int);
     void listkernel(Trajectory*,int,int,int);
