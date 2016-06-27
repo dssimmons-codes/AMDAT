@@ -1,37 +1,42 @@
-
+/*Amorphous Molecular Dynamics Analysis Toolkit (AMDAT)*/
+/*Class Size_Statistics: computes size distributions and statistics for multibodies*/
+/*Written by David S. Simmons*/
 
 
 #ifndef SIZE_STATISTICS
 #define SIZE_STATISTICS
 
 #include "multibody_analysis.h"
+#include "system.h"
 
 namespace std{
 
 class Size_Statistics: public Multibody_Analysis
 {
     vector<float> size_count;
-    int weighing;
+    int weighting;
     float * moments;
-    int maxmoment;
+    int n_moments;
     
 
   public:
     Size_Statistics();
     Size_Statistics(const Size_Statistics &);
     Size_Statistics operator=(const Size_Statistics &);
-    ~Size_Statistics(){};
+    ~Size_Statistics();
     
-    Size_Statistics(System*);
+    Size_Statistics(System*,int);
     
-    void set(System*)
+    void set(System*, int);
     
     void analyze(Multibody_List * mblist);
     void listkernel(Multibody *, int, int, int);
     void postprocess();
     
-    void write(string);
+    void write(string)const;
     void write(ofstream&)const;
   
 };
 }
+
+#endif

@@ -101,21 +101,6 @@ class Control
     void write_analysis();					//method to write results of saved analysis to filename
     void delete_analysis();					//method to delete saved analysis
 
-
-    /*Members to store and access trajectory_list objects*/
-    Vector_Map <string, Trajectory_List*> trajectories;
-    Trajectory_List* find_trajectorylist(string, bool allow_nofind=0)const;
-    void add_trajectorylist(Trajectory_List*, string);
-    void combine_trajectories();
-
-    /*Members to store and access multibody_list objects*/
-    Vector_Map<string,Multibody_List*> multibody_lists;
-    Multibody_List* find_multibody_list(string,bool allow_nofind=0)const;
-    void add_multibody_list(Multibody_List*,string);
-    void delete_multibody_list();
-    void combine_multibody_lists();
-    void delete_multibodies();
-
     /*Some general methods*/
     void system();			//create system object with input file data
     void argcheck(int);			//check if the number of arguments to a analysis method is correct
@@ -207,9 +192,10 @@ class Control
     /*Multibody analysis method calls*/
     void gyration_radius();		//calculate mean gyration radius of multibody list
     void baf();
+    
     void orientational_correlation();
     void region_multibody_list();	//creates new multibody list based on region
-    
+    void multibody_size_statistics();
     
     void incremental_mean_displacement();	//calculates mean displacement between adjacent frames
     void process_value_list();
@@ -230,6 +216,20 @@ class Control
     static int get_line_number(); // get the current cursor position in the file vector
 	static int get_input_file_length(); // gets the length of the input file, in lines
 
+    /*Members to store and access trajectory_list objects*/
+    Vector_Map <string, Trajectory_List*> trajectories;
+    Trajectory_List* find_trajectorylist(string, bool allow_nofind=0)const;
+    void add_trajectorylist(Trajectory_List*, string);
+    void combine_trajectories();
+
+    /*Members to store and access multibody_list objects*/
+    Vector_Map<string,Multibody_List*> multibody_lists;
+    Multibody_List* find_multibody_list(string,bool allow_nofind=0)const;
+    void add_multibody_list(Multibody_List*,string);
+    void delete_multibody_list();
+    void combine_multibody_lists();
+    void delete_multibodies();
+	
 };
 
 

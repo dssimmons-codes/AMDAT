@@ -16,6 +16,213 @@
 
 
 
+String_Multibodies::String_Multibodies()
+{
+  system=0;
+  timegap=-1;
+  threshold=-1;
+  n_times=0;
+  time_conversion=new int [1];
+  n_atomtypes=0;
+  
+}
+
+
+String_Multibodies(const String_Multibodies& copy):Provisional_Multibodies(copy)
+{
+    system=copy.system;
+    timegap=copy.timegap;
+    threshold=thresh;
+    n_times=copy.n_times;
+    n_atomtypes=copy.n_atomtypes;
+    
+    if(system!=0)
+    {
+      time_conversion=new int [system->show_n_timesteps()];
+      for(timeii=0;timeii<system->show_n_timesteps();timeii++)
+      {
+	time_conversion[timeii]=int(float(timeii-sys->show_frt())/float(system->show_n_exponential_steps()));
+      }
+    }
+    else
+    {
+      time_conversion = new int [1];
+    }
+    
+    basename=copy.basetime;
+    for(int typeii=0;typeii<n_atomtypes;typeii++)
+    {
+      for(int type2ii=0;type2ii<n_atomtypes;type2ii++)
+      {
+	sigmatrix[typeii][type2ii]=copy.sigmatrix[typeii][type2ii];
+      }
+    }
+}
+
+~String_Multibodies():~Provisional_Multibodies();
+{
+  delete [] stringID;
+  
+}
+
+
+String_Multibodies operator=(const String_Multibodies& copy)
+{
+  if(this!=&copy)
+  {
+    system=copy.system;
+    timegap=copy.timegap;
+    threshold=thresh;
+    n_times=copy.n_times;
+    n_atomtypes=copy.n_atomtypes;
+    
+    if(system!=0)
+    {
+      time_conversion=new int [system->show_n_timesteps()];
+      for(timeii=0;timeii<system->show_n_timesteps();timeii++)
+      {
+	time_conversion[timeii]=int(float(timeii-sys->show_frt())/float(system->show_n_exponential_steps()));
+      }
+    }
+    else
+    {
+      time_conversion = new int [1];
+    }
+    
+    basename=copy.basetime;
+    for(int typeii=0;typeii<n_atomtypes;typeii++)
+    {
+      for(int type2ii=0;type2ii<n_atomtypes;type2ii++)
+      {
+	sigmatrix[typeii][type2ii]=copy.sigmatrix[typeii][type2ii];
+      }
+    }
+  }
+  
+  return *this;
+}
+
+
+String_Multibodies(System * syst, int tgap, float thresh, string sigmatrixname)
+{
+  system=syst;
+  timegap=tgap;
+  threshold=thresh;
+  n_times=system->show_n_exponentials();
+  time_conversion=new int [system->show_n_timesteps()];
+  for(timeii=0;timeii<system->show_n_timesteps();timeii++)
+  {
+    time_conversion[timeii]=int(float(timeii-sys->show_frt())/float(system->show_n_exponential_steps()));
+  }
+  basename="";
+  allocate_sig_matrix(sigmatrixname);
+}
+
+
+
+
+/*allocate matrix of particle sizes and assign values*/
+void String_Multibodies::allocate_sig_matrix(string sig_file)
+{
+  Tokenize tokenize;
+  
+    string line;
+    line = "";
+    int sig_tokens=0;
+    string * sig_ARGS;
+    int matsize, lineii, argii, type1index, type2index;
+    int * type_index;
+    
+    n_atomtypes = system->show_n_expanded_atomtypes();
+    sig_ARGS =new string [n_atomtypes+1];
+
+    string * species_name;
+    species_name = new string [0];
+
+    ifstream file(sig_file.c_str());
+
+    
+    sigmatrix=new float* [n_atomtypes];
+	for(lineii=0;lineii<n_atomtypes;lineii++)
+	{
+	  sigmatrix[lineii]=new float[n_atomtypes];
+	  for(argii=0;argii<n_atomtypes;argii++)
+	  {
+	    sigmatrix[lineii][argii]=0;
+	  }
+	}
+    
+    
+    if (file.is_open())
+    {
+       
+        //get first line of matrix
+        getline (file,line);
+        sig_tokens = tokenize(line, sig_ARGS);
+        matsize = sig_tokens-1;
+	
+	if(matsize>n_atomtypes)
+	{
+	  cout<<"\nError: matrix size is greater than number of trajectory types.\n";
+	  exit(0);
+	}
+	
+		
+	type_index = new int [matsize];
+	
+	if(!system->atomtype_exists(sig_ARGS[0]))
+	{
+	  cout << "\nError: Trajectory type " << sig_ARGS[0] << " not found.\n";
+	  exit(0);
+	}
+        type_index[0] = system->show_atomtype_index(sig_ARGS[0]);
+
+	for(lineii=1;lineii<matsize;lineii++)
+	{
+	  if(file.eof())
+	  {
+	    cout<<"\nError: Sigma matrix is not square.\n";
+	    exit(0);
+	  }
+	  getline (file,line);
+	  sig_tokens = tokenize(line, sig_ARGS);
+	  if(sig_tokens!=matsize+1)
+	  {
+	    cout<<"\nError: Sigma matrix is not square.\n";
+	    exit(0);
+	  }
+	  
+
+	  if(!system->atomtype_exists(sig_ARGS[0]))
+	  {
+	    cout << "\nError: Trajectory type " << sig_ARGS[0] << " not found.\n";
+	    exit(0);
+	  }
+          type_index[0] = system->show_atomtype_index(sig_ARGS[0]);
+	}
+	
+	file.clear();
+	file.seekg(0,ios::beg);
+	
+	for(lineii=0;lineii<matsize;lineii++)
+	{
+	  getline (file,line);
+	  sig_tokens = tokenize(line, sig_ARGS);
+	  for(argii=1; argii<= matsize; argii++)
+	  {
+	    sigmatrix[type_index[lineii]][type_index[argii-1]]=atof(sig_ARGS[argii].c_str());
+	  }
+	}
+    }
+    else
+    {
+        cout << "\nError: sigma data file not opened succesfully.\n";
+        exit(1);
+    }
+    file.close();
+
+
+}
 
 
 
@@ -34,7 +241,7 @@
 	trajindex=0;
 	n_trajectories = trajectory_list->show_n_trajectories(thisii);
 	int currenttime = int(float(thisii)/float(system->show_n_exponential_steps()));
-	multibodies.push(back);
+	multibodies.push_back();
 	delete [] stringID;
 	
 	//assign memory to track array of string associated with each particle
@@ -125,4 +332,5 @@ int String_Multibodies mass_switch_ID(int oldID, int newID)
   }
   return changed;
 }
+
 

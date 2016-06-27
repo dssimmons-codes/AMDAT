@@ -26,6 +26,7 @@ class Provisional_Multibodies
     string basename;
     vector<string> set_names;
     int*time_conversion;
+    int n_times;
    
     void create_multibody_sets();
     void add_sets_to_system(System* syst, string setname, string traj_typename, bool centertype);	//need to code functionality to add sets to system data structures
@@ -35,8 +36,9 @@ class Provisional_Multibodies
     Provisional_Multibodies();
     Provisional_Multibodies(const Provisional_Multibodies&);
     Provisional_Multibodies operator=(const Provisional_Multibodies&);
+    ~Provisional_Multibodies();
     
-    void convert(System* syst, Control* control, string setname, string traj_typename, bool centertype)
+    void convert(System* syst, Control* control, string setname, string traj_typename, bool centertype);
   
 };
 

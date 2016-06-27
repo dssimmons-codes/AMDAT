@@ -340,3 +340,17 @@ void Multibody::add_body(Trajectory* new_trajectory, Coordinate imageoffset)
   relative_image_index.push_back(imageoffset);
   
 }
+
+
+void Multibody::absorb_multibody(const Multibody& target)
+{
+  int bodyii;
+  
+  for(bodyii=0;bodyii<target.trajectories.size();bodyii++)	//loop over bodies in other multibody
+  {
+    if(!trajectory_check(target.trajectories[bodyii]))	//only proceed if the body being absorbed is not already in this multibody
+    {
+      add_body(target.trajectories[bodyii]);	//add body in other multibody to this one
+    }
+  }
+}

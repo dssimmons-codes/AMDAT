@@ -1,5 +1,5 @@
-/*Molecular Dynamics Analysis Toolkit (MDAT)*/
-/*Methods for class to calculate mean-square-displacement*/
+/*Molecular Dynamics Analysis Toolkit (AMDAT)*/
+/*Methods for class to calculate orientational correlation */
 /*Written by David S. Simmons*/
 
 #include "orientational_correlation.h"

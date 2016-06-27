@@ -12,7 +12,10 @@ namespace std{
 class String_Multibodies: public Analysis: public Provisional_Multibodies
 {
     int timegap;
+    
     float ** sigmatrix;		//stores particle sizes
+    int n_atomtypes;
+    
     float threshold;
     
     int trajectories_considered;
@@ -24,18 +27,16 @@ class String_Multibodies: public Analysis: public Provisional_Multibodies
     int mass_switch_ID(int oldID,int newID);	//change all stringIDs with value oldID to newID
     int n_trajectories;
     
-    //need to add the following
-    float mean_length;
-    float mean_strings;
-    float * length_distribution;
-    float order_parameter;		
     
+    void allocate_sig_matrix(string);
   public:
     
     String_Multibodies();
     String_Multibodies(const String_Multibodies&);
     ~String_Multibodies();
     String_Multibodies operator=(const String_Multibodies&);
+    
+    String_Multibodies(System * syst, int tgap, float thresh, string sigmatrixname);
     
     
     

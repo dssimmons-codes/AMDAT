@@ -57,6 +57,7 @@
 #include "orientational_correlation.h"
 #include "coordinate.h"
 #include "multibody_region.h"
+#include "size_statistics.h"
 
 using namespace std;
 
@@ -358,6 +359,8 @@ int Control::execute_commands(int iIndex, int fIndex)
     {baf();}
     else if (command == "orientational_correlation")
     {orientational_correlation();}
+    else if (command == "multibody_size_statistics")
+    {multibody_size_statistics();}
     else if (command == "find_edge")
     {find_edge();}
     else if (command == "unsteady_velocity")
@@ -3343,7 +3346,7 @@ void Control::value_list_to_pdb()
     exit(0);
   }
 
-  cout << "\Writing value list to PDB" << endl;
+  cout << "\nWriting value list to PDB" << endl;
   if(n_args==6)
   {
     value_lists[value_listnum]->write_pdb(valuetimeindex, filestem, positiontimeindex);
@@ -3867,10 +3870,32 @@ void Control::orientational_correlation()
   multibodylist = find_multibody_list(multibody_list_name);
 
   Orientational_Correlation oc(analyte,vec);
-  cout << "\nCalculating gyration radius.\n";cout.flush();
+  cout << "\nCalculating orientational correlation.\n";cout.flush();
   start = time(NULL);
   oc.analyze(multibodylist); // pass run_analysis template the analysis type 'Mean_Square_Displacement'
   finish = time(NULL);
   cout << "\nCalculated bond autocorrelation function in " << finish-start<<" seconds."<<endl;
   oc.write(filename);
+}
+
+
+void Control::multibody_size_statistics()
+{
+  int n_moments;
+  string filename, multibody_list_name;
+  Multibody_List * multibodylist;
+  
+  filename = args[1];
+  multibody_list_name=args[2];
+  n_moments = atoi(args[3].c_str());
+  
+  multibodylist = find_multibody_list(multibody_list_name);
+  
+  Size_Statistics size_statistics(analyte,n_moments);
+  cout << "\nCalculating multibody size statistics.\n";cout.flush();
+  start = time(NULL);
+  size_statistics.analyze(multibodylist); // pass run_analysis template the analysis type 'Mean_Square_Displacement'
+  finish = time(NULL);
+  cout << "\nCalculated multibody size statistics in " << finish-start<<" seconds."<<endl;
+  size_statistics.write(filename);
 }
