@@ -24,9 +24,21 @@ list all
 string_multibodies null 70 .6 ./testfiles/sigma_matrix stringmbs string centroid
 list fast
 
-size_statistics string_statistics_med.dat stringmbs 3
+size_statistics string_statistics.dat stringmbs 3
 
-strings stringsmed.dat 70 .6 ./testfiles/sigma_matrix stringlist
+comover_multibodies null 70 1.2 ./testfiles/sigma_matrix comovermbs comover centroid
+list fast
+
+size_statistics comover_statistics2.dat comovermbs 3
+
+relative_displacement_strings null 70 1.1 0.6 ./testfiles/sigma_matrix rstringmbs rstring centroid
+list fast
+
+size_statistics rds_statistics.dat rstringmbs 3
+
+exit
+
+strings strings.dat 70 .6 ./testfiles/sigma_matrix stringlist
 list fast
 
 exit

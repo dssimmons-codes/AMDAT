@@ -177,6 +177,8 @@ class Control
     void radial_debye_waller();	//calculate Debye-Waller factor as a function of distance from the origin
     void strings();		//find strings
     void string_multibodies();	//find strings and store as multibodies
+    void comover_multibodies();	//find co-movers and store as multibodies
+    void relative_displacement_strings();	//find relative_displacement_strings and store as multibodies
     void rgtensor_stats();	//calculate rg tensor statistics
     void nfold();		//calculate n-fold orientational order parameter
     void composition();     	//writes a file detailing the compostion of the system

@@ -1,4 +1,6 @@
-
+/*String_Multibodies class - Identifies particles participating in stringlike cooperative rearrangements and converts them to multibodies*/
+/*Amorphous Molecular dynamics analysis toolkit (AMDAT)*/
+/*Written by David S. Simmons*/
 
 
 #ifndef STRING_MULTIBODIES

@@ -59,6 +59,8 @@
 #include "multibody_region.h"
 #include "size_statistics.h"
 #include "string_multibodies.h"
+#include "comover_multibodies.h"
+#include "relative_displacement_strings.h"
 
 using namespace std;
 
@@ -318,6 +320,10 @@ int Control::execute_commands(int iIndex, int fIndex)
     {strings();}
     else if(command == "string_multibodies")
     {string_multibodies();}
+    else if(command == "comover_multibodies")
+    {comover_multibodies();}
+    else if(command == "relative_displacement_strings")
+    {relative_displacement_strings();}
     else if(command == "rgtensor_stats")
     {rgtensor_stats();}
     else if (command == "displacement_map")
@@ -2786,6 +2792,96 @@ void Control::string_multibodies()
   
   string_multibodies.convert(analyte, this, setname, trajtypename, centertype);
 }
+
+
+
+void Control::comover_multibodies()
+{
+  string runline;
+  int timegap;
+  string filename, sigmatrixfilename, setname, trajtypename, centertypename;
+  float threshold;
+  bool centertype;
+  
+  filename = args[1];
+  timegap=atoi(args[2].c_str());
+  threshold=atof(args[3].c_str());
+  sigmatrixfilename=args[4];
+  setname=args[5];
+  trajtypename=args[6];
+  centertypename=args[7];
+  
+  if(centertypename == "centroid")
+  {
+    centertype = 0;
+  }
+  else if(centertypename == "com")
+  {
+    centertype = 1;
+  }
+  else
+  {
+    cout << "\n Type of multibody center '" << centertypename << "' not recognized. Allowable options are 'centroid' and 'com'";
+    exit (0);
+  }
+  
+  runline = read_line();
+  cout <<"\n"<< runline;
+  cout<<"\nFinding comovers.";
+  
+  start = time(NULL);
+  Comover_Multibodies comover_multibodies(analyte, timegap, threshold, sigmatrixfilename);
+  run_analysis(&comover_multibodies, runline);
+  finish = time(NULL);
+  cout << "\nFound strings in " << finish-start<<" seconds.\n";
+  
+  comover_multibodies.convert(analyte, this, setname, trajtypename, centertype);
+}
+
+void Control::relative_displacement_strings()
+{
+  string runline;
+  int timegap;
+  string filename, sigmatrixfilename, setname, trajtypename, centertypename;
+  float n_threshold,r_threshold;
+  bool centertype;
+  
+  filename = args[1];
+  timegap=atoi(args[2].c_str());
+  n_threshold=atof(args[3].c_str());
+  r_threshold=atof(args[4].c_str());
+  sigmatrixfilename=args[5];
+  setname=args[6];
+  trajtypename=args[7];
+  centertypename=args[8];
+  
+  if(centertypename == "centroid")
+  {
+    centertype = 0;
+  }
+  else if(centertypename == "com")
+  {
+    centertype = 1;
+  }
+  else
+  {
+    cout << "\n Type of multibody center '" << centertypename << "' not recognized. Allowable options are 'centroid' and 'com'";
+    exit (0);
+  }
+  
+  runline = read_line();
+  cout <<"\n"<< runline;
+  cout<<"\nFinding comovers.";
+  
+  start = time(NULL);
+  Relative_Displacement_Strings rds(analyte, timegap, n_threshold, r_threshold, sigmatrixfilename);
+  run_analysis(&rds, runline);
+  finish = time(NULL);
+  cout << "\nFound strings in " << finish-start<<" seconds.\n";
+  
+  rds.convert(analyte, this, setname, trajtypename, centertype);
+}
+
 
 
 void Control::rgtensor_stats()
