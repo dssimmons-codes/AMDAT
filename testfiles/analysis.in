@@ -1,11 +1,35 @@
 system
 xyz_log
-/home/david/AMDATsync/trunk/testfiles/traj.xyz /home/david/AMDATsync/trunk/testfiles/log.lammps
+./testfiles/traj.xyz ./testfiles/log.lammps
 exponential 1 77 1.2 0 0 .01
 polymer 50
 1
 32
 
+create_list all
+all
+
+ngp ngp.dat
+list all
+
+vhs vhslist.dat 2 100
+list all
+
+compare_gaussian gaussian.dat 70
+list all
+
+find_fast fast fast_count_list.dat
+list all
+
+string_multibodies null 70 .6 ./testfiles/sigma_matrix stringmbs string centroid
+list fast
+
+size_statistics string_statistics.dat stringmbs 3
+
+exit
+
+strings strings.dat 70 .6 ./testfiles/sigma_matrix stringlist
+list fast
 
 create_multibodies bead1 bead centroid species_atomlist polymer 1 0
 create_multibodies bead2 bead centroid species_atomlist polymer 1 1
@@ -135,20 +159,6 @@ create_list all
 all
 
 
-ngp ngp.dat
-list all
-
-vhs vhslist.dat 2 100
-list all
-
-compare_gaussian gaussian.dat 70
-list all
-
-find_fast fast fast_count_list.dat
-list all
-
-strings strings.dat 70 .6 ./testfiles/sigma_matrix stringlist
-list fast
 
 
 exit

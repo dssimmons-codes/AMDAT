@@ -20,6 +20,7 @@ class Dynamic_Cluster_Multibodies: public Analysis, public Provisional_Multibodi
     int * multibodyID;
     int trajindex;
     int n_trajectories;
+    int max_trajectories;
     vector<bool>string_validity;
     
   

@@ -114,6 +114,7 @@ String_Multibodies String_Multibodies::operator=(const String_Multibodies& copy)
 
 String_Multibodies::String_Multibodies(System * syst, int tgap, float thresh, string sigmatrixname):Dynamic_Cluster_Multibodies(syst,tgap)
 {
+  system=syst;
   threshold=thresh;
   allocate_sig_matrix(sigmatrixname);
 }
@@ -229,9 +230,13 @@ bool String_Multibodies::clustered_check(Trajectory* trajectory1, Trajectory* tr
 {
   bool check;
   int trajtype1, trajtype2;
+  float distance;
+  
+  trajtype1 = trajectory1->show_type()-1;
+  trajtype2 = trajectory2->show_type()-1;
   
   distance = (trajectory1->show_coordinate(thisii)-trajectory2->show_coordinate(nextii)).length_unwrapped(system->size(thisii));
-  check= (distance<threshold*sigmatrix[trajtype1][trajtype2])
+  check= (distance<(threshold*sigmatrix[trajtype1][trajtype2]));
   return check;
 }
 

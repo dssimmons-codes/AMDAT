@@ -79,13 +79,15 @@ Dynamic_Cluster_Multibodies Dynamic_Cluster_Multibodies::operator=(const Dynamic
 Dynamic_Cluster_Multibodies::Dynamic_Cluster_Multibodies(System*syst, int tgap)
 {
   system=syst;
-  tgap=timegap;
+  timegap=tgap;
   time_conversion=new int [system->show_n_timesteps()];
   for(int timeii=0;timeii<system->show_n_timesteps();timeii++)
   {
     time_conversion[timeii]=int(float(timeii-system->show_frt())/float(system->show_n_exponential_steps()));
   }
   n_times=system->show_n_exponentials();
+  multibodyID = new int [1];
+  multibodyID[0]=-1;
   
 
 }
@@ -104,20 +106,21 @@ void Dynamic_Cluster_Multibodies::analyze(Trajectory_List*t_list)
 	trajectories_considered+=(trajectory_list[0]).show_n_trajectories(thisii);
 	trajindex=0;
 	n_trajectories = trajectory_list->show_n_trajectories(thisii);
+	max_trajectories=system->show_n_trajectories();
 	int currenttime = int(float(thisii)/float(system->show_n_exponential_steps()));
 	multibodies.resize(multibodies.size()+1);
 	delete [] multibodyID;
 	
 	//assign memory to track array of string associated with each particle
-	multibodyID = new int [n_trajectories];
-	for(int trajii=0;trajii<n_trajectories;trajii++)
+	multibodyID = new int [max_trajectories];
+	for(int trajii=0;trajii<max_trajectories;trajii++)
 	{
 	  multibodyID[trajii]=-1;
 	}
 	trajindex=-1;
 	
 	//loop over all trajectories, adding, growing, or concatenating strings associated with each
-	(trajectory_list[0]).listloop(this,thisii);
+	(trajectory_list[0]).listloop(this,timegapii,thisii,nextii);
 	
 	//eliminated discarded strings
 	for(int multibodyii=multibodies[currenttime].size()-1;multibodyii>=0;multibodyii--)
@@ -146,6 +149,7 @@ void Dynamic_Cluster_Multibodies::listkernel(Trajectory* trajectory1, int timega
     for(trajii=0;trajii<n_trajectories;trajii++)
     {
       trajectory2 = (*trajectory_list)(thisii, trajii);
+      trajectory2ID=trajectory2->show_trajectory_ID();
       if(trajectory2!=trajectory1)
       {
 	
@@ -155,7 +159,7 @@ void Dynamic_Cluster_Multibodies::listkernel(Trajectory* trajectory1, int timega
 	  if(multibodyID[trajectory1ID]==-1 && multibodyID[trajectory2ID]==-1)	//if neither atom is in a multibody
 	  {
 	    /*create new string*/
-	    multibodies[currenttime].push_back(system);
+	    multibodies[currenttime].emplace_back(system);
 	    string_validity.push_back(true);
 	    multibodies[currenttime][multibodies[currenttime].size()-1].add_body(trajectory1);
 	    multibodies[currenttime][multibodies[currenttime].size()-1].add_body(trajectory2);
@@ -184,7 +188,7 @@ void Dynamic_Cluster_Multibodies::listkernel(Trajectory* trajectory1, int timega
     }
     if(multibodyID[trajectory1ID]==-1)	//create single-body multibody for multibody 1 if this multibody does not belong to a cluster (allows for multibodies of size 1, such that all trajectories in the list will be in one of the multibodies - this can later be removed with thresholding operations
     {
-      multibodies[currenttime].push_back(system);
+      multibodies[currenttime].emplace_back(system);
       string_validity.push_back(true);
       multibodies[currenttime][multibodies[currenttime].size()-1].add_body(trajectory1);
       multibodyID[trajindex]= multibodies[currenttime].size()-1;
@@ -194,7 +198,7 @@ void Dynamic_Cluster_Multibodies::listkernel(Trajectory* trajectory1, int timega
 int Dynamic_Cluster_Multibodies::mass_switch_ID(int oldID, int newID)
 {
   int changed=0;
-  for(int trajii=0;trajii<n_trajectories;trajii++)
+  for(int trajii=0;trajii<max_trajectories;trajii++)
   {
     if(multibodyID[trajii]== oldID)
     {

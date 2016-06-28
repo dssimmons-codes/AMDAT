@@ -69,6 +69,7 @@ Multibody Multibody::operator=(const Multibody & copy)
   if(this!=&copy)
   {
     //Trajectory::operator=(copy);
+    system=copy.system;
     trajectories=copy.trajectories;
     tref=copy.tref;
     relative_image_index=copy.relative_image_index;

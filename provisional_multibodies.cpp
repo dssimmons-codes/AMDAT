@@ -71,6 +71,8 @@ void Provisional_Multibodies::create_multibody_sets()
   Multibody_Set * mbset;
   int timeii;
   
+  set_pointers.resize(multibodies.size());
+  
   for(timeii=0;timeii<multibodies.size();timeii++)
   {
     mbset = new Multibody_Set;
@@ -89,7 +91,7 @@ void Provisional_Multibodies::add_sets_to_system(System* syst, string setname, s
   
   for(setii=0;setii<set_pointers.size();setii++)
   {
-    set_names[setii]=basename+to_string(static_cast<long long>(setii));
+    set_names.push_back(basename+to_string(static_cast<long long>(setii)));
     syst->add_multibody_set(set_names[setii],set_pointers[setii]);
     syst->create_trajectory_set(set_names[setii], set_names[setii], traj_typename, centertype);
     

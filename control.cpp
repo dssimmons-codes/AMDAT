@@ -58,6 +58,7 @@
 #include "coordinate.h"
 #include "multibody_region.h"
 #include "size_statistics.h"
+#include "string_multibodies.h"
 
 using namespace std;
 
@@ -185,7 +186,7 @@ int Control::execute_commands(int iIndex, int fIndex)
     else
     {
       command = args[0];
-      cout << line << endl; // TODO: Need to make this an option. Either compiler or command line. Should it be on by default? MDM 10/21/13
+      cout << endl << endl << line; // TODO: Need to make this an option. Either compiler or command line. Should it be on by default? MDM 10/21/13
     }
     if (command.find("#",0) != string::npos)
     {
@@ -315,6 +316,8 @@ int Control::execute_commands(int iIndex, int fIndex)
     {radial_debye_waller();}
     else if(command == "strings")
     {strings();}
+    else if(command == "string_multibodies")
+    {string_multibodies();}
     else if(command == "rgtensor_stats")
     {rgtensor_stats();}
     else if (command == "displacement_map")
@@ -359,7 +362,7 @@ int Control::execute_commands(int iIndex, int fIndex)
     {baf();}
     else if (command == "orientational_correlation")
     {orientational_correlation();}
-    else if (command == "multibody_size_statistics")
+    else if (command == "size_statistics")
     {multibody_size_statistics();}
     else if (command == "find_edge")
     {find_edge();}
@@ -1662,7 +1665,7 @@ void Control::write_list_trajectory_full()
   find_trajectorylist(listname)->write_full_xyz(trajname);
 }
 
-
+// 
 /*--------------------------------------------------------------------------------*/
 
 /*Calculate and write to file mean square displacement as requested by user*/
@@ -2740,6 +2743,49 @@ void Control::strings()
         cout<<"\nTrajectory list "<<t_listname<<" created.";
 }
 
+
+void Control::string_multibodies()
+{
+  string runline;
+  int timegap;
+  string filename, sigmatrixfilename, setname, trajtypename, centertypename;
+  float threshold;
+  bool centertype;
+  
+  filename = args[1];
+  timegap=atoi(args[2].c_str());
+  threshold=atof(args[3].c_str());
+  sigmatrixfilename=args[4];
+  setname=args[5];
+  trajtypename=args[6];
+  centertypename=args[7];
+  
+  if(centertypename == "centroid")
+  {
+    centertype = 0;
+  }
+  else if(centertypename == "com")
+  {
+    centertype = 1;
+  }
+  else
+  {
+    cout << "\n Type of multibody center '" << centertypename << "' not recognized. Allowable options are 'centroid' and 'com'";
+    exit (0);
+  }
+  
+  runline = read_line();
+  cout <<"\n"<< runline;
+  cout<<"\nFinding strings.";
+  
+  start = time(NULL);
+  String_Multibodies string_multibodies(analyte, timegap, threshold, sigmatrixfilename);
+  run_analysis(&string_multibodies, runline);
+  finish = time(NULL);
+  cout << "\nFound strings in " << finish-start<<" seconds.\n";
+  
+  string_multibodies.convert(analyte, this, setname, trajtypename, centertype);
+}
 
 
 void Control::rgtensor_stats()

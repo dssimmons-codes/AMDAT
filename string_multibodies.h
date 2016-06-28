@@ -26,14 +26,6 @@ class String_Multibodies: public Dynamic_Cluster_Multibodies
     String_Multibodies operator=(const String_Multibodies&);
     
     String_Multibodies(System * syst, int tgap, float thresh, string sigmatrixname);
-    
-    
-    
-    void analyze(Trajectory_List*);
-    void list_displacementkernel(int,int,int);
-    void listkernel(Trajectory*,int,int,int);
-    void postprocess_list();
-    
   
 };
   
