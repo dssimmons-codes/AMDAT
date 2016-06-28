@@ -242,3 +242,8 @@ bool String_Multibodies::clustered_check(Trajectory* trajectory1, Trajectory* tr
 
 
 
+Coordinate String_Multibodies::get_imageoffset(Trajectory* trajectory1, Trajectory* trajectory2, int thisii, int nextii)
+{
+  return (trajectory1->show_coordinate(thisii)).closest_image(trajectory2->show_coordinate(nextii),system->size(thisii));
+}
+

@@ -19,9 +19,10 @@ Multibody::Multibody()
   //trajectories = new Trajectory* [n_trajectories];
 }
 
-Multibody::Multibody(System * sys)
+Multibody::Multibody(System * sys, int reftime)
 {
   system=sys;
+  tref=reftime;
 }
 
 
@@ -35,6 +36,7 @@ Multibody::Multibody(const Multibody & copy)
   trajectories=copy.trajectories;
   tref=copy.tref;
   relative_image_index=copy.relative_image_index;
+  system=copy.system;
   //trajectories = new Trajectory* [n_trajectories];
 
   /*Copy over pointers to trajectories in multibody*/
@@ -339,19 +341,31 @@ void Multibody::add_body(Trajectory* new_trajectory, Coordinate imageoffset)
 {
   trajectories.push_back(new_trajectory);
   relative_image_index.push_back(imageoffset);
+  //cout << "\n"<<system<<"\n";cout.flush();
   
 }
 
 
-void Multibody::absorb_multibody(const Multibody& target)
+void Multibody::absorb_multibody(const Multibody& target, Coordinate imagecorrection)
 {
   int bodyii;
-  
-  for(bodyii=0;bodyii<target.trajectories.size();bodyii++)	//loop over bodies in other multibody
+  int size=target.trajectories.size();
+  for(bodyii=0;bodyii<size;bodyii++)	//loop over bodies in other multibody
   {
     if(!trajectory_check(target.trajectories[bodyii]))	//only proceed if the body being absorbed is not already in this multibody
     {
-      add_body(target.trajectories[bodyii]);	//add body in other multibody to this one
+      add_body(target.trajectories[bodyii],target.relative_image_index[bodyii]+imagecorrection);	//add body in other multibody to this one
+    }
+    else
+    {
+      cout<<"\n\n"<<"DUPLICATE"<<"\n\n";
     }
   }
+}
+
+
+void Multibody::clear()
+{
+  trajectories.clear();
+  relative_image_index.clear();
 }

@@ -272,6 +272,46 @@ float Coordinate::length_unwrapped(const Coordinate& boxsize)const
 }
 
 
+Coordinate Coordinate::closest_image(const Coordinate& other, const Coordinate& boxsize)const
+{
+  Coordinate imageflag(0,0,0);
+  Coordinate diff=other-*this;
+  if(boxsize.x-abs(diff.x)<abs(diff.x))
+  {
+    if(abs(x-(other.x+boxsize.x))<abs(x-(other.x-boxsize.x)))
+    {
+      imageflag.x=1;
+    }
+    else
+    {
+      imageflag.x=-1;
+    }
+  }
+  if(boxsize.y-abs(diff.y)<abs(diff.y))
+  {
+    if(abs(y-(other.y+boxsize.y))<abs(y-(other.y-boxsize.y)))
+    {
+      imageflag.y=1;
+    }
+    else
+    {
+      imageflag.y=-1;
+    }
+  }
+  if(boxsize.z-abs(diff.z)<abs(diff.z))
+  {
+    if(abs(z-(other.z+boxsize.z))<abs(z-(other.z-boxsize.z)))
+    {
+      imageflag.z=1;
+    }
+    else
+    {
+      imageflag.z=-1;
+    }
+  }
+  return imageflag;
+}
+
 float Coordinate::min()const
 {
 	float minimum = x;

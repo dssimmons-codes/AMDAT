@@ -21,6 +21,8 @@ class Strings: public Analysis
   float ** sigmatrix;			//stores particle sizes
   int n_atomtypes;
   
+  int total2orgreater;
+  
   int maxstrings;		//maximum number of strings per timegap per time
   int maxstringatoms;		//maximum number of atoms per string
   

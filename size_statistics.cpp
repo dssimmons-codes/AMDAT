@@ -71,6 +71,7 @@ Size_Statistics::Size_Statistics(System*syst,int momentcount)
   int momentii;
   system=syst;
   n_moments=momentcount;
+  weighting=0;
   moments = new float [n_moments];
   
   for(momentii=0;momentii<n_moments;momentii++)
@@ -86,6 +87,7 @@ void Size_Statistics::set(System*syst,int momentcount)
   system=syst;
   n_moments=momentcount;
   delete [] moments;
+  weighting=0;
   moments = new float [n_moments];
   
   for(momentii=0;momentii<n_moments;momentii++)
@@ -98,6 +100,7 @@ void Size_Statistics::analyze(Multibody_List * mblist)
 {
   int timeii;
   multibody_list=mblist;
+  weighting=0;
   
   for(timeii=0;timeii<system->show_n_timesteps();timeii++)
   {
@@ -177,7 +180,8 @@ void Size_Statistics::write(string filename)const
     output<<moments[momentii]<<"\t";
   }
   
-  
+  output << "\n\nTotal_Multibodies\t" << weighting;
+  output << "\nMean_Multibodies\t" << weighting/system->show_n_timesteps();
 }
 
 
@@ -218,6 +222,9 @@ void Size_Statistics::write(ofstream& output)const
   {
     output<<moments[momentii]<<"\t";
   }
+  
+  output << "\n\nTotal_Multibodies\t" << weighting;
+  output << "\nMean_Multibodies\t" << weighting/system->show_n_timesteps();
   
   
   

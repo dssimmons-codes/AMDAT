@@ -147,11 +147,14 @@ void Strings::initialize(System * sys, int timegap1, float thresh, string sigmat
 		    if(stringID[thisii][trajectory1ID]==-1 && stringID[thisii][trajectory2ID]==-1)	//if neither atom is in a string
 		    {
 		      /*create new string*/
+		      //cout << "\n\nnew\t"<<trajectory1ID<<"\t"<<trajectory2ID<<"\t"<<stringID[thisii][trajectory1ID]<<"\t"<<stringID[thisii][trajectory2ID];
 		      create_string(thisii,trajectory1ID,trajectory2ID);
+		      //cout << "\t"<<stringID[thisii][trajectory1ID]<<"\t"<<stringID[thisii][trajectory2ID];
 		    }
 		    else if(stringID[thisii][trajectory1ID]==-1 && stringID[thisii][trajectory2ID]>=0)	//if atom 2 is in a string but atom 1 is not
 		    {
 		      /*add atom 1 to string containing atom2*/
+		      //cout << "\n\n1to2\t"<<trajectory1ID<<"\t"<<trajectory2ID<<"\t"<<stringID[thisii][trajectory1ID]<<"\t"<<stringID[thisii][trajectory2ID];
 		      temp_stringID=stringID[thisii][trajectory2ID];
 		      temp_stringsize=stringsize[thisii][temp_stringID];
 		      /*check if string is full*/
@@ -163,10 +166,12 @@ void Strings::initialize(System * sys, int timegap1, float thresh, string sigmat
 		      stringID[thisii][trajectory1ID]=temp_stringID;
 		      stringlist[thisii][temp_stringID][temp_stringsize]=trajectory1ID;
 		      stringsize[thisii][temp_stringID]++;
+		      //cout << "\t"<<stringID[thisii][trajectory1ID]<<"\t"<<stringID[thisii][trajectory2ID];
 		    }
 		    else if(stringID[thisii][trajectory1ID]>=0 && stringID[thisii][trajectory2ID]==-1)	//if atom 1 is in a string but atom 2 is not
 		    {
 		      /*add atom 2 to string containing atom 1*/
+		      //cout << "\n\n2to1\t"<<trajectory1ID<<"\t"<<trajectory2ID<<"\t"<<stringID[thisii][trajectory1ID]<<"\t"<<stringID[thisii][trajectory2ID];
 		      temp_stringID=stringID[thisii][trajectory1ID];
 		      temp_stringsize=stringsize[thisii][temp_stringID];
 		      /*check if string is full*/
@@ -178,13 +183,16 @@ void Strings::initialize(System * sys, int timegap1, float thresh, string sigmat
 		      stringID[thisii][trajectory2ID]=temp_stringID;
 		      stringlist[thisii][temp_stringID][temp_stringsize]=trajectory2ID;
 		      stringsize[thisii][temp_stringID]++;
+		      //cout << "\t"<<stringID[thisii][trajectory1ID]<<"\t"<<stringID[thisii][trajectory2ID];
 		    }
 		    else if(stringID[thisii][trajectory1ID]>=0 && stringID[thisii][trajectory2ID]>=0 && stringID[thisii][trajectory1ID]!=stringID[thisii][trajectory2ID])	//if both atoms are in strings but not the same string
 		    {
 		      /*merge strings*/
+		      //cout << "\n\nmerged\t"<<trajectory1ID<<"\t"<<trajectory2ID<<"\t"<<stringID[thisii][trajectory1ID]<<"\t"<<stringID[thisii][trajectory2ID];
 		      temp_stringID = stringID[thisii][trajectory1ID];
 		      temp_stringID2 = stringID[thisii][trajectory2ID];
 		      merge_strings(thisii,temp_stringID,temp_stringID2);
+		      //cout << "\t"<<stringID[thisii][trajectory1ID]<<"\t"<<stringID[thisii][trajectory2ID];
 		    }
 		  }
 		//get next trajectory
@@ -237,7 +245,7 @@ void Strings::merge_strings(int thisii, int stringID1, int stringID2)
 {
 	int atomii, temp_atomID,temp_stringsize;
 
-	for(atomii=0;atomii<stringsize[thisii][stringID2];atomii++)
+	for(atomii=0;atomii<stringsize[thisii][stringID2];atomii++)	//loop over atoms in second string
 	{
 		//cout << "\n" << atomii << stringlist[timegapii][thisii][stringID2][atomii]; cout.flush();
 		temp_atomID=stringlist[thisii][stringID2][atomii];
@@ -355,6 +363,9 @@ void Strings::stringlength_distribution()
 {
 	int timeii,stringii;
 	int temp_length;
+	total2orgreater=0;
+
+	
 		for(timeii=0;timeii<n_times;timeii++)
 		{
 			for(stringii=0;stringii<stringcount[timeii];stringii++)
@@ -367,6 +378,7 @@ void Strings::stringlength_distribution()
 				if(mean_strings*n_times!=0)
 				{
 					length_distribution[temp_length]+=1/(mean_strings*n_times);
+					total2orgreater+=temp_length;
 				}
 				//cout <<"\n"<<timegapii << "\t" <<temp_length<<"\t"<< length_distribution[timegapii][temp_length];
 			}
@@ -382,7 +394,6 @@ void Strings::fraction_in_strings()
 {
 
 		order_parameter = n_times*mean_strings*mean_length/float(trajectories_considered);
-
 }
 
 
@@ -523,7 +534,7 @@ void Strings::write(string filename)const
 
 	output << "\n";
 	
-		output << timetable << "\t" << mean_strings << "\t" << mean_length<<"\t"<<order_parameter*mean_length+(1-order_parameter)<<"\t"<<order_parameter;
+		output << timetable << "\t" << mean_strings << "\t" << mean_length<<"\t"<<(mean_length*n_times*mean_strings+(trajectories_considered-total2orgreater))/(n_times*mean_strings+trajectories_considered-total2orgreater)<<"\t"<<order_parameter;
 		
 		for(lengthii=0;lengthii<=maxstringatoms;lengthii++)
 		{

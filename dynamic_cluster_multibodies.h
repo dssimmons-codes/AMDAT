@@ -18,14 +18,17 @@ class Dynamic_Cluster_Multibodies: public Analysis, public Provisional_Multibodi
     
     //data members that change during calculation and have no permanent value
     int * multibodyID;
-    int trajindex;
+    Coordinate * imageindex;
     int n_trajectories;
     int max_trajectories;
-    vector<bool>string_validity;
+    vector<bool>multibody_validity;
+    
+    int nn_bodies;
     
   
     int mass_switch_ID(int oldID,int newID);	//change all stringIDs with value oldID to newID
     virtual bool clustered_check(Trajectory*, Trajectory*, int, int){return false;};	//virtual method used to determine whether two trajectories are in the same multibody at a given time 
+    virtual Coordinate get_imageoffset(Trajectory*, Trajectory*, int, int){Coordinate coord(0,0,0);return coord;};
     
   public:
     Dynamic_Cluster_Multibodies();

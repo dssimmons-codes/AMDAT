@@ -66,6 +66,16 @@ Provisional_Multibodies::~Provisional_Multibodies()
 }
 
 
+
+void Provisional_Multibodies::convert(System* syst, Control* control, string setname, string traj_typename, bool centertype)
+{
+  create_multibody_sets();
+  add_sets_to_system(syst, setname, traj_typename, centertype);
+  add_lists_to_control(syst, control);
+}
+
+
+
 void Provisional_Multibodies::create_multibody_sets()
 {
   Multibody_Set * mbset;
@@ -110,6 +120,8 @@ void Provisional_Multibodies::add_lists_to_control(System* syst, Control* contro
   new_multibody_list = new Multibody_List;
   new_trajectory_list = new Trajectory_List;	//how is this going to work? Need way to build trajectory list from multiple multibody lists
   
+  cout<<"\n"<<set_pointers.size()<<endl;cout.flush();
+  
   new_multibody_list->set(syst,set_pointers,time_conversion);
   control->add_multibody_list(new_multibody_list,basename);
   
@@ -122,9 +134,3 @@ void Provisional_Multibodies::add_lists_to_control(System* syst, Control* contro
   control->add_trajectorylist(new_trajectory_list, basename); 
 }
 
-void Provisional_Multibodies::convert(System* syst, Control* control, string setname, string traj_typename, bool centertype)
-{
-  create_multibody_sets();
-  add_sets_to_system(syst, setname, traj_typename, centertype);
-  add_lists_to_control(syst, control);
-}

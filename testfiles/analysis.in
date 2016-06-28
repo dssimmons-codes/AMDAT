@@ -1,7 +1,7 @@
 system
 xyz_log
 ./testfiles/traj.xyz ./testfiles/log.lammps
-exponential 1 77 1.2 0 0 .01
+exponential 10 77 1.2 0 0 .01
 polymer 50
 1
 32
@@ -24,12 +24,12 @@ list all
 string_multibodies null 70 .6 ./testfiles/sigma_matrix stringmbs string centroid
 list fast
 
-size_statistics string_statistics.dat stringmbs 3
+size_statistics string_statistics_med.dat stringmbs 3
+
+strings stringsmed.dat 70 .6 ./testfiles/sigma_matrix stringlist
+list fast
 
 exit
-
-strings strings.dat 70 .6 ./testfiles/sigma_matrix stringlist
-list fast
 
 create_multibodies bead1 bead centroid species_atomlist polymer 1 0
 create_multibodies bead2 bead centroid species_atomlist polymer 1 1

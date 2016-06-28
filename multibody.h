@@ -46,7 +46,7 @@ namespace std
       Multibody operator =(const Multibody &);
       Trajectory * operator()(int bodyindex);	//return pointer to trajectory indicated by bodyindex or null pointer if invalid index
 
-      Multibody(System *);
+      Multibody(System * sys,int reftime=0);
       Multibody(int n_bodies);		//effectively the same as the default constructor
       Multibody(int n_bodies,Trajectory** bodies);
 
@@ -72,7 +72,9 @@ namespace std
       void add_body(Trajectory*);
       void set_reftime(int reftime){tref=reftime;};			//set reference time index for correct wrapping/unwrapping of internal degrees of freedom
       void add_body(Trajectory*, Coordinate);
-      void absorb_multibody(const Multibody &);
+      void absorb_multibody(const Multibody &, Coordinate);
+      int show_body_ID(int bodyii){return trajectories[bodyii]->show_trajectory_ID();};	//gives the trajectory ID of specified trajectory in multibody
+      void clear();
 
   };
 

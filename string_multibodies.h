@@ -18,6 +18,7 @@ class String_Multibodies: public Dynamic_Cluster_Multibodies
         
     void allocate_sig_matrix(string);
     bool clustered_check(Trajectory*, Trajectory*, int, int);
+    Coordinate get_imageoffset(Trajectory*, Trajectory*, int, int);
   public:
     
     String_Multibodies();
