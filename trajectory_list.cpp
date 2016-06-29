@@ -427,6 +427,79 @@ void Trajectory_List::set(System * syst, vector<Trajectory_Set*> trajectory_sets
 }
 
 
+
+void Trajectory_List::flatten_multibodies(const Multibody_List& mblist)
+{
+  int timeii, mbodyii, bodyii;
+  int system_times;
+  int n_mbodies, n_bodies;
+  int max_trajectories;
+  
+  vector<Trajectory*> bodies;
+  
+  sys=mblist.sys;
+  n_times = mblist.n_times;
+  
+  delete [] time_conversion;
+
+  //deallocate previous allocations
+  for(int timeii=0; timeii<n_times; timeii++)
+  {
+      delete [] trajectories[timeii];
+  }
+  delete [] trajectories;
+  delete [] n_trajectories;
+  delete [] included;
+  
+  system_times = sys->show_n_timesteps();
+  n_atomtypes=sys->show_n_atomtypes();
+  
+  //copy time conversion table
+  time_conversion = new int [system_times]; 
+  for(timeii=0;timeii<system_times;timeii++)
+  {
+    time_conversion=mblist.time_conversion;
+  }
+  
+  //allocate memory for trajectory arrays
+  trajectories = new Trajectory ** [n_times];
+  n_trajectories = new int [n_times];
+  included = new Boolean_List [n_times];
+  max_trajectories=0;
+  
+  for(int timeii=0;timeii<n_times;timeii++)
+  {
+    included[timeii].set(sys);
+    n_trajectories[timeii]=0;
+    n_mbodies=mblist.multibodies[timeii].size();
+    for(mbodyii=0;mbodyii<n_mbodies;mbodyii++)
+    {
+      n_bodies=mblist.multibodies[timeii][mbodyii]->show_n_bodies();
+      n_trajectories[timeii]+=n_bodies;
+      bodies=mblist.multibodies[timeii][mbodyii]->show_bodies();
+      for(bodyii=0;bodyii<n_bodies;bodyii++)
+      {
+	included[timeii](bodies[bodyii]->show_trajectory_ID(),1);
+      }
+    }
+    if(n_trajectories[timeii]>max_trajectories)
+    {
+      max_trajectories=n_trajectories[timeii];
+    }
+    
+  }
+  
+  capacity=max_trajectories;
+  for(int timeii=0;timeii<n_times;timeii++)
+  {
+    trajectories[timeii] = new Trajectory * [n_trajectories[timeii]];
+  }
+  
+  trajlist_from_boollist();
+}
+
+
+
 void Trajectory_List::addtrajectory(int time, Trajectory* traj)
 {
     trajectories[time][n_trajectories[time]]=traj;

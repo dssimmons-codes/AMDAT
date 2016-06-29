@@ -199,6 +199,7 @@ class Control
     void orientational_correlation();
     void region_multibody_list();	//creates new multibody list based on region
     void threshold_multibody_list();	//create nuew multibody list based on size thresholding of existing list
+    void flatten_multibodies();		//creates new trajectory list by taking all of the trajectories containing in multibodies at each time of a specified multibody list
     void multibody_size_statistics();
     
     void incremental_mean_displacement();	//calculates mean displacement between adjacent frames

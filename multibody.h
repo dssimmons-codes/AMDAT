@@ -75,6 +75,8 @@ namespace std
       void absorb_multibody(const Multibody &, Coordinate);
       int show_body_ID(int bodyii){return trajectories[bodyii]->show_trajectory_ID();};	//gives the trajectory ID of specified trajectory in multibody
       void clear();
+      
+      vector<Trajectory*> show_bodies()const{return trajectories;};
 
   };
 

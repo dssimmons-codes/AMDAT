@@ -9,6 +9,7 @@
 #include "trajectory.h"
 #include "boolean_list.h"
 #include "trajectory_set.h"
+#include "multibody_list.h"
 
 namespace std{
 
@@ -53,6 +54,8 @@ class Trajectory_List
 
     void set(System* sys, int timecount, int cap, Boolean_List * boollist, int*time_conv);
     void set(System * syst, vector<Trajectory_Set*> trajectory_sets, int*time_conv);		//initialize trajectory list based on vector of trajectory sets
+    
+    void flatten_multibodies(const Multibody_List& mblist);		//set up trajectory list by combining all the trajectories in all multibodies
     
     
     Trajectory* operator () (int trajii);				//return a requested trajectory at the first time stored

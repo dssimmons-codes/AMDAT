@@ -13,9 +13,11 @@ namespace std{
   class Multibody_Analysis;
 
   class System;
+  class Trajectory_List;
 
   class Multibody_List
   {
+    friend class Trajectory_List;
     protected:
     System * sys;
 

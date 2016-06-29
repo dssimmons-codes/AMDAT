@@ -244,6 +244,10 @@ int Control::execute_commands(int iIndex, int fIndex)
     {
       threshold_multibody_list();
     }
+    else if (command == "flatten_multibodies")
+    {
+      flatten_multibodies();
+    }
     else if (command == "combine_trajectories")
     {
         combine_trajectories();
@@ -1643,6 +1647,34 @@ void Control::threshold_multibody_list()
 
 
 /*--------------------------------------------------------------------------------*/
+
+
+void Control::flatten_multibodies()
+{
+  string trajlist_name, multibody_list_name;
+  
+  int expected = 3;
+  argcheck(expected);
+  
+  trajlist_name = args[1];
+  multibody_list_name = args[2];
+  
+  Trajectory_List * trajlist;
+  trajlist = new Trajectory_List;
+  
+  Multibody_List * multibodylist;
+  
+  multibodylist = find_multibody_list(multibody_list_name);
+  
+  trajlist->flatten_multibodies(*multibodylist);
+  
+  add_trajectorylist(trajlist, trajlist_name);
+}
+
+
+/*--------------------------------------------------------------------------------*/
+
+
 void Control::create_multibodies()
 {
   string multibody_list_name, trajectory_list_name, trajectory_type_name, centertypename;
