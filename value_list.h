@@ -1379,9 +1379,12 @@ void Value_List<valType>::percentile_t_list(float low_percentile, float high_per
 template <class valType>
 void Value_List<valType>::update_size()
 {
-  if(values.size()<syst->show_n_trajectories())
+  for(int timeii=0;timeii<n_times;timeii++)
   {
-    values.resize(syst->show_n_trajectories());
+    if(values[timeii].size()<syst->show_n_trajectories())
+    {
+      values[timeii].resize(syst->show_n_trajectories());
+    }
   }
 }
 

@@ -438,7 +438,6 @@ void Trajectory_List::flatten_multibodies(const Multibody_List& mblist)
   vector<Trajectory*> bodies;
   
   sys=mblist.sys;
-  n_times = mblist.n_times;
   
   delete [] time_conversion;
 
@@ -450,6 +449,8 @@ void Trajectory_List::flatten_multibodies(const Multibody_List& mblist)
   delete [] trajectories;
   delete [] n_trajectories;
   delete [] included;
+  
+  n_times = mblist.n_times;
   
   system_times = sys->show_n_timesteps();
   n_atomtypes=sys->show_n_atomtypes();

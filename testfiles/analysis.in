@@ -1,7 +1,7 @@
 system
 xyz_log
 ./testfiles/traj.xyz ./testfiles/log.lammps
-exponential 1 77 1.2 0 0 .01
+exponential 10 77 1.2 0 0 .01
 polymer 50
 1
 32
@@ -28,12 +28,19 @@ size_statistics string_statistics.dat stringmbs 3
 
 threshold_multibody_list smstringmbs stringmbs greater 2
 
+threshold_multibody_list bigstrings stringmbs greater 5
+
 size_statistics string_statistics_noones.dat smstringmbs 3
 
 flatten_multibodies mbstringlist smstringmbs
 
 strings strings.dat 70 .6 ./testfiles/sigma_matrix stringlist
 list fast
+
+gyration_radius string_gyrationrad.dat smstringmbs 
+
+gyration_radius stringbig_gyrationrad.dat bigstrings 
+
 
 msd msd_strings.dat
 list stringlist

@@ -1,6 +1,5 @@
 /*Amorphous Molecular Dynamics Analysis Toolkit (AMDAT)*/
 /*Class to allow definition of multi-trajectory bodies other than molecules*/
-/*Use of this class currently relies upon the assumption that the unwrapped coordinates reflect the true relative position of the trajectories in the multibody. For multibodies consisting of trajectories within a single molecule (all current multibodies), this essentially requires that no molecules crossed the box boundaries at the beginning of the simulation, which may have been well before the start of the simulation trajectory under consideration by AMDAT*/
 /*Written by David S. Simmons*/
 
 #ifndef MULTIBODY
