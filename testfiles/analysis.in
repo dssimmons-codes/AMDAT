@@ -9,11 +9,6 @@ polymer 50
 create_list all
 all
 
-create_distance_neighborlist neighbors 1.2 ./testfiles/sigma_matrix 70
-list all
-
-exit
-
 ngp ngp.dat
 list all
 
@@ -25,6 +20,21 @@ list all
 
 find_fast fast fast_count_list.dat
 list all
+
+create_distance_neighborlist neighbors 1.2 ./testfiles/sigma_matrix 70
+list all
+
+persistent_neighbors 70 neighbors p_neighbors per_neighbors centroid
+list fast
+
+size_statistics persistent_neighbors.dat p_neighbors 3
+
+comover_multibodies null 70 1.2 ./testfiles/sigma_matrix comovermbs comover centroid
+list fast
+
+size_statistics comover_statistics.dat comovermbs 3
+
+exit
 
 string_multibodies null 70 .6 ./testfiles/sigma_matrix stringmbs string centroid
 list fast
@@ -54,11 +64,6 @@ msd msd_mbstrings.dat
 list mbstringlist 
 
 exit
-
-comover_multibodies null 70 1.2 ./testfiles/sigma_matrix comovermbs comover centroid
-list fast
-
-size_statistics comover_statistics2.dat comovermbs 3
 
 relative_displacement_strings null 70 1.1 0.6 ./testfiles/sigma_matrix rstringmbs rstring centroid
 list fast

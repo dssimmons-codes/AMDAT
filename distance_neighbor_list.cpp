@@ -144,6 +144,8 @@ Distance_Neighbor_List::Distance_Neighbor_List(System* sys, float thresh, string
     int n_blocks = system->show_n_exponentials();
     int blocksize = system->show_n_exponential_steps();
     int blockstart;
+    
+    computed_times.resize(n_times,false);
   
     if(firsttime>blocksize||lasttime>blocksize)
     {

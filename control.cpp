@@ -62,6 +62,7 @@
 #include "comover_multibodies.h"
 #include "relative_displacement_strings.h"
 #include "distance_neighbor_list.h"
+#include "persistent_neighbors.h"
 
 using namespace std;
 
@@ -260,6 +261,10 @@ int Control::execute_commands(int iIndex, int fIndex)
     else if(command == "delete_neighborlist")
     {
 	remove_neighborlist();
+    }
+    else if(command == "persistent_neighbors")
+    {
+	compute_persistent_neighbors();
     }
     else if (command == "msd")
     {
@@ -1410,6 +1415,56 @@ void Control::remove_neighborlist()
 }
 
 
+
+/*--------------------------------------------------------------------------------*/
+
+
+void Control::compute_persistent_neighbors()
+{
+  int expected=6;
+  string runline;
+  string filename, nlist_name, setname, trajtypename, centertypename;
+  bool centertype;
+  int timegap;
+  
+  Neighbor_List * neighborlist;
+  
+  argcheck(expected);
+  
+  timegap=atoi(args[1].c_str());
+  nlist_name=args[2];
+  setname=args[3];
+  trajtypename=args[4];
+  centertypename=args[5];
+  
+  if(centertypename == "centroid")
+  {
+    centertype = 0;
+  }
+  else if(centertypename == "com")
+  {
+    centertype = 1;
+  }
+  else
+  {
+    cout << "\n Type of multibody center '" << centertypename << "' not recognized. Allowable options are 'centroid' and 'com'";
+    exit (0);
+  }
+  
+  neighborlist=find_neighborlist(nlist_name);
+  
+  runline = read_line();
+  cout <<"\n"<< runline;
+  cout<<"\nFinding persistent neighbors.";
+  
+  start = time(NULL);
+  Persistent_Neighbors p_neighbors(analyte,timegap,neighborlist);
+  run_analysis(&p_neighbors, runline);
+  finish = time(NULL);
+  cout << "\nFound persistent neighbors in " << finish-start<<" seconds.\n";
+  
+  p_neighbors.convert(analyte, this, setname, trajtypename, centertype);
+}
 
 /*--------------------------------------------------------------------------------*/
 

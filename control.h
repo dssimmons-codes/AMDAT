@@ -211,6 +211,7 @@ class Control
     
     void create_distance_neighborlist();	//create a neighbor list based on a distance threshold
     void remove_neighborlist();
+    void compute_persistent_neighbors();	//create multibody lists from particles that remain in one anothers' neighbor lists
     
     void incremental_mean_displacement();	//calculates mean displacement between adjacent frames
     void process_value_list();

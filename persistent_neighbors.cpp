@@ -19,68 +19,31 @@ using namespace std;
 
 Persistent_Neighbors::Persistent_Neighbors():Dynamic_Cluster_Multibodies()
 {
-  threshold=0;
+  neighbor_list=0;
   
 }
 
 
 Persistent_Neighbors::Persistent_Neighbors(const Persistent_Neighbors& copy):Dynamic_Cluster_Multibodies(copy)
 {
-  int typeii, type2ii;
-  
-    threshold=copy.threshold;
-    n_times=copy.n_times;
-    
-    for(typeii=0;typeii<n_atomtypes;typeii++)
-    {
-      delete [] sigmatrix[typeii];
-    }
-    delete [] sigmatrix;
-    
-    
-    basename=copy.basename;
+  neighbor_list=copy.neighbor_list;
 }
 
-Persistent_Neighbors::~Persistent_Neighbors()
-{
-
-}
 
 
 Persistent_Neighbors Persistent_Neighbors::operator=(const Persistent_Neighbors& copy)
 {
   if(this!=&copy)
   {
-    int typeii, type2ii;
-    
-    system=copy.system;
-    timegap=copy.timegap;
-    threshold=copy.threshold;
-    n_times=copy.n_times;
-    
-    if(system!=0)
-    {
-      time_conversion=new int [system->show_n_timesteps()];
-      for(int timeii=0;timeii<system->show_n_timesteps();timeii++)
-      {
-	time_conversion[timeii]=int(float(timeii-system->show_frt())/float(system->show_n_exponential_steps()));
-      }
-    }
-    else
-    {
-      time_conversion = new int [1];
-    }
-    
-    basename=copy.basename;
+    Dynamic_Cluster_Multibodies::operator=(copy);
+    neighbor_list=copy.neighbor_list;
   }
-  
   return *this;
 }
 
 
-Persistent_Neighbors::Persistent_Neighbors(System * syst, int tgap, float thresh, Neighbor_List* nlist):Dynamic_Cluster_Multibodies(syst,tgap)
+Persistent_Neighbors::Persistent_Neighbors(System * syst, int tgap, Neighbor_List* nlist):Dynamic_Cluster_Multibodies(syst,tgap)
 {
-  threshold=thresh;
   neighbor_list=nlist;
 }
 
@@ -94,7 +57,7 @@ bool Persistent_Neighbors::clustered_check(Trajectory* trajectory1, Trajectory* 
   
   trajectory1ID=trajectory1->show_trajectory_ID();
   
-  check=(neighbor_list.is_neighbor(thisii,trajectory1ID, trajectory2))&&(neighbor_list.is_neighbor(nextii,trajectory1ID, trajectory2));
+  check=(neighbor_list->is_neighbor(thisii,trajectory1ID, trajectory2))&&(neighbor_list->is_neighbor(nextii,trajectory1ID, trajectory2));
 
   return check;
 }

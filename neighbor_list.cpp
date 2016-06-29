@@ -45,6 +45,7 @@ Neighbor_List Neighbor_List::operator=(const Neighbor_List& copy)
     }
     neighbors=copy.neighbors;
     computed_times=copy.computed_times;
+    
   }
   return *this;
 }
@@ -75,7 +76,6 @@ bool Neighbor_List::is_neighbor(int timeii, int trajii, Trajectory* trajcheck)co
   
   int neighborii;
   int n_neighbors=neighbors[timeii][trajii].size();
-  
   if(!computed_times[timeii])
   {
     cout<<"\Error: neighbor list has not been computed for time " << timeii << ".\n";
