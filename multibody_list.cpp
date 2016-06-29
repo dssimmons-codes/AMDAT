@@ -152,11 +152,14 @@ Multibody_List::Multibody_List(System * syst, int timecount, Multibody_Set ** mu
 Multibody_List::Multibody_List(const Multibody_List& copy, int bound, bool greater)
 {
   int timeii, mbodyii;
-  int system_times=sys->show_n_timesteps();
+  
   Multibody*multibody;
   
   sys=copy.sys;
+  
+  int system_times=sys->show_n_timesteps();
   n_times=copy.n_times;
+  
   
   multibodies.resize(n_times);
   

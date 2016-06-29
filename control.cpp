@@ -1601,7 +1601,7 @@ void Control::threshold_multibody_list()
   string new_multibody_list_name, target_multibody_list_name, statistics_file;
   int threshold1, threshold2;
   string thresh_command;
-  int expected = 10;
+  int expected = 5;
   argcheck(expected);
   bool greater;
   
