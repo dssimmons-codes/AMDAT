@@ -26,6 +26,7 @@
 #include "value_list.h"
 #include "multibody_list.h"
 #include "vector_map.h"
+#include "neighbor_list.h"
 
 
 
@@ -149,6 +150,12 @@ class Control
     void add_value_list(Value_List<float>*, string);
     //void delete_value_list(string);
     
+    /*Methods to handle neighbor lists*/
+    Vector_Map <string, Neighbor_List*> neighbor_lists;
+    Neighbor_List* find_neighborlist(string, bool allow_nofind=0)const;
+    void add_neighborlist(Neighbor_List*, string);
+    void delete_neighborlist(string);
+    
     /*Analysis method calls*/
     void msd();			//calculate mean square displacement
     void msd_2d();		//calculate 2d mean square displacement
@@ -201,6 +208,9 @@ class Control
     void threshold_multibody_list();	//create nuew multibody list based on size thresholding of existing list
     void flatten_multibodies();		//creates new trajectory list by taking all of the trajectories containing in multibodies at each time of a specified multibody list
     void multibody_size_statistics();
+    
+    void create_distance_neighborlist();	//create a neighbor list based on a distance threshold
+    void remove_neighborlist();
     
     void incremental_mean_displacement();	//calculates mean displacement between adjacent frames
     void process_value_list();

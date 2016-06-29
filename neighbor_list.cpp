@@ -27,10 +27,11 @@ Neighbor_List::Neighbor_List(const Neighbor_List& copy)
     included[timeii]=copy.included[timeii];
   }
   neighbors=copy.neighbors;
+  computed_times=copy.computed_times;
 }
 
 
-Neighbor_List Neighbor_List::operator=(const Neighbor_List&)
+Neighbor_List Neighbor_List::operator=(const Neighbor_List& copy)
 {
   if(this!=&copy)
   {
@@ -43,6 +44,7 @@ Neighbor_List Neighbor_List::operator=(const Neighbor_List&)
       included[timeii]=copy.included[timeii];
     }
     neighbors=copy.neighbors;
+    computed_times=copy.computed_times;
   }
   return *this;
 }
@@ -54,6 +56,19 @@ Neighbor_List::~Neighbor_List()
 }
 
 
+Neighbor_List::Neighbor_List(System * sys)
+{
+  syst=sys;
+  n_times = syst->show_n_timesteps();
+  neighbors.resize(n_times);
+  for(int timeii=0;timeii<n_times;timeii++)
+  {
+    neighbors[timeii].resize(syst->show_n_trajectories());
+  }
+  computed_times.resize(n_times,false);
+}
+
+
 bool Neighbor_List::is_neighbor(int timeii, int trajii, Trajectory* trajcheck)const
 {
   bool check = false;
@@ -61,10 +76,35 @@ bool Neighbor_List::is_neighbor(int timeii, int trajii, Trajectory* trajcheck)co
   int neighborii;
   int n_neighbors=neighbors[timeii][trajii].size();
   
-  for(neighborii=0;neighborii<n_neighbors;neighborii++)
+  if(!computed_times[timeii])
   {
-    check=check||(trajcheck==neighbors[timeii][trajii][neighborii]);
+    cout<<"\Error: neighbor list has not been computed for time " << timeii << ".\n";
+    exit(0);
+  }
+  else if(!(included[timeii])(trajii))
+  {
+    cout<<"\nWarning: trajectory " << trajii << " in trajectory list is not included in the neighbor list.";
+    check=false;
+  }
+  else
+  {
+    for(neighborii=0;neighborii<n_neighbors;neighborii++)
+    {
+      check=check||(trajcheck==neighbors[timeii][trajii][neighborii]);
+    }
   }
   
   return check;
+}
+
+
+void Neighbor_List::update_size()
+{
+  for(int timeii=0;timeii<n_times;timeii++)
+  {
+    if(neighbors[timeii].size()<syst->show_n_trajectories())
+    {
+      neighbors[timeii].resize(syst->show_n_trajectories());
+    }
+  }
 }

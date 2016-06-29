@@ -50,7 +50,8 @@ enum Analysis_Type
   strings,
   edge_detector_timedependent,
   radial_distribution_function,
-  displacement_list
+  displacement_list,
+  distance_neighbor_list
 };
 
 

@@ -26,7 +26,7 @@ class Persistent_Neighbors: public Dynamic_Cluster_Multibodies
     ~Persistent_Neighbors();
     Persistent_Neighbors operator=(const Persistent_Neighbors&);
     
-    Persistent_Neighbors(System * syst, int tgap, float thresh, string sigmatrixname);
+    Persistent_Neighbors(System * syst, int tgap, float thresh, Neighbor_List* nlist);
   
 };
   

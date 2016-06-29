@@ -9,6 +9,11 @@ polymer 50
 create_list all
 all
 
+create_distance_neighborlist neighbors 1.2 ./testfiles/sigma_matrix 70
+list all
+
+exit
+
 ngp ngp.dat
 list all
 

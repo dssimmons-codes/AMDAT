@@ -80,7 +80,6 @@ Persistent_Neighbors Persistent_Neighbors::operator=(const Persistent_Neighbors&
 
 Persistent_Neighbors::Persistent_Neighbors(System * syst, int tgap, float thresh, Neighbor_List* nlist):Dynamic_Cluster_Multibodies(syst,tgap)
 {
-  system=syst;
   threshold=thresh;
   neighbor_list=nlist;
 }

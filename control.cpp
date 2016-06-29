@@ -61,6 +61,7 @@
 #include "string_multibodies.h"
 #include "comover_multibodies.h"
 #include "relative_displacement_strings.h"
+#include "distance_neighbor_list.h"
 
 using namespace std;
 
@@ -251,6 +252,14 @@ int Control::execute_commands(int iIndex, int fIndex)
     else if (command == "combine_trajectories")
     {
         combine_trajectories();
+    }
+    else if(command == "create_distance_neighborlist")
+    {
+	create_distance_neighborlist();
+    }
+    else if(command == "delete_neighborlist")
+    {
+	remove_neighborlist();
     }
     else if (command == "msd")
     {
@@ -1343,6 +1352,64 @@ void Control::combine_trajectories()
 }
 
 
+/*--------------------------------------------------------------------------------*/
+
+void Control::create_distance_neighborlist()
+{
+  Distance_Neighbor_List * dnlist_pointer;
+  dnlist_pointer = new Distance_Neighbor_List;
+  string filename="";
+  float threshold;
+  string nlist_name, sigmatrixname, runline;
+  int firsttime, lasttime;
+  firsttime=lasttime= -1;
+  
+  nlist_name=args[1];
+  threshold=atof(args[2].c_str());
+  sigmatrixname=args[3];
+  if(n_args>4)
+  {
+    firsttime=atoi(args[4].c_str());
+  }
+  if(n_args>5)
+  {
+    lasttime=atoi(args[5].c_str());
+  }
+  
+  
+  runline = read_line();
+  cout <<"\n"<< runline;
+  
+  Distance_Neighbor_List dnlist(analyte, threshold, sigmatrixname, firsttime, lasttime);
+  cout << "\nBuilding neighbor list.";cout.flush();
+  start = time(NULL);
+  run_analysis(&dnlist,runline); 
+  finish = time(NULL);
+  cout << "\nBuilt neighbor lists in " << finish-start<<" seconds."<<endl;
+
+  
+  (*dnlist_pointer)=dnlist;
+  add_neighborlist(dnlist_pointer,nlist_name);
+  
+  
+}
+
+
+/*--------------------------------------------------------------------------------*/
+
+
+
+void Control::remove_neighborlist()
+{
+  int expected=2;
+  argcheck(expected);
+  
+  string listname = args[1];
+  
+  delete_neighborlist(listname);
+}
+
+
 
 /*--------------------------------------------------------------------------------*/
 
@@ -1493,9 +1560,82 @@ void Control::add_value_list(Value_List<float> * av_list, string listname)
 
 
 
+ /*--------------------------------------------------------------------------------*/
+
+
+
+  /*finds trajectorylist object by custom name*/
+Neighbor_List* Control::find_neighborlist(string listname, bool allow_nofind)const
+{
+    Neighbor_List * neighbor_list;
+
+  try
+  {
+    neighbor_list = neighbor_lists.at(listname);
+  }
+  catch(out_of_range & sa)
+  {
+    if(allow_nofind)
+    {
+      neighbor_list=0;
+    }
+    else
+    {
+      cout << "\nError: neighbor_list " << listname << " does not exist.\n";
+      exit(0);
+    }
+  }
+
+  return neighbor_list;
+
+}
+
+
 
  /*--------------------------------------------------------------------------------*/
 
+
+
+void Control::add_neighborlist(Neighbor_List * n_list, string listname)
+{
+ bool result;
+
+  result=(neighbor_lists.insert(listname,n_list));
+
+  if(!result)
+  {
+    cout << "\nWarning: neighbor_list "<< listname<<" not created because a neighbor_list with this name already exists. Replacement of a neighbor_list requires that you first delete the existing list with the same name.\n";
+  }
+
+
+}
+
+
+
+ /*--------------------------------------------------------------------------------*/
+
+ 
+ void Control::delete_neighborlist(string listname)
+{
+  bool result;
+
+  Neighbor_List * nlist;
+  
+  //check if the specified neighbor_list exists
+  nlist = find_neighborlist(listname, 1);
+  if(nlist==0)
+  {
+    cout << "\nWarning: neighbor_list "<< listname<<" not deleted because it does not exist.\n";
+  }
+  else
+  {
+    neighbor_lists.erase(listname);	//remove this neighbor_list from list of neighbor_lists
+    delete [] nlist;			//deallocate memory for this neighbor_list
+  }
+}
+
+
+ /*--------------------------------------------------------------------------------*/
 
 /*Method to set maximum number of displacement time loops to be used by any analysis to follow*/
  void Control::limit()
