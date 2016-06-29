@@ -147,6 +147,91 @@ Multibody_List::Multibody_List(System * syst, int timecount, Multibody_Set ** mu
     check_n_bodies();
 }
 
+
+/*Bounds are inclusive*/
+Multibody_List::Multibody_List(const Multibody_List& copy, int bound, bool greater)
+{
+  int timeii, mbodyii;
+  int system_times=sys->show_n_timesteps();
+  Multibody*multibody;
+  
+  sys=copy.sys;
+  n_times=copy.n_times;
+  
+  multibodies.resize(n_times);
+  
+  time_conversion = new int [system_times];
+  
+  for(timeii=0;timeii<system_times;timeii++)
+  {
+    time_conversion[timeii]=copy.time_conversion[timeii];
+  }
+  
+  if(greater)
+  {
+    for(timeii=0;timeii<n_times;timeii++)
+    {
+      for(mbodyii=0;mbodyii<copy.multibodies[timeii].size();mbodyii++)
+      {
+	multibody=copy.multibodies[timeii][mbodyii];
+	if(multibody->show_n_bodies()>=bound)
+	{
+	  multibodies[timeii].push_back(multibody);
+	}
+      }
+    }
+  }
+  else
+  {
+    for(timeii=0;timeii<n_times;timeii++)
+    {
+      for(mbodyii=0;mbodyii<copy.multibodies[timeii].size();mbodyii++)
+      {
+	multibody=copy.multibodies[timeii][mbodyii];
+	if(multibody->show_n_bodies()<=bound)
+	{
+	  multibodies[timeii].push_back(multibody);
+	}
+      }
+    }
+  }
+}
+
+
+
+/*Bounds are inclusive*/
+Multibody_List::Multibody_List(const Multibody_List& copy, int lowerbound, int upperbound)
+{
+  int timeii, mbodyii;
+  int system_times=sys->show_n_timesteps();
+  Multibody*multibody;
+  
+  sys=copy.sys;
+  n_times=copy.n_times;
+  
+  multibodies.resize(n_times);
+  
+  time_conversion = new int [system_times];
+  
+  for(timeii=0;timeii<system_times;timeii++)
+  {
+    time_conversion[timeii]=copy.time_conversion[timeii];
+  }
+  
+  for(timeii=0;timeii<n_times;timeii++)
+  {
+    for(mbodyii=0;mbodyii<copy.multibodies[timeii].size();mbodyii++)
+    {
+      multibody=copy.multibodies[timeii][mbodyii];
+      if(multibody->show_n_bodies()<=upperbound&&multibody->show_n_bodies()>=lowerbound)
+      {
+	multibodies[timeii].push_back(multibody);
+      }
+    }
+  }
+}
+
+
 /*Method that resets object with system and a pointer to a Multibody_Set - fully creates list with multibodies in it*/
 /*This is comparable to a static trajectory list in that it defines only one list of multibodies that is the same for all times in the system*/
 void Multibody_List::set(System * syst, Multibody_Set * multibodyset)

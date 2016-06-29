@@ -198,6 +198,7 @@ class Control
     
     void orientational_correlation();
     void region_multibody_list();	//creates new multibody list based on region
+    void threshold_multibody_list();	//create nuew multibody list based on size thresholding of existing list
     void multibody_size_statistics();
     
     void incremental_mean_displacement();	//calculates mean displacement between adjacent frames

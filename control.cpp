@@ -240,6 +240,10 @@ int Control::execute_commands(int iIndex, int fIndex)
     {
       region_multibody_list();
     }
+    else if (command == "threshold_multibody_list")
+    {
+      threshold_multibody_list();
+    }
     else if (command == "combine_trajectories")
     {
         combine_trajectories();
@@ -1587,6 +1591,54 @@ void Control::region_multibody_list()
   mbr->write(statistics_file);
   
   
+}
+
+/*--------------------------------------------------------------------------------*/
+
+
+void Control::threshold_multibody_list()
+{
+  string new_multibody_list_name, target_multibody_list_name, statistics_file;
+  int threshold1, threshold2;
+  string thresh_command;
+  int expected = 10;
+  argcheck(expected);
+  bool greater;
+  
+  Multibody_List * new_mbody_list;
+  new_mbody_list = new Multibody_List;
+  
+  Multibody_List * target_multibodylist;
+
+  new_multibody_list_name = args[1];
+  target_multibody_list_name = args[2];
+  thresh_command = args[3];
+  threshold1=atoi(args[4].c_str());
+  
+  target_multibodylist = find_multibody_list(target_multibody_list_name);
+    
+  
+    
+  if(thresh_command=="greater")
+  {
+    greater=true;
+  }
+  else if(thresh_command=="less")
+  {
+    greater=false;
+  } 
+  else 
+  {
+    cout<< "Error: thresholding commmand unrecognized. command can only be greater or less.\n";
+    exit(0);
+  }
+  
+  Multibody_List templist(*target_multibodylist,threshold1,greater);
+  
+  (*new_mbody_list)=templist;
+  
+  
+  add_multibody_list(new_mbody_list, new_multibody_list_name);
 }
 
 

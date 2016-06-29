@@ -39,9 +39,11 @@ namespace std{
 
       Multibody_List(System * sys, int timecount);    //construct Multibody_List, setting the total number of times in the list.
       Multibody_List (System * sys, Multibody_Set * multibodyset);
-      Multibody_List (System*sys, int timecount, Multibody_Set ** multibodysets, int*time_conversion);
+      Multibody_List (System * sys, int timecount, Multibody_Set ** multibodysets, int*time_conversion);
 
-
+      Multibody_List(const Multibody_List&, int, bool);	//makes new multibody list based on > or < size thresholding of existing one
+      Multibody_List(const Multibody_List&, int, int); //makes new multibody list based on size thresholding (with upper and lower bounds) of existing one
+      
       Multibody_List operator + (const Multibody_List &) const; //combine two Multibody_Lists
       void set(System * sys, Multibody_Set * multibodyset);
       void set (System*sys, vector<Multibody_Set*> multibodysets, int*time_con);
