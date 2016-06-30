@@ -1,13 +1,20 @@
 system
 xyz_log
 ./testfiles/traj.xyz ./testfiles/log.lammps
-exponential 10 77 1.2 0 0 .01
+exponential 1 77 1.2 0 0 .01
 polymer 50
 1
 32
 
 create_list all
 all
+
+displacement_list displacement_stats.dat displacement_list 70
+list all
+
+delete_valuelist displacement_list
+
+exit
 
 ngp ngp.dat
 list all

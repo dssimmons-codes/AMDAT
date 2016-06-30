@@ -50,6 +50,7 @@ protected:
   Value_List(System*);
   Value_List(const Value_List<valType>&);
   Value_List operator = (const Value_List &);
+  ~Value_List();
 
   void set(System*);
   void set(int,int,valType);
@@ -103,12 +104,13 @@ Value_List<valType>::Value_List()
   syst = 0;
   n_times = 0;
 
-  included = new Boolean_List[n_times];
-  time_conversion = new int [0];
-  defined_times = new bool [0];
+  included = new Boolean_List[1];
+  time_conversion = new int [1];
+  defined_times = new bool [1];
   for(int timeii=0;timeii<n_times;timeii++)
   {
     included[timeii].set(syst);
+    time_conversion[timeii]=0;
   }
 }
 
@@ -190,6 +192,13 @@ Value_List<valType> Value_List<valType>::operator = (const Value_List<valType> &
 
 }
 
+template <class valType>
+Value_List<valType>::~Value_List()
+{
+  delete [] time_conversion;
+  delete [] defined_times;
+  delete [] included;
+}
 
 
 template <class valType>

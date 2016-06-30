@@ -266,6 +266,10 @@ int Control::execute_commands(int iIndex, int fIndex)
     {
 	compute_persistent_neighbors();
     }
+    else if(command == "delete_valuelist")
+    {
+      remove_valuelist();
+    }
     else if (command == "msd")
     {
       msd();
@@ -1048,7 +1052,6 @@ void Control::get_user_input(bool show_tips)
    n_gaussian_comparisons = 0;
    vhs_defined = 0;
    n_trajectory_list_bins = 0;
-   n_value_lists=0;
 
  }
 
@@ -1415,6 +1418,18 @@ void Control::remove_neighborlist()
 }
 
 
+/*--------------------------------------------------------------------------------*/
+
+
+void Control::remove_valuelist()
+{
+  int expected=2;
+  argcheck(expected);
+  
+  string listname = args[1];
+  
+  delete_value_list(listname);
+}
 
 /*--------------------------------------------------------------------------------*/
 
@@ -1580,15 +1595,30 @@ void Control::delete_multibodies()
 
 
   /*finds trajectorylist object by custom name*/
-int Control::find_value_list(string listname)
+Value_List<float>* Control::find_value_list(string listname, bool allow_nofind)const
 {
-	int listii;
+  
+  Value_List<float>* v_list;
 
-	for(listii=0;listii<n_value_lists;listii++)
-	{
-		if(listname==value_list_names[listii]) return listii;
-	}
-	return -1;
+  try
+  {
+    v_list = value_lists.at(listname);
+  }
+  catch(out_of_range & sa)
+  {
+    if(allow_nofind)
+    {
+      v_list=0;
+    }
+    else
+    {
+      cout << "\nError: value_list " << listname << " does not exist.\n";
+      exit(0);
+    }
+  }
+  
+  return v_list;
+
 }
 
 
@@ -1597,21 +1627,47 @@ int Control::find_value_list(string listname)
 
 
 
-void Control::add_value_list(Value_List<float> * av_list, string listname)
+void Control::add_value_list(Value_List<float>* av_list, string listname)
 {
-  int listnum;
+  
+  bool result;
 
-  listnum = find_value_list(listname);
-  if(listnum==-1)
+  result=(value_lists.insert(listname,av_list));
+
+  if(!result)
   {
-    listnum = n_value_lists;
-    n_value_lists++;
+    cout << "\nWarning: neighbor_list "<< listname<<" not created because a neighbor_list with this name already exists. Replacement of a neighbor_list requires that you first delete the existing list with the same name.\n";
   }
-  value_lists[listnum] = av_list;
-  value_list_names[listnum]=listname;
+
 
 }
 
+
+ /*--------------------------------------------------------------------------------*/
+
+
+
+void Control::delete_value_list(string listname)
+{
+  
+  bool result;
+
+  Value_List<float> * vlist;
+  
+  //check if the specified neighbor_list exists
+  vlist = find_value_list(listname, 1);
+  if(vlist==0)
+  {
+    cout << "\nWarning: neighbor_list "<< listname<<" not deleted because it does not exist.\n";
+  }
+  else
+  {
+    value_lists.erase(listname);	//remove this neighbor_list from list of neighbor_lists
+    delete vlist;			//deallocate memory for this neighbor_list
+  }
+
+
+}
 
 
 
@@ -1685,7 +1741,7 @@ void Control::add_neighborlist(Neighbor_List * n_list, string listname)
   else
   {
     neighbor_lists.erase(listname);	//remove this neighbor_list from list of neighbor_lists
-    delete [] nlist;			//deallocate memory for this neighbor_list
+    delete nlist;			//deallocate memory for this neighbor_list
   }
 }
 
@@ -3659,7 +3715,7 @@ void Control::thresholded_list()
   float threshold1;
   float threshold2;
   string thresh_command;
-
+  Value_List<float> * vlist;
 
 
   av_listname = args[2];
@@ -3677,11 +3733,11 @@ void Control::thresholded_list()
 
   Trajectory_List * trajpointer;
    trajpointer = new Trajectory_List();
-  av_listnum = find_value_list(av_listname);
+  vlist = find_value_list(av_listname);
 
-if(thresh_command=="greater"){value_lists[av_listnum]->construct_t_list(bool(1),threshold1,trajpointer);}
-else if(thresh_command=="less"){value_lists[av_listnum]->construct_t_list(bool(0),threshold1,trajpointer);}
-else if (thresh_command=="between"){value_lists[av_listnum]->construct_t_list(threshold1,threshold2,trajpointer);}
+if(thresh_command=="greater"){vlist->construct_t_list(bool(1),threshold1,trajpointer);}
+else if(thresh_command=="less"){vlist->construct_t_list(bool(0),threshold1,trajpointer);}
+else if (thresh_command=="between"){vlist->construct_t_list(threshold1,threshold2,trajpointer);}
 else {cout<< "thresholding commmand unrecognized. command can only be greater, less or between\n";}
 
   add_trajectorylist(trajpointer, t_listname);	//add trajectory list to array
@@ -3702,6 +3758,8 @@ void Control::percentiled_list()
   float threshold1;
   float threshold2;
   string thresh_command;
+  
+  Value_List<float>* vlist;
 
 
   av_listname = args[2];
@@ -3719,8 +3777,8 @@ void Control::percentiled_list()
 
   Trajectory_List * trajpointer;
    trajpointer = new Trajectory_List();
-  av_listnum = find_value_list(av_listname);
-  if(av_listnum==-1)
+  vlist = find_value_list(av_listname);
+  if(vlist==0)
   {
     cout << "\nError: value_list name " <<av_listname<<" not found.\n";
     exit(0);
@@ -3728,15 +3786,15 @@ void Control::percentiled_list()
 
 if(thresh_command=="greater")
 {
-  value_lists[av_listnum]->percentile_t_list(bool(1),threshold1,trajpointer);
+  vlist->percentile_t_list(bool(1),threshold1,trajpointer);
 }
 else if(thresh_command=="less")
 {
-  value_lists[av_listnum]->percentile_t_list(bool(0),threshold1,trajpointer);
+  vlist->percentile_t_list(bool(0),threshold1,trajpointer);
 }
 else if (thresh_command=="between")
 {
-  value_lists[av_listnum]->percentile_t_list(threshold1,threshold2,trajpointer);
+  vlist->percentile_t_list(threshold1,threshold2,trajpointer);
 }
 else {cout<< "thresholding commmand unrecognized. command can only be greater, less or between\n";}
 
@@ -3755,13 +3813,15 @@ void Control::value_list_to_pdb()
   int value_listnum;
   float time;
 
+  Value_List<float>* vlist;
+  
   value_listname = args[2];
   filestem = args[3];
   valuetimeindex = atoi(args[4].c_str());
   positiontimeindex = atoi(args[5].c_str());
 
-  value_listnum = find_value_list(value_listname);
-  if(value_listnum==-1)
+  vlist = find_value_list(value_listname);
+  if(vlist==0)
   {
     cout << "\nError: value_list name " <<value_listname<<" not found.\n";
     exit(0);
@@ -3770,12 +3830,12 @@ void Control::value_list_to_pdb()
   cout << "\nWriting value list to PDB" << endl;
   if(n_args==6)
   {
-    value_lists[value_listnum]->write_pdb(valuetimeindex, filestem, positiontimeindex);
+    vlist->write_pdb(valuetimeindex, filestem, positiontimeindex);
   }
   else if(n_args==7)
   {
     max = atof(args[6].c_str());
-    value_lists[value_listnum]->write_pdb(valuetimeindex, filestem, positiontimeindex, max);
+    vlist->write_pdb(valuetimeindex, filestem, positiontimeindex, max);
   }
 
 }
@@ -4120,15 +4180,18 @@ void Control::crosscorrelate_value_lists()
   filename = args[2];
   listname1 = args[3];
   listname2 = args[4];
+  
+  Value_List<float> * vlist1;
+  Value_List<float> * vlist2;
 
-  list1 = find_value_list(listname1);
-  list2 = find_value_list(listname2);
+  vlist1 = find_value_list(listname1);
+  vlist2 = find_value_list(listname2);
 
   ofstream output;
 
   if(correlation_type=="static")
   {
-    correlation = value_lists[list1]->static_crosscorrelation(*value_lists[list2]);
+    correlation = vlist1->static_crosscorrelation(*vlist2);
     output.open(filename.c_str());
     output << "Correlation between value lists "<< listname1<<" and "<< listname2<<" calculated by AMDAT v." << VERSION << "\n";
     output << "Relative correlation (<AB>/<A><B>) is " << correlation;
@@ -4139,7 +4202,7 @@ void Control::crosscorrelate_value_lists()
     output.open(filename.c_str());
     output << "Dynamic cross-correlation between value lists "<< listname1<<" and "<< listname2<<" calculated by AMDAT v." << VERSION << "\n";
     output.close();
-    value_lists[list1]->dynamic_crosscorrelation_function(filename,*value_lists[list2]);
+    vlist1->dynamic_crosscorrelation_function(filename,*vlist2);
   }
   else
   {
@@ -4162,13 +4225,15 @@ void Control::autocorrelate_value_list()
 
   filename = args[1];
   listname = args[2];
+  
+  Value_List<float> * vlist;
 
-  list = find_value_list(listname);
+  vlist = find_value_list(listname);
 
   ofstream output(filename.c_str());
   output << "Dynamic auto-correlation of value list "<< listname<<" calculated by AMDAT v." << VERSION << "\n";
   output.close();
-  value_lists[list]->dynamic_autocorrelation_function(filename);
+  vlist->dynamic_autocorrelation_function(filename);
 }
 
 

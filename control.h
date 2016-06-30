@@ -142,13 +142,11 @@ class Control
     void skip();
 
     /*Methods to handle value lists*/
-    /*Daniel Hunsicker*/
-    Value_List<float> * value_lists [LISTSIZE];		//array of value list objects
-    string value_list_names [LISTSIZE];		//custom name of value list
-    int n_value_lists;
-    int find_value_list(string);		//return index of value list with given custom name
+    Vector_Map<string,Value_List<float>*> value_lists;
+    Value_List<float>* find_value_list(string,bool allow_nofind=0)const;
     void add_value_list(Value_List<float>*, string);
-    //void delete_value_list(string);
+    void delete_value_list(string);
+    
     
     /*Methods to handle neighbor lists*/
     Vector_Map <string, Neighbor_List*> neighbor_lists;
@@ -196,6 +194,7 @@ class Control
     void vector_autocorrelation_function();	//calculates autocorrelation function of vector orientations
     void crosscorrelate_value_lists();
     void autocorrelate_value_list();
+    void remove_valuelist();		//allows user to delete a value_list
     void write_single_particle();	//write single trajectory to file as simple list of coordinates
     void find_edge();
     void unsteady_velocity();
