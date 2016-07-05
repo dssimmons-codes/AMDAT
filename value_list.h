@@ -43,7 +43,9 @@ protected:
 
   virtual float change(int trajindex,int time1,int time2);//returns a figure of merit quantifying the extent to which a trajectory's value has changed between two specified times
 
-
+  valType show_value_i(int timeii, int trajii)const{return values[timeii][trajii];};
+  int show_n_values_i(int timeii)const{return values[timeii].size();}
+  
   public:
 
   Value_List();
@@ -55,9 +57,9 @@ protected:
   void set(System*);
   void set(int,int,valType);
 
-  valType show_value(int timeii, int trajii){return values[convert_time(timeii)][trajii];};
-
-  void operator () (int timeii, int trajii){return values[convert_time(timeii)][trajii];};
+  virtual valType show_value(int timeii, int trajii){return values[convert_time(timeii)][trajii];};
+  void operator () (int timeii, int trajii){return show_value(timeii, trajii);};
+  virtual int show_n_values(int timeii){return values[convert_time(timeii)].size();}
 
   //bool is_included(int trajii){return included(int trajii);};
 
@@ -169,6 +171,11 @@ Value_List<valType> Value_List<valType>::operator = (const Value_List<valType> &
   if(this!=&copy)
   {
     syst=copy.syst;
+    
+    delete [] included;
+    delete [] time_conversion;
+    delete [] defined_times;
+    
     n_times = copy.n_times;
 
     included = new Boolean_List [n_times];
@@ -204,11 +211,7 @@ Value_List<valType>::~Value_List()
 template <class valType>
 void Value_List<valType>::set(System * sys)
 {
-  for(int timeii=0;timeii<n_times;timeii++)
-  {
-	  delete [] values[timeii];
-  }
-  delete [] values;
+  
   delete [] included;
   delete [] time_conversion;
   delete [] defined_times;
@@ -217,7 +220,6 @@ void Value_List<valType>::set(System * sys)
   n_times = syst->show_n_timesteps();
 
   included = new Boolean_List[n_times];
-  values = new valType * [n_times];
   for(int timeii=0;timeii<n_times;timeii++)
   {
     included[timeii].set(syst);
@@ -253,9 +255,9 @@ float Value_List<valType>::mean()const
 
   for (int timeii=0; timeii<n_times; timeii++)
   {
-	for (int trajii=0;trajii<values[timeii].size();trajii++)
+	for (int trajii=0;trajii<show_n_values_i(timeii);trajii++)
 	{
-	 avg += float(values[timeii][trajii])*float(included[timeii](trajii));
+	 avg += float(show_value_i(timeii,trajii))*float((included[timeii])(trajii));
 	 weighting+=int(included[timeii](trajii));
 	}
   }
@@ -277,9 +279,9 @@ float Value_List<valType>::power_mean(float power)const
 
   for (int timeii=0; timeii<n_times; timeii++)
   {
-	for (int trajii=0;trajii<values[timeii].size();trajii++)
+	for (int trajii=0;trajii<show_n_values_i(timeii);trajii++)
 	{
-	 avg += pow(float(values[timeii][trajii]),power)*float(included[timeii](trajii));
+	 avg += pow(float(show_value_i(timeii,trajii)),power)*float(included[timeii](trajii));
 	 weighting+=int(included[timeii](trajii));
 	}
   }
@@ -301,9 +303,9 @@ float Value_List<valType>::variance()const
 
   for (int timeii=0; timeii<n_times; timeii++)
   {
-	for (int trajii=0;trajii<values[timeii].size();trajii++)
+	for (int trajii=0;trajii<show_n_values_i(timeii);trajii++)
 	{
-	 var += pow(float(values[timeii][trajii])*float(included[timeii](trajii))-avg,2.0);
+	 var += pow(float(show_value_i(timeii,trajii))*float(included[timeii](trajii))-avg,2.0);
 	 weighting+=int(included[timeii](trajii));
 	}
   }
@@ -320,12 +322,12 @@ valType Value_List<valType>::max()const
 {
   valType maximum;
 
-  maximum = values[included[0].first_included()];
+  maximum = show_value_i(0,included[0].first_included());
   for (int timeii=0; timeii<n_times; timeii++)
   {
-	for (int trajii=included[timeii].first_included()+1;trajii<values[timeii].size();trajii++)
+	for (int trajii=included[timeii].first_included()+1;trajii<show_n_values_i(timeii);trajii++)
 	{
-		if(included[timeii](trajii)){maximum=(values[timeii][trajii]>maximum?values[timeii][trajii]:maximum);}
+		if(included[timeii](trajii)){maximum=(show_value_i(timeii,trajii)>maximum?show_value_i(timeii,trajii):maximum);}
 	}
   }
   return maximum;
@@ -336,12 +338,12 @@ valType Value_List<valType>::min()const
 {
   valType minimum;
 
-  minimum = values[included[0].first_included()];
+  minimum = show_value_i(0,included[0].first_included());
   for (int timeii=0; timeii<n_times; timeii++)
   {
-	for (int trajii=included[timeii].first_included()+1;trajii<values[timeii].size();trajii++)
+	for (int trajii=included[timeii].first_included()+1;trajii<show_n_values_i(timeii);trajii++)
 	{
-		if(included[timeii](trajii)){minimum=(values[timeii][trajii]>minimum?values[timeii][trajii]:minimum);}
+		if(included[timeii](trajii)){minimum=(show_value_i(timeii,trajii)>minimum?show_value_i(timeii,trajii):minimum);}
 	}
   }
   return minimum;
@@ -364,9 +366,9 @@ void Value_List<valType>::distribution(string filename, float max, int n_bins)co
 
 	for(timeii=0;timeii<n_times;timeii++)
 	{
-		for(trajii=0;trajii<values[timeii].size();trajii++)
+		for(trajii=0;trajii<show_n_values_i(timeii);trajii++)
 		{
-			bin = int(float(values[timeii][trajii])/binsize)-1;
+			bin = int(float(show_value_i(timeii,trajii))/binsize)-1;
 			if(bin>n_bins)bin=n_bins;
 			dist[binii]++;
 			weighting+=int(included[timeii](trajii));
@@ -386,11 +388,11 @@ Value_List<valType> Value_List<valType>::operator * (float multiplier)const
 
 	for(int timeii=0;timeii<n_times;timeii++)
 	{
-		for(int trajii=0;trajii<values[timeii].size();trajii++)
+		for(int trajii=0;trajii<show_n_values_i(timeii);trajii++)
 		{
 			if(included[timeii](trajii))
 			{
-				templist.values[timeii][trajii]*=multiplier;
+				templist.show_value_i(timeii,trajii)*=multiplier;
 			}
 		}
 	}
@@ -419,11 +421,11 @@ Value_List<valType> Value_List<valType>::operator * (const Value_List & multipli
 
   for(int timeii=0;timeii<n_times;timeii++)
   {
-    for(int trajii=0;trajii<values[timeii].size();trajii++)
+    for(int trajii=0;trajii<show_n_values_i();trajii++)
     {
       if(included[timeii](trajii))
       {
-	templist.values[timeii][trajii]*=valType(multiplier.values[timeii][trajii]);
+	templist.show_value_i(timeii,trajii)*=valType(multiplier.show_value_i(timeii,trajii));
       }
     }
   }
@@ -443,7 +445,7 @@ void Value_List<valType>::operator *= (const Value_List & multiplier)
 
 	for(int timeii=0;timeii<n_times;timeii++)
 	{
-		for(int trajii=0;trajii<values[timeii].size();trajii++)
+		for(int trajii=0;trajii<show_n_values_i(timeii);trajii++)
 		{
 			if(included[timeii](trajii))
 			{
@@ -460,7 +462,7 @@ void Value_List<valType>::operator *= (float multiplier)
 {
 	for(int timeii=0;timeii<n_times;timeii++)
 	{
-		for(int trajii=0;trajii<values[timeii].size();trajii++)
+		for(int trajii=0;trajii<show_n_values_i(timeii);trajii++)
 		{
 			if(included[timeii](trajii))
 			{
@@ -478,7 +480,7 @@ Value_List<valType> Value_List<valType>::power(float power)
 
 	for(int timeii=0;timeii<n_times;timeii++)
 	{
-		for(int trajii=0;trajii<values[timeii].size();trajii++)
+		for(int trajii=0;trajii<show_n_values_i(timeii);trajii++)
 		{
 			if(included[timeii](trajii))
 			{
@@ -847,7 +849,7 @@ string Value_List<valType>::write_pdb(int valtime, string file_name_stem, int ti
         exit(1);
     }
 
-    for(int trajii=0;trajii<values[timeii].size();trajii++)
+    for(int trajii=0;trajii<show_n_values_i(timeii);trajii++)
     {
         if (included[timeii](trajii))
         {
@@ -928,8 +930,8 @@ string Value_List<valType>::write_pdb(int valtime, string file_name_stem, int ti
     FILE * pdbfile;
     pdbfile = fopen (filename.c_str(),"w");
 
-    cout<<"\n"<<values[timeii].size()<<"\t"<<timeii;
-    for(int trajii=0;trajii<values[timeii].size();trajii++)
+    cout<<"\n"<<show_n_values_i(timeii)<<"\t"<<timeii;
+    for(int trajii=0;trajii<show_n_values_i(timeii);trajii++)
     {
    //   cout<<"\t"<<included[timeii](trajii);;
         if (included[timeii](trajii))
@@ -986,7 +988,7 @@ string Value_List<valType>::write_pdb(int valtime, string file_name_stem, int ti
     pdbfile = fopen (filename.c_str(),"w");
 
 
-    for(int trajii=0;trajii<values[timeii].size();trajii++)
+    for(int trajii=0;trajii<show_n_values_i(timeii);trajii++)
     {
         if (included[timeii](trajii))
         {
@@ -1072,7 +1074,7 @@ string Value_List<valType>::write_pdb(int valtime, string file_name_stem, int ti
     pdbfile = fopen (filename.c_str(),"w");
 
 
-    for(int trajii=0;trajii<values[timeii].size();trajii++)
+    for(int trajii=0;trajii<show_n_values_i(timeii);trajii++)
     {
         if (included[timeii](trajii))
         {
@@ -1261,7 +1263,7 @@ void Value_List<valType>::percentile_t_list(bool greater, float percentile, Traj
     for(timeii=0; timeii<n_times; timeii++)
     {
       temp_vals.clear();
-      for(trajii=0;trajii<values[timeii].size();trajii++)
+      for(trajii=0;trajii<show_n_values_i(timeii);trajii++)
       {
 	if((included[timeii])(trajii))
 	{
@@ -1345,7 +1347,7 @@ void Value_List<valType>::percentile_t_list(float low_percentile, float high_per
     for(timeii=0; timeii<n_times; timeii++)
     {
       temp_vals.clear();
-      for(trajii=0;trajii<values[timeii].size();trajii++)
+      for(trajii=0;trajii<show_n_values_i(timeii);trajii++)
       {
 	if((included[timeii])(trajii))
 	{
@@ -1390,7 +1392,7 @@ void Value_List<valType>::update_size()
 {
   for(int timeii=0;timeii<n_times;timeii++)
   {
-    if(values[timeii].size()<syst->show_n_trajectories())
+    if(show_n_values_i(timeii)<syst->show_n_trajectories())
     {
       values[timeii].resize(syst->show_n_trajectories());
     }

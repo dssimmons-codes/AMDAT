@@ -38,7 +38,7 @@ class Distance_Neighbor_List: public Neighbor_List, public Analysis_Onetime
     void timekernel2(int timeii);
     void listkernel(Trajectory *, int, int, int);
     void listkernel2(Trajectory *, Trajectory *, int, int, int);
-    void postprocess_list(){};
+    void postprocess_list();
     
     void write(string){};
     void write(ofstream& output)const{};

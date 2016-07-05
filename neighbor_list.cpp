@@ -15,17 +15,18 @@ Neighbor_List::Neighbor_List()
 {
   syst=0;
   included = new Boolean_List[1];
+  time_conversion = new int [1];
+  defined_times = new bool [1];
+  for(int timeii=0;timeii<n_times;timeii++)
+  {
+    included[timeii].set(syst);
+    time_conversion[timeii]=0;
+  }
 }
 
-Neighbor_List::Neighbor_List(const Neighbor_List& copy)
+Neighbor_List::Neighbor_List(const Neighbor_List& copy):Value_List<int>(copy)
 {
-  syst=copy.syst;
-  n_times=copy.n_times;
-  included = new Boolean_List [n_times];
-  for(int timeii=0; timeii<n_times; timeii++)
-  {
-    included[timeii]=copy.included[timeii];
-  }
+  
   neighbors=copy.neighbors;
   computed_times=copy.computed_times;
 }
@@ -35,14 +36,8 @@ Neighbor_List Neighbor_List::operator=(const Neighbor_List& copy)
 {
   if(this!=&copy)
   {
-    delete [] included;
-    syst=copy.syst;
-    n_times=copy.n_times;
-    included = new Boolean_List [n_times];
-    for(int timeii=0; timeii<n_times; timeii++)
-    {
-      included[timeii]=copy.included[timeii];
-    }
+
+    Value_List::operator=(copy);
     neighbors=copy.neighbors;
     computed_times=copy.computed_times;
     
@@ -53,14 +48,11 @@ Neighbor_List Neighbor_List::operator=(const Neighbor_List& copy)
 
 Neighbor_List::~Neighbor_List()
 {
-   delete [] included;
 }
 
 
-Neighbor_List::Neighbor_List(System * sys)
+Neighbor_List::Neighbor_List(System * sys):Value_List<int>(sys)
 {
-  syst=sys;
-  n_times = syst->show_n_timesteps();
   neighbors.resize(n_times);
   for(int timeii=0;timeii<n_times;timeii++)
   {
@@ -107,4 +99,27 @@ void Neighbor_List::update_size()
       neighbors[timeii].resize(syst->show_n_trajectories());
     }
   }
+}
+
+
+
+
+vector<Trajectory*> Neighbor_List::persistent_neighbors(int trajii, int time1)
+{
+  
+  vector<Trajectory*> temp;
+  
+  if(computed_times[time1]&&included[time1](trajii))
+  {
+    temp=neighbors[time1][trajii];
+  }
+  
+  return temp;
+}
+
+
+
+vector<Trajectory*> persistent_neighbors(int trajii, int time1, int time2)
+{
+  
 }

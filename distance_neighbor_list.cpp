@@ -57,7 +57,8 @@ Distance_Neighbor_List Distance_Neighbor_List::operator=(const Distance_Neighbor
   
   if(this!=&copy)
   {
-    delete [] included;
+    Neighbor_List::operator=(copy);
+    
     for(typeii=0;typeii<n_atomtypes;typeii++)
     {
       delete [] sigmatrix[typeii];
@@ -67,13 +68,8 @@ Distance_Neighbor_List Distance_Neighbor_List::operator=(const Distance_Neighbor
     
     n_atomtypes=copy.n_atomtypes;
     threshold=copy.threshold;
-    system=syst=copy.system;
-    n_times=copy.n_times;
-    included = new Boolean_List [n_times];
-    for(int timeii=0;timeii<n_times;timeii++)
-    {
-      included[timeii]=copy.included[timeii];
-    }
+    system=syst;
+    
   
     sigmatrix = new float* [n_atomtypes];
     for(typeii=0;typeii<n_atomtypes;typeii++)
@@ -91,8 +87,6 @@ Distance_Neighbor_List Distance_Neighbor_List::operator=(const Distance_Neighbor
     }
     
   }
-  neighbors=copy.neighbors;
-  computed_times=copy.computed_times;
   
 
   return *this;
@@ -116,12 +110,8 @@ Distance_Neighbor_List::Distance_Neighbor_List(System* sys, float thresh, string
   
   threshold=thresh;
   system=sys;
-  n_times=system->show_n_timesteps();
-  included = new Boolean_List [n_times];
-  for(int timeii=0;timeii<n_times;timeii++)
-  {
-    included[timeii].set(sys);
-  }
+  
+  
   allocate_sig_matrix(sigmatrixname);
   computed_times.clear();
   
@@ -305,6 +295,26 @@ void Distance_Neighbor_List::allocate_sig_matrix(string sig_file)
         exit(1);
     }
     file.close();
+}
 
 
+postprocess_list()
+{
+  values.resize(neighbors.size());
+  int timeii,trajii;
+  
+  for(timeii=0;timeii<neighbors.size(),timeii++)
+  {
+    if(computed_times[timeii])
+    {
+      values[timeii].resize(neighbors[timeii].size());
+      for(trajii=0;trajii<neighbors[timeii].size();trajii++)
+      {
+	if included[timeii](trajii)
+	{
+	  values=neighbors[timeii][trajii].size();
+	}
+      }
+    }
+  }
 }
