@@ -1,7 +1,7 @@
 system
 xyz_log
 ./testfiles/traj.xyz ./testfiles/log.lammps
-exponential 1 77 1.2 0 0 .01
+exponential 100 77 1.2 0 0 .01
 polymer 50
 1
 32
@@ -13,8 +13,6 @@ displacement_list displacement_stats.dat displacement_list 70
 list all
 
 delete_valuelist displacement_list
-
-exit
 
 ngp ngp.dat
 list all
@@ -28,20 +26,46 @@ list all
 find_fast fast fast_count_list.dat
 list all
 
+create_distance_neighborlist dneighbors 1.5 ./testfiles/sigma_matrix 70
+list all
+
+value_statistics neighbors_d.dat dneighbors 4
+
+persistent_neighbors 70 dneighbors p_dneighbors per_dneighbors centroid
+list fast
+
+size_statistics persistent_dneighbors.dat p_dneighbors 4
+
+create_voronoi_neighborlist vneighbors 70
+list all
+
+value_statistics neighbors_v.dat vneighbors 4
+
+persistent_neighbors 70 vneighbors p_vneighbors per_vneighbors centroid
+list fast
+
+size_statistics persistent_vneighbors.dat p_vneighbors 4
+
+persistent_neighbors 70 vneighbors p_allneighbors per_allneighbors centroid
+list all
+
+size_statistics persistent_allneighbors.dat p_allneighbors 4
+
+exit
+
+
 create_distance_neighborlist neighbors 1.2 ./testfiles/sigma_matrix 70
 list all
 
 persistent_neighbors 70 neighbors p_neighbors per_neighbors centroid
 list fast
 
-size_statistics persistent_neighbors.dat p_neighbors 3
+size_statistics persistent_neighbors.dat p_neighbors 4
 
 comover_multibodies null 70 1.2 ./testfiles/sigma_matrix comovermbs comover centroid
 list fast
 
-size_statistics comover_statistics.dat comovermbs 3
-
-exit
+size_statistics comover_statistics.dat comovermbs 4
 
 string_multibodies null 70 .6 ./testfiles/sigma_matrix stringmbs string centroid
 list fast

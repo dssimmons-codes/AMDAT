@@ -88,7 +88,9 @@ protected:
   string write_pdb(int, string, int, string*,valType)const;
   string write_pdb(int, string, int,valType)const;
   void write_data_file(string filename)const;
+  virtual void write_statistics(string filename, int n_moments)const{};
 
+  
   void construct_t_list(bool, valType,Trajectory_List*);
   void construct_t_list(valType, valType,Trajectory_List*);
   void percentile_t_list(bool, float,Trajectory_List*);
@@ -128,9 +130,9 @@ Value_List<valType>::Value_List(System * sys)
     included[timeii].set(syst);
   }
 
-  time_conversion = new int [syst->show_n_timesteps()];
-  defined_times = new bool [syst->show_n_timesteps()];
-  for(int timeii=0;syst->show_n_timesteps();timeii++)
+  time_conversion = new int [n_times];
+  defined_times = new bool [n_times];
+  for(int timeii=0;timeii<n_times;timeii++)
   {
     time_conversion[timeii]=timeii;
     defined_times[timeii]=1;

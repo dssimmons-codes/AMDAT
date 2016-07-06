@@ -7,6 +7,7 @@
 #include "neighbor_list.h"
 #include "analysis_onetime.h"
 #include "voro++.hh"
+#include "container.hh"
 
 #ifndef VORONOI_NEIGHBOR_LIST
 #define VORONOI_NEIGHBOR_LIST
@@ -16,7 +17,7 @@ namespace std
 
 class Voronoi_Neighbor_List: public Neighbor_List, public Analysis_Onetime
 {
-    container * voronoi;
+    voro::container * voronoi;
     int n_x,n_y,n_z;
 
   public:

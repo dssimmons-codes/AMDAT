@@ -9,6 +9,7 @@
 #include <sstream>
 #include "voronoi_neighbor_list.h"
 #include "voro++.hh"
+#include "container.hh"
 
 using namespace std;
 
@@ -105,45 +106,49 @@ Voronoi_Neighbor_List::Voronoi_Neighbor_List(System* sys, int firsttime, int las
 }
 
 
+
 void Voronoi_Neighbor_List::timekernel2(int timeii)
 {
   float x_min,x_max,y_min,y_max,z_min,z_max;
-  Coordinate * boundaries;
   int trajii, neighii;
+  int n_x,n_y,n_z;
   int n_trajectories;
   vector<vector<int>> voronoi_neighbors;
+  float n_traj;
   
   if(computed_times[timeii])
   {
-    boundaries=system->boundaries();
+    n_traj=trajectory_list->show_n_trajectories(timeii);
+    
+    n_x=n_y=n_z=int(pow(n_traj/8.0,1.0/3.0));
  
     n_trajectories=system->show_n_trajectories();
     
-    x_min=boundaries[0].show_x;
-    y_min=boundaries[0].show_y;
-    z_min=boundaries[0].show_z;
-    x_max=boundaries[1].show_x;
-    y_max=boundaries[1].show_y;
-    z_max=boundaries[1].show_z;
+    x_min=(system->boundaries())[0].show_x();
+    y_min=(system->boundaries())[0].show_y();
+    z_min=(system->boundaries())[0].show_z();
+    x_max=(system->boundaries())[1].show_x();
+    y_max=(system->boundaries())[1].show_y();
+    z_max=(system->boundaries())[1].show_z();
     
-    voronoi = new container(x_min,x_max,y_min,y_max,z_min,z_max,n_x,n_y,n_z,
-                  true,true,true,8);
+    voronoi = new voro::container(x_min,x_max,y_min,y_max,z_min,z_max,n_x,n_y,n_z,true,true,true,8);
 		  
     
    
     trajectory_list->listloop(this,0, timeii, 0);
     
-    con.print_custom("%i %n","packing.custom2");
+    voronoi->print_custom("%i %n","packing.custom2");
     
-    voronoi_neighbors=voronoi.get_neighList();
+    voronoi_neighbors=voronoi->get_neighList();
     
     for(trajii=0;trajii<n_trajectories;trajii++)
     {
       if((included[timeii])(trajii))
       {
-	for(neighii=0;neighii<voronoi_neighbors[trajii].size(),neighii++)
+	for(neighii=0;neighii<voronoi_neighbors[trajii].size();neighii++)
 	{
 	  neighbors[timeii][trajii].push_back(system->show_trajectory(voronoi_neighbors[trajii][neighii]));
+	  
 	}
       }
     }
@@ -161,24 +166,25 @@ void Voronoi_Neighbor_List::listkernel(Trajectory* current_trajectory, int timeg
   (included[thisii])(trajectory1ID,1);
   position=current_trajectory->show_coordinate(thisii);
   
-  voronoi->put(trajectory1ID,current_trajectory->position.show_x(),position.show_y(),position.show_z());
+  voronoi->put(trajectory1ID,position.show_x(),position.show_y(),position.show_z());
+ 
 }
 
-postprocess_list()
+void Voronoi_Neighbor_List::postprocess_list()
 {
   values.resize(neighbors.size());
   int timeii,trajii;
   
-  for(timeii=0;timeii<neighbors.size(),timeii++)
+  for(timeii=0;timeii<neighbors.size();timeii++)
   {
     if(computed_times[timeii])
     {
       values[timeii].resize(neighbors[timeii].size());
       for(trajii=0;trajii<neighbors[timeii].size();trajii++)
       {
-	if included[timeii](trajii)
+	if(included[timeii](trajii))
 	{
-	  values=neighbors[timeii][trajii].size();
+	  values[timeii][trajii]=neighbors[timeii][trajii].size();
 	}
       }
     }

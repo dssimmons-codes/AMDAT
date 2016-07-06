@@ -195,6 +195,7 @@ class Control
     void crosscorrelate_value_lists();
     void autocorrelate_value_list();
     void remove_valuelist();		//allows user to delete a value_list
+    void value_statistics();		//alows user to write value list statistics to file
     void write_single_particle();	//write single trajectory to file as simple list of coordinates
     void find_edge();
     void unsteady_velocity();
@@ -209,6 +210,7 @@ class Control
     void multibody_size_statistics();
     
     void create_distance_neighborlist();	//create a neighbor list based on a distance threshold
+    void create_voronoi_neighborlist();		//create a neighbor list based on voronoi tesselation
     void remove_neighborlist();
     void compute_persistent_neighbors();	//create multibody lists from particles that remain in one anothers' neighbor lists
     

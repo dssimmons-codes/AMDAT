@@ -20,7 +20,7 @@ namespace std
   
 
   
-class Neighbor_List: public Value_List<int>
+class Neighbor_List: public Value_List<float>
 {
   protected:
     vector<vector<vector<Trajectory*>>> neighbors;	//indices are time, base trajectory, neighbor trajectory
@@ -37,7 +37,7 @@ class Neighbor_List: public Value_List<int>
     
     Neighbor_List(System*sys);
     
-    bool is_neighbor(int timeii, int trajii, Trajectory* trajcheck)const;	//returns true of trajcheck is a neighbor of trajectory indexed by trajii at time timeii; false otherwise
+    bool is_neighbor(int timeii, int trajii, Trajectory* trajcheck)const;	//returns true if trajcheck is a neighbor of trajectory indexed by trajii at time timeii; false otherwise
 
 
     //Not yet implemented
@@ -47,6 +47,8 @@ class Neighbor_List: public Value_List<int>
     
     void neighborloop(Analysis* analysis, int timii, int trajii){};
     int show_n_neighbors(int timeii, int trajii)const{return neighbors[timeii][trajii].size();};	//returns the number of neighbors for a given trajectory
+    
+    void write_statistics(string filename, int n_moments)const;
     
 };
 }

@@ -62,6 +62,7 @@
 #include "comover_multibodies.h"
 #include "relative_displacement_strings.h"
 #include "distance_neighbor_list.h"
+#include "voronoi_neighbor_list.h"
 #include "persistent_neighbors.h"
 
 using namespace std;
@@ -258,6 +259,10 @@ int Control::execute_commands(int iIndex, int fIndex)
     {
 	create_distance_neighborlist();
     }
+        else if(command == "create_voronoi_neighborlist")
+    {
+	create_voronoi_neighborlist();
+    }
     else if(command == "delete_neighborlist")
     {
 	remove_neighborlist();
@@ -269,6 +274,10 @@ int Control::execute_commands(int iIndex, int fIndex)
     else if(command == "delete_valuelist")
     {
       remove_valuelist();
+    }
+    else if (command == "value_statistics")
+    {
+      value_statistics();
     }
     else if (command == "msd")
     {
@@ -1399,12 +1408,54 @@ void Control::create_distance_neighborlist()
   (*dnlist_pointer)=dnlist;
   add_neighborlist(dnlist_pointer,nlist_name);
   
+  add_value_list(dnlist_pointer,nlist_name);
+  
   
 }
 
 
 /*--------------------------------------------------------------------------------*/
 
+
+void Control::create_voronoi_neighborlist()
+{
+  Voronoi_Neighbor_List * vnlist_pointer;
+  vnlist_pointer = new Voronoi_Neighbor_List;
+  string filename="";
+  string nlist_name, runline;
+  int firsttime, lasttime;
+  firsttime=lasttime= -1;
+  
+  nlist_name=args[1];
+  if(n_args>2)
+  {
+    firsttime=atoi(args[2].c_str());
+  }
+  if(n_args>3)
+  {
+    lasttime=atoi(args[3].c_str());
+  }
+  
+  
+  runline = read_line();
+  cout <<"\n"<< runline;
+  
+  Voronoi_Neighbor_List vnlist(analyte, firsttime, lasttime);
+  cout << "\nBuilding voronoi neighbor list.";cout.flush();
+  start = time(NULL);
+  run_analysis(&vnlist,runline); 
+  finish = time(NULL);
+  cout << "\nBuilt voronoi neighbor lists in " << finish-start<<" seconds."<<endl;
+
+  
+  (*vnlist_pointer)=vnlist;
+  add_neighborlist(vnlist_pointer,nlist_name);
+  add_value_list(vnlist_pointer,nlist_name);
+  
+}
+
+
+/*--------------------------------------------------------------------------------*/
 
 
 void Control::remove_neighborlist()
@@ -4384,4 +4435,20 @@ void Control::multibody_size_statistics()
   finish = time(NULL);
   cout << "\nCalculated multibody size statistics in " << finish-start<<" seconds."<<endl;
   size_statistics.write(filename);
+}
+
+
+void Control::value_statistics()
+{
+  int n_moments;
+  string filename, vlist_name;
+  Value_List<float> * vlist;
+  
+  filename = args[1];
+  vlist_name=args[2];
+  n_moments = atoi(args[3].c_str());
+  
+  vlist = find_value_list(vlist_name);
+  
+  vlist->write_statistics(filename, n_moments);
 }

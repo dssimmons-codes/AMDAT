@@ -298,21 +298,21 @@ void Distance_Neighbor_List::allocate_sig_matrix(string sig_file)
 }
 
 
-postprocess_list()
+void Distance_Neighbor_List::postprocess_list()
 {
   values.resize(neighbors.size());
   int timeii,trajii;
   
-  for(timeii=0;timeii<neighbors.size(),timeii++)
+  for(timeii=0;timeii<neighbors.size();timeii++)
   {
     if(computed_times[timeii])
     {
       values[timeii].resize(neighbors[timeii].size());
       for(trajii=0;trajii<neighbors[timeii].size();trajii++)
       {
-	if included[timeii](trajii)
+	if(included[timeii](trajii))
 	{
-	  values=neighbors[timeii][trajii].size();
+	  values[timeii][trajii]=neighbors[timeii][trajii].size();
 	}
       }
     }

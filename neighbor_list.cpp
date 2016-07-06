@@ -4,6 +4,7 @@
 
 
 #include "neighbor_list.h"
+#include "version.h"
 
 
 using namespace std;
@@ -24,7 +25,7 @@ Neighbor_List::Neighbor_List()
   }
 }
 
-Neighbor_List::Neighbor_List(const Neighbor_List& copy):Value_List<int>(copy)
+Neighbor_List::Neighbor_List(const Neighbor_List& copy):Value_List<float>(copy)
 {
   
   neighbors=copy.neighbors;
@@ -36,8 +37,7 @@ Neighbor_List Neighbor_List::operator=(const Neighbor_List& copy)
 {
   if(this!=&copy)
   {
-
-    Value_List::operator=(copy);
+    Value_List<float>::operator=(copy);
     neighbors=copy.neighbors;
     computed_times=copy.computed_times;
     
@@ -51,7 +51,7 @@ Neighbor_List::~Neighbor_List()
 }
 
 
-Neighbor_List::Neighbor_List(System * sys):Value_List<int>(sys)
+Neighbor_List::Neighbor_List(System * sys):Value_List<float>(sys)
 {
   neighbors.resize(n_times);
   for(int timeii=0;timeii<n_times;timeii++)
@@ -76,7 +76,6 @@ bool Neighbor_List::is_neighbor(int timeii, int trajii, Trajectory* trajcheck)co
   else if(!(included[timeii])(trajii))
   {
     cout<<"\nWarning: trajectory " << trajii << " in trajectory list is not included in the neighbor list.";
-    check=false;
   }
   else
   {
@@ -87,18 +86,6 @@ bool Neighbor_List::is_neighbor(int timeii, int trajii, Trajectory* trajcheck)co
   }
   
   return check;
-}
-
-
-void Neighbor_List::update_size()
-{
-  for(int timeii=0;timeii<n_times;timeii++)
-  {
-    if(neighbors[timeii].size()<syst->show_n_trajectories())
-    {
-      neighbors[timeii].resize(syst->show_n_trajectories());
-    }
-  }
 }
 
 
@@ -119,7 +106,89 @@ vector<Trajectory*> Neighbor_List::persistent_neighbors(int trajii, int time1)
 
 
 
-vector<Trajectory*> persistent_neighbors(int trajii, int time1, int time2)
+vector<Trajectory*> Neighbor_List::persistent_neighbors(int trajii, int time1, int time2)
 {
+  
+}
+
+
+void Neighbor_List::write_statistics(string filename, int n_moments)const
+{
+  int timeii, trajii, binii;
+  int maximum = max();
+  int n_values=0;
+  
+  int sizeii, momentii;
+  float* moments;
+  moments=new float [n_moments];
+  
+  cout << "\nWriting value dist and statistics to file.";
+  ofstream output(filename.c_str());
+  output << "Value list statistics created by AMDAT v." << VERSION << "\n";
+   
+  vector<int> dist;
+  
+  dist.resize(maximum+1,0);
+  
+  for(timeii=0;timeii<n_times;timeii++)
+  {
+    if(computed_times[timeii])
+    {
+      n_values+=included->show_n_included();
+      for(trajii=0;trajii<values[timeii].size();trajii++)
+      {
+	if(included[timeii](trajii))
+	{
+	  dist[values[timeii][trajii]]++;
+	}
+      }
+    }
+  }
+  
+  
+  for(momentii=0;momentii<n_moments;momentii++)
+  {
+    moments[momentii]=0;
+  }
+  
+  
+  for(binii=0;binii<dist.size();binii++)
+  {
+    moments[0]+=dist[binii];
+    for(momentii=1;momentii<n_moments;momentii++)
+    {
+      moments[momentii]+=pow(float(binii),float(momentii))*float(dist[binii])/float(n_values);
+    }
+  }
+  
+  output << "Value\t";
+  for(binii=0;binii<dist.size();binii++)
+  {
+    output << binii << "\t";
+  }
+  
+    output<<"\nFrequency\t";
+  
+  for(binii=0;binii<dist.size();binii++)
+  {
+    
+    output<<float(dist[binii])/float(n_values)<<"\t";
+  }
+  
+  output<<"\n\nMoment\t";
+  
+  for(momentii=0;momentii<n_moments;momentii++)
+  {
+    output<<momentii<<"\t";
+  }
+  
+  output << "\nValue\t";
+  
+  for(momentii=0;momentii<n_moments;momentii++)
+  {
+    output<<moments[momentii]<<"\t";
+  }
+  
+  output << "\n\nTotal_Values\t" << n_values;
   
 }
