@@ -272,13 +272,14 @@ void Molecule::ID_to_atoms()
 
 
 /*return multibody consisting of all atoms in molecule*/
-Multibody Molecule::create_multibody(Coordinate boxsize)const
+Multibody Molecule::create_multibody(System * sys, Coordinate boxsize)const
 {
   int typeii,atomii;
   //int bodyii=0;
   
   Multibody multibody(total_atoms);
   multibody.set_reftime(0);
+  multibody.set(sys);
   for(typeii=0;typeii<n_atomtypes;typeii++)
   {
     for(atomii=0;atomii<n_atoms[typeii];atomii++)
@@ -295,13 +296,14 @@ Multibody Molecule::create_multibody(Coordinate boxsize)const
 
 
 /*return multibody consisting of all atoms of type typeii in molecule*/
-Multibody Molecule::create_multibody(int typeii, Coordinate boxsize)const
+Multibody Molecule::create_multibody(System * sys, int typeii, Coordinate boxsize)const
 {
   int atomii;
   int bodyii=0;
   
   Multibody multibody(n_atoms[typeii]);
    multibody.set_reftime(0);
+   multibody.set(sys);
  for(atomii=0;atomii<n_atoms[typeii];atomii++)
   {
     //multibody.set(bodyii,&(atoms[typeii][atomii]));
@@ -317,13 +319,14 @@ Multibody Molecule::create_multibody(int typeii, Coordinate boxsize)const
 
 
 /*return multibody consisting of atoms specified by a list of types and indices*/
-Multibody Molecule::create_multibody(int n_bodies, int * typeii, int * index, Coordinate boxsize)const
+Multibody Molecule::create_multibody(System * sys, int n_bodies, int * typeii, int * index, Coordinate boxsize)const
 {
   int atomii;
   int bodyii=0;
   
   Multibody multibody(n_bodies);
   multibody.set_reftime(0);
+  multibody.set(sys);
   for(atomii=0;atomii<n_bodies;atomii++)
   {
     //multibody.set(bodyii,&(atoms[typeii[atomii]][index[atomii]]));

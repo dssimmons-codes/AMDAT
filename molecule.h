@@ -54,9 +54,9 @@ class Molecule
     
     void ID_to_atoms();		//Pass unique ID of molecule down to constituent atoms
     
-    Multibody create_multibody(Coordinate boxsize) const;	//return multibody consisting of all atoms in molecule, requires box size at t=0
-    Multibody create_multibody(int typeii, Coordinate boxsize) const;	//return multibody consisting of all atoms of type typeii in molecule, requires box size at t=0
-    Multibody create_multibody(int n_bodies, int * typeii, int * index, Coordinate boxsize) const; //return multibody consisting of atoms specified by a list of types and indices, requires box size at t=0
+    Multibody create_multibody(System * sys, Coordinate boxsize) const;	//return multibody consisting of all atoms in molecule, requires box size at t=0
+    Multibody create_multibody(System * sys, int typeii, Coordinate boxsize) const;	//return multibody consisting of all atoms of type typeii in molecule, requires box size at t=0
+    Multibody create_multibody(System * sys, int n_bodies, int * typeii, int * index, Coordinate boxsize) const; //return multibody consisting of atoms specified by a list of types and indices, requires box size at t=0
 };
 
 }
