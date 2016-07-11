@@ -24,7 +24,7 @@ bin_static_analysis.h composition.h n_fold_order_parameter.h trajectory_list_dec
 mean_velocity_unsteady.h mean_unsteady_displacement.h radial_distribution_function.h bond_autocorrelation_function.h orientational_correlation.h size_statistics.h provisional_multibodies.h dynamic_cluster_multibodies.h \
 string_multibodies.h comover_multibodies.h relative_displacement_strings.h neighbor_list.h distance_neighbor_list.h persistent_neighbors.h voronoi_neighbor_list.h
 
-## Voronoi needs to be compiled at ./voro++-0.4.6/ level before AMDAT compilation
+## Voronoi needs to be compiled at ./voro++-0.4.6/ level before compiling AMDAT
 VPATH = ./voro++-0.4.6/src
 
 ifeq ($(SERVER),TACC)
