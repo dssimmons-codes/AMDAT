@@ -8,28 +8,25 @@
 
 #include "multibody.h"
 #include "dynamic_cluster_multibodies.h"
+#include "neighbor_list.h"
 
 namespace std{
   
 class Relative_Displacement_Strings: public Dynamic_Cluster_Multibodies
 {
-    float ** sigmatrix;		//stores particle sizes
-    int n_atomtypes;
+    Neighbor_List * neighbor_list;
     
-    float neighbor_threshold;
-    float replacement_threshold;
+    float threshold;
         
-    void allocate_sig_matrix(string);
     bool clustered_check(Trajectory*, Trajectory*, int, int);
     Coordinate get_imageoffset(Trajectory*, Trajectory*, int, int);
   public:
     
     Relative_Displacement_Strings();
     Relative_Displacement_Strings(const Relative_Displacement_Strings&);
-    ~Relative_Displacement_Strings();
     Relative_Displacement_Strings operator=(const Relative_Displacement_Strings&);
     
-    Relative_Displacement_Strings(System * syst, int tgap, float n_thresh, float r_thresh, string sigmatrixname);
+    Relative_Displacement_Strings(System * syst, int tgap, Neighbor_List* nlist, float thresh);
   
 };
   

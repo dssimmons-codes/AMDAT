@@ -39,6 +39,7 @@ class Neighbor_List: public Value_List<float>
     
     bool is_neighbor(int timeii, int trajii, Trajectory* trajcheck)const;	//returns true if trajcheck is a neighbor of trajectory indexed by trajii at time timeii; false otherwise
 
+    vector<Trajectory*> show_neighbors(int timeii, int trajii)const;
 
     //Not yet implemented
     vector<Trajectory*> persistent_neighbors(int trajii, int time1);	//returns vector of trajectories in a particle's neighborlist at a given time

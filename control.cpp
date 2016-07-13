@@ -3228,18 +3228,18 @@ void Control::relative_displacement_strings()
 {
   string runline;
   int timegap;
-  string filename, sigmatrixfilename, setname, trajtypename, centertypename;
-  float n_threshold,r_threshold;
+  string filename, setname, trajtypename, centertypename, nlist_name;
+  float threshold;
   bool centertype;
   
-  filename = args[1];
-  timegap=atoi(args[2].c_str());
-  n_threshold=atof(args[3].c_str());
-  r_threshold=atof(args[4].c_str());
-  sigmatrixfilename=args[5];
-  setname=args[6];
-  trajtypename=args[7];
-  centertypename=args[8];
+  Neighbor_List * neighborlist;
+  
+  timegap=atoi(args[1].c_str());
+  threshold=atof(args[2].c_str());
+  nlist_name=args[3];
+  setname=args[4];
+  trajtypename=args[5];
+  centertypename=args[6];
   
   if(centertypename == "centroid")
   {
@@ -3255,12 +3255,14 @@ void Control::relative_displacement_strings()
     exit (0);
   }
   
+  neighborlist=find_neighborlist(nlist_name);
+  
   runline = read_line();
   cout <<"\n"<< runline;
   cout<<"\nFinding comovers.";
   
   start = time(NULL);
-  Relative_Displacement_Strings rds(analyte, timegap, n_threshold, r_threshold, sigmatrixfilename);
+  Relative_Displacement_Strings rds(analyte, timegap, neighborlist,threshold);
   run_analysis(&rds, runline);
   finish = time(NULL);
   cout << "\nFound strings in " << finish-start<<" seconds.\n";

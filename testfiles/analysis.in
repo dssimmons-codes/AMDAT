@@ -1,47 +1,10 @@
 system
 xyz_log
 ./testfiles/traj.xyz ./testfiles/log.lammps
-exponential 1 77 1.2 0 0 .01
+exponential 10 77 1.2 0 0 .01
 polymer 50
 1
 32
-
-
-create_multibodies bead1 bead centroid species_atomlist polymer 1 0
-create_multibodies bead2 bead centroid species_atomlist polymer 1 1
-create_multibodies bead3 bead centroid species_atomlist polymer 1 2
-create_multibodies bead4 bead centroid species_atomlist polymer 1 3
-create_multibodies bead5 bead centroid species_atomlist polymer 1 4
-create_multibodies bead6 bead centroid species_atomlist polymer 1 5
-create_multibodies bead7 bead centroid species_atomlist polymer 1 6
-create_multibodies bead8 bead centroid species_atomlist polymer 1 7
-create_multibodies bead9 bead centroid species_atomlist polymer 1 8
-create_multibodies bead10 bead centroid species_atomlist polymer 1 9 
-create_multibodies bead11 bead centroid species_atomlist polymer 1 10
-create_multibodies bead12 bead centroid species_atomlist polymer 1 11
-create_multibodies bead13 bead centroid species_atomlist polymer 1 12
-create_multibodies bead14 bead centroid species_atomlist polymer 1 13
-create_multibodies bead15 bead centroid species_atomlist polymer 1 14
-create_multibodies bead16 bead centroid species_atomlist polymer 1 15
-create_multibodies bead17 bead centroid species_atomlist polymer 1 16
-create_multibodies bead18 bead centroid species_atomlist polymer 1 17
-create_multibodies bead19 bead centroid species_atomlist polymer 1 18
-create_multibodies bead20 bead centroid species_atomlist polymer 1 19
-create_multibodies bead21 bead centroid species_atomlist polymer 1 20
-create_multibodies bead22 bead centroid species_atomlist polymer 1 21
-create_multibodies bead23 bead centroid species_atomlist polymer 1 22
-create_multibodies bead24 bead centroid species_atomlist polymer 1 23
-create_multibodies bead25 bead centroid species_atomlist polymer 1 24
-create_multibodies bead26 bead centroid species_atomlist polymer 1 25
-create_multibodies bead27 bead centroid species_atomlist polymer 1 26
-create_multibodies bead28 bead centroid species_atomlist polymer 1 27
-create_multibodies bead29 bead centroid species_atomlist polymer 1 28
-create_multibodies bead30 bead centroid species_atomlist polymer 1 29
-create_multibodies bead31 bead centroid species_atomlist polymer 1 30
-create_multibodies bead32 bead centroid species_atomlist polymer 1 31
-
-combine_multibody_lists beads bead1 bead2 bead3 bead4 bead5 bead6 bead7 bead8 bead9 bead10 bead11 bead12 bead13 bead14 bead15 bead16 bead17 bead18 bead19 bead20 bead21 bead22 bead23 bead24 bead25 bead26 bead27 bead28 bead29 bead30 bead31 bead32
-combine_trajectories beads bead1 bead2 bead3 bead4 bead5 bead6 bead7 bead8 bead9 bead10 bead11 bead12 bead13 bead14 bead15 bead16 bead17 bead18 bead19 bead20 bead21 bead22 bead23 bead24 bead25 bead26 bead27 bead28 bead29 bead30 bead31 bead32
 
 
 create_list all
@@ -64,6 +27,33 @@ list all
 find_fast fast fast_count_list.dat
 list all
 
+string_multibodies null 70 .6 ./testfiles/sigma_matrix stringmbs string centroid
+list fast
+
+size_statistics string_statistics.dat stringmbs 3
+
+create_voronoi_neighborlist vneighbors 70
+list all
+
+value_statistics neighbors_v.dat vneighbors 4
+
+persistent_neighbors 70 vneighbors p_neighbors per_neighbors centroid
+list fast
+
+size_statistics p_neighbors.dat p_neighbors 4
+
+relative_displacement_strings 70 1 vneighbors rdstrings rdstringtraj centroid
+list fast
+
+size_statistics rdstrings.dat rdstrings 3
+
+relative_displacement_strings 70 1 vneighbors rdstrings_all rdstringtraj_all centroid
+list all
+
+size_statistics rdstrings_all.dat rdstrings_all 3
+
+exit
+
 create_distance_neighborlist dneighbors 1.5 ./testfiles/sigma_matrix 70
 list all
 
@@ -74,20 +64,13 @@ list fast
 
 size_statistics persistent_dneighbors.dat p_dneighbors 4
 
-create_voronoi_neighborlist vneighbors 70
-list all
 
-value_statistics neighbors_v.dat vneighbors 4
 
 persistent_neighbors 70 vneighbors p_vneighbors per_vneighbors centroid
 list fast
 
 size_statistics persistent_vneighbors.dat p_vneighbors 4
 
-persistent_neighbors 70 vneighbors p_allneighbors per_allneighbors centroid
-list all
-
-size_statistics persistent_allneighbors.dat p_allneighbors 4
 
 exit
 
@@ -104,10 +87,7 @@ list fast
 
 size_statistics comover_statistics.dat comovermbs 4
 
-string_multibodies null 70 .6 ./testfiles/sigma_matrix stringmbs string centroid
-list fast
 
-size_statistics string_statistics.dat stringmbs 3
 
 threshold_multibody_list smstringmbs stringmbs greater 2
 
@@ -171,6 +151,42 @@ strings strings_mbead2.dat 70 .6 ./testfiles/sigma_matrix_mbead stringlist
 list fastmbead
 
 exit
+create_multibodies bead1 bead centroid species_atomlist polymer 1 0
+create_multibodies bead2 bead centroid species_atomlist polymer 1 1
+create_multibodies bead3 bead centroid species_atomlist polymer 1 2
+create_multibodies bead4 bead centroid species_atomlist polymer 1 3
+create_multibodies bead5 bead centroid species_atomlist polymer 1 4
+create_multibodies bead6 bead centroid species_atomlist polymer 1 5
+create_multibodies bead7 bead centroid species_atomlist polymer 1 6
+create_multibodies bead8 bead centroid species_atomlist polymer 1 7
+create_multibodies bead9 bead centroid species_atomlist polymer 1 8
+create_multibodies bead10 bead centroid species_atomlist polymer 1 9 
+create_multibodies bead11 bead centroid species_atomlist polymer 1 10
+create_multibodies bead12 bead centroid species_atomlist polymer 1 11
+create_multibodies bead13 bead centroid species_atomlist polymer 1 12
+create_multibodies bead14 bead centroid species_atomlist polymer 1 13
+create_multibodies bead15 bead centroid species_atomlist polymer 1 14
+create_multibodies bead16 bead centroid species_atomlist polymer 1 15
+create_multibodies bead17 bead centroid species_atomlist polymer 1 16
+create_multibodies bead18 bead centroid species_atomlist polymer 1 17
+create_multibodies bead19 bead centroid species_atomlist polymer 1 18
+create_multibodies bead20 bead centroid species_atomlist polymer 1 19
+create_multibodies bead21 bead centroid species_atomlist polymer 1 20
+create_multibodies bead22 bead centroid species_atomlist polymer 1 21
+create_multibodies bead23 bead centroid species_atomlist polymer 1 22
+create_multibodies bead24 bead centroid species_atomlist polymer 1 23
+create_multibodies bead25 bead centroid species_atomlist polymer 1 24
+create_multibodies bead26 bead centroid species_atomlist polymer 1 25
+create_multibodies bead27 bead centroid species_atomlist polymer 1 26
+create_multibodies bead28 bead centroid species_atomlist polymer 1 27
+create_multibodies bead29 bead centroid species_atomlist polymer 1 28
+create_multibodies bead30 bead centroid species_atomlist polymer 1 29
+create_multibodies bead31 bead centroid species_atomlist polymer 1 30
+create_multibodies bead32 bead centroid species_atomlist polymer 1 31
+
+combine_multibody_lists beads bead1 bead2 bead3 bead4 bead5 bead6 bead7 bead8 bead9 bead10 bead11 bead12 bead13 bead14 bead15 bead16 bead17 bead18 bead19 bead20 bead21 bead22 bead23 bead24 bead25 bead26 bead27 bead28 bead29 bead30 bead31 bead32
+combine_trajectories beads bead1 bead2 bead3 bead4 bead5 bead6 bead7 bead8 bead9 bead10 bead11 bead12 bead13 bead14 bead15 bead16 bead17 bead18 bead19 bead20 bead21 bead22 bead23 bead24 bead25 bead26 bead27 bead28 bead29 bead30 bead31 bead32
+
 
 create_multibodies endtoendvector ee centroid species_atomlist polymer 1 0 1 31
 
