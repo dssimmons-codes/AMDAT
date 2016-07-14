@@ -9,7 +9,7 @@
 #include <vector>
 #include "vector_map.h"
 
-#define ARGMAX 1000
+#define ARGMAX 10000
 
 namespace std{
 

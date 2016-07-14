@@ -9,7 +9,7 @@
 using namespace std;
 
 #include "tokenize.h"
-#define ARGMAX 1000
+#define ARGMAX 10000
 
 Tokenize::Tokenize(string line)
 {

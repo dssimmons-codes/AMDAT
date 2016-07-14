@@ -6,7 +6,7 @@
 #include <iostream>
 #include <stdlib.h>
 
-#define ARGMAX 1000
+#define ARGMAX 10000
 
 using namespace std;
 

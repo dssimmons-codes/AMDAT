@@ -30,7 +30,7 @@
 
 
 
-#define ARGMAX 1000
+#define ARGMAX 10000
 
 #define LISTSIZE 1000
 
