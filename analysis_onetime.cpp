@@ -18,6 +18,9 @@ Analysis_Onetime::Analysis_Onetime(const Analysis_Onetime& copy):Analysis(copy)
 }
 
 
+
+
+
 void Analysis_Onetime::analyze(Trajectory_List * t_list)
 {
   int timeii;
@@ -33,9 +36,13 @@ void Analysis_Onetime::analyze(Trajectory_List * t_list)
       timekernel(timeii);
     }
   }
+  else if(time_scheme<-1)
+  {
+    timekernel(-time_scheme-2);
+  }
   else
   {
-    for (timeii=time_scheme; timeii<system->show_n_timesteps();timeii+=system->show_n_exponential_steps())
+    for (timeii=time_scheme; timeii<system->show_n_exponentials();timeii+=system->show_n_exponential_steps())
     {
       timekernel(timeii);
     }
@@ -61,6 +68,10 @@ void Analysis_Onetime::analyze(Trajectory_List * t_list,Trajectory_List* t_list2
     {
       timekernel2(timeii);
     }
+  }
+  else if(time_scheme<-1)
+  {
+    timekernel2(-time_scheme-2);
   }
   else
   {

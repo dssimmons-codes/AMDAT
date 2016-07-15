@@ -1,7 +1,7 @@
 system
 xyz_log
 ./testfiles/traj.xyz ./testfiles/log.lammps
-exponential 10 77 1.2 0 0 .01
+exponential 1 77 1.2 0 0 .01
 polymer 50
 1
 32
@@ -9,6 +9,28 @@ polymer 50
 
 create_list all
 all
+
+rdf rdf_sym.dat symmetric 100 -1 0 \srdf1
+list all
+
+structure_factor_from_rdf sfac.dat 100 rdf1 
+
+exit
+
+structure_factor structure_0.dat symmetric xyz -2 0
+list all
+
+structure_factor structure_1.dat symmetric xyz -3 0
+list all
+
+
+
+exit
+
+structure_factor structure.dat symmetric xyz 0 0
+list all
+
+exit
 
 displacement_list displacement_stats.dat displacement_list 70
 list all
@@ -508,15 +530,11 @@ exit
 create_list all
 all
 
-structure_factor structure.dat symmetric xyz 0 0
-list all
+
 
 exit
 
-rdf rdf_sym.dat symmetric 100 -1 0 \srdf1
-list all
 
-structure_factor_from_rdf sfac.dat 100 rdf1 
 
 
 

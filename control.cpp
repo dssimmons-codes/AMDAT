@@ -2473,6 +2473,13 @@ void Control::structure_factor()
 
   /*Reading wave vectors from file*/
   cout << "\nReading wave vectors from file.\n";cout.flush();
+  
+  
+  if(max_length_scale<0&&timescheme<-1)
+  {
+    max_length_scale=analyte->size(-timescheme-2).min();
+  }
+  
   Wave_Vectors wavevectors(analyte,plane,max_length_scale);
 
 //  getline(input,runline1);
@@ -2559,6 +2566,8 @@ void Control::rdf()
   float max_length_scale = 0;
   dynamic = 0;
   Radial_Distribution_Function * rdfpointer;
+  Trajectory_List* trajlist1;
+  Trajectory_List* trajlist2;
 
   bool store = tokenize.isflagged("s");
   if(store)
@@ -2582,16 +2591,19 @@ void Control::rdf()
   n_args = tokenize(runline1, args);
   listname1 = args[1];
 
+  trajlist1=find_trajectorylist(listname1);
+  
   if (symmetry=="symmetric")
     {
       cout << "\nCalculating radial distribution function.\n";cout.flush();
       start = time(NULL);
-      rad_dis_fun.analyze(trajectories[listname1]);
+      rad_dis_fun.analyze(trajlist1);
       finish = time(NULL);
       cout << "\nCalculated radial distribution function in " << finish-start<<" seconds.\n";
     }
     else if(symmetry=="asymmetric")
     {
+      trajlist2=find_trajectorylist(listname2);
 //      getline(input,runline2);
       runline2 = read_line();
       cout <<"\n"<< runline2;
@@ -2600,7 +2612,7 @@ void Control::rdf()
       cout << "\nCalculating structure factor.\n";cout.flush();
       start = time(NULL);
       //calls bins
-      rad_dis_fun.analyze(trajectories[listname1],trajectories[listname2]);
+      rad_dis_fun.analyze(trajlist1,trajlist2);
       finish = time(NULL);
       cout << "\nCalculated radial distribution function in " << finish-start<<" seconds.\n";
     }
@@ -2641,8 +2653,9 @@ void Control::structure_factor_from_rdf()
   argcheck(4);
 
   filename =  args[1];			//name of file to which to save calculated data
-  rdfname = args[3];			//name of saved rdf
   n_bins = atoi(args[2].c_str());	//number of k's for which to compute structure factor
+  rdfname = args[3];			//name of saved rdf
+  
 
   if(analyses.count(rdfname))
   {
