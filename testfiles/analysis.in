@@ -17,10 +17,10 @@ structure_factor_from_rdf sfac.dat 100 rdf1
 
 exit
 
-structure_factor structure_0.dat symmetric xyz -2 0
+structure_factor structure_0.dat symmetric xyz 0 -2
 list all
 
-structure_factor structure_1.dat symmetric xyz -3 0
+structure_factor structure_1.dat symmetric xyz 0 -3
 list all
 
 
