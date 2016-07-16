@@ -8,6 +8,7 @@
 
 #include "multibody.h"
 #include "multibody_set.h"
+#include "multibody_list.h"
 #include <vector>
 #include <sstream>
 #include <stdlib.h>
@@ -37,6 +38,9 @@ class Provisional_Multibodies
     Provisional_Multibodies(const Provisional_Multibodies&);
     Provisional_Multibodies operator=(const Provisional_Multibodies&);
     ~Provisional_Multibodies();
+    
+    Multibody_List* temporary_multibodies(System* syst);
+    void delete_sets();
     
     void convert(System* syst, Control* control, string setname, string traj_typename, bool centertype);
   

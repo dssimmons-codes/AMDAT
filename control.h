@@ -182,6 +182,7 @@ class Control
     void radial_debye_waller();	//calculate Debye-Waller factor as a function of distance from the origin
     void strings();		//find strings
     void string_multibodies();	//find strings and store as multibodies
+    void streamlined_strings();	//find strings via multibody route and immediately write to file without storing multibodies
     void comover_multibodies();	//find co-movers and store as multibodies
     void relative_displacement_strings();	//find relative_displacement_strings and store as multibodies
     void rgtensor_stats();	//calculate rg tensor statistics
@@ -238,6 +239,7 @@ class Control
     Trajectory_List* find_trajectorylist(string, bool allow_nofind=0)const;
     void add_trajectorylist(Trajectory_List*, string);
     void combine_trajectories();
+    void delete_trajectory_list();
 
     /*Members to store and access multibody_list objects*/
     Vector_Map<string,Multibody_List*> multibody_lists;

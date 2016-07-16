@@ -223,6 +223,10 @@ int Control::execute_commands(int iIndex, int fIndex)
     {
       create_list();
     }
+    else if (command == "delete_trajectory_list")
+    {
+      delete_trajectory_list();
+    }
     else if (command == "create_multibodies")
     {
       create_multibodies();
@@ -355,6 +359,8 @@ int Control::execute_commands(int iIndex, int fIndex)
     {strings();}
     else if(command == "string_multibodies")
     {string_multibodies();}
+    else if(command == "streamlined_strings")
+    {streamlined_strings();}
     else if(command == "comover_multibodies")
     {comover_multibodies();}
     else if(command == "relative_displacement_strings")
@@ -1576,6 +1582,32 @@ void Control::add_multibody_list(Multibody_List* multibody_list,string multibody
   }
 }
 
+
+
+
+/*--------------------------------------------------------------------------------*/
+
+
+void Control::delete_trajectory_list()
+{
+  
+  string listname;
+  
+  listname=args[1];
+  
+  Trajectory_List * trajectory_list;
+
+  trajectory_list = find_trajectorylist(listname,1);
+  if(trajectory_list==0)
+  {
+    cout << "\nWarning: trajectory_list " << listname << " does not exist and therefore cannot be deleted.";
+  }
+  else
+  {
+    trajectories.erase(listname);
+    delete trajectory_list;
+  }
+}
 
 
 
@@ -3192,6 +3224,49 @@ void Control::string_multibodies()
   string_multibodies.convert(analyte, this, setname, trajtypename, centertype);
 }
 
+
+
+void Control::streamlined_strings()
+{
+  string runline;
+  int timegap, n_moments;
+  string filename, sigmatrixfilename, setname, trajtypename, centertypename;
+  float threshold;
+  bool centertype;
+  Multibody_List * multibodylist;
+  
+  filename = args[1];
+  timegap=atoi(args[2].c_str());
+  threshold=atof(args[3].c_str());
+  sigmatrixfilename=args[4];
+  n_moments = atoi(args[5].c_str());
+  
+  runline = read_line();
+  cout <<"\n"<< runline;
+  cout<<"\nFinding strings.";
+  
+  start = time(NULL);
+  String_Multibodies string_multibodies(analyte, timegap, threshold, sigmatrixfilename);
+  run_analysis(&string_multibodies, runline);
+  finish = time(NULL);
+  cout << "\nFound strings in " << finish-start<<" seconds.\n";
+  
+  
+  multibodylist=string_multibodies.temporary_multibodies(analyte);
+  
+  Size_Statistics size_statistics(analyte,n_moments);
+  cout << "\nCalculating multibody size statistics.\n";cout.flush();
+  start = time(NULL);
+  size_statistics.analyze(multibodylist);
+  finish = time(NULL);
+  cout << "\nCalculated multibody size statistics in " << finish-start<<" seconds."<<endl;
+  size_statistics.write(filename);
+  
+  string_multibodies.delete_sets();
+  delete multibodylist;
+
+  
+}
 
 
 void Control::comover_multibodies()

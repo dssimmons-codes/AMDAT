@@ -63,6 +63,8 @@ Provisional_Multibodies Provisional_Multibodies::operator=(const Provisional_Mul
 Provisional_Multibodies::~Provisional_Multibodies()
 {
   delete [] time_conversion;
+  
+  
 }
 
 
@@ -118,9 +120,7 @@ void Provisional_Multibodies::add_lists_to_control(System* syst, Control* contro
   Trajectory_List*new_trajectory_list;
   
   new_multibody_list = new Multibody_List;
-  new_trajectory_list = new Trajectory_List;	//how is this going to work? Need way to build trajectory list from multiple multibody lists
-  
-  cout<<"\n"<<set_pointers.size()<<endl;cout.flush();
+  new_trajectory_list = new Trajectory_List;
   
   new_multibody_list->set(syst,set_pointers,time_conversion);
   control->add_multibody_list(new_multibody_list,basename);
@@ -132,5 +132,25 @@ void Provisional_Multibodies::add_lists_to_control(System* syst, Control* contro
   
   new_trajectory_list->set(syst,trajset,time_conversion);
   control->add_trajectorylist(new_trajectory_list, basename); 
+}
+
+Multibody_List* Provisional_Multibodies::temporary_multibodies(System*syst)
+{
+  create_multibody_sets();
+  
+  Multibody_List* new_multibody_list;
+  new_multibody_list = new Multibody_List;
+  new_multibody_list->set(syst,set_pointers,time_conversion);
+  
+  return new_multibody_list;
+}
+
+void Provisional_Multibodies::delete_sets()
+{
+  int timeii;
+  for(timeii=0;timeii<set_pointers.size();timeii++)
+  {
+    delete set_pointers[timeii];
+  }
 }
 

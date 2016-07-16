@@ -1,7 +1,7 @@
 system
 xyz_log
 ./testfiles/traj.xyz ./testfiles/log.lammps
-exponential 1 77 1.2 0 0 .01
+exponential 10 77 1.2 0 0 .01
 polymer 50
 1
 32
@@ -9,6 +9,44 @@ polymer 50
 
 create_list all
 all
+
+constant TIME 70
+
+displacement_list displacement_stats.dat displacement_list ${TIME}
+list all
+
+value_list threshold_percentile displacement_list fast greater 93.5 
+
+string_multibodies null ${TIME} .6 ./testfiles/sigma_matrix stringmbs string centroid
+list fast
+
+size_statistics string_statistics.dat stringmbs 3
+
+delete_valuelist displacement_list
+
+
+for TIMEII 0 77
+
+displacement_list displacement_stats${TIMEII}.dat displacement_list${TIMEII} ${TIMEII}
+list all
+
+value_list threshold_percentile displacement_list${TIMEII} fast${TIMEII} greater 93.5 
+
+streamlined_strings string_statistics${TIMEII}.dat ${TIMEII} .6 ./testfiles/sigma_matrix 3
+list fast
+
+delete_trajectory_list fast${TIMEII}
+
+delete_valuelist displacement_list${TIMEII}
+
+end
+
+exit
+
+
+
+
+
 
 rdf rdf_sym.dat symmetric 100 -1 0 \srdf1
 list all
