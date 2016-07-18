@@ -98,9 +98,13 @@ int Analysis_Onetime::determine_n_times()
       timecount++;
     }
   }
+  else if(time_scheme<-1)
+  {
+      timecount=1;
+  }
   else
   {
-    for (timeii=time_scheme; timeii<system->show_n_timesteps();timeii+=system->show_n_exponential_steps())
+    for (timeii=time_scheme; timeii<system->show_n_exponentials();timeii+=system->show_n_exponential_steps())
     {
       timecount++;
     }

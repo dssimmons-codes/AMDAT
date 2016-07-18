@@ -233,7 +233,7 @@ void Radial_Distribution_Function::bin(int timestep, float distance)
  {
   int binindex;
   binindex = int((distance)/bin_size);
-    
+  
   if(binindex>=0 && binindex<n_bins)
   {
     (time_rdf[timestep][binindex])++;
@@ -267,6 +267,7 @@ void Radial_Distribution_Function::bin(int timestep, float distance)
    
    for(binii=0;binii<n_bins;binii++)
    {
+     
      mean_rdf[binii]/=float(n_i_total);
    }
  }
