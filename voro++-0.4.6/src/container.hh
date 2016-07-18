@@ -10,9 +10,6 @@
 #ifndef VOROPP_CONTAINER_HH
 #define VOROPP_CONTAINER_HH
 
-#include <cstdio>
-#include <vector>
-
 #include "config.hh"
 #include "common.hh"
 #include "v_base.hh"
@@ -20,6 +17,11 @@
 #include "c_loops.hh"
 #include "v_compute.hh"
 #include "rad_option.hh"
+
+/** Modofied: SJH 20160718**/
+#include <cstdio>
+#include <vector>
+#include <algorithm>
 
 namespace voro {
     
@@ -465,7 +467,16 @@ namespace voro {
             }
         }
         /** Modified: SJH (20160705) **/
-        std::vector<std::vector<int> > get_neighList() const {return neighList;}
+        static bool sortIncreasing(const std::vector<int >& vi1,
+                                   const std::vector<int >& vi2)
+        {return vi1[0]<vi2[0];}
+        std::vector<std::vector<int> > get_neighList()
+        {
+            std::vector<std::vector<int> > tmp=neighList;
+            std::sort(tmp.begin(),tmp.end(),sortIncreasing);
+            neighList=tmp;
+            return neighList;
+        }
         
         
         void print_custom(const char *format,FILE *fp=stdout);

@@ -10,15 +10,6 @@ polymer 50
 create_list all
 all
 
-displacement_list displacement_stats.dat displacement_list 70
-list all
-
-value_list threshold_percentile displacement_list fast greater 95
-
-isfs isfs_fast.dat 24 24 xyz 0 0
-list fast
-
-exit
 
 create_voronoi_neighborlist vneighbors -1
 list all
@@ -36,7 +27,15 @@ value_list threshold_percentile displacement_list fast greater 95
 neighbor_decorrelation_function ndf_fast.dat vneighbors
 list fast
 
+exit
 
+displacement_list displacement_stats.dat displacement_list 70
+list all
+
+value_list threshold_percentile displacement_list fast greater 95
+
+isfs isfs_fast.dat 24 24 xyz 0 0
+list fast
 
 
 
