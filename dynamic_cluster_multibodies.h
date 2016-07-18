@@ -42,6 +42,8 @@ class Dynamic_Cluster_Multibodies: public Analysis, public Provisional_Multibodi
     void list_displacementkernel(int,int,int);
     void listkernel(Trajectory*,int,int,int);
     void postprocess_list(){};
+    
+    virtual void write(string){};
 
 };
 

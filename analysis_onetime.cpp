@@ -75,7 +75,7 @@ void Analysis_Onetime::analyze(Trajectory_List * t_list,Trajectory_List* t_list2
   }
   else
   {
-    for (timeii=time_scheme; timeii<system->show_n_timesteps();timeii+=system->show_n_exponential_steps())
+    for (timeii=time_scheme; timeii<system->show_n_exponentials();timeii+=system->show_n_exponential_steps())
     {
       timekernel2(timeii);
     }

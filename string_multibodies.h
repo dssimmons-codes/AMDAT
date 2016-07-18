@@ -15,6 +15,7 @@ class String_Multibodies: public Dynamic_Cluster_Multibodies
 {
     float ** sigmatrix;		//stores particle sizes
     int n_atomtypes;
+
     
     float threshold;
         
@@ -29,6 +30,8 @@ class String_Multibodies: public Dynamic_Cluster_Multibodies
     String_Multibodies operator=(const String_Multibodies&);
     
     String_Multibodies(System * syst, int tgap, float thresh, string sigmatrixname);
+    
+    void write(string){};
   
 };
   

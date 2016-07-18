@@ -2635,13 +2635,12 @@ void Control::rdf()
     }
     else if(symmetry=="asymmetric")
     {
-      trajlist2=find_trajectorylist(listname2);
-//      getline(input,runline2);
       runline2 = read_line();
       cout <<"\n"<< runline2;
       n_args = tokenize(runline2, args);
       listname2 = args[1];
-      cout << "\nCalculating structure factor.\n";cout.flush();
+      trajlist2=find_trajectorylist(listname2);
+      cout << "\nCalculating radial distribution function.\n";cout.flush();
       start = time(NULL);
       //calls bins
       rad_dis_fun.analyze(trajlist1,trajlist2);
@@ -3243,13 +3242,13 @@ void Control::streamlined_strings()
   
   runline = read_line();
   cout <<"\n"<< runline;
-  cout<<"\nFinding strings.";
+  cout<<"\nFinding strings.";cout.flush();
   
   start = time(NULL);
   String_Multibodies string_multibodies(analyte, timegap, threshold, sigmatrixfilename);
   run_analysis(&string_multibodies, runline);
   finish = time(NULL);
-  cout << "\nFound strings in " << finish-start<<" seconds.\n";
+  cout << "\nFound strings in " << finish-start<<" seconds.\n";cout.flush();
   
   
   multibodylist=string_multibodies.temporary_multibodies(analyte);
@@ -3259,7 +3258,7 @@ void Control::streamlined_strings()
   start = time(NULL);
   size_statistics.analyze(multibodylist);
   finish = time(NULL);
-  cout << "\nCalculated multibody size statistics in " << finish-start<<" seconds."<<endl;
+  cout << "\nCalculated multibody size statistics in " << finish-start<<" seconds."<<endl;cout.flush();
   size_statistics.write(filename);
   
   string_multibodies.delete_sets();
