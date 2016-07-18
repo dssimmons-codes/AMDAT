@@ -199,25 +199,23 @@ void Distance_Neighbor_List::listkernel2(Trajectory* traj1, Trajectory* traj2,in
 /*allocate matrix of particle sizes and assign values*/
 void Distance_Neighbor_List::allocate_sig_matrix(string sig_file)
 {
-  Tokenize tokenize;
+ Tokenize tokenize;
   
     string line;
     line = "";
     int sig_tokens=0;
     string * sig_ARGS;
-    int matsize, lineii, argii, type1index, type2index;
-    int * type_index;
-    
+    int lineii, argii, type1index, type2index;
+        int * type_index;
+    int matsize;
+
     n_atomtypes = system->show_n_expanded_atomtypes();
     sig_ARGS =new string [n_atomtypes+1];
-
-    string * species_name;
-    species_name = new string [0];
 
     ifstream file(sig_file.c_str());
 
     
-    sigmatrix=new float* [n_atomtypes];
+	sigmatrix=new float* [n_atomtypes];
 	for(lineii=0;lineii<n_atomtypes;lineii++)
 	{
 	  sigmatrix[lineii]=new float[n_atomtypes];
@@ -230,6 +228,8 @@ void Distance_Neighbor_List::allocate_sig_matrix(string sig_file)
     
     if (file.is_open())
     {
+       /*Learn atomtypes and check for squareness*/
+       
        
         //get first line of matrix
         getline (file,line);
@@ -273,8 +273,10 @@ void Distance_Neighbor_List::allocate_sig_matrix(string sig_file)
 	    cout << "\nError: Trajectory type " << sig_ARGS[0] << " not found.\n";
 	    exit(0);
 	  }
-          type_index[0] = system->show_atomtype_index(sig_ARGS[0]);
+          type_index[lineii] = system->show_atomtype_index(sig_ARGS[0]);
 	}
+	
+	/*Now that atom types are known and squareness is checked, read in sigma values*/
 	
 	file.clear();
 	file.seekg(0,ios::beg);
@@ -288,13 +290,24 @@ void Distance_Neighbor_List::allocate_sig_matrix(string sig_file)
 	    sigmatrix[type_index[lineii]][type_index[argii-1]]=atof(sig_ARGS[argii].c_str());
 	  }
 	}
+    file.close();
     }
     else
     {
         cout << "\nError: sigma data file not opened succesfully.\n";
         exit(1);
     }
-    file.close();
+    
+    cout<<"\nSigma matrix used: ";
+    for (int indii=0;indii<n_atomtypes;indii++)
+    {
+      cout <<"\n" << indii << "\t";
+      for (lineii=0;lineii<n_atomtypes;lineii++)
+      {
+	cout<<sigmatrix[indii][lineii]<<"\t";
+      }
+    }
+    cout <<"\n";
 }
 
 
