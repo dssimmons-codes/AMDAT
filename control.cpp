@@ -64,6 +64,7 @@
 #include "distance_neighbor_list.h"
 #include "voronoi_neighbor_list.h"
 #include "persistent_neighbors.h"
+#include "neighbor_decorrelation_function.h"
 
 using namespace std;
 
@@ -298,6 +299,10 @@ int Control::execute_commands(int iIndex, int fIndex)
     else if (command == "displacement_list")
     {
       displacement_list();
+    }
+    else if (command == "neighbor_decorrelation_function")
+    {
+      neighbor_decorrelation_function();
     }
     else if (command == "vac_function")
     {
@@ -2233,6 +2238,66 @@ void Control::displacement_list()
   finish = time(NULL);
   cout << "\nCalculated list of displacement scalars in " << finish-start<<" seconds.";
 }
+
+
+/*--------------------------------------------------------------------------------*/
+
+/*Calculate and write to file mean square displacement as requested by user*/
+void Control::neighbor_decorrelation_function()
+{
+  string filename, analysisname, nlistname;
+  string runline;
+  int expected=3;
+  argcheck(expected);
+  dynamic = 1;
+  Neighbor_Decorrelation_Function * ndfpointer;
+  Neighbor_List* nlist;
+
+  bool store = tokenize.isflagged("s");
+  if(store)
+  {
+    analysisname = tokenize["s"];
+  }
+
+
+  filename = args[1];
+  nlistname=args[2];
+  
+  nlist=find_neighborlist(nlistname);
+  
+
+//  getline(input,runline);
+  runline = read_line();
+  cout <<"\n"<< runline;
+
+  //analyte->unwrap();		//should already be unwrapped
+  Neighbor_Decorrelation_Function ndf(analyte,nlist);
+  cout << "\nCalculating neighbor decorrelation function.\n";cout.flush();
+  start = time(NULL);
+  ndf = run_analysis <Neighbor_Decorrelation_Function> (ndf,runline,filename); // pass run_analysis template the analysis type 'Neighbor_Decorrelation_Function'
+
+  finish = time(NULL);
+  cout << "\nCalculated neighbor_decorrelation_function in " << finish-start<<" seconds."<<endl;
+
+  //store msd analysis method if appropriate
+  if(store)
+  {
+    ndfpointer = new Neighbor_Decorrelation_Function;
+    *ndfpointer=ndf;
+    if(analyses.insert(analysisname,(Analysis*)(ndfpointer)))
+    {
+      cout << "Saving ndf analysis to analysis name " << analysisname << ".\n";
+    }
+    else
+    {
+      cout << "\nError: an analysis is already stored with name " << analysisname << ". New analysis not stored.\ns";
+      exit(0);
+    }
+  }
+}
+
+
+
 
 
 /*--------------------------------------------------------------------------------*/

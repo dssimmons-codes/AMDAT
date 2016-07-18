@@ -1,4 +1,4 @@
-/*Molecular Dynamics Analysis Toolkit (MDAT)*/
+/*Amorphous Molecular Dynamics Analysis Toolkit (AMDAT)*/
 /*Class to calculate mean-square-displacement*/
 /*Written by David S. Simmons*/
 

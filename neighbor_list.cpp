@@ -91,7 +91,7 @@ bool Neighbor_List::is_neighbor(int timeii, int trajii, Trajectory* trajcheck)co
 
 
 
-vector<Trajectory*> Neighbor_List::persistent_neighbors(int trajii, int time1)
+vector<Trajectory*> Neighbor_List::show_neighbors(int trajii, int time1)const
 {
   
   vector<Trajectory*> temp;
@@ -105,11 +105,65 @@ vector<Trajectory*> Neighbor_List::persistent_neighbors(int trajii, int time1)
 }
 
 
-
-vector<Trajectory*> Neighbor_List::persistent_neighbors(int trajii, int time1, int time2)
+vector<Trajectory*> Neighbor_List::persistent_neighbors(int trajii, int time1, int time2)const
 {
   
+  vector<Trajectory*> temp;
+  int n1ii, n2ii;
+  bool check;
+  
+  if(computed_times[time1]&&included[time1](trajii))
+  {
+    for(n1ii=0;n1ii<neighbors[time1][trajii].size();n1ii++)
+    {
+      check=false;
+      for(n2ii=0;n2ii<neighbors[time2][trajii].size();n2ii++)
+      {
+	if(neighbors[time2][trajii][n2ii]==neighbors[time1][trajii][n1ii])
+	{
+	  check=true;
+	}
+      }
+      if(check)
+      {
+	temp.push_back(neighbors[time1][trajii][n1ii]);
+      }
+    }
+  }
+  
+  return temp;
 }
+
+
+int Neighbor_List::n_persistent_neighbors(int trajii, int time1, int time2)const
+{
+  
+  int n_count=0;
+  int n1ii, n2ii;
+  bool check;
+  
+  if(computed_times[time1]&&included[time1](trajii))
+  {
+    for(n1ii=0;n1ii<neighbors[time1][trajii].size();n1ii++)
+    {
+      check=false;
+      for(n2ii=0;n2ii<neighbors[time2][trajii].size();n2ii++)
+      {
+	if(neighbors[time2][trajii][n2ii]==neighbors[time1][trajii][n1ii])
+	{
+	  check=true;
+	}
+      }
+      if(check)
+      {
+	n_count++;
+      }
+    }
+  }
+  
+  return n_count;
+}
+
 
 
 void Neighbor_List::write_statistics(string filename, int n_moments)const
