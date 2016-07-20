@@ -6,9 +6,45 @@ polymer 50
 1
 32
 
-
 create_list all
 all
+
+
+create_voronoi_neighborlist vneighbors 70
+list all
+
+displacement_list displacement_stats.dat displacement_list 70
+list all
+
+value_list threshold_percentile displacement_list fast greater 93.5 
+
+relative_displacement_strings 70 1 vneighbors rdstrings rdstringtraj centroid 1
+list fast
+
+size_statistics rdstrings_1.dat rdstrings 3
+
+exit
+
+
+
+
+
+
+relative_displacement_strings 70 1 vneighbors rd15strings rd15stringtraj centroid 15
+list fast
+
+size_statistics rdstrings_15.dat rd15strings 3
+
+relative_displacement_strings 70 1 vneighbors rd27strings rd27stringtraj centroid 27
+list fast
+
+size_statistics rdstrings_27.dat rd27strings 3
+
+
+
+
+exit
+
 
 
 create_voronoi_neighborlist vneighbors -1
@@ -19,10 +55,6 @@ value_statistics neighbors.dat vneighbors 4
 neighbor_decorrelation_function ndf.dat vneighbors
 list all
 
-displacement_list displacement_stats.dat displacement_list 70
-list all
-
-value_list threshold_percentile displacement_list fast greater 95 
 
 neighbor_decorrelation_function ndf_fast.dat vneighbors
 list fast

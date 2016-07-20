@@ -21,6 +21,8 @@ using namespace std;
 Relative_Displacement_Strings::Relative_Displacement_Strings():Dynamic_Cluster_Multibodies()
 {
   neighbor_list=0;
+  steps_for_averaging=0;
+  threshold=0;
   
 }
 
@@ -28,6 +30,8 @@ Relative_Displacement_Strings::Relative_Displacement_Strings():Dynamic_Cluster_M
 Relative_Displacement_Strings::Relative_Displacement_Strings(const Relative_Displacement_Strings& copy):Dynamic_Cluster_Multibodies(copy)
 {
   neighbor_list=copy.neighbor_list;
+  steps_for_averaging=copy.steps_for_averaging;
+  threshold=copy.threshold;
 }
 
 
@@ -38,15 +42,18 @@ Relative_Displacement_Strings Relative_Displacement_Strings::operator=(const Rel
   {
     Dynamic_Cluster_Multibodies::operator=(copy);
     neighbor_list=copy.neighbor_list;
+    steps_for_averaging=copy.steps_for_averaging;
+    threshold=copy.threshold;
   }
   return *this;
 }
 
 
-Relative_Displacement_Strings::Relative_Displacement_Strings(System * syst, int tgap, Neighbor_List* nlist, float thresh):Dynamic_Cluster_Multibodies(syst,tgap)
+Relative_Displacement_Strings::Relative_Displacement_Strings(System * syst, int tgap, Neighbor_List* nlist, float thresh, int avgsteps):Dynamic_Cluster_Multibodies(syst,tgap)
 {
   threshold=thresh;
   neighbor_list=nlist;
+  steps_for_averaging=avgsteps;
 }
 
 
@@ -57,6 +64,7 @@ bool Relative_Displacement_Strings::clustered_check(Trajectory* trajectory1, Tra
   bool check;
   float initial_separation,distance;
   int trajectory1ID;
+  int timeii;
   
   trajectory1ID=trajectory1->show_trajectory_ID();
   
@@ -64,7 +72,16 @@ bool Relative_Displacement_Strings::clustered_check(Trajectory* trajectory1, Tra
   
   if(check)
   {
-    initial_separation=(trajectory2->show_coordinate(thisii)-trajectory1->show_coordinate(thisii)).length_unwrapped(system->size(thisii));
+    initial_separation=0;
+    //take average initial distance over range of time
+    for(timeii=0;timeii<steps_for_averaging;timeii++)
+    {
+      initial_separation+=(trajectory2->show_coordinate(thisii+timeii)-trajectory1->show_coordinate(thisii+timeii)).length_unwrapped(system->size(thisii+timeii));
+      //cout<<"\t"<<initial_separation;
+    }
+    initial_separation/=float(steps_for_averaging);
+    
+    
     distance = (trajectory2->show_coordinate(thisii)-trajectory1->show_coordinate(nextii)).length_unwrapped(system->size(thisii));
     check=check&&(distance<(threshold*initial_separation));
   }

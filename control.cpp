@@ -3383,6 +3383,7 @@ void Control::relative_displacement_strings()
   string filename, setname, trajtypename, centertypename, nlist_name;
   float threshold;
   bool centertype;
+  int averagingsteps;
   
   Neighbor_List * neighborlist;
   
@@ -3392,6 +3393,7 @@ void Control::relative_displacement_strings()
   setname=args[4];
   trajtypename=args[5];
   centertypename=args[6];
+  averagingsteps=atoi(args[7].c_str());
   
   if(centertypename == "centroid")
   {
@@ -3414,7 +3416,7 @@ void Control::relative_displacement_strings()
   cout<<"\nFinding comovers.";
   
   start = time(NULL);
-  Relative_Displacement_Strings rds(analyte, timegap, neighborlist,threshold);
+  Relative_Displacement_Strings rds(analyte, timegap, neighborlist,threshold,averagingsteps);
   run_analysis(&rds, runline);
   finish = time(NULL);
   cout << "\nFound strings in " << finish-start<<" seconds.\n";

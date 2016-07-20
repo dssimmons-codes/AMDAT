@@ -17,6 +17,7 @@ class Relative_Displacement_Strings: public Dynamic_Cluster_Multibodies
     Neighbor_List * neighbor_list;
     
     float threshold;
+    int steps_for_averaging;
         
     bool clustered_check(Trajectory*, Trajectory*, int, int);
     Coordinate get_imageoffset(Trajectory*, Trajectory*, int, int);
@@ -26,7 +27,7 @@ class Relative_Displacement_Strings: public Dynamic_Cluster_Multibodies
     Relative_Displacement_Strings(const Relative_Displacement_Strings&);
     Relative_Displacement_Strings operator=(const Relative_Displacement_Strings&);
     
-    Relative_Displacement_Strings(System * syst, int tgap, Neighbor_List* nlist, float thresh);
+    Relative_Displacement_Strings(System * syst, int tgap, Neighbor_List* nlist, float thresh, int avgsteps);
   
 };
   
