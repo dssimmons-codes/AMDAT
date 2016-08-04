@@ -120,24 +120,23 @@ void Voronoi_Neighbor_List::timekernel2(int timeii)
   {
     n_traj=trajectory_list->show_n_trajectories(timeii);
     
-    n_x=n_y=n_z=int(pow(n_traj/8.0,1.0/3.0));
+    n_x=n_y=n_z=int(pow(float(n_traj)/8.0,1.0/3.0));
  
     n_trajectories=system->show_n_trajectories();
     
-    x_min=(system->boundaries())[0].show_x();
-    y_min=(system->boundaries())[0].show_y();
-    z_min=(system->boundaries())[0].show_z();
-    x_max=(system->boundaries())[1].show_x();
-    y_max=(system->boundaries())[1].show_y();
-    z_max=(system->boundaries())[1].show_z();
+    x_min=(system->boundaries(timeii))[0].show_x();
+    y_min=(system->boundaries(timeii))[0].show_y();
+    z_min=(system->boundaries(timeii))[0].show_z();
+    x_max=(system->boundaries(timeii))[1].show_x();
+    y_max=(system->boundaries(timeii))[1].show_y();
+    z_max=(system->boundaries(timeii))[1].show_z();
     
     voronoi = new voro::container(x_min,x_max,y_min,y_max,z_min,z_max,n_x,n_y,n_z,true,true,true,8);
-		  
     
    
     trajectory_list->listloop(this,0, timeii, 0);
     
-    voronoi->print_custom("%i %n","packing.custom2");
+    voronoi->print_custom_new("%i %n");
     
     voronoi_neighbors=voronoi->get_neighList();
     

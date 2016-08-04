@@ -449,6 +449,7 @@ namespace voro {
         }
         
         /** Modified: SJH (20160705) **/
+        //----------------------------------------------------------------------
         template<class c_loop>
         void print_custom(c_loop &vl,const char *format) {
             int ijk,q;double *pp;            
@@ -467,9 +468,10 @@ namespace voro {
             }
         }
         /** Modified: SJH (20160705) **/
+        //----------------------------------------------------------------------
         static bool sortIncreasing(const std::vector<int >& vi1,
-                                   const std::vector<int >& vi2)
-        {return vi1[0]<vi2[0];}
+                                   const std::vector<int >& vi2){return vi1[0]<vi2[0];}
+        
         std::vector<std::vector<int> > get_neighList()
         {
             std::vector<std::vector<int> > tmp=neighList;
@@ -477,6 +479,9 @@ namespace voro {
             neighList=tmp;
             return neighList;
         }
+        /** Modified: SJH (20160804) **/
+        //----------------------------------------------------------------------
+        void print_custom_new(const char *format);
         
         
         void print_custom(const char *format,FILE *fp=stdout);
@@ -532,6 +537,7 @@ namespace voro {
         friend class voro_compute<container>;
         
         /** Modified: SJH (20160705) **/
+        //----------------------------------------------------------------------
         std::vector<std::vector<int> > neighList;
     };
     

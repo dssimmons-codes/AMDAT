@@ -183,7 +183,11 @@ namespace voro {
         void output_custom(const char *format,int i,double x,double y,double z,double r,FILE *fp=stdout);
         
         /** Modified: SJH (20160705) **/
-        void output_custom_new(const char *format,int i,double x,double y,double z,double r,std::vector<std::vector<int> >&);
+        //----------------------------------------------------------------------
+        void output_custom_new
+        (const char *format,int i,double x,double y,double z,double r,
+         std::vector<std::vector<int> >&);
+        //----------------------------------------------------------------------
         
         template<class vc_class>
         bool nplane(vc_class &vc,double x,double y,double z,double rsq,int p_id);

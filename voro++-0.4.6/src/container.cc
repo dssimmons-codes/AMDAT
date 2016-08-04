@@ -392,18 +392,26 @@ namespace voro {
         max_radius=0;
     }
     
+    /** Modified: SJH (20160804) **/
+    //--------------------------------------------------------------------------
+    void container::print_custom_new(const char *format) {
+        c_loop_all vl(*this);
+        /** Modified: SJH (20160705) **/
+        neighList.clear();
+        print_custom(vl,format);
+    }
+    //--------------------------------------------------------------------------
+    
     /** Computes all the Voronoi cells and saves customized information about them.
      * \param[in] format the custom output string to use.
      * \param[in] fp a file handle to write to. */
     void container::print_custom(const char *format,FILE *fp) {
         c_loop_all vl(*this);
         //print_custom(vl,format,fp);
-        
         /** Modified: SJH (20160705) **/
         neighList.clear();
         print_custom(vl,format);
     }
-    
     
     /** Computes all the Voronoi cells and saves customized
      * information about them.

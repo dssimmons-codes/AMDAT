@@ -2099,6 +2099,8 @@ namespace voro {
     }
     
     
+    /** Modified: SJH **/
+    //--------------------------------------------------------------------------
     void voronoicell_base::output_custom_new(const char *format,int i,double x,double y,double z,double r,std::vector<std::vector<int> >& neighList) {
         char *fmp=(const_cast<char*>(format));
         std::vector<int> vi;
@@ -2146,17 +2148,19 @@ namespace voro {
                     case 'l': normals(vd);
                         //voro_print_positions(vd,fp);
                         break;
-                        
-                    case 'n': {
+                    case 'n':
+                    {
+                        /** Modified: SJH **/
+                        //------------------------------------------------------
                         neighbors(vi);
                         //voro_print_vector(vi,fp);
                         std::vector<int> vi_tmp;
                         vi_tmp.push_back(i);
                         for (size_t indexi=0;indexi<vi.size();++indexi) {
                             vi_tmp.push_back(vi.at(indexi));
-                        } neighList.push_back(vi_tmp);                        
+                        } neighList.push_back(vi_tmp);
+                        //------------------------------------------------------
                     } break;
-                        
                         // Volume-related output
                         //case 'v': fprintf(fp,"%g",volume());break;
                     case 'c': {
@@ -2182,6 +2186,7 @@ namespace voro {
         }
         //fputs("\n",fp);
     }
+    //--------------------------------------------------------------------------
     
     
     /** This initializes the class to be a rectangular box. It calls the base class
