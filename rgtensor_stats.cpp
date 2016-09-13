@@ -105,6 +105,7 @@ void RgTensor_Stats::listkernel(Trajectory* trajectory)
 
 void RgTensor_Stats::calc_rel_asphericity_dist(int nbins)
 {
+  
   int timeii,trajii,binii;
   
   rel_asphericity_bins = nbins;
@@ -118,17 +119,21 @@ void RgTensor_Stats::calc_rel_asphericity_dist(int nbins)
     {
       rel_asphericity_dist[timeii][binii]=0;
     }
-    
+    #ifdef never
     for(trajii=0;trajii<n_times;trajii++)
     {
       rel_asphericity_dist[timeii][int(single_relative_asphericity[timeii][trajii]*float(rel_asphericity_bins))]+=1/float(n_trajectories);	//increment appropriate bin count
     }
+    
+    #endif
   }
+  
 }
 
 
 void RgTensor_Stats::calc_gyration_rad_dist(int nbins, float max_rad)
 {
+  
   int timeii,trajii,binii;
   
   gyration_rad_bins = nbins;
@@ -139,17 +144,18 @@ void RgTensor_Stats::calc_gyration_rad_dist(int nbins, float max_rad)
   {
     gyration_rad_dist[timeii] = new float [gyration_rad_bins];
     
-    for(binii=0;binii<=gyration_rad_bins;binii++)
+    for(binii=0;binii<gyration_rad_bins;binii++)
     {
       gyration_rad_dist[timeii][binii]=0;
     }
-    
+    #ifdef never
     for(trajii=0;trajii<n_times;trajii++)
     {
       binii=int(single_gyration_radius[timeii][trajii]*float(gyration_rad_bins)/max_gyr_rad_binned);
       if(binii>gyration_rad_bins){binii=gyration_rad_bins;};
       gyration_rad_dist[timeii][binii]+=1/float(n_trajectories);	//increment appropriate bin count
     }
+    #endif
   }
 }
 
