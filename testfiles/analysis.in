@@ -1,13 +1,18 @@
 system
 xyz_log
 ./testfiles/traj.xyz ./testfiles/log.lammps
-exponential 1 77 1.2 0 0 .01
+exponential 10 77 1.2 0 0 .01
 polymer 50
 1
 32
 
 create_list all
 all
+
+msd_printlist msd.dat msdlist.dat
+list all
+
+exit
 
 rgtensor_stats rgtensor.dat rgdist.dat  30 rg.dat 30 1
 list all

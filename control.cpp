@@ -65,6 +65,7 @@
 #include "voronoi_neighbor_list.h"
 #include "persistent_neighbors.h"
 #include "neighbor_decorrelation_function.h"
+#include "msd_listprint.h"
 
 using namespace std;
 
@@ -299,6 +300,10 @@ int Control::execute_commands(int iIndex, int fIndex)
     else if (command == "displacement_list")
     {
       displacement_list();
+    }
+    else if (command == "msd_printlist")
+    {
+      msd_printlist();
     }
     else if (command == "neighbor_decorrelation_function")
     {
@@ -2237,6 +2242,45 @@ void Control::displacement_list()
   add_value_list(dlist_pointer,listname);
   finish = time(NULL);
   cout << "\nCalculated list of displacement scalars in " << finish-start<<" seconds.";
+}
+
+
+/*--------------------------------------------------------------------------------*/
+
+/*Calculate and write to file mean square displacement as requested by user*/
+void Control::msd_printlist()
+{
+  string filename, analysisname;
+  string listfilename;
+  string runline;
+  int expected=3;
+  argcheck(expected);
+  dynamic = 1;
+  Mean_Square_Displacement * msdpointer;
+
+  bool store = tokenize.isflagged("s");
+  if(store)
+  {
+    analysisname = tokenize["s"];
+  }
+
+
+  filename = args[1];
+  listfilename=args[2];
+//  getline(input,runline);
+  runline = read_line();
+  cout <<"\n"<< runline;
+
+  //analyte->unwrap();		//should already be unwrapped
+  MSD_Listprint msd(analyte,listfilename);
+  cout << "\nOutputting square displacements.\n";cout.flush();
+  start = time(NULL);
+  msd = run_analysis <MSD_Listprint> (msd,runline,filename); // pass run_analysis template the analysis type 'Mean_Square_Displacement'
+
+  finish = time(NULL);
+  cout << "\nCalculated  square displacement list in " << finish-start<<" seconds."<<endl;
+
+
 }
 
 
