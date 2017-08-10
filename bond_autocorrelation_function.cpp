@@ -24,6 +24,7 @@ Bond_Autocorrelation_Function::Bond_Autocorrelation_Function()
   weighting = new int [n_times];
 
   atomcount = 0;
+  dimensions.set(1,1,1);
 }
 
 
@@ -47,6 +48,7 @@ Bond_Autocorrelation_Function::Bond_Autocorrelation_Function(const Bond_Autocorr
     baf[timeii]=copy.baf[timeii];
     weighting[timeii]=copy.weighting[timeii];
   }
+  dimensions=copy.dimensions;
 }
 
 Bond_Autocorrelation_Function::~Bond_Autocorrelation_Function()
@@ -76,9 +78,32 @@ Bond_Autocorrelation_Function::Bond_Autocorrelation_Function(System*sys)
     weighting[timeii]=0;
   }
   atomcount = 0;
+  dimensions.set(1,1,1);
 
 }
 
+
+Bond_Autocorrelation_Function::Bond_Autocorrelation_Function(System*sys,Coordinate dim)
+{
+  int timeii;
+
+  system = sys;
+  n_times = system->show_n_timegaps();
+
+   //allocate memory for mean square displacement data
+  baf = new float [n_times];
+  weighting = new int [n_times];
+
+  timetable = system->displacement_times();
+  for(timeii=0;timeii<n_times;timeii++)
+  {
+    baf[timeii]=0;
+    weighting[timeii]=0;
+  }
+  atomcount = 0;
+  dimensions=dim;
+
+}
 
 
 
@@ -108,7 +133,9 @@ Bond_Autocorrelation_Function Bond_Autocorrelation_Function::operator = (const B
     baf[timeii]=copy.baf[timeii];
     weighting[timeii]=copy.weighting[timeii];
   }
+  dimensions=copy.dimensions;
 
+  
   }
 
   return *this;
@@ -138,8 +165,34 @@ void Bond_Autocorrelation_Function::initialize(System* sys)
     weighting[timeii]=0;
   }
   atomcount = 0;
+  dimensions.set(1,1,1);
 }
 
+
+void Bond_Autocorrelation_Function::initialize(System* sys, Coordinate dim)
+{
+  int timeii;
+
+  system = sys;
+  n_times = system->show_n_timegaps();
+
+   //allocate memory for mean square displacement data
+
+  delete [] baf;
+  delete [] weighting;
+
+  baf = new float [n_times];
+  weighting = new int [n_times];
+
+  timetable = system->displacement_times();
+  for(timeii=0;timeii<n_times;timeii++)
+  {
+    baf[timeii]=0;
+    weighting[timeii]=0;
+  }
+  atomcount = 0;
+  dimensions=dim;
+}
 
 
 /*Methods to do analysis using trajectory list*/
@@ -161,7 +214,7 @@ void Bond_Autocorrelation_Function::list_displacementkernel(int timegapii,int th
 
 void Bond_Autocorrelation_Function::listkernel(Multibody* current_multibody, int timegapii,int thisii, int nextii)
 {
-  float dotproduct=  (((*current_multibody)(1)->show_unwrapped(thisii)-(*current_multibody)(0)->show_unwrapped(thisii)).unit_vector())&(((*current_multibody)(1)->show_unwrapped(nextii)-(*current_multibody)(0)->show_unwrapped(nextii)).unit_vector());	//compute dot product between unit vectors at initial and later times
+  float dotproduct=  ((((*current_multibody)(1)->show_unwrapped(thisii)-(*current_multibody)(0)->show_unwrapped(thisii))*dimensions).unit_vector())&((((*current_multibody)(1)->show_unwrapped(nextii)-(*current_multibody)(0)->show_unwrapped(nextii))*dimensions).unit_vector());	//compute dot product between unit vectors at initial and later times
   baf[timegapii]+=0.5*(3.0*dotproduct*dotproduct - 1.0);	//increment baf by second legendre polynomial of dot product above
 }
 

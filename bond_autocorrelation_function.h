@@ -9,6 +9,7 @@
 #include <string>
 
 #include "multibody_analysis.h"
+#include "coordinate.h"
 
 namespace std{
 
@@ -18,8 +19,12 @@ class Bond_Autocorrelation_Function: public Multibody_Analysis
     float * baf;
     int * weighting;
     float * timetable;
-    void initialize(System*);   
+    void initialize(System*);
+    void initialize(System*, Coordinate dim);  
     int atomcount;
+    
+    Coordinate dimensions;
+
 
 
     
@@ -31,6 +36,7 @@ class Bond_Autocorrelation_Function: public Multibody_Analysis
     ~Bond_Autocorrelation_Function();
     
     Bond_Autocorrelation_Function(System*);
+    Bond_Autocorrelation_Function(System*, Coordinate dim);
     
     //Analysis_Type what_are_you(){Analysis_Type type = gyration_radius; return type;};		//virtual method to report the type of analysis
     

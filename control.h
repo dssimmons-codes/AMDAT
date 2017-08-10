@@ -157,7 +157,7 @@ class Control
     /*Analysis method calls*/
     void msd();			//calculate mean square displacement
     void msd_2d();		//calculate 2d mean square displacement
-    void msd_printlist();	//print list of particle square displacements and times
+    //void msd_printlist();	//print list of particle square displacements and times
     void mean_displacement();	//calculate mean displacement - primary purpose is identification of momentum buildup
     void displacement_list();	//create value list of particle displacement scalars
     void vacf();		//calculate velocity autocorrelation function

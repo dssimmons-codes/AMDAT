@@ -65,7 +65,7 @@
 #include "voronoi_neighbor_list.h"
 #include "persistent_neighbors.h"
 #include "neighbor_decorrelation_function.h"
-#include "msd_listprint.h"
+//#include "msd_listprint.h"
 
 using namespace std;
 
@@ -301,10 +301,10 @@ int Control::execute_commands(int iIndex, int fIndex)
     {
       displacement_list();
     }
-    else if (command == "msd_printlist")
-    {
-      msd_printlist();
-    }
+    //else if (command == "msd_printlist")
+    //{
+    //  msd_printlist();
+    //}
     else if (command == "neighbor_decorrelation_function")
     {
       neighbor_decorrelation_function();
@@ -2244,6 +2244,7 @@ void Control::displacement_list()
   cout << "\nCalculated list of displacement scalars in " << finish-start<<" seconds.";
 }
 
+#ifdef NEVER
 
 /*--------------------------------------------------------------------------------*/
 
@@ -2283,6 +2284,7 @@ void Control::msd_printlist()
 
 }
 
+#endif
 
 /*--------------------------------------------------------------------------------*/
 
@@ -4567,16 +4569,48 @@ void Control::baf()
 {
   string filename, multibody_list_name;
   Multibody_List * multibodylist;
+  Coordinate dim;
+  string dimselect;
 
-  int expected=3;
-  argcheck(expected);
+   if(n_args!=3&&n_args!=4)
+  {
+    stringstream ss;
+    ss << "Incorrect number of arguments for command "<< args[0] <<".\n"<< n_args-1 << " arguments given, 3 or 4 expected.";
+    Error(ss.str(), -6);
+  }
+  
 
   filename = args[1];
   multibody_list_name=args[2];
+  if(n_args==4)
+  {
+    dimselect=args[3];
+    if(dimselect=="xyz")
+    {
+      dim.set(1,1,1);
+    }
+    if(dimselect=="xy")
+    {
+      dim.set(1,1,0);
+    }
+    if(dimselect=="xz")
+    {
+      dim.set(1,0,1);
+    }
+    if(dimselect=="yz")
+    {
+      dim.set(0,1,1);
+    }
+  }
+  else
+  {
+    dim.set(1,1,1);
+  }
+  
 
   multibodylist = find_multibody_list(multibody_list_name);
 
-  Bond_Autocorrelation_Function bafun(analyte);
+  Bond_Autocorrelation_Function bafun(analyte,dim);
   cout << "\nCalculating gyration radius.\n";cout.flush();
   start = time(NULL);
   bafun.analyze(multibodylist); // pass run_analysis template the analysis type 'Mean_Square_Displacement'
