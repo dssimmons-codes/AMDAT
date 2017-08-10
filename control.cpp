@@ -4589,17 +4589,29 @@ void Control::baf()
     {
       dim.set(1,1,1);
     }
-    if(dimselect=="xy")
+    else if(dimselect=="xy")
     {
       dim.set(1,1,0);
     }
-    if(dimselect=="xz")
+    else if(dimselect=="xz")
     {
       dim.set(1,0,1);
     }
-    if(dimselect=="yz")
+    else if(dimselect=="yz")
     {
       dim.set(0,1,1);
+    }
+    else if(dimselect=="x")
+    {
+      dim.set(1,0,0);
+    }
+    else if(dimselect=="y")
+    {
+      dim.set(0,1,0);
+    }
+    else if(dimselect=="z")
+    {
+      dim.set(0,0,1);
     }
   }
   else

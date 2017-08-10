@@ -1,7 +1,7 @@
 system
 xyz_log
 ./testfiles/traj.xyz ./testfiles/log.lammps
-exponential 10 77 1.2 0 0 .01
+exponential 100 77 1.2 0 0 .01
 polymer 50
 1
 32
@@ -51,8 +51,13 @@ baf c2xyz.dat bonds xyz
 baf c2xy.dat bonds xy
 baf c2xz.dat bonds xz
 baf c2yz.dat bonds yz
+baf c2x.dat bonds x
+baf c2y.dat bonds y
+baf c2z.dat bonds z
 
 exit
+
+
 
 msd_printlist msd.dat msdlist.dat
 list all

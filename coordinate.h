@@ -63,6 +63,8 @@ class Coordinate
     
     bool operator!=(const Coordinate&);
     bool operator==(const Coordinate&);
+    
+    float sum()const;
 };
 
 }

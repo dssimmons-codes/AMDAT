@@ -25,6 +25,8 @@ Bond_Autocorrelation_Function::Bond_Autocorrelation_Function()
 
   atomcount = 0;
   dimensions.set(1,1,1);
+  
+  vprep=&Bond_Autocorrelation_Function::prep_inplane;
 }
 
 
@@ -49,6 +51,8 @@ Bond_Autocorrelation_Function::Bond_Autocorrelation_Function(const Bond_Autocorr
     weighting[timeii]=copy.weighting[timeii];
   }
   dimensions=copy.dimensions;
+  
+  vprep=copy.vprep;
 }
 
 Bond_Autocorrelation_Function::~Bond_Autocorrelation_Function()
@@ -79,6 +83,7 @@ Bond_Autocorrelation_Function::Bond_Autocorrelation_Function(System*sys)
   }
   atomcount = 0;
   dimensions.set(1,1,1);
+  vprep=&Bond_Autocorrelation_Function::prep_inplane;
 
 }
 
@@ -102,6 +107,15 @@ Bond_Autocorrelation_Function::Bond_Autocorrelation_Function(System*sys,Coordina
   }
   atomcount = 0;
   dimensions=dim;
+  
+  if(dimensions.sum()==2||dimensions.sum()==3)
+  {
+    vprep=&Bond_Autocorrelation_Function::prep_inplane;
+  }
+  else if(dimensions.sum()==1)
+  {
+    vprep=&Bond_Autocorrelation_Function::prep_outofplane;
+  }
 
 }
 
@@ -192,6 +206,16 @@ void Bond_Autocorrelation_Function::initialize(System* sys, Coordinate dim)
   }
   atomcount = 0;
   dimensions=dim;
+  
+  
+  if(dimensions.sum()==2||dimensions.sum()==3)
+  {
+    vprep=&Bond_Autocorrelation_Function::prep_inplane;
+  }
+  else if(dimensions.sum()==1)
+  {
+    vprep=&Bond_Autocorrelation_Function::prep_outofplane;
+  }
 }
 
 
@@ -214,7 +238,10 @@ void Bond_Autocorrelation_Function::list_displacementkernel(int timegapii,int th
 
 void Bond_Autocorrelation_Function::listkernel(Multibody* current_multibody, int timegapii,int thisii, int nextii)
 {
-  float dotproduct=  ((((*current_multibody)(1)->show_unwrapped(thisii)-(*current_multibody)(0)->show_unwrapped(thisii))*dimensions).unit_vector())&((((*current_multibody)(1)->show_unwrapped(nextii)-(*current_multibody)(0)->show_unwrapped(nextii))*dimensions).unit_vector());	//compute dot product between unit vectors at initial and later times
+  float dotproduct = (this->*vprep)((*current_multibody)(1)->show_unwrapped(thisii)-(*current_multibody)(0)->show_unwrapped(thisii))&(this->*vprep)((*current_multibody)(1)->show_unwrapped(nextii)-(*current_multibody)(0)->show_unwrapped(nextii));	//compute dot product between unit vectors at initial and later times
+
+  
+  //float dotproduct=  ((((*current_multibody)(1)->show_unwrapped(thisii)-(*current_multibody)(0)->show_unwrapped(thisii))*dimensions).unit_vector())&((((*current_multibody)(1)->show_unwrapped(nextii)-(*current_multibody)(0)->show_unwrapped(nextii))*dimensions).unit_vector());	//compute dot product between unit vectors at initial and later times
   baf[timegapii]+=0.5*(3.0*dotproduct*dotproduct - 1.0);	//increment baf by second legendre polynomial of dot product above
 }
 
@@ -261,6 +288,23 @@ void Bond_Autocorrelation_Function::write(ofstream& output)const
     output << timetable[timeii]<<"\t"<<baf[timeii]<<"\n";
   }
 }
+
+
+
+Coordinate Bond_Autocorrelation_Function::prep_inplane(Coordinate coord)const
+{
+  return (coord*dimensions).unit_vector();
+}
+
+
+Coordinate Bond_Autocorrelation_Function::prep_outofplane(Coordinate coord)const
+{
+  Coordinate addend(1,1,1);
+  Coordinate newcoord;
+  newcoord.set((coord*dimensions).length(),((dimensions*(-1)+addend)*coord).length(),0);
+  return newcoord.unit_vector();
+}
+
 
 #ifdef NEVER
 void Bond_Autocorrelation_Function::bin_hook(Trajectory_List * t_list, int timegapii, int thisii, int nextii)

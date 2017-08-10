@@ -24,7 +24,12 @@ class Bond_Autocorrelation_Function: public Multibody_Analysis
     int atomcount;
     
     Coordinate dimensions;
-
+    
+    typedef Coordinate(Bond_Autocorrelation_Function::*vector_prep)(Coordinate)const;
+    vector_prep vprep;
+    
+    Coordinate prep_inplane(Coordinate)const;
+    Coordinate prep_outofplane(Coordinate)const;
 
 
     
