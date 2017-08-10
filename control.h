@@ -204,6 +204,7 @@ class Control
     /*Multibody analysis method calls*/
     void gyration_radius();		//calculate mean gyration radius of multibody list
     void baf();
+    void raf();
     void neighbor_decorrelation_function();	//compute neighbor decorrelation function
     
     void orientational_correlation();

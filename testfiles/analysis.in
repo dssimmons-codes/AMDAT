@@ -46,7 +46,12 @@ create_multibodies bond31 bond centroid species_atomlist polymer 1 30 1 31
 combine_multibody_lists bonds bond1 bond2 bond3 bond4 bond5 bond6 bond7 bond8 bond9 bond10 bond11 bond12 bond13 bond14 bond15 bond16 bond17 bond18 bond19 bond20 bond21 bond22 bond23 bond24 bond25 bond26 bond27 bond28 bond29 bond30 bond31
 combine_trajectories bonds bond1 bond2 bond3 bond4 bond5 bond6 bond7 bond8 bond9 bond10 bond11 bond12 bond13 bond14 bond15 bond16 bond17 bond18 bond19 bond20 bond21 bond22 bond23 bond24 bond25 bond26 bond27 bond28 bond29 bond30 bond31
 
-baf c2.dat bonds
+raf c2_c.dat bonds 2
+raf c1.dat bonds 1
+
+exit
+
+baf c2_b.dat bonds
 baf c2xyz.dat bonds xyz
 baf c2xy.dat bonds xy
 baf c2xz.dat bonds xz

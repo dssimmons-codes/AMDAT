@@ -417,6 +417,8 @@ int Control::execute_commands(int iIndex, int fIndex)
     {gyration_radius();}
     else if (command == "baf")
     {baf();}
+    else if (command == "raf")
+    {raf();}
     else if (command == "orientational_correlation")
     {orientational_correlation();}
     else if (command == "size_statistics")
@@ -4623,11 +4625,89 @@ void Control::baf()
   multibodylist = find_multibody_list(multibody_list_name);
 
   Bond_Autocorrelation_Function bafun(analyte,dim);
-  cout << "\nCalculating gyration radius.\n";cout.flush();
+  cout << "\nCalculating bond autocorrelation function.\n";cout.flush();
   start = time(NULL);
   bafun.analyze(multibodylist); // pass run_analysis template the analysis type 'Mean_Square_Displacement'
   finish = time(NULL);
   cout << "\nCalculated bond autocorrelation function in " << finish-start<<" seconds."<<endl;
+  bafun.write(filename);
+
+}
+
+
+
+void Control::raf()
+{
+  string filename, multibody_list_name;
+  Multibody_List * multibodylist;
+  Coordinate dim;
+  string dimselect;
+  int legendre_p;
+
+   if(n_args!=4&&n_args!=5)
+  {
+    stringstream ss;
+    ss << "\nIncorrect number of arguments for command "<< args[0] <<".\n"<< n_args-1 << " arguments given, 3 or 4 expected.";
+    Error(ss.str(), -6);
+  }
+  
+
+  filename = args[1];
+  multibody_list_name=args[2];
+  legendre_p=atoi(args[3].c_str());
+  
+  if(legendre_p!=1&&legendre_p!=2)
+  {
+    cout<<"\nError: Legendre polynomial order must be 1 or 2.\n";
+    exit(0);
+  }
+  
+  if(n_args==5)
+  {
+    dimselect=args[4];
+    if(dimselect=="xyz")
+    {
+      dim.set(1,1,1);
+    }
+    else if(dimselect=="xy")
+    {
+      dim.set(1,1,0);
+    }
+    else if(dimselect=="xz")
+    {
+      dim.set(1,0,1);
+    }
+    else if(dimselect=="yz")
+    {
+      dim.set(0,1,1);
+    }
+    else if(dimselect=="x")
+    {
+      dim.set(1,0,0);
+    }
+    else if(dimselect=="y")
+    {
+      dim.set(0,1,0);
+    }
+    else if(dimselect=="z")
+    {
+      dim.set(0,0,1);
+    }
+  }
+  else
+  {
+    dim.set(1,1,1);
+  }
+  
+
+  multibodylist = find_multibody_list(multibody_list_name);
+
+  Bond_Autocorrelation_Function bafun(analyte,legendre_p,dim);
+  cout << "\nCalculating orientational autocorrelation function.\n";cout.flush();
+  start = time(NULL);
+  bafun.analyze(multibodylist); // pass run_analysis template the analysis type 'Mean_Square_Displacement'
+  finish = time(NULL);
+  cout << "\nCalculated orientational autocorrelation function in " << finish-start<<" seconds."<<endl;
   bafun.write(filename);
 
 }

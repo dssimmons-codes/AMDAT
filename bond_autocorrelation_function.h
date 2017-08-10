@@ -21,6 +21,7 @@ class Bond_Autocorrelation_Function: public Multibody_Analysis
     float * timetable;
     void initialize(System*);
     void initialize(System*, Coordinate dim);  
+    void initialize(System*, int l_type, Coordinate dim); 
     int atomcount;
     
     Coordinate dimensions;
@@ -30,6 +31,12 @@ class Bond_Autocorrelation_Function: public Multibody_Analysis
     
     Coordinate prep_inplane(Coordinate)const;
     Coordinate prep_outofplane(Coordinate)const;
+    
+    typedef float(Bond_Autocorrelation_Function::*polynomial_choice)(float)const;
+    polynomial_choice legendre_p;
+    
+    float legendre_1(float val)const;
+    float legendre_2(float val)const;
 
 
     
@@ -42,6 +49,9 @@ class Bond_Autocorrelation_Function: public Multibody_Analysis
     
     Bond_Autocorrelation_Function(System*);
     Bond_Autocorrelation_Function(System*, Coordinate dim);
+    
+    Bond_Autocorrelation_Function(System*, int l_type, Coordinate dim);
+    
     
     //Analysis_Type what_are_you(){Analysis_Type type = gyration_radius; return type;};		//virtual method to report the type of analysis
     
