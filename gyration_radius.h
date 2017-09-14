@@ -17,8 +17,11 @@ class Gyration_Radius: public Multibody_Analysis
     float gyration_radius;
     int weighting;
     void initialize(System*);                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  
-
     
+    
+    float * rg_by_n;
+    int max_n;
+    int * weighting_by_n;
     
   public:
     Gyration_Radius();			//default constructor

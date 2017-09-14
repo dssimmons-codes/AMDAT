@@ -394,3 +394,26 @@ void Multibody_List::listloop(Multibody_Analysis* analysis, int timegap, int cur
 		analysis->listkernel(multibodies[internal_time][trajectoryii], timegap, currenttime, nexttime);
 	}
 }
+
+
+/*Returns maximum bodies per multibody.*/
+int Multibody_List::maxsize()const
+{
+    int timeii, multibodyii, max_bodies;
+
+    max_bodies = 0;
+
+
+    for(timeii=0;timeii<multibodies.size();timeii++)
+    {
+        for(multibodyii=0;multibodyii<multibodies[timeii].size();multibodyii++)
+        {
+            if(max_bodies<multibodies[timeii][multibodyii]->show_n_bodies())
+            {
+                max_bodies=multibodies[timeii][multibodyii]->show_n_bodies();
+            }
+        }
+    }
+    
+    return max_bodies;
+}

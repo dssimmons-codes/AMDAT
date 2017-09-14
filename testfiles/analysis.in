@@ -1,7 +1,7 @@
 system
 xyz_log
 ./testfiles/traj.xyz ./testfiles/log.lammps
-exponential 10 77 1.2 0 0 .01
+exponential 100 77 1.2 0 0 .01
 polymer 50
 1
 32
@@ -24,6 +24,8 @@ flatten_multibodies stringbeads stringmbs
 
 msd msd_strings2.dat
 list stringbeads
+
+gyration_radius string_gyrationrad2.dat stringmbs
 
 exit
 

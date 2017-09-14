@@ -55,6 +55,8 @@ namespace std{
       
       void listloop(Multibody_Analysis* analysis, int timegap, int currenttime, int nexttime);
       
+      int maxsize()const;	//return maximum bodies per multibody
+      
     
       
   };
