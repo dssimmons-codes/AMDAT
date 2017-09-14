@@ -1,13 +1,89 @@
 system
 xyz_log
 ./testfiles/traj.xyz ./testfiles/log.lammps
-exponential 100 77 1.2 0 0 .01
+exponential 10 77 1.2 0 0 .01
 polymer 50
 1
 32
 
 create_list all
 all
+
+msd msd.dat
+list all
+
+displacement_list displacement_stats.dat displacement_list 70
+list all
+
+value_list threshold_percentile displacement_list fast greater 93.5 
+
+string_multibodies null 70 .6 ./testfiles/sigma_matrix stringmbs string centroid
+list fast
+
+flatten_multibodies stringbeads stringmbs
+
+msd msd_strings2.dat
+list stringbeads
+
+exit
+
+size_statistics string_statistics.dat stringmbs 3
+
+gyration_radius string_gyrationrad.dat stringmbs
+
+
+
+region_multibody_list stringsbin1 stringmbs -3 3 -100 100 100 100 stringbindat.dat
+
+gyration_radius string_binned_gyrationrad.dat stringsbin1
+
+exit
+
+
+create_distance_neighborlist dneighbors 1.4 ./testfiles/sigma_matrix -1
+list all
+
+neighbor_decorrelation_function ndf_distance.dat dneighbors
+list all
+
+value_statistics neighbors_dist.dat dneighbors 4
+
+
+
+persistent_neighbors 70 dneighbors p_neighbors per_neighbors centroid
+list fast
+
+size_statistics d_neighbors.dat p_neighbors 4
+
+exit
+
+create_voronoi_neighborlist vneighbors -1
+list all
+
+value_statistics neighbors.dat vneighbors 4
+
+neighbor_decorrelation_function ndf.dat vneighbors
+list all
+
+displacement_list displacement_stats.dat displacement_list 70
+list all
+
+value_list threshold_percentile displacement_list fast greater 93.5 
+
+neighbor_decorrelation_function ndf_fast.dat vneighbors
+list fast
+
+persistent_neighbors 70 vneighbors p_neighbors per_neighbors centroid
+list fast
+
+size_statistics p_neighbors.dat p_neighbors 4
+
+relative_displacement_strings 70 .70 vneighbors rdstrings_v rdstringtraj_d centroid 27
+list fast
+
+size_statistics rdstrings_27_d_0.70.dat rdstrings_v 3
+
+exit
 
 
 
@@ -76,34 +152,6 @@ exit
 
 rgtensor_stats rgtensor.dat asphericity_dist.dat
 all
-
-exit
-
-create_voronoi_neighborlist vneighbors -1
-list all
-
-value_statistics neighbors.dat vneighbors 4
-
-neighbor_decorrelation_function ndf.dat vneighbors
-list all
-
-displacement_list displacement_stats.dat displacement_list 70
-list all
-
-value_list threshold_percentile displacement_list fast greater 93.5 
-
-neighbor_decorrelation_function ndf_fast.dat vneighbors
-list fast
-
-persistent_neighbors 70 vneighbors p_neighbors per_neighbors centroid
-list fast
-
-size_statistics p_neighbors.dat p_neighbors 4
-
-relative_displacement_strings 70 .70 vneighbors rdstrings_v rdstringtraj_d centroid 27
-list fast
-
-size_statistics rdstrings_27_d_0.70.dat rdstrings_v 3
 
 exit
 

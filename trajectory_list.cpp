@@ -459,7 +459,7 @@ void Trajectory_List::flatten_multibodies(const Multibody_List& mblist)
   time_conversion = new int [system_times]; 
   for(timeii=0;timeii<system_times;timeii++)
   {
-    time_conversion=mblist.time_conversion;
+    time_conversion[timeii]=mblist.time_conversion[timeii];
   }
   
   //allocate memory for trajectory arrays
