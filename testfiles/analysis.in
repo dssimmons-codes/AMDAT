@@ -1,13 +1,28 @@
 system
 xyz_log
 ./testfiles/traj.xyz ./testfiles/log.lammps
-exponential 100 77 1.2 0 0 .01
+linear 50 1
 polymer 50
 1
 32
 
 create_list all
 all
+
+rdf rdf_asym_lin.dat asymmetric 100 -1 0
+list all
+list all
+
+rdf rdf_sym_lin.dat symmetric 100 -1 0
+list all
+
+exit
+
+exponential 1 77 1.2 0 0 .01
+polymer 50
+1
+32
+
 
 msd msd.dat
 list all

@@ -2,13 +2,13 @@
 /* config.h.in.  Generated from configure.ac by autoheader.  */
 
 /* Hardware and OS version for build host */
-#define BUILD_MACHINE "Linux 2.6.32-5-amd64 x86_64"
+#define BUILD_MACHINE "Linux 4.9.0-9-amd64 x86_64"
 
 /* Date and time for build */
-#define BUILD_TIME "Sun Nov 18 14:22:41 EST 2012"
+#define BUILD_TIME "Tue Jun 18 10:44:58 EDT 2019"
 
 /* User doing build */
-#define BUILD_USER "root@simmons-x220t"
+#define BUILD_USER "root@debian"
 
 /* Define to dummy `main' function (if any) required to link to the Fortran
    libraries. */

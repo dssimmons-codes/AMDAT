@@ -334,6 +334,7 @@ void System::xyz_prep(vector<string> file_in, string fileline)
 //  line=Control::replace_constants(line);
   line = Control::read_line();
   args = tokenize(line);
+  n_atomtypes = args.size();
   for(typeii=0;typeii<n_atomtypes;typeii++)
   {
     atomtype_name.push_back(args[typeii]);
