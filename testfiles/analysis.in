@@ -1,7 +1,7 @@
 system
 xyz_log
 ./testfiles/traj.xyz ./testfiles/log.lammps
-linear 50 1
+exponential 100 77 1.2 0 0 .01
 polymer 50
 1
 32
@@ -18,7 +18,10 @@ list all
 
 exit
 
-exponential 1 77 1.2 0 0 .01
+system
+xyz_log
+./testfiles/traj.xyz ./testfiles/log.lammps
+exponential 100 77 1.2 0 0 .01
 polymer 50
 1
 32
