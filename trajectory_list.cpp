@@ -90,6 +90,9 @@ Trajectory_List Trajectory_List::operator = (const Trajectory_List & copy)
     n_times = copy.n_times;
     capacity = copy.capacity;
     n_atomtypes = copy.n_atomtypes;
+    cout<<"\n"<<capacity;
+    
+    if(capacity==0&&sys!=0){capacity=sys->show_n_trajectories();}
 
     /*END NEW LINES*/
 
@@ -101,14 +104,15 @@ Trajectory_List Trajectory_List::operator = (const Trajectory_List & copy)
     {
       trajectories[timeii]=new Trajectory* [capacity];
       n_trajectories[timeii]=copy.n_trajectories[timeii];
+      cout<<"\n"<<n_trajectories[timeii];
       included[timeii]=copy.included[timeii];
       for(int trajii=0; trajii<n_trajectories[timeii]; trajii++)
       {
-	trajectories[timeii][trajii]=copy.trajectories[timeii][trajii];
+        trajectories[timeii][trajii]=copy.trajectories[timeii][trajii];
       }
       for(int trajii=n_trajectories[timeii]; trajii<capacity; trajii++)
       {
-	trajectories[timeii][trajii]=0;
+        trajectories[timeii][trajii]=0;
       }
     }
 

@@ -65,6 +65,7 @@
 #include "voronoi_neighbor_list.h"
 #include "persistent_neighbors.h"
 #include "neighbor_decorrelation_function.h"
+#include "radial_count.h"
 //#include "msd_listprint.h"
 
 using namespace std;
@@ -345,6 +346,8 @@ int Control::execute_commands(int iIndex, int fIndex)
     {structure_factor();}
     else if (command == "rdf")
     {rdf();}
+    else if (command == "rnf")
+    {rnf();}
     else if (command == "structure_factor_from_rdf")
     {structure_factor_from_rdf();}
     else if (command == "isf")
@@ -1894,7 +1897,7 @@ void Control::create_list()
 //   else
 //   {
     trajectory = new Static_Trajectory_List;
-    trajectory->reset(analyte);
+    trajectory->reset(analyte,analyte->show_n_trajectories());
     trajpointer=(Trajectory_List*)trajectory;
     run_analysis(trajectory,runline);	//create list from system loops
     add_trajectorylist(trajpointer, listname);	//add trajectory list to array
@@ -2775,6 +2778,90 @@ void Control::rdf()
     if(analyses.insert(analysisname,(Analysis*)(rdfpointer)))
     {
       cout << "Saving rdf analysis to analysis name " << analysisname << ".\n";
+    }
+    else
+    {
+      cout << "\nError: an analysis is already stored with name " << analysisname << ". New analysis not stored.\ns";
+      exit(0);
+    }
+  }
+}
+
+
+/*-------------------------------------------------------------------------------*/
+
+void Control::rnf()
+{
+  string filename, symmetry, runline1, runline2, plane, listname1, listname2, analysisname;
+  int listnum1, listnum2;
+  int timescheme, n_bins;
+  float max_length_scale = 0;
+  dynamic = 0;
+  Radial_Count * rdfpointer;
+  Trajectory_List* trajlist1;
+  Trajectory_List* trajlist2;
+
+  bool store = tokenize.isflagged("s");
+  if(store)
+  {
+    analysisname = tokenize["s"];
+  }
+
+  argcheck(6);
+
+  filename = args[1];			//name of file to which to save calculated data
+  symmetry = args[2];			//determine if atom sets are the same or different
+  n_bins = atoi(args[3].c_str());
+  timescheme=atoi(args[4].c_str());
+  max_length_scale = atof(args[5].c_str());
+
+  Radial_Count rad_dis_fun(analyte,n_bins,timescheme,max_length_scale);
+
+  //  getline(input,runline1);
+  runline1 = read_line();
+  cout <<"\n"<< runline1;
+  n_args = tokenize(runline1, args);
+  listname1 = args[1];
+
+  trajlist1=find_trajectorylist(listname1);
+  
+  if (symmetry=="symmetric")
+    {
+      cout << "\nCalculating non-normalized radial distribution function.\n";cout.flush();
+      start = time(NULL);
+      rad_dis_fun.analyze(trajlist1);
+      finish = time(NULL);
+      cout << "\nCalculated non-normalized radial distribution function in " << finish-start<<" seconds.\n";
+    }
+    else if(symmetry=="asymmetric")
+    {
+      runline2 = read_line();
+      cout <<"\n"<< runline2;
+      n_args = tokenize(runline2, args);
+      listname2 = args[1];
+      trajlist2=find_trajectorylist(listname2);
+      cout << "\nCalculating non-normalized radial distribution function.\n";cout.flush();
+      start = time(NULL);
+      //calls bins
+      rad_dis_fun.analyze(trajlist1,trajlist2);
+      finish = time(NULL);
+      cout << "\nCalculated non-normalized radial distribution function in " << finish-start<<" seconds.\n";
+    }
+    else
+    {
+      cout<<"Error: command for non-normalized radial distribution function calculation atom set types not understood.\n";
+      exit(1);
+    }
+    rad_dis_fun.write(filename);
+
+   //store rdf analysis method if appropriate
+  if(store)
+  {
+    rdfpointer = new Radial_Count;
+    (*rdfpointer)=rad_dis_fun;
+    if(analyses.insert(analysisname,(Analysis*)(rdfpointer)))
+    {
+      cout << "Saving ndf analysis to analysis name " << analysisname << ".\n";
     }
     else
     {

@@ -173,6 +173,7 @@ class Control
     void structure_factor();	//calculate structure factor or intermediate scattering function as function of wavenumber at a given displacement time.
     void rdf();			//calculate g(r) via n^2 route
     void structure_factor_from_rdf();	//calculate S(q) from Fourier-Bessel transform of g(r)
+    void rnf(); //calculation radial number function (nono-normalized rdf)
     void u2dist();		//calculate distribution of debye-waller factor (or displacement)
     void stiffness_dist();	//calculate distribbution of inverse debye-waller factor
     void displacement_dist();	//calculated distribution of particle displacement magnitudes to user-specified power
