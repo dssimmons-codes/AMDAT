@@ -9,6 +9,17 @@ polymer 50
 create_list all
 all
 
+
+msd msd.dat
+list all
+
+
+msd_2d msdxy.dat xy
+list all
+
+exit
+
+
 rdf rdf_asym_lin.dat asymmetric 100 -1 0
 list all
 list all
@@ -27,8 +38,6 @@ polymer 50
 32
 
 
-msd msd.dat
-list all
 
 displacement_list displacement_stats.dat displacement_list 70
 list all

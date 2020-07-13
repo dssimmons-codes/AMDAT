@@ -162,7 +162,7 @@ void Mean_Square_Displacement::list_displacementkernel(int timegapii,int thisii,
 void Mean_Square_Displacement::listkernel(Trajectory* current_trajectory, int timegapii,int thisii, int nextii)
 {
   #pragma omp atomic
-  msd[timegapii]+=pow(current_trajectory->distance(thisii,nextii),2);
+  msd[timegapii]+=current_trajectory->distance(thisii,nextii)*current_trajectory->distance(thisii,nextii);
 }
 
 

@@ -37,11 +37,11 @@ Mean_Square_Displacement_2D::Mean_Square_Displacement_2D(const Mean_Square_Displ
   atomcount = copy.atomcount;
   distancefun = copy.distancefun;
   trajectory_list=copy.trajectory_list;
-  
+
   msd = new float [n_times];
   weighting = new int [n_times];
   timetable = system->displacement_times();
-  
+
   for (int timeii=0;timeii<n_times;timeii++)
   {
     msd[timeii]=copy.msd[timeii];
@@ -53,28 +53,28 @@ Mean_Square_Displacement_2D Mean_Square_Displacement_2D::operator=(const Mean_Sq
 {
   if(this!=&copy)
   {
-  
+
   system = copy.system;
   plane = copy.plane;
   n_times = copy.n_times;
   atomcount = copy.atomcount;
   distancefun = copy.distancefun;
   trajectory_list = trajectory_list;
-  
+
   delete [] msd;
   delete [] weighting;
   delete [] timetable;
-    
+
   msd = new float [n_times];
   weighting = new int [n_times];
   timetable = system->displacement_times();
-  
+
   for (int timeii=0;timeii<n_times;timeii++)
   {
     msd[timeii]=copy.msd[timeii];
     weighting[timeii]=copy.weighting[timeii];
   }
-  
+
   }
   return *this;
 }
@@ -88,10 +88,10 @@ Mean_Square_Displacement_2D::Mean_Square_Displacement_2D(System*sys,string orien
 void Mean_Square_Displacement_2D::initialize(System* sys,string orientation)
 {
   int timeii;
-	
+
   system = sys;
   plane = orientation;
-  
+
   if(plane=="xy") distancefun = &Trajectory::distance_xy;
   else if(plane=="xz") distancefun = &Trajectory::distance_xz;
   else if(plane=="yz") distancefun = &Trajectory::distance_yz;
@@ -100,9 +100,9 @@ void Mean_Square_Displacement_2D::initialize(System* sys,string orientation)
     cout<<"Error: plane command "<<orientation<<" not understood.\n";
     exit(1);
   }
-  
+
   n_times = system->show_n_timegaps();
-	
+
    //allocate memory for mean square displacement data
   msd = new float [n_times];
   weighting =system->timegap_weighting();
@@ -141,7 +141,7 @@ void Mean_Square_Displacement_2D::list_displacementkernel(int timegapii,int this
 
 void Mean_Square_Displacement_2D::listkernel(Trajectory* current_trajectory)
 {
-	msd[currenttimegap]+=pow((current_trajectory->*distancefun)(currenttime,nexttime),2);
+	msd[currenttimegap]+=(current_trajectory->*distancefun)(currenttime,nexttime)*(current_trajectory->*distancefun)(currenttime,nexttime);
 }
 
 void Mean_Square_Displacement_2D::postprocess_list()
@@ -171,12 +171,12 @@ void Mean_Square_Displacement_2D::postprocess_bins()
 void Mean_Square_Displacement_2D::write(string filename)
 {
   int timeii;
-  
+
   cout << "\nWriting msd to file.";
-  
+
   ofstream output(filename.c_str());
-  
-  output << "2-D mean square displacement data for "<< plane <<" plane created by MDAT v." << VERSION << "\n"; 
+
+  output << "2-D mean square displacement data for "<< plane <<" plane created by MDAT v." << VERSION << "\n";
   for(timeii=0;timeii<n_times;timeii++)
   {
     output << timetable[timeii]<<"\t"<<msd[timeii]<<"\n";
@@ -186,10 +186,10 @@ void Mean_Square_Displacement_2D::write(string filename)
 void Mean_Square_Displacement_2D::write(ofstream& output)const
 {
   int timeii;
-  
+
   cout << "\nWriting 2D msd to file.";
-  
-  output << "2-D mean square displacement data for "<< plane <<" plane created by MDAT v." << VERSION << "\n"; 
+
+  output << "2-D mean square displacement data for "<< plane <<" plane created by MDAT v." << VERSION << "\n";
   for(timeii=0;timeii<n_times;timeii++)
   {
     output << timetable[timeii]<<"\t"<<msd[timeii]<<"\n";
