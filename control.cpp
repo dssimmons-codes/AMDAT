@@ -66,6 +66,8 @@
 #include "persistent_neighbors.h"
 #include "neighbor_decorrelation_function.h"
 #include "radial_count.h"
+#include "mean_closest_distance.h"
+
 //#include "msd_listprint.h"
 
 using namespace std;
@@ -346,6 +348,8 @@ int Control::execute_commands(int iIndex, int fIndex)
     {structure_factor();}
     else if (command == "rdf")
     {rdf();}
+    else if (command == "mean_closest_distance")
+    {mean_closest_distance();}
     else if (command == "rnf")
     {rnf();}
     else if (command == "structure_factor_from_rdf")
@@ -2778,6 +2782,72 @@ void Control::rdf()
     if(analyses.insert(analysisname,(Analysis*)(rdfpointer)))
     {
       cout << "Saving rdf analysis to analysis name " << analysisname << ".\n";
+    }
+    else
+    {
+      cout << "\nError: an analysis is already stored with name " << analysisname << ". New analysis not stored.\ns";
+      exit(0);
+    }
+  }
+}
+
+
+/*-------------------------------------------------------------------------------*/
+
+void Control::mean_closest_distance()
+{
+  string filename, runline1, runline2, listname1, listname2, analysisname;
+  int listnum1, listnum2;
+  int timescheme;
+  dynamic = 0;
+  Mean_Closest_Distance * mcdpointer;
+  Trajectory_List* trajlist1;
+  Trajectory_List* trajlist2;
+
+  bool store = tokenize.isflagged("s");
+  if(store)
+  {
+    analysisname = tokenize["s"];
+  }
+
+  argcheck(3);
+
+  filename = args[1];			//name of file to which to save calculated data
+  timescheme=atoi(args[2].c_str());
+
+  Mean_Closest_Distance mcd(analyte,timescheme);
+
+  //  getline(input,runline1);
+  runline1 = read_line();
+  cout <<"\n"<< runline1;
+  n_args = tokenize(runline1, args);
+  listname1 = args[1];
+
+  trajlist1=find_trajectorylist(listname1);
+
+  runline2 = read_line();
+  cout <<"\n"<< runline2;
+  n_args = tokenize(runline2, args);
+  listname2 = args[1];
+  trajlist2=find_trajectorylist(listname2);
+  cout << "\nCalculating mean closest distance.\n";cout.flush();
+  start = time(NULL);
+  
+  //calls bins
+      mcd.analyze(trajlist1,trajlist2);
+      finish = time(NULL);
+      cout << "\nCalculated mean closest distance in " << finish-start<<" seconds.\n";
+    
+    mcd.write(filename);
+
+   //store rdf analysis method if appropriate
+  if(store)
+  {
+    mcdpointer = new Mean_Closest_Distance;
+    (*mcdpointer)=mcd;
+    if(analyses.insert(analysisname,(Analysis*)(mcdpointer)))
+    {
+      cout << "Saving mean closest distance analysis to analysis name " << analysisname << ".\n";
     }
     else
     {

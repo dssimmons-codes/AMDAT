@@ -1,7 +1,7 @@
 system
 xyz_log
 ./testfiles/traj.xyz ./testfiles/log.lammps
-exponential 100 77 1.2 0 0 .01
+exponential 1 77 1.2 0 0 .01
 polymer 50
 1
 32
@@ -9,6 +9,11 @@ polymer 50
 create_list all
 all
 
+mean_closest_distance mcd.dat -1
+list all
+list all
+
+exit
 
 msd msd.dat
 list all

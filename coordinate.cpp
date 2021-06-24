@@ -321,6 +321,15 @@ float Coordinate::min()const
 	return minimum;
 }
 
+float Coordinate::max()const
+{
+	float maximum = x;
+	if(y>maximum) maximum = y;
+	if(z>maximum) maximum = z;
+
+	return maximum;
+}
+
 float Coordinate::min(float a,float b)const
 {
 	if(a<b) return a;

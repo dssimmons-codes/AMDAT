@@ -16,13 +16,13 @@ gaussian_comparison.o radial_debye_waller.o mean_square_displacement_2d.o veloci
 displacement_distribution.o boolean_list.o fast_particles.o   displacement_map.o composition.o n_fold_order_parameter.o trajectory_list_bins.o structure_factor.o clustered_list.o trajectory_list_decay.o \
 vector_autocorrelation.o error.o mean_displacement.o multibody.o multibody_set.o multibody_list.o multibody_analysis.o gyration_radius.o trajectory_set.o edge_detector_timedependent.o mean_velocity_unsteady.o \
 mean_unsteady_displacement.o analysis_onetime.o radial_distribution_function.o bond_autocorrelation_function.o displacement_list.o orientational_correlation.o size_statistics.o multibody_region.o provisional_multibodies.o \
-dynamic_cluster_multibodies.o string_multibodies.o comover_multibodies.o relative_displacement_strings.o neighbor_list.o distance_neighbor_list.o persistent_neighbors.o voronoi_neighbor_list.o neighbor_decorrelation_function.o radial_count.o
+dynamic_cluster_multibodies.o string_multibodies.o comover_multibodies.o relative_displacement_strings.o neighbor_list.o distance_neighbor_list.o persistent_neighbors.o voronoi_neighbor_list.o neighbor_decorrelation_function.o radial_count.o mean_closest_distance.o
 
 CONTROLHEADERS=control.h system.h van_hove_self.h mean_square_displacement.h van_hove_distinct.h molecule.h atom_trajectory.h coordinate.h analysis.h debyewaller_dist.h stiffness_dist.h non_gaussian_parameter.h \
 gaussian_comparison.h fast_particles.h tokenize.h radial_debye_waller.h mean_square_displacement_2d.h velocity_autocorrelation.h strings.h rgtensor_stats.h displacement_map.h trajectory_list_bins.h bin_dynamics_analysis.h \
 bin_static_analysis.h composition.h n_fold_order_parameter.h trajectory_list_decay.h multibody_set.h multibody.h multibody_list.h multibody_analysis.h gyration_radius.h trajectory_set.h edge_detector_timedependent.h \
 mean_velocity_unsteady.h mean_unsteady_displacement.h radial_distribution_function.h bond_autocorrelation_function.h orientational_correlation.h size_statistics.h provisional_multibodies.h dynamic_cluster_multibodies.h \
-string_multibodies.h comover_multibodies.h relative_displacement_strings.h neighbor_list.h distance_neighbor_list.h persistent_neighbors.h voronoi_neighbor_list.h neighbor_decorrelation_function.h radial_count.h
+string_multibodies.h comover_multibodies.h relative_displacement_strings.h neighbor_list.h distance_neighbor_list.h persistent_neighbors.h voronoi_neighbor_list.h neighbor_decorrelation_function.h radial_count.h mean_closest_distance.h
 
 ## Voronoi needs to be compiled at ./voro++-0.4.6/ level before compiling AMDAT
 VPATH = ./voro++-0.4.6/src
@@ -168,6 +168,8 @@ mean_velocity_unsteady.o: mean_velocity_unsteady.cpp mean_velocity_unsteady.h sy
 mean_unsteady_displacement.o: mean_unsteady_displacement.cpp mean_unsteady_displacement.h system.h molecule.h atom_trajectory.h coordinate.h analysis.h  trajectory.h trajectory_list.h
 
 radial_distribution_function.o: radial_distribution_function.cpp radial_distribution_function.h analysis_onetime.h system.h atom_trajectory.h coordinate.h molecule.h analysis.h trajectory.h trajectory_list.h version.h
+
+mean_closest_distance.o: mean_closest_distance.cpp mean_closest_distance.h analysis_onetime.h system.h atom_trajectory.h coordinate.h molecule.h analysis.h trajectory.h trajectory_list.h version.h
 
 radial_count.o: radial_count.cpp radial_count.h analysis_onetime.h system.h atom_trajectory.h coordinate.h molecule.h analysis.h trajectory.h trajectory_list.h version.h
 

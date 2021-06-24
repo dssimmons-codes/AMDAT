@@ -49,6 +49,7 @@ class Coordinate
     float length_unwrapped(const Coordinate&)const;	//returns length of shortest vector, allowing box wrapping
     Coordinate closest_image(const Coordinate&, const Coordinate&)const;	//returns index (integer) coordinate providing image correction that must be applied to get the shortest distance
     float min()const;			//returns minimum of three coordinate values
+    float max()const;			//returns maximum of three coordinate values
     
     Coordinate unit_vector() const;
 
