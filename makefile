@@ -6,208 +6,212 @@ CFLAGSmain= -fopenmp# -O2
 #CFLAGS=-Wall -Wextra -Wcast-qual -Wcast-align -O0 -ggdb -g3 -fstack-protector-all -fno-inline -c -fopenmp #-O2
 #CFLAGSmain=-Wall -Wextra -Wcast-qual -Wcast-align -O0 -ggdb -g3 -fstack-protector-all -fno-inline -fopenmp #-O2
 SERVER=TACC
-WAVEVECTORS3D="\"./qvectors/qvectors3d/qvector\""
-WAVEVECTORS2D="\"./qvectors/qvectors2d/qvector\""
-WAVEVECTORS1D="\"./qvectors/qvectors1d/qvector\""
+WAVEVECTORS3D="\"./src/qvectors/qvectors3d/qvector\""
+WAVEVECTORS2D="\"./src/qvectors/qvectors2d/qvector\""
+WAVEVECTORS1D="\"./src/qvectors/qvectors1d/qvector\""
 
-OBJECTS= amdat.o tokenize.o coordinate.o trajectory.o atom_trajectory.o molecule.o system.o analysis.o space-time_correlation_function.o van_hove_self.o progress.o mean_square_displacement.o van_hove_distinct.o control.o \
-wave_vectors.o wave_density.o intermediate_scattering_function.o correlation_2d.o incoherent_scattering_function.o debyewaller_dist.o stiffness_dist.o non_gaussian_parameter.o \
-gaussian_comparison.o radial_debye_waller.o mean_square_displacement_2d.o velocity_autocorrelation.o strings.o trajectory_list.o static_trajectory_list.o exptime_trajectory_list.o rgtensor.o trajmath.o rgtensor_stats.o \
-displacement_distribution.o boolean_list.o fast_particles.o   displacement_map.o composition.o n_fold_order_parameter.o trajectory_list_bins.o structure_factor.o clustered_list.o trajectory_list_decay.o \
-vector_autocorrelation.o error.o mean_displacement.o multibody.o multibody_set.o multibody_list.o multibody_analysis.o gyration_radius.o trajectory_set.o edge_detector_timedependent.o mean_velocity_unsteady.o \
-mean_unsteady_displacement.o analysis_onetime.o radial_distribution_function.o bond_autocorrelation_function.o displacement_list.o orientational_correlation.o size_statistics.o multibody_region.o provisional_multibodies.o \
-dynamic_cluster_multibodies.o string_multibodies.o comover_multibodies.o relative_displacement_strings.o neighbor_list.o distance_neighbor_list.o persistent_neighbors.o voronoi_neighbor_list.o neighbor_decorrelation_function.o radial_count.o mean_closest_distance.o
+OBJDIR = ./build/
 
-CONTROLHEADERS=control.h system.h van_hove_self.h mean_square_displacement.h van_hove_distinct.h molecule.h atom_trajectory.h coordinate.h analysis.h debyewaller_dist.h stiffness_dist.h non_gaussian_parameter.h \
-gaussian_comparison.h fast_particles.h tokenize.h radial_debye_waller.h mean_square_displacement_2d.h velocity_autocorrelation.h strings.h rgtensor_stats.h displacement_map.h trajectory_list_bins.h bin_dynamics_analysis.h \
-bin_static_analysis.h composition.h n_fold_order_parameter.h trajectory_list_decay.h multibody_set.h multibody.h multibody_list.h multibody_analysis.h gyration_radius.h trajectory_set.h edge_detector_timedependent.h \
-mean_velocity_unsteady.h mean_unsteady_displacement.h radial_distribution_function.h bond_autocorrelation_function.h orientational_correlation.h size_statistics.h provisional_multibodies.h dynamic_cluster_multibodies.h \
-string_multibodies.h comover_multibodies.h relative_displacement_strings.h neighbor_list.h distance_neighbor_list.h persistent_neighbors.h voronoi_neighbor_list.h neighbor_decorrelation_function.h radial_count.h mean_closest_distance.h
+OBJECTS= $(OBJDIR)/amdat.o $(OBJDIR)/tokenize.o $(OBJDIR)/coordinate.o $(OBJDIR)/trajectory.o $(OBJDIR)/atom_trajectory.o $(OBJDIR)/molecule.o $(OBJDIR)/system.o $(OBJDIR)/analysis.o $(OBJDIR)/space-time_correlation_function.o $(OBJDIR)/van_hove_self.o $(OBJDIR)/progress.o $(OBJDIR)/mean_square_displacement.o $(OBJDIR)/van_hove_distinct.o $(OBJDIR)/control.o \
+$(OBJDIR)/wave_vectors.o $(OBJDIR)/wave_density.o $(OBJDIR)/intermediate_scattering_function.o $(OBJDIR)/correlation_2d.o $(OBJDIR)/incoherent_scattering_function.o $(OBJDIR)/debyewaller_dist.o $(OBJDIR)/stiffness_dist.o $(OBJDIR)/non_gaussian_parameter.o \
+$(OBJDIR)/gaussian_comparison.o $(OBJDIR)/radial_debye_waller.o $(OBJDIR)/mean_square_displacement_2d.o $(OBJDIR)/velocity_autocorrelation.o $(OBJDIR)/strings.o $(OBJDIR)/trajectory_list.o $(OBJDIR)/static_trajectory_list.o $(OBJDIR)/exptime_trajectory_list.o $(OBJDIR)/rgtensor.o $(OBJDIR)/trajmath.o $(OBJDIR)/rgtensor_stats.o \
+$(OBJDIR)/displacement_distribution.o $(OBJDIR)/boolean_list.o $(OBJDIR)/fast_particles.o $(OBJDIR)/displacement_map.o $(OBJDIR)/composition.o $(OBJDIR)/n_fold_order_parameter.o $(OBJDIR)/trajectory_list_bins.o $(OBJDIR)/structure_factor.o $(OBJDIR)/clustered_list.o $(OBJDIR)/trajectory_list_decay.o \
+$(OBJDIR)/vector_autocorrelation.o $(OBJDIR)/error.o $(OBJDIR)/mean_displacement.o $(OBJDIR)/multibody.o $(OBJDIR)/multibody_set.o $(OBJDIR)/multibody_list.o $(OBJDIR)/multibody_analysis.o $(OBJDIR)/gyration_radius.o $(OBJDIR)/trajectory_set.o $(OBJDIR)/edge_detector_timedependent.o $(OBJDIR)/mean_velocity_unsteady.o \
+$(OBJDIR)/mean_unsteady_displacement.o $(OBJDIR)/analysis_onetime.o $(OBJDIR)/radial_distribution_function.o $(OBJDIR)/bond_autocorrelation_function.o $(OBJDIR)/displacement_list.o $(OBJDIR)/orientational_correlation.o $(OBJDIR)/size_statistics.o $(OBJDIR)/multibody_region.o $(OBJDIR)/provisional_multibodies.o \
+$(OBJDIR)/dynamic_cluster_multibodies.o $(OBJDIR)/string_multibodies.o $(OBJDIR)/comover_multibodies.o $(OBJDIR)/relative_displacement_strings.o $(OBJDIR)/neighbor_list.o $(OBJDIR)/distance_neighbor_list.o $(OBJDIR)/persistent_neighbors.o $(OBJDIR)/voronoi_neighbor_list.o $(OBJDIR)/neighbor_decorrelation_function.o $(OBJDIR)/radial_count.o $(OBJDIR)/mean_closest_distance.o
 
-## Voronoi needs to be compiled at ./voro++-0.4.6/ level before compiling AMDAT
-VPATH = ./voro++-0.4.6/src
+CONTROLHEADERS=src/control.h src/system.h src/van_hove_self.h src/mean_square_displacement.h src/van_hove_distinct.h src/molecule.h src/atom_trajectory.h src/coordinate.h src/analysis.h src/debyewaller_dist.h src/stiffness_dist.h src/non_gaussian_parameter.h \
+src/gaussian_comparison.h src/fast_particles.h src/tokenize.h src/radial_debye_waller.h src/mean_square_displacement_2d.h src/velocity_autocorrelation.h src/strings.h src/rgtensor_stats.h src/displacement_map.h src/trajectory_list_bins.h src/bin_dynamics_analysis.h \
+src/bin_static_analysis.h src/composition.h src/n_fold_order_parameter.h src/trajectory_list_decay.h src/multibody_set.h src/multibody.h src/multibody_list.h src/multibody_analysis.h src/gyration_radius.h src/trajectory_set.h src/edge_detector_timedependent.h \
+src/mean_velocity_unsteady.h src/mean_unsteady_displacement.h src/radial_distribution_function.h src/bond_autocorrelation_function.h src/orientational_correlation.h src/size_statistics.h src/provisional_multibodies.h src/dynamic_cluster_multibodies.h \
+src/string_multibodies.h src/comover_multibodies.h src/relative_displacement_strings.h src/neighbor_list.h src/distance_neighbor_list.h src/persistent_neighbors.h src/voronoi_neighbor_list.h src/neighbor_decorrelation_function.h src/radial_count.h src/mean_closest_distance.h
+
+## Voronoi needs to be compiled at ./src/voro++-0.4.6/ level before compiling AMDAT
+VPATH = ./src/voro++-0.4.6/src
 
 ifeq ($(SERVER),TACC)
-AMDAT: $(OBJECTS) version.h
-	$(CXX) $(CFLAGSmain) $(OBJECTS) -o AMDAT -I./voro++-0.4.6/src -L./voro++-0.4.6/src -lvoro++
+AMDAT: $(OBJECTS) src/version.h
+	$(CXX) $(CFLAGSmain) $(OBJECTS) -o AMDAT -I./src/voro++-0.4.6/src -L./src/voro++-0.4.6/src -lvoro++
 
-system.o: system.cpp system.h molecule.h analysis.h atom_trajectory.h coordinate.h tokenize.h trajectory.h trajectory_set.h
-	$(CXX) $(CFLAGS) system.cpp -DTACC
+$(OBJDIR)/system.o: src/system.cpp src/system.h src/molecule.h src/analysis.h src/atom_trajectory.h src/coordinate.h src/tokenize.h src/trajectory.h src/trajectory_set.h
+	$(CXX) $(CFLAGS) src/system.cpp -DTACC -o $@
 
-velocity_autocorrelation.o: velocity_autocorrelation.cpp velocity_autocorrelation.h mean_square_displacement.h system.h molecule.h atom_trajectory.h coordinate.h analysis.h trajectory.h
-	$(CXX) $(CFLAGS) velocity_autocorrelation.cpp -DTACC
+$(OBJDIR)/velocity_autocorrelation.o: src/velocity_autocorrelation.cpp src/velocity_autocorrelation.h src/mean_square_displacement.h src/system.h src/molecule.h src/atom_trajectory.h src/coordinate.h src/analysis.h src/trajectory.h
+	$(CXX) $(CFLAGS) src/velocity_autocorrelation.cpp -DTACC -o $@
 
-control.o: control.cpp  $(CONTROLHEADERS)
-	$(CXX) $(CFLAGS) control.cpp -DTACC -I./voro++-0.4.6/src
+$(OBJDIR)/control.o: src/control.cpp $(CONTROLHEADERS)
+	$(CXX) $(CFLAGS) src/control.cpp -DTACC -I./src/voro++-0.4.6/src -o $@
 else
-AMDAT: $(OBJECTS) version.h
-	$(CXX) $(CFLAGSmain) $(OBJECTS) -o AMDAT -lfftw3 -lm -I./voro++-0.4.6/src -L./voro++-0.4.6/src -lvoro++
+AMDAT: $(OBJECTS) src/version.h
+	$(CXX) $(CFLAGSmain) $(OBJECTS) -o AMDAT -lfftw3 -lm -I./src/voro++-0.4.6/src -L./src/voro++-0.4.6/src -lvoro++ -o $@
 
-system.o: system.cpp system.h molecule.h analysis.h atom_trajectory.h coordinate.h tokenize.h trajectory.h trajectory_set.h
-	$(CXX) $(CFLAGS) system.cpp
+$(OBJDIR)/system.o: src/system.cpp src/system.h src/molecule.h src/analysis.h src/atom_trajectory.h src/coordinate.h src/tokenize.h src/trajectory.h src/trajectory_set.h
+	$(CXX) $(CFLAGS) src/system.cpp -o $@
 
-velocity_autocorrelation.o: velocity_autocorrelation.cpp velocity_autocorrelation.h mean_square_displacement.h system.h molecule.h atom_trajectory.h coordinate.h analysis.h trajectory.h
-	$(CXX) $(CFLAGS) velocity_autocorrelation.cpp -lfftw3 -lm
+$(OBJDIR)/velocity_autocorrelation.o: src/velocity_autocorrelation.cpp src/velocity_autocorrelation.h src/mean_square_displacement.h src/system.h src/molecule.h src/atom_trajectory.h src/coordinate.h src/analysis.h src/trajectory.h
+	$(CXX) $(CFLAGS) src/velocity_autocorrelation.cpp -lfftw3 -lm -o $@
 
-control.o: control.cpp $(CONTROLHEADERS)
-	$(CXX) $(CFLAGS) control.cpp -I./voro++-0.4.6/src
+$(OBJDIR)/control.o: src/control.cpp $(CONTROLHEADERS)
+	$(CXX) $(CFLAGS) src/control.cpp -I./src/voro++-0.4.6/src -o $@
 endif
 
-%.o: %.cpp
+$(OBJDIR)/%.o: src/%.cpp
 	$(CXX) $(CFLAGS) $< -o $@
 
-amdat.o: amdat.cpp system.h van_hove_self.h mean_square_displacement.h van_hove_distinct.h molecule.h atom_trajectory.h coordinate.h analysis.h control.h
+$(OBJDIR)/amdat.o: src/amdat.cpp src/system.h src/van_hove_self.h src/mean_square_displacement.h src/van_hove_distinct.h src/molecule.h src/atom_trajectory.h src/coordinate.h src/analysis.h src/control.h
 
-coordinate.o: coordinate.h coordinate.cpp
+$(OBJDIR)/coordinate.o: src/coordinate.h src/coordinate.cpp
 
-trajectory.o: trajectory.cpp trajectory.h coordinate.h
+$(OBJDIR)/trajectory.o: src/trajectory.cpp src/trajectory.h src/coordinate.h
 
-atom_trajectory.o: atom_trajectory.cpp atom_trajectory.h trajectory.h coordinate.h
+$(OBJDIR)/atom_trajectory.o: src/atom_trajectory.cpp src/atom_trajectory.h src/trajectory.h src/coordinate.h
 
-molecule.o: molecule.cpp molecule.h atom_trajectory.h coordinate.h trajectory.h multibody.h
+$(OBJDIR)/molecule.o: src/molecule.cpp src/molecule.h src/atom_trajectory.h src/coordinate.h src/trajectory.h src/multibody.h
 
-analysis.o: analysis.cpp system.h atom_trajectory.h coordinate.h molecule.h analysis.h trajectory.h trajectory_list.h
+$(OBJDIR)/analysis.o: src/analysis.cpp src/system.h src/atom_trajectory.h src/coordinate.h src/molecule.h src/analysis.h src/trajectory.h src/trajectory_list.h
 
-analysis_onetime.o: analysis_onetime.cpp analysis_onetime.h system.h atom_trajectory.h coordinate.h molecule.h analysis.h trajectory.h trajectory_list.h
+$(OBJDIR)/analysis_onetime.o: src/analysis_onetime.cpp src/analysis_onetime.h src/system.h src/atom_trajectory.h src/coordinate.h src/molecule.h src/analysis.h src/trajectory.h src/trajectory_list.h
 
-van_hove_self.o: van_hove_self.cpp van_hove_self.h space-time_correlation_function.h system.h coordinate.h molecule.h atom_trajectory.h analysis.h trajectory.h trajectory_list.h
+$(OBJDIR)/van_hove_self.o: src/van_hove_self.cpp src/van_hove_self.h src/space-time_correlation_function.h src/system.h src/coordinate.h src/molecule.h src/atom_trajectory.h src/analysis.h src/trajectory.h src/trajectory_list.h
 
-progress.o: progress.cpp progress.h
+$(OBJDIR)/progress.o: src/progress.cpp src/progress.h
 
-mean_square_displacement.o: mean_square_displacement.cpp mean_square_displacement.h system.h molecule.h atom_trajectory.h coordinate.h analysis.h  trajectory.h trajectory_list.h
+$(OBJDIR)/mean_square_displacement.o: src/mean_square_displacement.cpp src/mean_square_displacement.h src/system.h src/molecule.h src/atom_trajectory.h src/coordinate.h src/analysis.h src/trajectory.h src/trajectory_list.h
 
-mean_displacement.o: mean_displacement.cpp mean_displacement.h system.h molecule.h atom_trajectory.h coordinate.h analysis.h  trajectory.h trajectory_list.h
+$(OBJDIR)/mean_displacement.o: src/mean_displacement.cpp src/mean_displacement.h src/system.h src/molecule.h src/atom_trajectory.h src/coordinate.h src/analysis.h src/trajectory.h src/trajectory_list.h
 
-#msd_listprint.o: msd_listprint.cpp msd_listprint.h system.h molecule.h atom_trajectory.h coordinate.h analysis.h  trajectory.h trajectory_list.h
+#msd_listprint.o: src/msd_listprint.cpp src/msd_listprint.h src/system.h src/molecule.h src/atom_trajectory.h src/coordinate.h src/analysis.h src/trajectory.h src/trajectory_list.h
 
-van_hove_distinct.o: van_hove_distinct.cpp van_hove_distinct.h space-time_correlation_function.h system.h coordinate.h molecule.h analysis.h atom_trajectory.h trajectory.h
+$(OBJDIR)/van_hove_distinct.o: src/van_hove_distinct.cpp src/van_hove_distinct.h src/space-time_correlation_function.h src/system.h src/coordinate.h src/molecule.h src/analysis.h src/atom_trajectory.h src/trajectory.h
 
-wave_vectors.o: wave_vectors.h wave_vectors.cpp coordinate.h system.h molecule.h analysis.h atom_trajectory.h coordinate.h trajectory.h
-	$(CXX) $(CFLAGS) wave_vectors.cpp -DWV3D=${WAVEVECTORS3D} -DWV2D=${WAVEVECTORS2D} -DWV1D=${WAVEVECTORS1D}
+$(OBJDIR)/wave_vectors.o: src/wave_vectors.h src/wave_vectors.cpp src/coordinate.h src/system.h src/molecule.h src/analysis.h src/atom_trajectory.h src/coordinate.h src/trajectory.h
+	$(CXX) $(CFLAGS) src/wave_vectors.cpp -DWV3D=${WAVEVECTORS3D} -DWV2D=${WAVEVECTORS2D} -DWV1D=${WAVEVECTORS1D} -o $@
 
-wave_density.o: wave_density.h wave_density.cpp system.h wave_vectors.h molecule.h analysis.h atom_trajectory.h coordinate.h trajectory.h
+$(OBJDIR)/wave_density.o: src/wave_density.h src/wave_density.cpp src/system.h src/wave_vectors.h src/molecule.h src/analysis.h src/atom_trajectory.h src/coordinate.h src/trajectory.h
 
-intermediate_scattering_function.o: intermediate_scattering_function.h intermediate_scattering_function.cpp wave_density.h wave_vectors.h system.h molecule.h analysis.h atom_trajectory.h coordinate.h correlation_2d.h trajectory.h
+$(OBJDIR)/intermediate_scattering_function.o: src/intermediate_scattering_function.h src/intermediate_scattering_function.cpp src/wave_density.h src/wave_vectors.h src/system.h src/molecule.h src/analysis.h src/atom_trajectory.h src/coordinate.h src/correlation_2d.h src/trajectory.h
 
-correlation_2d.o: correlation_2d.h correlation_2d.cpp analysis.h system.h atom_trajectory.h coordinate.h molecule.h  trajectory.h
+$(OBJDIR)/correlation_2d.o: src/correlation_2d.h src/correlation_2d.cpp src/analysis.h src/system.h src/atom_trajectory.h src/coordinate.h src/molecule.h src/trajectory.h
 
-incoherent_scattering_function.o: incoherent_scattering_function.h incoherent_scattering_function.cpp correlation_2d.h wave_vectors.h analysis.h system.h atom_trajectory.h coordinate.h molecule.h trajectory.h
+$(OBJDIR)/incoherent_scattering_function.o: src/incoherent_scattering_function.h src/incoherent_scattering_function.cpp src/correlation_2d.h src/wave_vectors.h src/analysis.h src/system.h src/atom_trajectory.h src/coordinate.h src/molecule.h src/trajectory.h
 
-debyewaller_dist.o: debyewaller_dist.h debyewaller_dist.cpp analysis.h coordinate.h molecule.h system.h atom_trajectory.h trajectory.h
+$(OBJDIR)/debyewaller_dist.o: src/debyewaller_dist.h src/debyewaller_dist.cpp src/analysis.h src/coordinate.h src/molecule.h src/system.h src/atom_trajectory.h src/trajectory.h
 
-stiffness_dist.o: stiffness_dist.h stiffness_dist.cpp analysis.h coordinate.h molecule.h system.h atom_trajectory.h trajectory.h
+$(OBJDIR)/stiffness_dist.o: src/stiffness_dist.h src/stiffness_dist.cpp src/analysis.h src/coordinate.h src/molecule.h src/system.h src/atom_trajectory.h src/trajectory.h
 
-displacement_distribution.o: displacement_distribution.h displacement_distribution.cpp analysis.h coordinate.h molecule.h system.h atom_trajectory.h trajectory.h
+$(OBJDIR)/displacement_distribution.o: src/displacement_distribution.h src/displacement_distribution.cpp src/analysis.h src/coordinate.h src/molecule.h src/system.h src/atom_trajectory.h src/trajectory.h
 
-non_gaussian_parameter.o: non_gaussian_parameter.h non_gaussian_parameter.cpp system.h atom_trajectory.h coordinate.h molecule.h analysis.h mean_square_displacement.h trajectory.h
+$(OBJDIR)/non_gaussian_parameter.o: src/non_gaussian_parameter.h src/non_gaussian_parameter.cpp src/system.h src/atom_trajectory.h src/coordinate.h src/molecule.h src/analysis.h src/mean_square_displacement.h src/trajectory.h
 
-gaussian_comparison.o: gaussian_comparison.h gaussian_comparison.cpp system.h molecule.h analysis.h atom_trajectory.h coordinate.h non_gaussian_parameter.h mean_square_displacement.h van_hove_self.h space-time_correlation_function.h trajectory.h
+$(OBJDIR)/gaussian_comparison.o: src/gaussian_comparison.h src/gaussian_comparison.cpp src/system.h src/molecule.h src/analysis.h src/atom_trajectory.h src/coordinate.h src/non_gaussian_parameter.h src/mean_square_displacement.h src/van_hove_self.h src/space-time_correlation_function.h src/trajectory.h
 
-radial_debye_waller.o: radial_debye_waller.h radial_debye_waller.cpp analysis.h system.h atom_trajectory.h coordinate.h molecule.h analysis.h trajectory.h
+$(OBJDIR)/radial_debye_waller.o: src/radial_debye_waller.h src/radial_debye_waller.cpp src/analysis.h src/system.h src/atom_trajectory.h src/coordinate.h src/molecule.h src/analysis.h src/trajectory.h
 
-tokenize.o: tokenize.h tokenize.cpp 
+$(OBJDIR)/tokenize.o: src/tokenize.h src/tokenize.cpp 
 
-mean_square_displacement_2d.o: mean_square_displacement_2d.cpp mean_square_displacement_2d.h system.h molecule.h atom_trajectory.h coordinate.h analysis.h  trajectory.h
+$(OBJDIR)/mean_square_displacement_2d.o: src/mean_square_displacement_2d.cpp src/mean_square_displacement_2d.h src/system.h src/molecule.h src/atom_trajectory.h src/coordinate.h src/analysis.h src/trajectory.h
 
-space-time_correlation_function.o: space-time_correlation_function.cpp space-time_correlation_function.h system.h coordinate.h molecule.h analysis.h atom_trajectory.h trajectory.h
+$(OBJDIR)/space-time_correlation_function.o: src/space-time_correlation_function.cpp src/space-time_correlation_function.h src/system.h src/coordinate.h src/molecule.h src/analysis.h src/atom_trajectory.h src/trajectory.h
 
-strings.o: strings.h strings.cpp analysis.h atom_trajectory.h coordinate.h molecule.h trajectory.h progress.h system.h
+$(OBJDIR)/strings.o: src/strings.h src/strings.cpp src/analysis.h src/atom_trajectory.h src/coordinate.h src/molecule.h src/trajectory.h src/progress.h src/system.h
 
-trajectory_list.o: trajectory_list.h trajectory_list.cpp analysis.h system.h atom_trajectory.h coordinate.h molecule.h trajectory.h
+$(OBJDIR)/trajectory_list.o: src/trajectory_list.h src/trajectory_list.cpp src/analysis.h src/system.h src/atom_trajectory.h src/coordinate.h src/molecule.h src/trajectory.h
 
-static_trajectory_list.o: static_trajectory_list.cpp static_trajectory_list.h trajectory_list.h analysis.h system.h atom_trajectory.h coordinate.h molecule.h trajectory.h trajectory_set.h multibody_set.h
+$(OBJDIR)/static_trajectory_list.o: src/static_trajectory_list.cpp src/static_trajectory_list.h src/trajectory_list.h src/analysis.h src/system.h src/atom_trajectory.h src/coordinate.h src/molecule.h src/trajectory.h src/trajectory_set.h src/multibody_set.h
 
-exptime_trajectory_list.o: exptime_trajectory_list.cpp exptime_trajectory_list.h trajectory_list.h analysis.h system.h atom_trajectory.h coordinate.h molecule.h trajectory.h 
+$(OBJDIR)/exptime_trajectory_list.o: src/exptime_trajectory_list.cpp src/exptime_trajectory_list.h src/trajectory_list.h src/analysis.h src/system.h src/atom_trajectory.h src/coordinate.h src/molecule.h src/trajectory.h 
 
-rgtensor.o: rgtensor.cpp rgtensor.h analysis.h system.h atom_trajectory.h coordinate.h molecule.h analysis.h trajectory.h trajectory_list.h
+$(OBJDIR)/rgtensor.o: src/rgtensor.cpp src/rgtensor.h src/analysis.h src/system.h src/atom_trajectory.h src/coordinate.h src/molecule.h src/analysis.h src/trajectory.h src/trajectory_list.h
 
-trajmath.o: trajmath.h trajmath.cpp coordinate.h 
+$(OBJDIR)/trajmath.o: src/trajmath.h src/trajmath.cpp src/coordinate.h 
 
-rgtensor_stats.o: rgtensor_stats.cpp rgtensor_stats.h analysis.h system.h atom_trajectory.h coordinate.h molecule.h analysis.h trajectory.h trajectory_list.h
+$(OBJDIR)/rgtensor_stats.o: src/rgtensor_stats.cpp src/rgtensor_stats.h src/analysis.h src/system.h src/atom_trajectory.h src/coordinate.h src/molecule.h src/analysis.h src/trajectory.h src/trajectory_list.h
 
-boolean_list.o: boolean_list.cpp boolean_list.h system.h molecule.h analysis.h atom_trajectory.h coordinate.h tokenize.h trajectory.h
+$(OBJDIR)/boolean_list.o: src/boolean_list.cpp src/boolean_list.h src/system.h src/molecule.h src/analysis.h src/atom_trajectory.h src/coordinate.h src/tokenize.h src/trajectory.h
 
-fast_particles.o: fast_particles.h fast_particles.cpp analysis.h atom_trajectory.h coordinate.h molecule.h system.h gaussian_comparison.h  trajectory.h exptime_trajectory_list.h trajectory_list.h 
+$(OBJDIR)/fast_particles.o: src/fast_particles.h src/fast_particles.cpp src/analysis.h src/atom_trajectory.h src/coordinate.h src/molecule.h src/system.h src/gaussian_comparison.h src/trajectory.h src/exptime_trajectory_list.h src/trajectory_list.h 
 
-n_fold_order_parameter.o: n_fold_order_parameter.h n_fold_order_parameter.cpp version.h value_list.h system.h atom_trajectory.h coordinate.h molecule.h analysis.h trajectory.h trajectory_list.h boolean_list.h
+$(OBJDIR)/n_fold_order_parameter.o: src/n_fold_order_parameter.h src/n_fold_order_parameter.cpp src/version.h src/value_list.h src/system.h src/atom_trajectory.h src/coordinate.h src/molecule.h src/analysis.h src/trajectory.h src/trajectory_list.h src/boolean_list.h
 
-composition.o: composition.h composition.cpp analysis.h version.h system.h molecule.h atom_trajectory.h coordinate.h tokenize.h trajectory.h trajectory_list.h
+$(OBJDIR)/composition.o: src/composition.h src/composition.cpp src/analysis.h src/version.h src/system.h src/molecule.h src/atom_trajectory.h src/coordinate.h src/tokenize.h src/trajectory.h src/trajectory_list.h
 
-displacement_map.o: displacement_map.h displacement_map.cpp version.h value_list.h system.h atom_trajectory.h coordinate.h molecule.h analysis.h trajectory.h trajectory_list.h boolean_list.h
+$(OBJDIR)/displacement_map.o: src/displacement_map.h src/displacement_map.cpp src/version.h src/value_list.h src/system.h src/atom_trajectory.h src/coordinate.h src/molecule.h src/analysis.h src/trajectory.h src/trajectory_list.h src/boolean_list.h
 
-trajectory_list_bins.o: trajectory_list_bins.cpp trajectory_list_bins.h system.h molecule.h analysis.h atom_trajectory.h coordinate.h tokenize.h trajectory.h trajectory_list.h boolean_list.h progress.h
+$(OBJDIR)/trajectory_list_bins.o: src/trajectory_list_bins.cpp src/trajectory_list_bins.h src/system.h src/molecule.h src/analysis.h src/atom_trajectory.h src/coordinate.h src/tokenize.h src/trajectory.h src/trajectory_list.h src/boolean_list.h src/progress.h
 
-structure_factor.o: structure_factor.cpp structure_factor.h system.h analysis.h atom_trajectory.h coordinate.h molecule.h  trajectory.h trajectory_list.h wave_vectors.h version.h tokenize.h
+$(OBJDIR)/structure_factor.o: src/structure_factor.cpp src/structure_factor.h src/system.h src/analysis.h src/atom_trajectory.h src/coordinate.h src/molecule.h src/trajectory.h src/trajectory_list.h src/wave_vectors.h src/version.h src/tokenize.h
 
-clustered_list.o: clustered_list.cpp clustered_list.h trajectory_list.h analysis.h system.h atom_trajectory.h coordinate.h molecule.h trajectory.h
+$(OBJDIR)/clustered_list.o: src/clustered_list.cpp src/clustered_list.h src/trajectory_list.h src/analysis.h src/system.h src/atom_trajectory.h src/coordinate.h src/molecule.h src/trajectory.h
 
-vector_autocorrelation.o: vector_autocorrelation.cpp vector_autocorrelation.h analysis.h system.h atom_trajectory.h coordinate.h molecule.h analysis.h trajectory.h trajectory_list.h version.h tokenize.h
+$(OBJDIR)/vector_autocorrelation.o: src/vector_autocorrelation.cpp src/vector_autocorrelation.h src/analysis.h src/system.h src/atom_trajectory.h src/coordinate.h src/molecule.h src/analysis.h src/trajectory.h src/trajectory_list.h src/version.h src/tokenize.h
 
-trajectory_list_decay.o: trajectory_list_decay.cpp trajectory_list_decay.h analysis.h system.h trajectory_list.h version.h boolean_list.h trajectory.h molecule.h coordinate.h atom_trajectory.h
+$(OBJDIR)/trajectory_list_decay.o: src/trajectory_list_decay.cpp src/trajectory_list_decay.h src/analysis.h src/system.h src/trajectory_list.h src/version.h src/boolean_list.h src/trajectory.h src/molecule.h src/coordinate.h src/atom_trajectory.h
 
-error.o: error.cpp error.h control.cpp control.h
+$(OBJDIR)/error.o: src/error.cpp src/error.h src/control.cpp src/control.h
 
-multibody.o: multibody.cpp multibody.h trajectory.h coordinate.h system.h analysis.h atom_trajectory.h tokenize.h 
+$(OBJDIR)/multibody.o: src/multibody.cpp src/multibody.h src/trajectory.h src/coordinate.h src/system.h src/analysis.h src/atom_trajectory.h src/tokenize.h 
 
-multibody_set.o: multibody_set.cpp multibody_set.h trajectory.h coordinate.h system.h analysis.h atom_trajectory.h tokenize.h trajectory_set.h
+$(OBJDIR)/multibody_set.o: src/multibody_set.cpp src/multibody_set.h src/trajectory.h src/coordinate.h src/system.h src/analysis.h src/atom_trajectory.h src/tokenize.h src/trajectory_set.h
 
-multibody_list.o: multibody_list.cpp multibody_list.h system.h molecule.h analysis.h atom_trajectory.h coordinate.h tokenize.h trajectory.h multibody.h multibody_set.h multibody_analysis.h multibody.h
+$(OBJDIR)/multibody_list.o: src/multibody_list.cpp src/multibody_list.h src/system.h src/molecule.h src/analysis.h src/atom_trajectory.h src/coordinate.h src/tokenize.h src/trajectory.h src/multibody.h src/multibody_set.h src/multibody_analysis.h src/multibody.h
 
-multibody_analysis.o: multibody_analysis.cpp multibody_analysis.h multibody_list.h system.h molecule.h analysis.h atom_trajectory.h coordinate.h tokenize.h trajectory.h multibody.h multibody_set.h version.h
+$(OBJDIR)/multibody_analysis.o: src/multibody_analysis.cpp src/multibody_analysis.h src/multibody_list.h src/system.h src/molecule.h src/analysis.h src/atom_trajectory.h src/coordinate.h src/tokenize.h src/trajectory.h src/multibody.h src/multibody_set.h src/version.h
 
-trajectory_set.o: trajectory_set.cpp trajectory_set.h trajectory.h coordinate.h system.h analysis.h atom_trajectory.h tokenize.h 
+$(OBJDIR)/trajectory_set.o: src/trajectory_set.cpp src/trajectory_set.h src/trajectory.h src/coordinate.h src/system.h src/analysis.h src/atom_trajectory.h src/tokenize.h 
 
-gyration_radius.o: gyration_radius.cpp gyration_radius.h multibody_analysis.h multibody_list.h system.h molecule.h analysis.h atom_trajectory.h coordinate.h tokenize.h trajectory.h multibody.h multibody_set.h version.h
+$(OBJDIR)/gyration_radius.o: src/gyration_radius.cpp src/gyration_radius.h src/multibody_analysis.h src/multibody_list.h src/system.h src/molecule.h src/analysis.h src/atom_trajectory.h src/coordinate.h src/tokenize.h src/trajectory.h src/multibody.h src/multibody_set.h src/version.h
 
-bond_autocorrelation_function.o: bond_autocorrelation_function.cpp bond_autocorrelation_function.h multibody_analysis.h multibody_list.h system.h molecule.h analysis.h atom_trajectory.h coordinate.h tokenize.h trajectory.h multibody.h multibody_set.h version.h
+$(OBJDIR)/bond_autocorrelation_function.o: src/bond_autocorrelation_function.cpp src/bond_autocorrelation_function.h src/multibody_analysis.h src/multibody_list.h src/system.h src/molecule.h src/analysis.h src/atom_trajectory.h src/coordinate.h src/tokenize.h src/trajectory.h src/multibody.h src/multibody_set.h src/version.h
 
-edge_detector_timedependent.o: edge_detector_timedependent.cpp edge_detector_timedependent.h system.h coordinate.h analysis.h version.h molecule.h  atom_trajectory.h coordinate.h tokenize.h trajectory.h trajectory_set.h
+$(OBJDIR)/edge_detector_timedependent.o: src/edge_detector_timedependent.cpp src/edge_detector_timedependent.h src/system.h src/coordinate.h src/analysis.h src/version.h src/molecule.h src/atom_trajectory.h src/coordinate.h src/tokenize.h src/trajectory.h src/trajectory_set.h
 
-mean_velocity_unsteady.o: mean_velocity_unsteady.cpp mean_velocity_unsteady.h system.h coordinate.h version.h static_trajectory_list.h analysis.h molecule.h analysis.h atom_trajectory.h coordinate.h tokenize.h trajectory.h trajectory_set.h
+$(OBJDIR)/mean_velocity_unsteady.o: src/mean_velocity_unsteady.cpp src/mean_velocity_unsteady.h src/system.h src/coordinate.h src/version.h src/static_trajectory_list.h src/analysis.h src/molecule.h src/analysis.h src/atom_trajectory.h src/coordinate.h src/tokenize.h src/trajectory.h src/trajectory_set.h
 
-mean_unsteady_displacement.o: mean_unsteady_displacement.cpp mean_unsteady_displacement.h system.h molecule.h atom_trajectory.h coordinate.h analysis.h  trajectory.h trajectory_list.h
+$(OBJDIR)/mean_unsteady_displacement.o: src/mean_unsteady_displacement.cpp src/mean_unsteady_displacement.h src/system.h src/molecule.h src/atom_trajectory.h src/coordinate.h src/analysis.h src/trajectory.h src/trajectory_list.h
 
-radial_distribution_function.o: radial_distribution_function.cpp radial_distribution_function.h analysis_onetime.h system.h atom_trajectory.h coordinate.h molecule.h analysis.h trajectory.h trajectory_list.h version.h
+$(OBJDIR)/radial_distribution_function.o: src/radial_distribution_function.cpp src/radial_distribution_function.h src/analysis_onetime.h src/system.h src/atom_trajectory.h src/coordinate.h src/molecule.h src/analysis.h src/trajectory.h src/trajectory_list.h src/version.h
 
-mean_closest_distance.o: mean_closest_distance.cpp mean_closest_distance.h analysis_onetime.h system.h atom_trajectory.h coordinate.h molecule.h analysis.h trajectory.h trajectory_list.h version.h
+$(OBJDIR)/mean_closest_distance.o: src/mean_closest_distance.cpp src/mean_closest_distance.h src/analysis_onetime.h src/system.h src/atom_trajectory.h src/coordinate.h src/molecule.h src/analysis.h src/trajectory.h src/trajectory_list.h src/version.h
 
-radial_count.o: radial_count.cpp radial_count.h analysis_onetime.h system.h atom_trajectory.h coordinate.h molecule.h analysis.h trajectory.h trajectory_list.h version.h
+$(OBJDIR)/radial_count.o: src/radial_count.cpp src/radial_count.h src/analysis_onetime.h src/system.h src/atom_trajectory.h src/coordinate.h src/molecule.h src/analysis.h src/trajectory.h src/trajectory_list.h src/version.h
 
-displacement_list.o: displacement_list.cpp displacement_list.h static_trajectory_list.h value_list.h analysis.h boolean_list.h trajectory_list.h system.h molecule.h analysis.h atom_trajectory.h coordinate.h tokenize.h trajectory.h trajectory_set.h
+$(OBJDIR)/displacement_list.o: src/displacement_list.cpp src/displacement_list.h src/static_trajectory_list.h src/value_list.h src/analysis.h src/boolean_list.h src/trajectory_list.h src/system.h src/molecule.h src/analysis.h src/atom_trajectory.h src/coordinate.h src/tokenize.h src/trajectory.h src/trajectory_set.h
 
-orientational_correlation.o: orientational_correlation.cpp orientational_correlation.h multibody_analysis.h multibody_list.h system.h molecule.h analysis.h atom_trajectory.h coordinate.h tokenize.h trajectory.h multibody.h multibody_set.h version.h
+$(OBJDIR)/orientational_correlation.o: src/orientational_correlation.cpp src/orientational_correlation.h src/multibody_analysis.h src/multibody_list.h src/system.h src/molecule.h src/analysis.h src/atom_trajectory.h src/coordinate.h src/tokenize.h src/trajectory.h src/multibody.h src/multibody_set.h src/version.h
 
-size_statistics.o:size_statistics.cpp size_statistics.h system.h molecule.h analysis.h atom_trajectory.h coordinate.h tokenize.h trajectory.h multibody.h multibody_set.h multibody_analysis.h version.h
+$(OBJDIR)/size_statistics.o: src/size_statistics.cpp src/size_statistics.h src/system.h src/molecule.h src/analysis.h src/atom_trajectory.h src/coordinate.h src/tokenize.h src/trajectory.h src/multibody.h src/multibody_set.h src/multibody_analysis.h src/version.h
 
-multibody_region.o: multibody_region.cpp multibody_region.h system.h molecule.h analysis.h atom_trajectory.h coordinate.h tokenize.h trajectory.h multibody.h multibody_set.h multibody_analysis.h version.h
+$(OBJDIR)/multibody_region.o: src/multibody_region.cpp src/multibody_region.h src/system.h src/molecule.h src/analysis.h src/atom_trajectory.h src/coordinate.h src/tokenize.h src/trajectory.h src/multibody.h src/multibody_set.h src/multibody_analysis.h src/version.h
 
-provisional_multibodies.o: provisional_multibodies.cpp provisional_multibodies.h multibody_set.h trajectory.h coordinate.h system.h analysis.h atom_trajectory.h tokenize.h trajectory_set.h multibody.h control.h system.h van_hove_self.h mean_square_displacement.h van_hove_distinct.h molecule.h atom_trajectory.h coordinate.h analysis.h debyewaller_dist.h stiffness_dist.h non_gaussian_parameter.h gaussian_comparison.h fast_particles.h   tokenize.h radial_debye_waller.h mean_square_displacement_2d.h velocity_autocorrelation.h strings.h rgtensor_stats.h displacement_map.h trajectory_list_bins.h bin_dynamics_analysis.h bin_static_analysis.h composition.h n_fold_order_parameter.h trajectory_list_decay.h multibody_set.h multibody.h multibody_list.h multibody_analysis.h gyration_radius.h trajectory_set.h edge_detector_timedependent.h mean_velocity_unsteady.h mean_unsteady_displacement.h\
- radial_distribution_function.h bond_autocorrelation_function.h orientational_correlation.h multibody_region.h coordinate.h size_statistics.h
+$(OBJDIR)/provisional_multibodies.o: src/provisional_multibodies.cpp src/provisional_multibodies.h src/multibody_set.h src/trajectory.h src/coordinate.h src/system.h src/analysis.h src/atom_trajectory.h src/tokenize.h src/trajectory_set.h src/multibody.h src/control.h src/system.h src/van_hove_self.h src/mean_square_displacement.h src/van_hove_distinct.h src/molecule.h src/atom_trajectory.h src/coordinate.h src/analysis.h src/debyewaller_dist.h src/stiffness_dist.h src/non_gaussian_parameter.h src/gaussian_comparison.h src/fast_particles.h src/tokenize.h src/radial_debye_waller.h src/mean_square_displacement_2d.h src/velocity_autocorrelation.h src/strings.h src/rgtensor_stats.h src/displacement_map.h src/trajectory_list_bins.h src/bin_dynamics_analysis.h src/bin_static_analysis.h src/composition.h src/n_fold_order_parameter.h src/trajectory_list_decay.h src/multibody_set.h src/multibody.h src/multibody_list.h src/multibody_analysis.h src/gyration_radius.h src/trajectory_set.h src/edge_detector_timedependent.h src/mean_velocity_unsteady.h src/mean_unsteady_displacement.h\
+ src/radial_distribution_function.h src/bond_autocorrelation_function.h src/orientational_correlation.h src/multibody_region.h src/coordinate.h src/size_statistics.h
 
-dynamic_cluster_multibodies.o: dynamic_cluster_multibodies.h dynamic_cluster_multibodies.cpp provisional_multibodies.h provisional_multibodies.h multibody_set.h trajectory.h coordinate.h system.h analysis.h atom_trajectory.h tokenize.h trajectory_set.h multibody.h control.h system.h van_hove_self.h mean_square_displacement.h van_hove_distinct.h molecule.h atom_trajectory.h coordinate.h analysis.h debyewaller_dist.h stiffness_dist.h non_gaussian_parameter.h gaussian_comparison.h fast_particles.h   tokenize.h radial_debye_waller.h mean_square_displacement_2d.h velocity_autocorrelation.h strings.h rgtensor_stats.h displacement_map.h trajectory_list_bins.h bin_dynamics_analysis.h bin_static_analysis.h composition.h n_fold_order_parameter.h trajectory_list_decay.h multibody_set.h multibody.h multibody_list.h multibody_analysis.h gyration_radius.h trajectory_set.h edge_detector_timedependent.h mean_velocity_unsteady.h mean_unsteady_displacement.h\
- radial_distribution_function.h radial_count.h bond_autocorrelation_function.h orientational_correlation.h multibody_region.h coordinate.h size_statistics.h
+$(OBJDIR)/dynamic_cluster_multibodies.o: src/dynamic_cluster_multibodies.h src/dynamic_cluster_multibodies.cpp src/provisional_multibodies.h src/provisional_multibodies.h src/multibody_set.h src/trajectory.h src/coordinate.h src/system.h src/analysis.h src/atom_trajectory.h src/tokenize.h src/trajectory_set.h src/multibody.h src/control.h src/system.h src/van_hove_self.h src/mean_square_displacement.h src/van_hove_distinct.h src/molecule.h src/atom_trajectory.h src/coordinate.h src/analysis.h src/debyewaller_dist.h src/stiffness_dist.h src/non_gaussian_parameter.h src/gaussian_comparison.h src/fast_particles.h src/tokenize.h src/radial_debye_waller.h src/mean_square_displacement_2d.h src/velocity_autocorrelation.h src/strings.h src/rgtensor_stats.h src/displacement_map.h src/trajectory_list_bins.h src/bin_dynamics_analysis.h src/bin_static_analysis.h src/composition.h src/n_fold_order_parameter.h src/trajectory_list_decay.h src/multibody_set.h src/multibody.h src/multibody_list.h src/multibody_analysis.h src/gyration_radius.h src/trajectory_set.h src/edge_detector_timedependent.h src/mean_velocity_unsteady.h src/mean_unsteady_displacement.h\
+ src/radial_distribution_function.h src/radial_count.h src/bond_autocorrelation_function.h src/orientational_correlation.h src/multibody_region.h src/coordinate.h src/size_statistics.h
 
-string_multibodies.o: string_multibodies.h string_multibodies.cpp dynamic_cluster_multibodies.h provisional_multibodies.h provisional_multibodies.h multibody_set.h trajectory.h coordinate.h system.h analysis.h atom_trajectory.h tokenize.h trajectory_set.h multibody.h control.h system.h van_hove_self.h mean_square_displacement.h van_hove_distinct.h molecule.h atom_trajectory.h coordinate.h analysis.h debyewaller_dist.h stiffness_dist.h non_gaussian_parameter.h gaussian_comparison.h fast_particles.h   tokenize.h radial_debye_waller.h mean_square_displacement_2d.h velocity_autocorrelation.h strings.h rgtensor_stats.h displacement_map.h trajectory_list_bins.h bin_dynamics_analysis.h bin_static_analysis.h composition.h n_fold_order_parameter.h trajectory_list_decay.h multibody_set.h multibody.h multibody_list.h multibody_analysis.h gyration_radius.h trajectory_set.h edge_detector_timedependent.h mean_velocity_unsteady.h mean_unsteady_displacement.h\
- radial_distribution_function.h bond_autocorrelation_function.h orientational_correlation.h multibody_region.h coordinate.h size_statistics.h radial_count.h
+$(OBJDIR)/string_multibodies.o: src/string_multibodies.h src/string_multibodies.cpp src/dynamic_cluster_multibodies.h src/provisional_multibodies.h src/provisional_multibodies.h src/multibody_set.h src/trajectory.h src/coordinate.h src/system.h src/analysis.h src/atom_trajectory.h src/tokenize.h src/trajectory_set.h src/multibody.h src/control.h src/system.h src/van_hove_self.h src/mean_square_displacement.h src/van_hove_distinct.h src/molecule.h src/atom_trajectory.h src/coordinate.h src/analysis.h src/debyewaller_dist.h src/stiffness_dist.h src/non_gaussian_parameter.h src/gaussian_comparison.h src/fast_particles.h src/tokenize.h src/radial_debye_waller.h src/mean_square_displacement_2d.h src/velocity_autocorrelation.h src/strings.h src/rgtensor_stats.h src/displacement_map.h src/trajectory_list_bins.h src/bin_dynamics_analysis.h src/bin_static_analysis.h src/composition.h src/n_fold_order_parameter.h src/trajectory_list_decay.h src/multibody_set.h src/multibody.h src/multibody_list.h src/multibody_analysis.h src/gyration_radius.h src/trajectory_set.h src/edge_detector_timedependent.h src/mean_velocity_unsteady.h src/mean_unsteady_displacement.h\
+ src/radial_distribution_function.h src/bond_autocorrelation_function.h src/orientational_correlation.h src/multibody_region.h src/coordinate.h src/size_statistics.h src/radial_count.h
 
-comover_multibodies.o: comover_multibodies.h comover_multibodies.cpp dynamic_cluster_multibodies.h provisional_multibodies.h provisional_multibodies.h multibody_set.h trajectory.h coordinate.h system.h analysis.h atom_trajectory.h tokenize.h trajectory_set.h multibody.h control.h system.h van_hove_self.h mean_square_displacement.h van_hove_distinct.h molecule.h atom_trajectory.h coordinate.h analysis.h debyewaller_dist.h stiffness_dist.h non_gaussian_parameter.h gaussian_comparison.h fast_particles.h   tokenize.h radial_debye_waller.h mean_square_displacement_2d.h velocity_autocorrelation.h strings.h rgtensor_stats.h displacement_map.h trajectory_list_bins.h bin_dynamics_analysis.h bin_static_analysis.h composition.h n_fold_order_parameter.h trajectory_list_decay.h multibody_set.h multibody.h multibody_list.h multibody_analysis.h gyration_radius.h trajectory_set.h edge_detector_timedependent.h mean_velocity_unsteady.h mean_unsteady_displacement.h\
- radial_distribution_function.h bond_autocorrelation_function.h orientational_correlation.h multibody_region.h coordinate.h size_statistics.h radial_count.h
+$(OBJDIR)/comover_multibodies.o: src/comover_multibodies.h src/comover_multibodies.cpp src/dynamic_cluster_multibodies.h src/provisional_multibodies.h src/provisional_multibodies.h src/multibody_set.h src/trajectory.h src/coordinate.h src/system.h src/analysis.h src/atom_trajectory.h src/tokenize.h src/trajectory_set.h src/multibody.h src/control.h src/system.h src/van_hove_self.h src/mean_square_displacement.h src/van_hove_distinct.h src/molecule.h src/atom_trajectory.h src/coordinate.h src/analysis.h src/debyewaller_dist.h src/stiffness_dist.h src/non_gaussian_parameter.h src/gaussian_comparison.h src/fast_particles.h src/tokenize.h src/radial_debye_waller.h src/mean_square_displacement_2d.h src/velocity_autocorrelation.h src/strings.h src/rgtensor_stats.h src/displacement_map.h src/trajectory_list_bins.h src/bin_dynamics_analysis.h src/bin_static_analysis.h src/composition.h src/n_fold_order_parameter.h src/trajectory_list_decay.h src/multibody_set.h src/multibody.h src/multibody_list.h src/multibody_analysis.h src/gyration_radius.h src/trajectory_set.h src/edge_detector_timedependent.h src/mean_velocity_unsteady.h src/mean_unsteady_displacement.h\
+ src/radial_distribution_function.h src/bond_autocorrelation_function.h src/orientational_correlation.h src/multibody_region.h src/coordinate.h src/size_statistics.h src/radial_count.h
 
-relative_displacement_strings.o: relative_displacement_strings.h relative_displacement_strings.cpp dynamic_cluster_multibodies.h provisional_multibodies.h provisional_multibodies.h multibody_set.h trajectory.h coordinate.h system.h analysis.h atom_trajectory.h tokenize.h trajectory_set.h multibody.h control.h system.h van_hove_self.h mean_square_displacement.h van_hove_distinct.h molecule.h atom_trajectory.h coordinate.h analysis.h debyewaller_dist.h stiffness_dist.h non_gaussian_parameter.h gaussian_comparison.h fast_particles.h   tokenize.h radial_debye_waller.h mean_square_displacement_2d.h velocity_autocorrelation.h strings.h rgtensor_stats.h displacement_map.h trajectory_list_bins.h bin_dynamics_analysis.h bin_static_analysis.h composition.h n_fold_order_parameter.h trajectory_list_decay.h multibody_set.h multibody.h multibody_list.h multibody_analysis.h gyration_radius.h trajectory_set.h edge_detector_timedependent.h mean_velocity_unsteady.h mean_unsteady_displacement.h\
- radial_distribution_function.h bond_autocorrelation_function.h orientational_correlation.h multibody_region.h coordinate.h size_statistics.h radial_count.h
+$(OBJDIR)/relative_displacement_strings.o: src/relative_displacement_strings.h src/relative_displacement_strings.cpp src/dynamic_cluster_multibodies.h src/provisional_multibodies.h src/provisional_multibodies.h src/multibody_set.h src/trajectory.h src/coordinate.h src/system.h src/analysis.h src/atom_trajectory.h src/tokenize.h src/trajectory_set.h src/multibody.h src/control.h src/system.h src/van_hove_self.h src/mean_square_displacement.h src/van_hove_distinct.h src/molecule.h src/atom_trajectory.h src/coordinate.h src/analysis.h src/debyewaller_dist.h src/stiffness_dist.h src/non_gaussian_parameter.h src/gaussian_comparison.h src/fast_particles.h src/tokenize.h src/radial_debye_waller.h src/mean_square_displacement_2d.h src/velocity_autocorrelation.h src/strings.h src/rgtensor_stats.h src/displacement_map.h src/trajectory_list_bins.h src/bin_dynamics_analysis.h src/bin_static_analysis.h src/composition.h src/n_fold_order_parameter.h src/trajectory_list_decay.h src/multibody_set.h src/multibody.h src/multibody_list.h src/multibody_analysis.h src/gyration_radius.h src/trajectory_set.h src/edge_detector_timedependent.h src/mean_velocity_unsteady.h src/mean_unsteady_displacement.h\
+ src/radial_distribution_function.h src/bond_autocorrelation_function.h src/orientational_correlation.h src/multibody_region.h src/coordinate.h src/size_statistics.h src/radial_count.h
 
-neighbor_list.o: neighbor_list.cpp neighbor_list.h trajectory_list.h system.h analysis.h atom_trajectory.h coordinate.h molecule.h trajectory.h value_list.h
+$(OBJDIR)/neighbor_list.o: src/neighbor_list.cpp src/neighbor_list.h src/trajectory_list.h src/system.h src/analysis.h src/atom_trajectory.h src/coordinate.h src/molecule.h src/trajectory.h src/value_list.h
 
-distance_neighbor_list.o: distance_neighbor_list.cpp distance_neighbor_list.h neighbor_list.h trajectory_list.h system.h trajectory_list.h trajectory_list.cpp analysis.h system.h atom_trajectory.h coordinate.h molecule.h trajectory.h analysis_onetime.h coordinate.h molecule.h value_list.h
+$(OBJDIR)/distance_neighbor_list.o: src/distance_neighbor_list.cpp src/distance_neighbor_list.h src/neighbor_list.h src/trajectory_list.h src/system.h src/trajectory_list.h src/trajectory_list.cpp src/analysis.h src/system.h src/atom_trajectory.h src/coordinate.h src/molecule.h src/trajectory.h src/analysis_onetime.h src/coordinate.h src/molecule.h src/value_list.h
 
-voronoi_neighbor_list.o: voronoi_neighbor_list.cpp voronoi_neighbor_list.h neighbor_list.h trajectory_list.h system.h trajectory_list.h trajectory_list.cpp analysis.h system.h atom_trajectory.h coordinate.h molecule.h trajectory.h analysis_onetime.h coordinate.h molecule.h value_list.h
-	$(CXX) $(CFLAGS) voronoi_neighbor_list.cpp -I./voro++-0.4.6/src
+$(OBJDIR)/voronoi_neighbor_list.o: src/voronoi_neighbor_list.cpp src/voronoi_neighbor_list.h src/neighbor_list.h src/trajectory_list.h src/system.h src/trajectory_list.h src/trajectory_list.cpp src/analysis.h src/system.h src/atom_trajectory.h src/coordinate.h src/molecule.h src/trajectory.h src/analysis_onetime.h src/coordinate.h src/molecule.h src/value_list.h
+	$(CXX) $(CFLAGS) src/voronoi_neighbor_list.cpp -I./src/voro++-0.4.6/src -o $@
 
-persistent_neighbors.o:	persistent_neighbors.cpp persistent_neighbors.h dynamic_cluster_multibodies.h provisional_multibodies.h provisional_multibodies.h multibody_set.h trajectory.h coordinate.h system.h analysis.h atom_trajectory.h tokenize.h trajectory_set.h multibody.h control.h system.h van_hove_self.h mean_square_displacement.h van_hove_distinct.h molecule.h atom_trajectory.h coordinate.h analysis.h debyewaller_dist.h stiffness_dist.h non_gaussian_parameter.h gaussian_comparison.h fast_particles.h   tokenize.h radial_debye_waller.h mean_square_displacement_2d.h velocity_autocorrelation.h strings.h rgtensor_stats.h displacement_map.h trajectory_list_bins.h bin_dynamics_analysis.h bin_static_analysis.h composition.h n_fold_order_parameter.h trajectory_list_decay.h multibody_set.h multibody.h multibody_list.h multibody_analysis.h gyration_radius.h trajectory_set.h edge_detector_timedependent.h mean_velocity_unsteady.h mean_unsteady_displacement.h\
- radial_distribution_function.h bond_autocorrelation_function.h orientational_correlation.h multibody_region.h coordinate.h size_statistics.h neighbor_list.h radial_count.h
+$(OBJDIR)/persistent_neighbors.o: src/persistent_neighbors.cpp src/persistent_neighbors.h src/dynamic_cluster_multibodies.h src/provisional_multibodies.h src/provisional_multibodies.h src/multibody_set.h src/trajectory.h src/coordinate.h src/system.h src/analysis.h src/atom_trajectory.h src/tokenize.h src/trajectory_set.h src/multibody.h src/control.h src/system.h src/van_hove_self.h src/mean_square_displacement.h src/van_hove_distinct.h src/molecule.h src/atom_trajectory.h src/coordinate.h src/analysis.h src/debyewaller_dist.h src/stiffness_dist.h src/non_gaussian_parameter.h src/gaussian_comparison.h src/fast_particles.h src/tokenize.h src/radial_debye_waller.h src/mean_square_displacement_2d.h src/velocity_autocorrelation.h src/strings.h src/rgtensor_stats.h src/displacement_map.h src/trajectory_list_bins.h src/bin_dynamics_analysis.h src/bin_static_analysis.h src/composition.h src/n_fold_order_parameter.h src/trajectory_list_decay.h src/multibody_set.h src/multibody.h src/multibody_list.h src/multibody_analysis.h src/gyration_radius.h src/trajectory_set.h src/edge_detector_timedependent.h src/mean_velocity_unsteady.h src/mean_unsteady_displacement.h\
+ src/radial_distribution_function.h src/bond_autocorrelation_function.h src/orientational_correlation.h src/multibody_region.h src/coordinate.h src/size_statistics.h src/neighbor_list.h src/radial_count.h
 
-neighbor_decorrelation_function.o: neighbor_decorrelation_function.cpp neighbor_decorrelation_function.h system.h molecule.h atom_trajectory.h coordinate.h analysis.h  trajectory.h trajectory_list.h neighbor_list.h value_list.h
+$(OBJDIR)/neighbor_decorrelation_function.o: src/neighbor_decorrelation_function.cpp src/neighbor_decorrelation_function.h src/system.h src/molecule.h src/atom_trajectory.h src/coordinate.h src/analysis.h src/trajectory.h src/trajectory_list.h src/neighbor_list.h src/value_list.h
 
+OBJDIR:
+	mkdir $(OBJDIR)
 
 clean: 
 	rm -f $(OBJECTS)
