@@ -46,13 +46,13 @@ Development Version Documentation
 **[3 Analyzing trajectories](3-Analyzing-trajectories)**<br>
 **[a Trajectory Lists](#a-Trajectory-Lists)**<br>
 **[b Bin Lists](#b-Bin-Lists)**<br>
-**[c Tools for use with trajectory lists and bin\_trajectory\_lists:](#c-Tools-for-use-with-trajectory-lists-and-bin\_trajectory\_lists:)**<br>
+**[c Tools for use with trajectory lists and bin\_trajectory\_lists](#c-Tools-for-use-with-trajectory-lists-and-bin\_trajectory\_lists)**<br>
 **[composition](#composition)**<br>
 **[isfs](#isfs)**<br>
 **[msd](#msd)**<br>
 **[msd\_2d](#msd\_2d)**<br>
 **[structure\_factor](#structure\_factor)**<br>
-**[d Tools for use with trajectory lists only:](#d-Tools-for-use-with-trajectory-lists-only:)**<br>
+**[d Tools for use with trajectory lists only](#d-Tools-for-use-with-trajectory-lists-only)**<br>
 **[clustered\_list](#clustered\_list)**<br>
 **[compare\_gaussian](#compare\_gaussian)**<br>
 **[displacement\_map](#displacement\_map)**<br>
