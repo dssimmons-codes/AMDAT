@@ -1,5 +1,5 @@
 # AMDAT
-**# Amorphous Molecular Dynamics Analysis Toolkit (AMDAT)**
+**Amorphous Molecular Dynamics Analysis Toolkit (AMDAT)**
 
 _Development Version Documentation_
 
