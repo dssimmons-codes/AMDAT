@@ -1,13 +1,11 @@
-# AMDAT
-**Amorphous Molecular Dynamics Analysis Toolkit (AMDAT)**
+# Amorphous Molecular Dynamics Analysis Toolkit (AMDAT)
+Development Version Documentation
 
-_Development Version Documentation_
+# I. Table of Contents
 
-# I.Table of Contents
+[I. Table of Contents 1](#_Toc392662130)
 
-[I.Table of Contents 1](#_Toc392662130)
-
-[II.Overview 4](#_Toc392662131)
+[II. Overview 4](#_Toc392662131)
 
 [A.Capabilities 4](#_Toc392662132)
 
