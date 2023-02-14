@@ -347,22 +347,39 @@ where m is the block number (m = 0,1,2,3,…,M) and k is the frame (k=0,1,2,3…
 {
 
   block\_starttime=0;\
+
   for(blockii=0;blockii\<#\_of\_exponentials;blockii++)
+
   {
+
     for(expii=1;expii\<=timesteps\_per\_block;expii++)
+
     {
+
       timeii++;
+
       if(pow(exp\_base,expii-1+first\_exponent) \<= expii)
+
       {
+
         time[timeii] = block\_starttime+expii\*time\_unit;
+
       }
+
       else
+
       {
+
         time[timeii] = block\_starttime+floor(pow(exp\_base,expii-1+first\_exponent))\*time\_unit;
+
       }
+
     }
+
     block\_starttime = timelist[timeii];
+
   }
+
 }
 
 _Snapshot_ (no args)
