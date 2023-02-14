@@ -127,11 +127,11 @@ Development Version Documentation
 
 AMDAT is a toolkit of analysis methods well suited for molecular dynamics simulations of noncrystalline materials. It presently can read multiple file formats produced by the LAMMPS molecular dynamics simulation software, and it also can read .xtc format trajectory produced by Gromacs. The type of trajectory file employed may effect the type of analyses that can be performed in AMDAT (more on this later). The most versatile functionality is presently achievable with LAMMPS custom trajectory files. AMDAT enables versatile selection of sets of particles from within a simulation and contains methods of characterizing both the structure and dynamics of the particles. It also enables user-definition of 'multibodies' consisting of multiple particles within a molecule and analysis of either the center of mass motion of these multibodies or of multibody correlations between these particles. AMDAT is currently in a beta testing phase, and functionality is being continuously improved or updated. If you encounter any bugs or have requests for additional functionality, please contact Dr. David S. Simmons at [dsimmon@uakron.edu](mailto:dsimmon@uakron.edu). That being said, AMDAT is written in an object oriented manner in C++, and it is designed to enable straightforward extension with new analysis techniques. We welcome submissions of new additions to this code. Some guidance on how to go about this is provided in the developer section of this manual.
 
-## B.Non-capabilities
+## B Non-capabilities
 
 AMDAT includes no built-in tools for visualization of either trajectories or properties of trajectories. All results are output in a text-based form and must be viewed in another software (exe excel). AMDAT does not include the ability to aggregate statistics acquired based on multiple simulations; this requires use of post-analysis software, such as matlab, igor, excel, or similar. AMDAT presently does not include multithreading, although this capability is partially implemented and is expected to be introduced in a future update.
 
-## C.General Concepts and Terminology
+## C General Concepts and Terminology
 
 AMDAT is run from the command line (see section on Running AMDAT). The user provides an input file (see section on Input File), which provides information on the trajectory file and system metadata (see section on System block) and provides a script specifying analyses to be performed (see section on Analysis Block). AMDAT reads in the specified simulation trajectory (see section on Trajectory file types), and based on this constructs a database of particle trajectories (corresponding the the particles in the simulation trajectory). In order to perform analyses on these trajectories, the selects one or more lists of trajectories (trajectory lists) specifying a set of particle trajectories for analysis (see section on Selecting trajectories for analysis). A number of analysis methods themselves generate trajectory lists, and the set of particle trajectories included in these lists may in general vary over the duration of the simulation trajectory (for example, a trajectory list of the most mobile particles – see analysis method find\_fast – will vary over the course of the simulation as particles become more or less mobile with time). The user can also define "multibodies", which are entities comprised of multiple particle trajectories (for example, one could define a multibody corresponding to a whole molecule or a single sidegroup). In a similar manner to trajectories, the user may define lists of these trajectories for analysis (for example, calculation of the multibody gyration radius).
 
@@ -143,7 +143,7 @@ AMDAT is run from the command line (see section on Running AMDAT). The user prov
 
 **Lag time or displacement time** or **timegap** or **time spacing** : refers to the time in displacement and time correlation calculations, in which time refers to the time from some arbitrary time origin that may be chosen at many points along the trajectory.
 
-## D.Running AMDAT
+## D Running AMDAT
 
 AMDAT is run from the command line, specifying the filename of a user input file:
 
@@ -179,11 +179,11 @@ This flag causes the program to wait for \<TIME\> seconds before beginning.
 
 This is the standard linux command to redirect screen output to \<LOGFILE\>. This command must be used after all other flags.
 
-# III.Making AMDAT
+# III Making AMDAT
 
 To make AMDAT, cd to the main AMDAT directory and run _make_.
 
-## A.Required packages
+## A Required packages
 
 Fftw3 – must be installed
 
@@ -193,7 +193,7 @@ tnt\_126 – directory must be specified in CPLUS\_INCLUDE\_PATH, provided with 
 
 jama125 – directory must be specified in CPLUS\_INCLUDE\_PATH, included with AMDAT distribution and available from NIST at http://math.nist.gov/tnt/download.html
 
-## B.Makefile Options
+## B Makefile Options
 
 Debugging flags can be turned on for use with valgrind by changing comment locations
 
@@ -205,9 +205,9 @@ Note that the default compilation scheme is to leave the SERVER variable blank (
 
 It is necessary to specify paths to qvector files for inverse space calculations. The location of 3d, 2d, and 1d qvector files must be specified by the makefile variables WAVEVECTORS3D, WAVEVECTORS2D, and WAVEVECTORS1D, respectively. The paths must end in the stem of the files (_/qvector_ by default) and must be enclosed in _\"_ quotation characters. These data folders are supplied with the AMDAT distribution (qvectors.tar.gz) and may be located anywhere in the file system provided that their location is listed here.
 
-# IV.Input File
+# IV Input File
 
-## A.System block
+## A System block
 
 The input file always begins with a block of data specifying the trajectory file and metadata describing the trajectory. This block of data must be entered without blank lines. It is structured as follows
 
@@ -221,7 +221,7 @@ _\<time scheme\>_
 
 _\<Additional lines of data as req'd by trajectory type, described in "Trajectory file types" section\>_
 
-### 1.system types
+### 1 system types
 
 AMDAT divides trajectories into two types, with the type denoted a the _\<system\_type\>_ keyword: constant volume, denoted by keyword _system_ or _system\_nv_, and non-constant volume, denoted by keyword _system\_np_. All AMDAT functionalities are available with constant volume systems, whereas the following limitations apply for non-constant volume systems.
 
@@ -229,11 +229,11 @@ AMDAT divides trajectories into two types, with the type denoted a the _\<system
 2. In order to obtain unwrapped coordinates in non-constant volume systems, either unwrapped coordinates must be directly provided by the custom trajectory file or image index values must be provided (i\_x, i\_y, and i\_z in the LAMMPS custom dump file format). Otherwise, any analysis techniques relying on unwrapped coordinates will not work correctly
 3. The "distinct van hove" analysis method does not presently work for non-constant volume systems
 
-### 2.Trajectory file types
+### 2 Trajectory file types
 
 Currently recognized file types are _xyz, xyz\_log, custom_ and _xtc_.
 
-#### a)xyz
+#### a xyz
 
 xyz is a common trajectory file format produced by codes such as LAMMPS. It is a text file containing the positions of each particle at each time frame sequentially. Each frame is headed by two lines. The first reads "atoms" and the second contains the number of atoms in that frame. These are followed by a list of all atoms, where the first column is the atom type index, and the second, third, and fourth are the x, y, and z coordinates of that atom at that time step. Note that AMDAT assumes that the atoms are in the same order in each frame; if the trajectory does not conform to this rule results will generally be incorrect. Since xyz files employ 'wrapped' coordinates, they generally face the challenge that they do not always facilitate unambiguous reconstruction of unwrapped particle trajectories. AMDAT will attempt to infer unwrapped trajectories by assuming that the shortest distance travelled by a given particle between two timesteps, considering all possible boundary crossings, is the correct one. If AMDAT encounters trajectories in which displacements approach half the box size in any dimension, it will output a warning indicating that unambiguous particle unwrapping is not possible. If you encounter this warning, it is strongly suggested that you not rely upon any dynamical analysis resulting from this trajectory. This problem can often be solved by employing more closely spaced frames or more generally employing a lammps custom trajectory with either unwrapped coordinates or image flags provided.
 
@@ -269,7 +269,7 @@ _\<xlo\> \<xhi\> \<ylo\> \<yhi\> \<zlo\> \<zhi\>_
 
 Li is the total length of the box in the i'th dimension; ilo is the position of the lower-valued boundary in the i'th direction, and ihi is the position of the upper-valued boundary in the i'th direction.
 
-#### b)xyz\_log
+#### b xyz\_log
 
 This format is the same as xyz, but it attempts to employ a LAMMPS log file to determine the box size rather than requiring the user to input it. Accordingly, this requires paths to at least two files to be provided in the _\<filenames\>_ line: the xyz trajectory file and a LAMMPs log file. A third path specifying template file may optionally be provided, with the same effect and formatting as for type xyz.
 
@@ -289,7 +289,7 @@ _..._
 
 _\<# of first type in last species\>…\<# of last type in last species\>_
 
-#### c)custom
+#### c custom
 
 Custom files are a type of trajectory file created by LAMMPS. Currently, AMDAT can only read custom trajectory files that are sorted. Requirements for ordering of the atoms are presently the same as those for xyz, and a template file may also be specified.
 
@@ -320,11 +320,11 @@ _..._
 
 _\<# of first type in last species\>…\<# of last type in last species\>_
 
-#### d)xtc
+#### d xtc
 
 This is a binary format produced by the GROMACS molecular dynamics package.
 
-### 3.Time Scheme
+### 3 Time Scheme
 
 The _\<time scheme\>_ line is formatted as follows
 
@@ -384,11 +384,11 @@ _Snapshot_ (no args)
 
 Snapshot is used for a single frame trajectory.
 
-## B.Analysis Block
+## B Analysis Block
 
 The remainder of the file provides a script specifying the analyses to be performed on the trajectory by AMDAT. AMDAT includes a modest set of logic structures including loops, if structures and variables, described below. It also provides a number of ways of selecting particles for analysis and defining multibodies – entities consisting of multiple particles – for analysis. AMDAT incorporates a considerable number of analysis methods applicable to these selections, also described below.
 
-### 1.General commands, logic structures, and variables
+### 1 General commands, logic structures, and variables
 
 ##### constant
 
@@ -510,7 +510,7 @@ _ceiling \<constant\_name\>_
 
 Rounds the value of constant _\<constant\_name\>_ up to the closest integer. Can be shortened from _ceiling_ to _ceil_.
 
-### 2.Selecting trajectories for analysis
+### 2 Selecting trajectories for analysis
 
 There are generally two ways of storing trajectories for analysis. "Trajectory\_lists" store a list of particle trajectories that may be fixed or may change from frame to frame. "Trajectory\_bin\_lists" divide all particle trajectories into the system at each frame into spatially defined bins for analysis of locally varying properties. Subsets of particles may then be treated on a local basis by analyzing the intersection of a trajectory\_list with a trajectory\_bin\_list (where intersection denotes the set of particle trajectories present in both lists. Following are a list of commands used in the selection of particle trajectories for analysis. In addition to these general commands, certain analysis objects also yield trajectory\_lists. For example, find\_fast returns a trajectory\_list containing the most mobile particles in the system.
 
@@ -618,13 +618,13 @@ Removes a bin list from memory, making it no longer accessible for analysis but 
 
 _remove\_bin\_list \<listname\>_
 
-### 3.Analyzing trajectories
+### 3 Analyzing trajectories
 
 Most trajectory analysis methods consist of two lines, where the first line (the "type" line) defines the type of analysis to be performed and the output file, and the second line (the "target" line) specifies the atoms or molecules on which the analysis is to be performed. Analysis methods generally have two types of output: output files and trajectory lists. Output files are text files containing results of the analysis. Trajectory lists are lists of atoms and/or molecules identified by the analysis methods that are given a custom name by the user and are stored internally as objects of future analysis.
 
 Currently, target trajectories may be specifies in two ways (denoted by _\<target\>_ herein). The first (and preferred) method is to specify a trajectory list that was defined earlier in the input script. The second is to specify a set of trajectories by name (these do not work with a spatially binned system).
 
-#### a)Trajectory Lists
+#### a Trajectory Lists
 
 The syntax for targetline with this method is
 
@@ -635,7 +635,7 @@ _listname_ is the name of a trajectory list previously specified by the user. Li
       1.
 ####
 
-#### b)Bin Lists
+#### b Bin Lists
 
 _bin\_list \<bin\_list\_ID\> \<list\_ID\> \<persistence check? 0 or 1 (optional)\>_
 
@@ -643,7 +643,7 @@ Takes the union of the list specified and the binning structuredefined in _creat
 
 \<Persistence check\> specifies whether or not, for dynamic analyses, the algorithm retains only particles that are in the bin at start and end times of a given time gap. The default is zero, meaning this check is not performed.
 
-#### c)Tools for use with trajectory lists and bin\_trajectory\_lists:
+#### c Tools for use with trajectory lists and bin\_trajectory\_lists:
 
 ##### composition
 
@@ -701,7 +701,7 @@ _Trajectory\_list\_decay \<output file\>_
 
 _\<target\>_
 
-#### d)Tools for use with trajectory lists only:
+#### d Tools for use with trajectory lists only:
 
 ##### clustered\_list
 
@@ -904,7 +904,7 @@ _single \<x\_index\> \<y\_index\> \<z\_index\>\*_
 
 \*Note that indicies start at 0.
 
-#### e)Tools for use with value\_lists
+#### e Tools for use with value\_lists
 
 ##### autocorrelate\_value\_list
 
@@ -932,7 +932,7 @@ If dynamic, it will write to file the time crosscorrelation function of the two.
 
 where f is the value stored in _value\_list 1_ and g is the value stored in _value\_list 2_, and , i is the particle index, N is the number of particles in the list, and ![](RackMultipart20230119-1-rugd4l_html_bf472d9ab051b69a.gif) and ![](RackMultipart20230119-1-rugd4l_html_bc2d965c56c35c2a.gif) are the average value of and g, respectively over all particles listed and all times . Also, note that this method does not restrict time zero to the first frame of the trajectory, but uses all available times (in accordance with the choice of either linear or exponential time scheme) as the time zero. This expression assumes the system to be at steady state.
 
-#### f)Obsolete commands
+#### f Obsolete commands
 
 Several analysis methods are outdated and intended for removal from AMDAT but are technically still available. Use them at your own risk.
 
@@ -945,9 +945,6 @@ _radial\_debye\_waller \<output file\> \<time spacing index\> \<# of bins\> \<ma
 _\<target\>_
 
 _Note that this analysis does not do any box unwrapping – if one of your bins includes space outside the simulation boundaries, it will just not include the space in its calculation. \<time spacing index\> gives the time spacing at which the debye-waller factor is defined._
-
-###
-
 
 ##### isfd
 
@@ -1012,39 +1009,39 @@ Presently, all analysis classes should preferably be made compatible with both m
 
 Classes shown in blue are those that inherit the functionality of parent class analysis. Classes shown in green are part of the
 
-### 1.class coordinate(coordinate.h, coordinate.cpp)
+### 1 class coordinate(coordinate.h, coordinate.cpp)
 
 Class to store a coordinate in three dimensions, with some associated methods and operator definitions.
 
-### 2.main
+### 2 main
 
 (amdat.cpp)
 
-### 3.class trajectory
+### 3 class trajectory
 
 (trajectory.h, trajectory.cpp)
 
 Stores information about a particle, molecule, or point and its trajectory through time (stores an array of coordinates)
 
-### 4.class atom\_trajectory
+### 4 class atom\_trajectory
 
 (atom\_trajectory.h, atom\_trajectory.cpp)
 
 Stores information about an atom (particle) and its trajectory through time (stores an array of coordinates)
 
-### 5.class molecule
+### 5 class molecule
 
 (molecule.h, molecule.cpp)
 
 Stores information about a molecule, its substituent atoms (stored in arrays) and in some cases the center-of-mass trajectory of the molecule
 
-### 6.class system
+### 6 class system
 
 (system.h, system.cpp)
 
 This is the master class that reads trajectory files and stores information about their contents, including: molecules, atoms, time scheme, box size, and so on. Also contains methods to run loops over subsets of atoms and molecules as well as over times for use by analysis objects.
 
-### 7.class analysis
+### 7 class analysis
 
 (analysis.h, analysis.cpp)
 
@@ -1056,7 +1053,7 @@ analyze(string)
 
 analyze(Trajectory\_List\*)
 
-### 8.class time\_correlation\_function
+### 8 class time\_correlation\_function
 
 Parent class for several analysis classes that calculate a time correlation function.
 
@@ -1074,95 +1071,95 @@ class progress
 
 Class to track progress of a calculation.
 
-### 9.class mean\_square\_displacement
+### 9 class mean\_square\_displacement
 
 (mean\_square\_displacement.h, mean\_square\_displacement.cpp)
 
 Class to calculate mean square displacement as a function of time.
 
-### 10.class van\_hove\_distinct
+### 10 class van\_hove\_distinct
 
 (van\_hove\_distinct.h, van\_hove\_distinct.cpp)
 
 Class to calculate distinct van hove.
 
-### 11.class spacial\_decomposition
+### 11 class spacial\_decomposition
 
 (spacial\_decomposition.h, spacial\_decomposition.cpp)
 
 Class to spatially decompose the system into smaller cells by sorting atoms at each time into these cells.
 
-### 12.class control
+### 12 class control
 
 (control.h, control.cpp)
 
 Master class that reads input file and calls other objects accordingly.
 
-### 13.class wave\_vectors
+### 13 class wave\_vectors
 
 (wave\_vectors.h, wave\_vectors.cpp)
 
-### 14.class spherical\_wave\_vectors
+### 14 class spherical\_wave\_vectors
 
 (spherical\_wave\_vectors.h, spherical\_wave\_vectors.cpp)
 
-### 15.class wave\_density
+### 15 class wave\_density
 
 (wave\_density.o, wave\_density.cpp)
 
-### 16.class intermediate\_scattering\_function
+### 16 class intermediate\_scattering\_function
 
 (intermediate\_scattering\_function.h, intermediate\_scattering\_function.cpp)
 
-### 17.class correlation\_2d
+### 17 class correlation\_2d
 
 (correlation\_2d.h, correlation\_2d.cpp)
 
-### 18.class incoherent\_scattering\_function
+### 18 class incoherent\_scattering\_function
 
 (incoherent\_scattering\_function.h, incoherent\_scattering\_function.cpp)
 
-### 19.class debyewaller\_dist
+### 19 class debyewaller\_dist
 
 (debyewaller\_dist.h, debyewaller\_dist.cpp)
 
-### 20.class stiffness\_dist
+### 20 class stiffness\_dist
 
 (stiffness\_dist.h, stiffness\_dist.cpp)
 
-### 21.class non\_gaussian\_parameter
+### 21 class non\_gaussian\_parameter
 
 (non\_gaussian\_parameter.h, non\_gaussian\_parameter.cpp)
 
-### 22.class gaussian\_comparison
+### 22 class gaussian\_comparison
 
-### 23.class particle\_list
+### 23 class particle\_list
 
-### 24.class particle\_list\_exptime
+### 24 class particle\_list\_exptime
 
-### 25.class fast\_particles
+### 25 class fast\_particles
 
-### 26.class slow\_particles
+### 26 class slow\_particles
 
-### 27.class average\_particles
+### 27 class average\_particles
 
-### 28.class radial\_debye\_waller
+### 28 class radial\_debye\_waller
 
-### 29.class tokenize
+### 29 class tokenize
 
-### 30.class mean\_square\_displacement\_2d
+### 30 class mean\_square\_displacement\_2d
 
-### 31.class velocity\_autocorrelation
+### 31 class velocity\_autocorrelation
 
-### 32.class strings
+### 32 class strings
 
-### 33.class trajectory\_list
+### 33 class trajectory\_list
 
-### 34.class static\_trajectory\_list
+### 34 class static\_trajectory\_list
 
-### 35.class exptime\_trajectory\_list
+### 35 class exptime\_trajectory\_list
 
-# VI.III. Change Log
+# VI Change Log
 
 * * *
 
