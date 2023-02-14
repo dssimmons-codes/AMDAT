@@ -5,7 +5,7 @@ Development Version Documentation
 **[I Table of Contents](#i-table-of-contents)**<br>
 **[II Overview](#ii-overview)**<br>
 **[A Capabilities](#A-Capabilities)**<br>
-**[B Non-capabilities](B-Non-capabilities)**<br>
+**[B Non-capabilities](B-Non\-capabilities)**<br>
 **[C General Concepts and Terminology](C-General-Concepts-and-Terminology)**<br>
 **[D Running AMDAT](D-Running-AMDAT)**<br>
 **[III Making AMDAT](III-Making-AMDAT)**<br>
