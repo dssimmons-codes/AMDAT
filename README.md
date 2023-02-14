@@ -344,22 +344,22 @@ In an exponential timescheme, frame times are given by the following formula:
 
 where m is the block number (m = 0,1,2,3,…,M) and k is the frame (k=0,1,2,3… if _frt_ = 0 and k = 1,2,3,… if _frt_ = 1), N is the number of timesteps per block. If _frt_ is zero, then an extra initial time frame at time zero is used at the beginning of the trajectory. If _frt_ is one, then the first time frame is at time (dt)b^_\<first exponent\>_. This has significant implications for how time blocks are handled. First exponent is usually zero or one and is the first value of the exponent for the power law progression in time. Deltat is the time unit. For clarity, below is a segment of pseudocode describing the list of simulation times corresponding to this scheme. Also packaged with AMDAT is an example LAMMPS input file yielding a trajectory file corresponding to this time scheme.
 
-    block\_starttime=0;\
-    for(blockii=0;blockii\<#\_of\_exponentials;blockii++)
+    block_starttime=0;
+    for(blockii=0;blockii<#_of_exponentials;blockii++)
     {
-      for(expii=1;expii\<=timesteps\_per\_block;expii++)
+      for(expii=1;expii<=timesteps_per_block;expii++)
       {
         timeii++;
-        if(pow(exp\_base,expii-1+first\_exponent) \<= expii)
+        if(pow(exp_base,expii-1+first_exponent) <= expii)
         {
-          time[timeii] = block\_starttime+expii\*time\_unit;
+          time[timeii] = block_starttime+expii*time_unit;
         }
         else
         {
-          time[timeii] = block\_starttime+floor(pow(exp\_base,expii-1+first\_exponent))\*time\_unit;
+          time[timeii] = block_starttime+floor(pow(exp_base,expii-1+first_exponent))*time_unit;
         }
       }
-      block\_starttime = timelist[timeii];
+      block_starttime = timelist[timeii];
     }
   
 _Snapshot_ (no args)
