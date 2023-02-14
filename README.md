@@ -2,11 +2,8 @@
 Development Version Documentation
 
 # I. Table of Contents
-
-[I. Table of Contents 1](#_Toc392662130)
 **[I. Table of Contents](#table-of-contents)**<br>
-
-[II. Overview 4](#_Toc392662131)
+**[II. Overview](#_Toc392662131)**<br>
 
 [A.Capabilities 4](#_Toc392662132)
 
