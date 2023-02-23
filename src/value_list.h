@@ -55,7 +55,10 @@ protected:
   ~Value_List();
 
   void set(System*);
+  void set_static(System*);
   void set(int,int,valType);
+  
+  void push(int,valType);
 
   virtual valType show_value(int timeii, int trajii){return values[convert_time(timeii)][trajii];};
   void operator () (int timeii, int trajii){return show_value(timeii, trajii);};
@@ -237,12 +240,50 @@ void Value_List<valType>::set(System * sys)
 }
 
 
+/*Method that sets system for value list and sets it to be static, storing values at only a single distinct time*/
+template <class valType>
+void Value_List<valType>::set_static(System * sys)
+{
+  
+  delete [] included;
+  delete [] time_conversion;
+  delete [] defined_times;
+
+  syst=sys;
+  n_times = syst->show_n_timesteps();
+
+  included = new Boolean_List[n_times];
+  for(int timeii=0;timeii<n_times;timeii++)
+  {
+    included[timeii].set(syst);
+  }
+
+  time_conversion = new int [syst->show_n_timesteps()];
+  defined_times = new bool [syst->show_n_timesteps()];
+  for(int timeii=0;syst->show_n_timesteps();timeii++)
+  {
+    time_conversion[timeii]=0;
+    defined_times[timeii]=0;
+  }
+  defined_times[0]=1
+}
+
+
 
 template <class valType>
 void Value_List<valType>::set(int timeii, int trajii, valType val)
 {
   included[timeii](trajii,1);
   values[timeii][trajii] = val;
+}
+
+
+/*Method to add an additional value to the end of the list at a given time*/
+template <class valType>
+void Value_List<valType>::push(int timeii,valType val)
+{
+    //note that here timeii is the internally stored time index, not the time. This should probably be fixed in a future version
+    values[timeii].push_back(val);
 }
 
 
