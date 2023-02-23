@@ -1336,7 +1336,7 @@ void System::custom_manual_prep(vector<string> file_in, string fileline)
     trajtemplate_given=1;
     trajtemplate = args[2];
   }
-  else if (tokenize.count<2)
+  else if (tokenize.count()<2)
   {
       Error("Custom_manual read style requiries a header file specifying columns to be read.", -2);
   }
@@ -1415,7 +1415,7 @@ void System::custom_manual_prep(vector<string> file_in, string fileline)
   }
   else
   {
-    read_custom_manual(customfilename,header_file);
+    read_custom_manual(customfilename,header_filename);
   }
 
 
@@ -1455,8 +1455,9 @@ void System::read_custom_manual(string xyzfilename, string header_filename)
 
   string manual_style;
   string xheader, yheader, zheader, ixheader, iyheader, izheader;  //stores headers of columns for configuration data
-  n_custom_columns = 0;
+  int n_custom_columns = 0;
   int * custom_position;
+  Value_List<float> * new_vlist;
   
   vector <string> custom_headers; //stores headers of custom columns
   vector <string> vlist_names;  //names of value lists that will store data in custom columns
@@ -1477,23 +1478,21 @@ void System::read_custom_manual(string xyzfilename, string header_filename)
       if(tokenize.count()!=3)
       {
           Error("Three arguments required for unwrapped manual raed in format style.", -2);
-    }
-      }
+        }
+    
       else
       {
           xheader=args[1];
           yheader=args[2];
           zheader=args[3];
-          calc_wrapped=true
       }
   }
-  else if(manual_style=="wrapped_indexed"
+  else if(manual_style=="wrapped_indexed")
   {
       if(tokenize.count()!=6)
       {
           Error("Six arguments required for unwrapped manual raed in format style.", -2);
-  }
-      }
+        }
       else
       {
           xheader=args[1];
@@ -1502,7 +1501,6 @@ void System::read_custom_manual(string xyzfilename, string header_filename)
           ixheader=args[4];
           iyheader=args[5];
           izheader=args[6];
-          calc_wrapped=false
       }
   }
   else
@@ -1510,7 +1508,7 @@ void System::read_custom_manual(string xyzfilename, string header_filename)
       Error("Invalid manual read in format type. Allowed options are unwrapped and wrapped_indexed.", -2);
   }
   
-  while(*headerobject.eof())
+  while(headerobject->eof())
   {
     getline(*headerobject,line);
     args = tokenize(line); 
@@ -1519,8 +1517,8 @@ void System::read_custom_manual(string xyzfilename, string header_filename)
         n_custom_columns++;
         custom_headers.push_back(args[1]);
         vlist_names.push_back(args[1]);
-        new_vlist = new Value_List();   //allocate memory for new value list
-        new_vlist.set_static(this); //set value_list to be static and assign system
+        new_vlist = new Value_List<float>();   //allocate memory for new value list
+        new_vlist->set_static(this); //set value_list to be static and assign system
         add_value_list(new_vlist,args[1]);  //store value_list
     }
     else
@@ -1529,7 +1527,7 @@ void System::read_custom_manual(string xyzfilename, string header_filename)
     }
   }
   
-  custom_position = new int [n_custom_columns]
+  custom_position = new int [n_custom_columns];
 
   ifstream filexyz(xyzfilename.c_str());
   ifstream * fileobject = &filexyz;
@@ -1663,14 +1661,6 @@ void System::read_custom_manual(string xyzfilename, string header_filename)
       mass_provided = in_string_array(args,"mass");
       if(mass_provided) mass_position = find_in_string_array(args,"mass")-2;
 
-      /*figure out which coordinate types to read in*/
-      if(!r_provided&&!rs_provided&&!ru_provided&&!rsu_provided)	//return error if no complete set of coordinates is provided
-      {
-        Error( "No complete set of coordinates provided in trajectory file.", -2);
-      }
-      else								//otherwise, determine which coordinate types to read in and their location
-      {
-
       //Note columns in which to find coordinate data    
       x_position = find_in_string_array(args,xheader)-2;
       y_position = find_in_string_array(args,yheader)-2;
@@ -1685,7 +1675,7 @@ void System::read_custom_manual(string xyzfilename, string header_filename)
       
       for(int customii=0;customii<n_custom_columns;customii++)
       {
-          custom_position[customii]=find_in_string_array(args,custom_headers)-2;
+          custom_position[customii]=find_in_string_array(args,custom_headers[customii])-2;
       }
       
 
@@ -1739,7 +1729,7 @@ void System::read_custom_manual(string xyzfilename, string header_filename)
 	    (molecules[speciesii][moleculeii]).set_coordinate(type,n_typeii[type],coordinate,timestepii);	//send coordinates to atom
     }
     
-    else if(manual_style=="wrapped_indexed"
+    else if(manual_style=="wrapped_indexed")
     {
         //read wrapped coordinates
         x = atof(args[x_position].c_str());
@@ -1758,7 +1748,7 @@ void System::read_custom_manual(string xyzfilename, string header_filename)
     
     for(int customii=0;customii<n_custom_columns;customii++)
     {
-        (value_lists(vlist_names[customii]))->push(0,args[custom_position[customii]]);  //add next value from custom column to appropriate column list
+        (value_lists[vlist_names[customii]])->push(0,stof(args[custom_position[customii]]));  //add next value from custom column to appropriate column list
     }
     
 
@@ -1787,10 +1777,10 @@ void System::read_custom_manual(string xyzfilename, string header_filename)
   (*fileobject).close();
   delete [] n_typeii;
 
-  unwrapped = 1
-  wrapped = 1
+  unwrapped = 1;
+  wrapped = 1;
 
-
+}
 
 /*--------------------------------------------------------------------------------------------*/
 

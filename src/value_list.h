@@ -265,7 +265,7 @@ void Value_List<valType>::set_static(System * sys)
     time_conversion[timeii]=0;
     defined_times[timeii]=0;
   }
-  defined_times[0]=1
+  defined_times[0]=1;
 }
 
 
