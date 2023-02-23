@@ -1,4 +1,3 @@
-testfiles/traj.xyz
 AMDAT
 build/*.o
 *.o
