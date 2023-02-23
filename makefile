@@ -56,6 +56,7 @@ $(OBJDIR)/control.o: src/control.cpp $(CONTROLHEADERS)
 endif
 
 $(OBJDIR)/%.o: src/%.cpp
+	@mkdir -p $(@D)
 	$(CXX) $(CFLAGS) $< -o $@
 
 $(OBJDIR)/amdat.o: src/amdat.cpp src/system.h src/van_hove_self.h src/mean_square_displacement.h src/van_hove_distinct.h src/molecule.h src/atom_trajectory.h src/coordinate.h src/analysis.h src/control.h
