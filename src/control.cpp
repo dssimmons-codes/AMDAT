@@ -1433,7 +1433,7 @@ void Control::create_distance_neighborlist()
   (*dnlist_pointer)=dnlist;
   add_neighborlist(dnlist_pointer,nlist_name);
   
-  add_value_list(dnlist_pointer,nlist_name);
+  analyte->add_value_list(dnlist_pointer,nlist_name);
   
   
 }
@@ -1475,7 +1475,7 @@ void Control::create_voronoi_neighborlist()
   
   (*vnlist_pointer)=vnlist;
   add_neighborlist(vnlist_pointer,nlist_name);
-  add_value_list(vnlist_pointer,nlist_name);
+  analyte->add_value_list(vnlist_pointer,nlist_name);
   
 }
 
@@ -1504,7 +1504,7 @@ void Control::remove_valuelist()
   
   string listname = args[1];
   
-  delete_value_list(listname);
+  analyte->delete_value_list(listname);
 }
 
 /*--------------------------------------------------------------------------------*/
@@ -1691,89 +1691,6 @@ void Control::delete_multibodies()
    analyte->delete_multibody_set(multibody_set_name);
 }
 
-
-/*--------------------------------------------------------------------------------*/
-
-
-
-  /*finds trajectorylist object by custom name*/
-Value_List<float>* Control::find_value_list(string listname, bool allow_nofind)const
-{
-  
-  Value_List<float>* v_list;
-
-  try
-  {
-    v_list = value_lists.at(listname);
-  }
-  catch(out_of_range & sa)
-  {
-    if(allow_nofind)
-    {
-      v_list=0;
-    }
-    else
-    {
-      cout << "\nError: value_list " << listname << " does not exist.\n";
-      exit(0);
-    }
-  }
-  
-  return v_list;
-
-}
-
-
-
- /*--------------------------------------------------------------------------------*/
-
-
-
-void Control::add_value_list(Value_List<float>* av_list, string listname)
-{
-  
-  bool result;
-
-  result=(value_lists.insert(listname,av_list));
-
-  if(!result)
-  {
-    cout << "\nWarning: neighbor_list "<< listname<<" not created because a neighbor_list with this name already exists. Replacement of a neighbor_list requires that you first delete the existing list with the same name.\n";
-  }
-
-
-}
-
-
- /*--------------------------------------------------------------------------------*/
-
-
-
-void Control::delete_value_list(string listname)
-{
-  
-  bool result;
-
-  Value_List<float> * vlist;
-  
-  //check if the specified neighbor_list exists
-  vlist = find_value_list(listname, 1);
-  if(vlist==0)
-  {
-    cout << "\nWarning: neighbor_list "<< listname<<" not deleted because it does not exist.\n";
-  }
-  else
-  {
-    value_lists.erase(listname);	//remove this neighbor_list from list of neighbor_lists
-    delete vlist;			//deallocate memory for this neighbor_list
-  }
-
-
-}
-
-
-
- /*--------------------------------------------------------------------------------*/
 
 
 
@@ -2248,7 +2165,7 @@ void Control::displacement_list()
 
   dlist=run_analysis<Displacement_List>(dlist,runline,filename);
   (*dlist_pointer)=dlist;
-  add_value_list(dlist_pointer,listname);
+  analyte->add_value_list(dlist_pointer,listname);
   finish = time(NULL);
   cout << "\nCalculated list of displacement scalars in " << finish-start<<" seconds.";
 }
@@ -4068,7 +3985,7 @@ else
   cout << "\nCalculating n_fold order parameter.\n";
   start = time(NULL);
   run_analysis(nfold, runline);
-  add_value_list(nfold,nfold_listname);
+  analyte->add_value_list(nfold,nfold_listname);
 
 
 
@@ -4145,7 +4062,7 @@ void Control::thresholded_list()
 
   Trajectory_List * trajpointer;
    trajpointer = new Trajectory_List();
-  vlist = find_value_list(av_listname);
+  vlist = analyte->find_value_list(av_listname);
 
 if(thresh_command=="greater"){vlist->construct_t_list(bool(1),threshold1,trajpointer);}
 else if(thresh_command=="less"){vlist->construct_t_list(bool(0),threshold1,trajpointer);}
@@ -4189,7 +4106,7 @@ void Control::percentiled_list()
 
   Trajectory_List * trajpointer;
    trajpointer = new Trajectory_List();
-  vlist = find_value_list(av_listname);
+  vlist = analyte->find_value_list(av_listname);
   if(vlist==0)
   {
     cout << "\nError: value_list name " <<av_listname<<" not found.\n";
@@ -4232,7 +4149,7 @@ void Control::value_list_to_pdb()
   valuetimeindex = atoi(args[4].c_str());
   positiontimeindex = atoi(args[5].c_str());
 
-  vlist = find_value_list(value_listname);
+  vlist = analyte->find_value_list(value_listname);
   if(vlist==0)
   {
     cout << "\nError: value_list name " <<value_listname<<" not found.\n";
@@ -4596,8 +4513,8 @@ void Control::crosscorrelate_value_lists()
   Value_List<float> * vlist1;
   Value_List<float> * vlist2;
 
-  vlist1 = find_value_list(listname1);
-  vlist2 = find_value_list(listname2);
+  vlist1 = analyte->find_value_list(listname1);
+  vlist2 = analyte->find_value_list(listname2);
 
   ofstream output;
 
@@ -4640,7 +4557,7 @@ void Control::autocorrelate_value_list()
   
   Value_List<float> * vlist;
 
-  vlist = find_value_list(listname);
+  vlist = analyte->find_value_list(listname);
 
   ofstream output(filename.c_str());
   output << "Dynamic auto-correlation of value list "<< listname<<" calculated by AMDAT v." << VERSION << "\n";
@@ -4931,7 +4848,7 @@ void Control::value_statistics()
   vlist_name=args[2];
   n_moments = atoi(args[3].c_str());
   
-  vlist = find_value_list(vlist_name);
+  vlist = analyte->find_value_list(vlist_name);
   
   vlist->write_statistics(filename, n_moments);
 }
