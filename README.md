@@ -21,7 +21,7 @@ Development Version Documentation
       - **[d xtc](#d-xtc)**<br>
     - **[3 Time Scheme](#3-Time-Scheme)**<br>
   - **[B Analysis Block](#B-Analysis-Block)**<br>
-    - **[1 General commands, logic structures, and variables](#1-General-commands,-logic-structures,-and-variables)**<br>
+    - **[1 General commands, logic structures, and variables](#1-General-commands-logic-structures-and-variables)**<br>
         - **[constant](#constant)**<br>
         - **[user\_input](#user\_input)**<br>
         - **[print](#print)**<br>
