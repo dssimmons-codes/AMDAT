@@ -1475,9 +1475,9 @@ void System::read_custom_manual(string xyzfilename, string header_filename)
   manual_style=args[0];
   if(manual_style=="unwrapped")
   {
-      if(tokenize.count()!=3)
+      if(tokenize.count()!=4)
       {
-          Error("Three arguments required for unwrapped manual raed in format style.", -2);
+          Error("Three arguments required for unwrapped manual read in format style.", -2);
         }
     
       else
@@ -1489,9 +1489,9 @@ void System::read_custom_manual(string xyzfilename, string header_filename)
   }
   else if(manual_style=="wrapped_indexed")
   {
-      if(tokenize.count()!=6)
+      if(tokenize.count()!=7)
       {
-          Error("Six arguments required for unwrapped manual raed in format style.", -2);
+          Error("Six arguments required for unwrapped manual read in format style.", -2);
         }
       else
       {
@@ -1508,19 +1508,22 @@ void System::read_custom_manual(string xyzfilename, string header_filename)
       Error("Invalid manual read in format type. Allowed options are unwrapped and wrapped_indexed.", -2);
   }
   
-  while(headerobject->eof())
+  while(!(headerobject->eof()))
   {
     getline(*headerobject,line);
     args = tokenize(line); 
     if(tokenize.count()==2)
     {
-        n_custom_columns++;
-        custom_headers.push_back(args[1]);
+        custom_headers.push_back(args[0]);
         vlist_names.push_back(args[1]);
         new_vlist = new Value_List<float>();   //allocate memory for new value list
         new_vlist->set_static(this); //set value_list to be static and assign system
         add_value_list(new_vlist,args[1]);  //store value_list
+        cout << "\nReading in header column " << custom_headers[n_custom_columns] << "into value_list named " << vlist_names[n_custom_columns];
+        n_custom_columns++;
     }
+    else if(tokenize.count()==0)
+    {}
     else
     {
         Error("Incorrect number of arguments in custom header line. 2 are required.", -2);
@@ -1537,6 +1540,7 @@ void System::read_custom_manual(string xyzfilename, string header_filename)
 
   for(timestepii=0; timestepii<n_timesteps; timestepii++)
   {
+      
     /*read in header information from custom trajectory file*/
      line = "";
      getline(*fileobject,line);		//read in "ITEM: TIMESTEP" line
@@ -1748,7 +1752,7 @@ void System::read_custom_manual(string xyzfilename, string header_filename)
     
     for(int customii=0;customii<n_custom_columns;customii++)
     {
-        (value_lists[vlist_names[customii]])->push(0,stof(args[custom_position[customii]]));  //add next value from custom column to appropriate column list
+        (value_lists[vlist_names[customii]])->push(timestepii,atof((args[custom_position[customii]]).c_str()));  //add next value from custom column to appropriate column list
     }
     
 
