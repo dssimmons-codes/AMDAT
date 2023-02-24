@@ -205,9 +205,9 @@ Note that the default compilation scheme is to leave the SERVER variable blank (
 
 It is necessary to specify paths to qvector files for inverse space calculations. The location of 3d, 2d, and 1d qvector files must be specified by the makefile variables WAVEVECTORS3D, WAVEVECTORS2D, and WAVEVECTORS1D, respectively. The paths must end in the stem of the files (_/qvector_ by default) and must be enclosed in _\"_ quotation characters. These data folders are supplied with the AMDAT distribution (qvectors.tar.gz) and may be located anywhere in the file system provided that their location is listed here.
 
-# IV Input File
+# IV. Input File
 
-## A System block
+## A. System block
 
 The input file always begins with a block of data specifying the trajectory file and metadata describing the trajectory. This block of data must be entered without blank lines. It is structured as follows
 
@@ -221,7 +221,7 @@ _\<time scheme\>_
 
 _\<Additional lines of data as req'd by trajectory type, described in "Trajectory file types" section\>_
 
-### 1 system types
+### 1. system types
 
 AMDAT divides trajectories into two types, with the type denoted a the _\<system\_type\>_ keyword: constant volume, denoted by keyword _system_ or _system\_nv_, and non-constant volume, denoted by keyword _system\_np_. All AMDAT functionalities are available with constant volume systems, whereas the following limitations apply for non-constant volume systems.
 
@@ -229,11 +229,11 @@ AMDAT divides trajectories into two types, with the type denoted a the _\<system
 2. In order to obtain unwrapped coordinates in non-constant volume systems, either unwrapped coordinates must be directly provided by the custom trajectory file or image index values must be provided (i\_x, i\_y, and i\_z in the LAMMPS custom dump file format). Otherwise, any analysis techniques relying on unwrapped coordinates will not work correctly
 3. The "distinct van hove" analysis method does not presently work for non-constant volume systems
 
-### 2 Trajectory file types
+### 2. Trajectory file types
 
 Currently recognized file types are _xyz, xyz\_log, custom_ and _xtc_.
 
-#### a xyz
+#### a) xyz
 
 xyz is a common trajectory file format produced by codes such as LAMMPS. It is a text file containing the positions of each particle at each time frame sequentially. Each frame is headed by two lines. The first reads "atoms" and the second contains the number of atoms in that frame. These are followed by a list of all atoms, where the first column is the atom type index, and the second, third, and fourth are the x, y, and z coordinates of that atom at that time step. Note that AMDAT assumes that the atoms are in the same order in each frame; if the trajectory does not conform to this rule results will generally be incorrect. Since xyz files employ 'wrapped' coordinates, they generally face the challenge that they do not always facilitate unambiguous reconstruction of unwrapped particle trajectories. AMDAT will attempt to infer unwrapped trajectories by assuming that the shortest distance travelled by a given particle between two timesteps, considering all possible boundary crossings, is the correct one. If AMDAT encounters trajectories in which displacements approach half the box size in any dimension, it will output a warning indicating that unambiguous particle unwrapping is not possible. If you encounter this warning, it is strongly suggested that you not rely upon any dynamical analysis resulting from this trajectory. This problem can often be solved by employing more closely spaced frames or more generally employing a lammps custom trajectory with either unwrapped coordinates or image flags provided.
 
@@ -269,7 +269,7 @@ _\<xlo\> \<xhi\> \<ylo\> \<yhi\> \<zlo\> \<zhi\>_
 
 Li is the total length of the box in the i'th dimension; ilo is the position of the lower-valued boundary in the i'th direction, and ihi is the position of the upper-valued boundary in the i'th direction.
 
-#### b xyz\_log
+#### b) xyz\_log
 
 This format is the same as xyz, but it attempts to employ a LAMMPS log file to determine the box size rather than requiring the user to input it. Accordingly, this requires paths to at least two files to be provided in the _\<filenames\>_ line: the xyz trajectory file and a LAMMPs log file. A third path specifying template file may optionally be provided, with the same effect and formatting as for type xyz.
 
@@ -289,7 +289,7 @@ _..._
 
 _\<# of first type in last species\>…\<# of last type in last species\>_
 
-#### c custom
+#### c) custom
 
 Custom files are a type of trajectory file created by LAMMPS. Currently, AMDAT can only read custom trajectory files that are sorted. Requirements for ordering of the atoms are presently the same as those for xyz, and a template file may also be specified.
 
@@ -320,11 +320,11 @@ _..._
 
 _\<# of first type in last species\>…\<# of last type in last species\>_
 
-#### d xtc
+#### d) xtc
 
 This is a binary format produced by the GROMACS molecular dynamics package.
 
-### 3 Time Scheme
+### 3. Time Scheme
 
 The _\<time scheme\>_ line is formatted as follows
 
@@ -366,11 +366,11 @@ _Snapshot_ (no args)
 
 Snapshot is used for a single frame trajectory.
 
-## B Analysis Block
+## B. Analysis Block
 
 The remainder of the file provides a script specifying the analyses to be performed on the trajectory by AMDAT. AMDAT includes a modest set of logic structures including loops, if structures and variables, described below. It also provides a number of ways of selecting particles for analysis and defining multibodies – entities consisting of multiple particles – for analysis. AMDAT incorporates a considerable number of analysis methods applicable to these selections, also described below.
 
-### 1 General commands, logic structures, and variables
+### 1. General commands, logic structures, and variables
 
 ##### constant
 
