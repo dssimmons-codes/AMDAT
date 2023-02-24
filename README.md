@@ -121,7 +121,7 @@ Development Version Documentation
     - **[35 class exptime\_trajectory\_list](#35-class-exptime\_trajectory\_list)**<br>
 - **[VI Change Log](#VI-Change-Log)**<br>
 
-# II Overview
+# II. Overview
 
 ## A Capabilities
 
