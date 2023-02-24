@@ -690,7 +690,7 @@ _Trajectory\_list\_decay \<output file\>_
 
 _\<target\>_
 
-#### d Tools for use with trajectory lists only:
+#### d) Tools for use with trajectory lists only:
 
 ##### clustered\_list
 
@@ -892,7 +892,7 @@ _single \<x\_index\> \<y\_index\> \<z\_index\>\*_
 
 \*Note that indicies start at 0.
 
-#### e. Tools for use with value\_lists
+#### e) Tools for use with value\_lists
 
 ##### autocorrelate\_value\_list
 
