@@ -10,7 +10,7 @@ WAVEVECTORS3D="\"./src/qvectors/qvectors3d/qvector\""
 WAVEVECTORS2D="\"./src/qvectors/qvectors2d/qvector\""
 WAVEVECTORS1D="\"./src/qvectors/qvectors1d/qvector\""
 
-OBJDIR = ./build/
+OBJDIR = ./build
 
 OBJECTS= $(OBJDIR)/amdat.o $(OBJDIR)/tokenize.o $(OBJDIR)/coordinate.o $(OBJDIR)/trajectory.o $(OBJDIR)/atom_trajectory.o $(OBJDIR)/molecule.o $(OBJDIR)/system.o $(OBJDIR)/analysis.o $(OBJDIR)/space-time_correlation_function.o $(OBJDIR)/van_hove_self.o $(OBJDIR)/progress.o $(OBJDIR)/mean_square_displacement.o $(OBJDIR)/van_hove_distinct.o $(OBJDIR)/control.o \
 $(OBJDIR)/wave_vectors.o $(OBJDIR)/wave_density.o $(OBJDIR)/intermediate_scattering_function.o $(OBJDIR)/correlation_2d.o $(OBJDIR)/incoherent_scattering_function.o $(OBJDIR)/debyewaller_dist.o $(OBJDIR)/stiffness_dist.o $(OBJDIR)/non_gaussian_parameter.o \
@@ -56,6 +56,7 @@ $(OBJDIR)/control.o: src/control.cpp $(CONTROLHEADERS)
 endif
 
 $(OBJDIR)/%.o: src/%.cpp
+	@mkdir -p $(@D)
 	$(CXX) $(CFLAGS) $< -o $@
 
 $(OBJDIR)/amdat.o: src/amdat.cpp src/system.h src/van_hove_self.h src/mean_square_displacement.h src/van_hove_distinct.h src/molecule.h src/atom_trajectory.h src/coordinate.h src/analysis.h src/control.h
@@ -209,9 +210,6 @@ $(OBJDIR)/persistent_neighbors.o: src/persistent_neighbors.cpp src/persistent_ne
  src/radial_distribution_function.h src/bond_autocorrelation_function.h src/orientational_correlation.h src/multibody_region.h src/coordinate.h src/size_statistics.h src/neighbor_list.h src/radial_count.h
 
 $(OBJDIR)/neighbor_decorrelation_function.o: src/neighbor_decorrelation_function.cpp src/neighbor_decorrelation_function.h src/system.h src/molecule.h src/atom_trajectory.h src/coordinate.h src/analysis.h src/trajectory.h src/trajectory_list.h src/neighbor_list.h src/value_list.h
-
-OBJDIR:
-	mkdir $(OBJDIR)
 
 clean: 
 	rm -f $(OBJECTS)
