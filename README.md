@@ -123,15 +123,15 @@ Development Version Documentation
 
 # II. Overview
 
-## A Capabilities
+## A. Capabilities
 
 AMDAT is a toolkit of analysis methods well suited for molecular dynamics simulations of noncrystalline materials. It presently can read multiple file formats produced by the LAMMPS molecular dynamics simulation software, and it also can read .xtc format trajectory produced by Gromacs. The type of trajectory file employed may effect the type of analyses that can be performed in AMDAT (more on this later). The most versatile functionality is presently achievable with LAMMPS custom trajectory files. AMDAT enables versatile selection of sets of particles from within a simulation and contains methods of characterizing both the structure and dynamics of the particles. It also enables user-definition of 'multibodies' consisting of multiple particles within a molecule and analysis of either the center of mass motion of these multibodies or of multibody correlations between these particles. AMDAT is currently in a beta testing phase, and functionality is being continuously improved or updated. If you encounter any bugs or have requests for additional functionality, please contact Dr. David S. Simmons at [dsimmon@uakron.edu](mailto:dsimmon@uakron.edu). That being said, AMDAT is written in an object oriented manner in C++, and it is designed to enable straightforward extension with new analysis techniques. We welcome submissions of new additions to this code. Some guidance on how to go about this is provided in the developer section of this manual.
 
-## B Non-capabilities
+## B. Non-capabilities
 
 AMDAT includes no built-in tools for visualization of either trajectories or properties of trajectories. All results are output in a text-based form and must be viewed in another software (exe excel). AMDAT does not include the ability to aggregate statistics acquired based on multiple simulations; this requires use of post-analysis software, such as matlab, igor, excel, or similar. AMDAT presently does not include multithreading, although this capability is partially implemented and is expected to be introduced in a future update.
 
-## C General Concepts and Terminology
+## C. General Concepts and Terminology
 
 AMDAT is run from the command line (see section on Running AMDAT). The user provides an input file (see section on Input File), which provides information on the trajectory file and system metadata (see section on System block) and provides a script specifying analyses to be performed (see section on Analysis Block). AMDAT reads in the specified simulation trajectory (see section on Trajectory file types), and based on this constructs a database of particle trajectories (corresponding the the particles in the simulation trajectory). In order to perform analyses on these trajectories, the selects one or more lists of trajectories (trajectory lists) specifying a set of particle trajectories for analysis (see section on Selecting trajectories for analysis). A number of analysis methods themselves generate trajectory lists, and the set of particle trajectories included in these lists may in general vary over the duration of the simulation trajectory (for example, a trajectory list of the most mobile particles – see analysis method find\_fast – will vary over the course of the simulation as particles become more or less mobile with time). The user can also define "multibodies", which are entities comprised of multiple particle trajectories (for example, one could define a multibody corresponding to a whole molecule or a single sidegroup). In a similar manner to trajectories, the user may define lists of these trajectories for analysis (for example, calculation of the multibody gyration radius).
 
