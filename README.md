@@ -179,11 +179,11 @@ This flag causes the program to wait for \<TIME\> seconds before beginning.
 
 This is the standard linux command to redirect screen output to \<LOGFILE\>. This command must be used after all other flags.
 
-# III Making AMDAT
+# III. Making AMDAT
 
 To make AMDAT, cd to the main AMDAT directory and run _make_.
 
-## A Required packages
+## A. Required packages
 
 Fftw3 – must be installed
 
@@ -193,7 +193,7 @@ tnt\_126 – directory must be specified in CPLUS\_INCLUDE\_PATH, provided with 
 
 jama125 – directory must be specified in CPLUS\_INCLUDE\_PATH, included with AMDAT distribution and available from NIST at http://math.nist.gov/tnt/download.html
 
-## B Makefile Options
+## B. Makefile Options
 
 Debugging flags can be turned on for use with valgrind by changing comment locations
 
@@ -606,7 +606,7 @@ Most trajectory analysis methods consist of two lines, where the first line (the
 
 Currently, target trajectories may be specifies in two ways (denoted by _\<target\>_ herein). The first (and preferred) method is to specify a trajectory list that was defined earlier in the input script. The second is to specify a set of trajectories by name (these do not work with a spatially binned system).
 
-#### a Trajectory Lists
+#### a) Trajectory Lists
 
 The syntax for targetline with this method is
 
@@ -617,7 +617,7 @@ _listname_ is the name of a trajectory list previously specified by the user. Li
       1.
 ####
 
-#### b Bin Lists
+#### b) Bin Lists
 
 _bin\_list \<bin\_list\_ID\> \<list\_ID\> \<persistence check? 0 or 1 (optional)\>_
 
@@ -625,7 +625,7 @@ Takes the union of the list specified and the binning structuredefined in _creat
 
 \<Persistence check\> specifies whether or not, for dynamic analyses, the algorithm retains only particles that are in the bin at start and end times of a given time gap. The default is zero, meaning this check is not performed.
 
-#### c Tools for use with trajectory lists and bin\_trajectory\_lists:
+#### c) Tools for use with trajectory lists and bin\_trajectory\_lists:
 
 ##### composition
 
@@ -974,7 +974,7 @@ Orientational vector autocorrelation function
 
 Where N is the number of vectors, i is an index over vectors, r denotes the vector between the two specified atoms, bars denote vector magnitude, and brackets denote an ensemble average.
 
-# V.Developer Documentation
+# V. Developer Documentation
 
 This developer documentation is somewhat out of date, but it may still provide some help.
 
@@ -991,39 +991,39 @@ Presently, all analysis classes should preferably be made compatible with both m
 
 Classes shown in blue are those that inherit the functionality of parent class analysis. Classes shown in green are part of the
 
-### 1 class coordinate(coordinate.h, coordinate.cpp)
+### 1. class coordinate(coordinate.h, coordinate.cpp)
 
 Class to store a coordinate in three dimensions, with some associated methods and operator definitions.
 
-### 2 main
+### 2. main
 
 (amdat.cpp)
 
-### 3 class trajectory
+### 3. class trajectory
 
 (trajectory.h, trajectory.cpp)
 
 Stores information about a particle, molecule, or point and its trajectory through time (stores an array of coordinates)
 
-### 4 class atom\_trajectory
+### 4. class atom\_trajectory
 
 (atom\_trajectory.h, atom\_trajectory.cpp)
 
 Stores information about an atom (particle) and its trajectory through time (stores an array of coordinates)
 
-### 5 class molecule
+### 5. class molecule
 
 (molecule.h, molecule.cpp)
 
 Stores information about a molecule, its substituent atoms (stored in arrays) and in some cases the center-of-mass trajectory of the molecule
 
-### 6 class system
+### 6. class system
 
 (system.h, system.cpp)
 
 This is the master class that reads trajectory files and stores information about their contents, including: molecules, atoms, time scheme, box size, and so on. Also contains methods to run loops over subsets of atoms and molecules as well as over times for use by analysis objects.
 
-### 7 class analysis
+### 7. class analysis
 
 (analysis.h, analysis.cpp)
 
@@ -1035,7 +1035,7 @@ analyze(string)
 
 analyze(Trajectory\_List\*)
 
-### 8 class time\_correlation\_function
+### 8. class time\_correlation\_function
 
 Parent class for several analysis classes that calculate a time correlation function.
 
@@ -1053,95 +1053,95 @@ class progress
 
 Class to track progress of a calculation.
 
-### 9 class mean\_square\_displacement
+### 9. class mean\_square\_displacement
 
 (mean\_square\_displacement.h, mean\_square\_displacement.cpp)
 
 Class to calculate mean square displacement as a function of time.
 
-### 10 class van\_hove\_distinct
+### 10. class van\_hove\_distinct
 
 (van\_hove\_distinct.h, van\_hove\_distinct.cpp)
 
 Class to calculate distinct van hove.
 
-### 11 class spacial\_decomposition
+### 11. class spacial\_decomposition
 
 (spacial\_decomposition.h, spacial\_decomposition.cpp)
 
 Class to spatially decompose the system into smaller cells by sorting atoms at each time into these cells.
 
-### 12 class control
+### 12. class control
 
 (control.h, control.cpp)
 
 Master class that reads input file and calls other objects accordingly.
 
-### 13 class wave\_vectors
+### 13. class wave\_vectors
 
 (wave\_vectors.h, wave\_vectors.cpp)
 
-### 14 class spherical\_wave\_vectors
+### 14. class spherical\_wave\_vectors
 
 (spherical\_wave\_vectors.h, spherical\_wave\_vectors.cpp)
 
-### 15 class wave\_density
+### 15. class wave\_density
 
 (wave\_density.o, wave\_density.cpp)
 
-### 16 class intermediate\_scattering\_function
+### 16. class intermediate\_scattering\_function
 
 (intermediate\_scattering\_function.h, intermediate\_scattering\_function.cpp)
 
-### 17 class correlation\_2d
+### 17. class correlation\_2d
 
 (correlation\_2d.h, correlation\_2d.cpp)
 
-### 18 class incoherent\_scattering\_function
+### 18. class incoherent\_scattering\_function
 
 (incoherent\_scattering\_function.h, incoherent\_scattering\_function.cpp)
 
-### 19 class debyewaller\_dist
+### 19. class debyewaller\_dist
 
 (debyewaller\_dist.h, debyewaller\_dist.cpp)
 
-### 20 class stiffness\_dist
+### 20. class stiffness\_dist
 
 (stiffness\_dist.h, stiffness\_dist.cpp)
 
-### 21 class non\_gaussian\_parameter
+### 21. class non\_gaussian\_parameter
 
 (non\_gaussian\_parameter.h, non\_gaussian\_parameter.cpp)
 
-### 22 class gaussian\_comparison
+### 22. class gaussian\_comparison
 
-### 23 class particle\_list
+### 23. class particle\_list
 
-### 24 class particle\_list\_exptime
+### 24. class particle\_list\_exptime
 
-### 25 class fast\_particles
+### 25. class fast\_particles
 
-### 26 class slow\_particles
+### 26. class slow\_particles
 
-### 27 class average\_particles
+### 27. class average\_particles
 
-### 28 class radial\_debye\_waller
+### 28. class radial\_debye\_waller
 
-### 29 class tokenize
+### 29. class tokenize
 
-### 30 class mean\_square\_displacement\_2d
+### 30. class mean\_square\_displacement\_2d
 
-### 31 class velocity\_autocorrelation
+### 31. class velocity\_autocorrelation
 
-### 32 class strings
+### 32. class strings
 
-### 33 class trajectory\_list
+### 33. class trajectory\_list
 
-### 34 class static\_trajectory\_list
+### 34. class static\_trajectory\_list
 
-### 35 class exptime\_trajectory\_list
+### 35. class exptime\_trajectory\_list
 
-# VI Change Log
+# VI. Change Log
 
 * * *
 
