@@ -1475,9 +1475,9 @@ void System::read_custom_manual(string xyzfilename, string header_filename)
   manual_style=args[0];
   if(manual_style=="unwrapped")
   {
-      if(tokenize.count()!=3)
+      if(tokenize.count()!=4)
       {
-          Error("Three arguments required for unwrapped manual raed in format style.", -2);
+          Error("Three arguments required for unwrapped manual read in format style.", -2);
         }
     
       else
@@ -1491,7 +1491,7 @@ void System::read_custom_manual(string xyzfilename, string header_filename)
   {
       if(tokenize.count()!=6)
       {
-          Error("Six arguments required for unwrapped manual raed in format style.", -2);
+          Error("Six arguments required for unwrapped manual read in format style.", -2);
         }
       else
       {
