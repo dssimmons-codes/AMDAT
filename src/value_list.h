@@ -237,6 +237,7 @@ void Value_List<valType>::set(System * sys)
     time_conversion[timeii]=timeii;
     defined_times[timeii]=1;
   }
+  
 }
 
 
@@ -245,7 +246,7 @@ template <class valType>
 void Value_List<valType>::set_static(System * sys)
 {
   
-  delete [] included;
+   delete [] included;
   delete [] time_conversion;
   delete [] defined_times;
 
@@ -258,14 +259,16 @@ void Value_List<valType>::set_static(System * sys)
     included[timeii].set(syst);
   }
 
-  time_conversion = new int [syst->show_n_timesteps()];
-  defined_times = new bool [syst->show_n_timesteps()];
-  for(int timeii=0;syst->show_n_timesteps();timeii++)
+  time_conversion = new int [n_times];
+  defined_times = new bool [n_times];
+  for(int timeii=0;n_times;timeii++)
   {
-    time_conversion[timeii]=0;
-    defined_times[timeii]=0;
+    time_conversion[timeii]=timeii;
+    defined_times[timeii]=1;
   }
-  defined_times[0]=1;
+  
+  values.resize(n_times);
+  
 }
 
 
@@ -285,7 +288,6 @@ void Value_List<valType>::push(int timeii,valType val)
     //note that here timeii is the internally stored time index, not the time. This should probably be fixed in a future version
     values[timeii].push_back(val);
 }
-
 
 
 
