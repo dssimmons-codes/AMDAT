@@ -764,17 +764,17 @@ _\<target\>_
 
 _\<sigma matrix file\>_ refers to a file that describes the cross interaction σ values. It is formatted as described below:
 
-_\<arbitraty name for species 1\> \<$$\sigma$$\> \<\> \<\> … \<\>_
+_\<arbitraty name for species 1\> \<σ\> \<σ\> \<σ\> … \<σ\>_
 
-_\<arbitraty name for species 2\> \<\> \<\> \<\> … \<\>_
-
-_._
+_\<arbitraty name for species 2\> \<σ\> \<σ\> \<σ\> … \<σ\>_
 
 _._
 
 _._
 
-_\<arbitrary name for species n\> \<\> \<\> \<\> … \<\>_
+_._
+
+_\<arbitrary name for species n\> \<σ\> \<σ\> \<σ\> … \<σ\>_
 
 ##### ngp
 
