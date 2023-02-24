@@ -892,7 +892,7 @@ _single \<x\_index\> \<y\_index\> \<z\_index\>\*_
 
 \*Note that indicies start at 0.
 
-#### e Tools for use with value\_lists
+#### e. Tools for use with value\_lists
 
 ##### autocorrelate\_value\_list
 
