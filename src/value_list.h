@@ -261,7 +261,7 @@ void Value_List<valType>::set_static(System * sys)
 
   time_conversion = new int [n_times];
   defined_times = new bool [n_times];
-  for(int timeii=0;n_times;timeii++)
+  for(int timeii=0;timeii<n_times;timeii++)
   {
     time_conversion[timeii]=timeii;
     defined_times[timeii]=1;
@@ -287,6 +287,7 @@ void Value_List<valType>::push(int timeii,valType val)
 {
     //note that here timeii is the internally stored time index, not the time. This should probably be fixed in a future version
     values[timeii].push_back(val);
+    //included[timeii].(len(values[timeii]),1)
 }
 
 
