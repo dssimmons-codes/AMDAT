@@ -287,7 +287,7 @@ void Value_List<valType>::push(int timeii,valType val)
 {
     //note that here timeii is the internally stored time index, not the time. This should probably be fixed in a future version
     values[timeii].push_back(val);
-    //included[timeii].(len(values[timeii]),1)
+    (included[timeii])(values[timeii].size(),1);
 }
 
 
