@@ -22,14 +22,14 @@ class Particles_Between: public Trajectory_List, public Analysis_Onetime
   public:
   Particles_Between();
   Particles_Between(System*);
-  Particles_Between(System*,);  //put other required arguments in this one
+  Particles_Between(System*,float,float);  //put other required arguments in this one
   Particles_Between(const Particles_Between &);
   ~Particles_Between();
   
   Particles_Between operator = (const Particles_Between &);	//assignment
   
   void set(System*);  //typically this should do the same thing as the second constructor above
-  void set(System*,);  //typically this should have the same list of arguments as the third constructor above and should basically do the same thing.
+  void set(System*,,float,float);  //typically this should have the same list of arguments as the third constructor above and should basically do the same thing.
   
   Analysis_Type what_are_you(){Analysis_Type type = particles_between; return type;};   //this analysis type needs to be added at top of ananlysis parent class
   
