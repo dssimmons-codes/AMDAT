@@ -4,13 +4,15 @@
 
 /**/
 
+#include <iostream>
+
 #ifndef PARTICLES_BETWEEN
 #define PARTICLES_BETWEEN
 
-#include <iostream>
 #include "trajectory_list.h"
 #include "analysis_onetime.h"
 #include "system.h"
+
 
 namespace std{
 
@@ -31,11 +33,15 @@ class Particles_Between: public Trajectory_List, public Analysis_Onetime
     Analysis_Type what_are_you(){Analysis_Type type = particles_between; return type;};   //this analysis type needs to be added at top of ananlysis parent class
   
     void preprocess();    //this is where any preprocessing prior to loops should live 
+    void preprocess2();    //this is where any preprocessing prior to loops should live 
     void timekernel(int timeii){timekernel2(timeii);};
     void timekernel2(int timeii);
     void listkernel(Trajectory *, int, int, int);
     void listkernel2(Trajectory *, Trajectory *, int, int, int);
-    void postprocess_list();
+    void analyze (Trajectory_List *);
+    void analyze (Trajectory_List *, Trajectory_List*);
+    void bin_hook(Trajectory_List *,int,int,int);
+    void postprocess_bins();
   
 };
 
