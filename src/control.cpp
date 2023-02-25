@@ -2631,61 +2631,58 @@ void Control::structure_factor()
 
 void Control::find_between()
 {
-//	string filename;
-        string runline1, runline2, listname1, listname2, analysisname;
-	float maxdistance, radius;
-	
-	Particles_Between * pbetween;
-	Trajectory_List* trajlist1;
-  	Trajectory_List* trajlist2;
-	
-	argcheck(3);		//check if number of arguments is correct
+  string runline1, runline2, listname1, listname2, analysisname;
+  float maxdistance, radius;
+
+  Particles_Between * pbetween;
+  Trajectory_List* trajlist1;
+  Trajectory_List* trajlist2;
+
+  argcheck(3);		//check if number of arguments is correct
 
   bool store = tokenize.isflagged("s");
   if(store)
-  {
     analysisname = tokenize["s"];
+
+
+  maxdistance = stof(args[1]);
+  radius = stof(args[2]);
+  
+  Particles_Between particles_between(analyte,maxdistance,radius);
+  
+  runline1 = read_line();
+  cout <<"\n"<< runline1;
+  n_args = tokenize(runline1, args);
+  listname1 = args[1];
+  
+  trajlist1=find_trajectorylist(listname1);
+  
+  runline2 = read_line();
+  cout <<"\n"<< runline2;
+  n_args = tokenize(runline2, args);
+  listname2 = args[1];
+  trajlist2=find_trajectorylist(listname2);
+  cout << "\nFinding particles in list 1 that are between particles in list 2.\n";cout.flush();
+  start = time(NULL);
+  //calls bins
+  particles_between.analyze(trajlist1,trajlist2);
+  finish = time(NULL);
+  cout << "\nFound particles between in " << finish-start<<" seconds.\n";
+  
+  if(store)
+  {
+    pbetween = new Particles_Between;
+    (*pbetween)=particles_between;
+    if(analyses.insert(analysisname,(Analysis*)(pbetween)))
+    {
+      cout << "Saving analysis of in between particles to analysis name " << analysisname << ".\n";
+    }
+    else
+    {
+      cout << "\nError: an analysis is already stored with name " << analysisname << ". New analysis not stored.\ns";
+      exit(0);
+    }
   }
-
-	
-	maxdistance = stof(args[1]);
-	radius = stof(args[2]);
-	
-	Particles_Between particles_between(analyte,maxdistance,radius);
-	
-	runline1 = read_line();
-	cout <<"\n"<< runline1;
-  	n_args = tokenize(runline1, args);
-  	listname1 = args[1];
-
-  	trajlist1=find_trajectorylist(listname1);
-	
-	runline2 = read_line();
-     	cout <<"\n"<< runline2;
-	n_args = tokenize(runline2, args);
-      	listname2 = args[1];
-      	trajlist2=find_trajectorylist(listname2);
-      	cout << "\nFinding particles in list 1 that are between particles in list 2.\n";cout.flush();
-      	start = time(NULL);
-      	//calls bins
-      	particles_between.analyze(trajlist1,trajlist2);
-      	finish = time(NULL);
-      	cout << "\nFound particles between in " << finish-start<<" seconds.\n";
-	
-	if(store)
-  	{
-    		pbetween = new Particles_Between;
-    		(*pbetween)=particles_between;
-    		if(analyses.insert(analysisname,(Analysis*)(pbetween)))
-    		{
-      			cout << "Saving analysis of in between particles to analysis name " << analysisname << ".\n";
-    		}
-    		else
-    		{
-      			cout << "\nError: an analysis is already stored with name " << analysisname << ". New analysis not stored.\ns";
-      			exit(0);
-    		}
-  	}
 	
 }
 
