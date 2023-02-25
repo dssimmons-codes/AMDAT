@@ -11,9 +11,6 @@
 
 using namespace std;
 
-
-
-
 Trajectory_List::Trajectory_List(int timecount, int cap)
 {
 
