@@ -16,6 +16,8 @@ namespace std{
 
 class Particles_Between: public Trajectory_List, public Analysis_Onetime
 {
+  float maxdistance;    //I'm guessing we need some variable like this to store the max total distance between the two secondary particles
+  float radius;         //I'm guessing we need a second variable for that lateral distance. 
   
   public:
   Particles_Between();
