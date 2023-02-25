@@ -20,7 +20,7 @@ class Trajectory_List
 {
   protected:
     System * sys;
-    Trajectory*** trajectories;		//list of pointers to Trajectory_List objects, with a separate list at each time
+    Trajectory*** trajectories;		//list of pointers to Trajectory objects, with a separate list at each time
     int * time_conversion;	//table of system frame index to internal time index conversions
     int * n_trajectories;
 
@@ -57,7 +57,8 @@ class Trajectory_List
     
     void flatten_multibodies(const Multibody_List& mblist);		//set up trajectory list by combining all the trajectories in all multibodies
     
-    
+    int show_n_trajectories(int timeii) {return n_trajectories[convert_time(timeii)];}
+  
     Trajectory* operator () (int trajii);				//return a requested trajectory at the first time stored
     Trajectory* operator () (int timeii, int trajii);		//return a requested trajectory at a given time
     bool is_included(int timeii,int trajii);                              //returns 1 if trajectory is included at that time
