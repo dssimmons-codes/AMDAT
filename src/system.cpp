@@ -1669,7 +1669,7 @@ void System::read_custom_manual(string xyzfilename, string header_filename)
       //Note columns in which to find coordinate data    
       x_position = find_in_string_array(args,xheader)-2;
       y_position = find_in_string_array(args,yheader)-2;
-	  z_position = find_in_string_array(args,yheader)-2;
+      z_position = find_in_string_array(args,yheader)-2;
       
       if(manual_style=="wrapped_indexed")
       {
@@ -1724,8 +1724,8 @@ void System::read_custom_manual(string xyzfilename, string header_filename)
     {
         //read unwrapped coordinates
         x = atof(args[x_position].c_str());
-	    y = atof(args[y_position].c_str());
-	    z = atof(args[z_position].c_str());
+	y = atof(args[y_position].c_str());
+	z = atof(args[z_position].c_str());
         coordinate.set(x,y,z);		//store coordinates temporarily in coordinate object
 	    (molecules[speciesii][moleculeii]).set_unwrapped(type,n_typeii[type],coordinate,timestepii);	//send coordinates to atom
         

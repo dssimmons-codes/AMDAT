@@ -246,7 +246,7 @@ template <class valType>
 void Value_List<valType>::set_static(System * sys)
 {
   
-   delete [] included;
+  delete [] included;
   delete [] time_conversion;
   delete [] defined_times;
 
