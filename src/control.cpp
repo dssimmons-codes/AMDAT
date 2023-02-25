@@ -2631,7 +2631,8 @@ void Control::structure_factor()
 
 void Control::find_between()
 {
-	string filename;
+//	string filename;
+        string runline1, runline2, listname1, listname2, analysisname;
 	float maxdistance, radius;
 	
 	Particles_Between * pbetween;
@@ -2639,6 +2640,13 @@ void Control::find_between()
   	Trajectory_List* trajlist2;
 	
 	argcheck(3);		//check if number of arguments is correct
+
+  bool store = tokenize.isflagged("s");
+  if(store)
+  {
+    analysisname = tokenize["s"];
+  }
+
 	
 	maxdistance = stof(args[1]);
 	radius = stof(args[2]);
@@ -2666,7 +2674,7 @@ void Control::find_between()
 	
 	if(store)
   	{
-    		pbetween = new Radial_Distribution_Function;
+    		pbetween = new Particles_Between;
     		(*pbetween)=particles_between;
     		if(analyses.insert(analysisname,(Analysis*)(pbetween)))
     		{
