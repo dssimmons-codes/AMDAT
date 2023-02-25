@@ -23,8 +23,8 @@ Particles_Between::Particles_Between(System * sys)
 
   system = sys;
    
-  capacity=system->show_n_atoms()+system->show_n_molecules();
-  n_times = system->show_n_exponentials();
+  capacity=system->show_n_atoms()+system->show_n_molecules();   //This sets how much memory will be allocated for trajectory list at each time. This is just an estimate.
+  n_times = system->show_n_times();     //sets number of times for memory allocation to equal number of times in system
 
   trajectories = new Trajectory ** [n_times];
   n_trajectories = new int [n_times];
