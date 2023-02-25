@@ -1405,6 +1405,7 @@ void System::custom_manual_prep(vector<string> file_in, string fileline)
   }
 
   count_atoms(natoms);
+  trajectorylist.resize(n_atoms);
 
   create_molecules(natoms);
 
