@@ -5,8 +5,6 @@
 #include <iostream>
 #include <stdlib.h>
 #include "version.h"
-#include "analysis.h"
-#include "trajectory_list.h"
 
 using namespace std;
 
@@ -52,16 +50,31 @@ Particles_Between::Particles_Between(System * sys)
 
 Particles_Between::Particles_Between(System * sys, float maxdist, float rad)
 {
-  Particles_Between::Particles_Between(sys);
+  int timeii;
+
+  system = sys;
+   
+  capacity=system->show_n_atoms()+system->show_n_molecules();   //This sets how much memory will be allocated for trajectory list at each time. This is just an estimate.
+  n_times = system->show_n_timesteps();     //sets number of times for memory allocation to equal number of times in system
+
+  trajectories = new Trajectory ** [n_times];
+  n_trajectories = new int [n_times];
+  included = new Boolean_List [n_times];
+  for(timeii=0;timeii<n_times;timeii++)
+  {
+    trajectories[timeii] = new Trajectory * [capacity];
+    n_trajectories[timeii]=0;
+    included[timeii].set(sys);
+  }
   maxdistance=maxdist;
   radius=rad;
 }
 
 
-Particles_Between(const Particles_Between & copy)
+Particles_Between::Particles_Between(const Particles_Between & copy):Trajectory_List(copy), Analysis_Onetime(copy)
 {
-  Trajectory_List::Trajectory_List(copy);
-  Analysis::Analysis(copy);
+//  Trajectory_List::Trajectory_List(copy);
+//  Analysis::Analysis(copy);
   maxdistance=copy.maxdistance;
   radius=copy.radius;
   
@@ -73,7 +86,7 @@ Particles_Between::~Particles_Between()
   Analysis::~Analysis();
 }
 
-Particles_Between operator = (const Particles_Between & copy)
+Particles_Between Particles_Between::operator = (const Particles_Between & copy)
 {
   Trajectory_List::operator=(copy);
   Analysis::operator=(copy);
@@ -87,7 +100,7 @@ void Particles_Between::timekernel2(int timeii)
 }
 
 
-void Partices_Between::listkernel(Trajectory* current_trajectory, int timegapii, int thisii, int nextii)
+void Particles_Between::listkernel(Trajectory* current_trajectory, int timegapii, int thisii, int nextii)
 {
   trajectory_list2->listloop2(this, current_trajectory, 0, thisii, 0);
 }
@@ -102,7 +115,7 @@ void Particles_Between::listkernel2(Trajectory* traj1, Trajectory* traj2,int tim
    
    for(int trajii=0;trajii<n_trajs;trajii++)  //here is the second loop over particles
    {
-      traj3 = (*trajectory_list2)(thisii,trajii)  //this is the syntax to pull the second particle in set 2
+      traj3 = (*trajectory_list2)(thisii,trajii);  //this is the syntax to pull the second particle in set 2
       //we now have pointers to all 3 particles here.
       //traj1 is the central particle you are trying to sort
       //traj2 is the first particle in the group you are looking between
@@ -122,14 +135,14 @@ void Particles_Between::listkernel2(Trajectory* traj1, Trajectory* traj2,int tim
   if(traj2!=traj3)
   {
     distance=(traj3->show_coordinate(thisii)-(traj2->show_coordinate(thisii))).length_unwrapped(system->size());	//calculate shortest distance between two coordinates, taking into account periodic boundaries
-    bin(thisii,distance);
+//    bin(thisii,distance);
   }
    
 }
 
 
 
-void Particles_Between::postprocess(list)
+void Particles_Between::postprocess_list()
 {
   //I don't think any postprocessing is needed in this case
 }
