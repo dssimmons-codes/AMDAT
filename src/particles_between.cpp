@@ -8,9 +8,7 @@
 
 using namespace std;
 
-
 /*Default constructor*/
-
 Particles_Between::Particles_Between()
 {
   int timeii;
@@ -28,11 +26,12 @@ Particles_Between::Particles_Between()
   }
 }
 
-Particles_Between::Particles_Between(System * sys)
+Particles_Between::Particles_Between(System * syst)
 {
   int timeii;
 
-  system = sys;
+  sys=syst;
+  system = const_cast<System*>(sys);
    
   capacity=system->show_n_atoms()+system->show_n_molecules();   //This sets how much memory will be allocated for trajectory list at each time. This is just an estimate.
   n_times = system->show_n_timesteps();     //sets number of times for memory allocation to equal number of times in system
@@ -48,11 +47,12 @@ Particles_Between::Particles_Between(System * sys)
   }
 }
 
-Particles_Between::Particles_Between(System * sys, float maxdist, float rad)
+Particles_Between::Particles_Between(System * syst, float maxdist, float rad)
 {
   int timeii;
 
-  system = sys;
+  sys=syst;
+  system = const_cast<System*>(sys);
    
   capacity=system->show_n_atoms()+system->show_n_molecules();   //This sets how much memory will be allocated for trajectory list at each time. This is just an estimate.
   n_times = system->show_n_timesteps();     //sets number of times for memory allocation to equal number of times in system
