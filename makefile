@@ -24,7 +24,7 @@ CONTROLHEADERS=src/control.h src/system.h src/van_hove_self.h src/mean_square_di
 src/gaussian_comparison.h src/fast_particles.h src/tokenize.h src/radial_debye_waller.h src/mean_square_displacement_2d.h src/velocity_autocorrelation.h src/strings.h src/rgtensor_stats.h src/displacement_map.h src/trajectory_list_bins.h src/bin_dynamics_analysis.h \
 src/bin_static_analysis.h src/composition.h src/n_fold_order_parameter.h src/trajectory_list_decay.h src/multibody_set.h src/multibody.h src/multibody_list.h src/multibody_analysis.h src/gyration_radius.h src/trajectory_set.h src/edge_detector_timedependent.h \
 src/mean_velocity_unsteady.h src/mean_unsteady_displacement.h src/radial_distribution_function.h src/bond_autocorrelation_function.h src/orientational_correlation.h src/size_statistics.h src/provisional_multibodies.h src/dynamic_cluster_multibodies.h \
-src/string_multibodies.h src/comover_multibodies.h src/relative_displacement_strings.h src/neighbor_list.h src/distance_neighbor_list.h src/persistent_neighbors.h src/voronoi_neighbor_list.h src/neighbor_decorrelation_function.h src/radial_count.h src/mean_closest_distance.h
+src/string_multibodies.h src/comover_multibodies.h src/relative_displacement_strings.h src/neighbor_list.h src/distance_neighbor_list.h src/persistent_neighbors.h src/voronoi_neighbor_list.h src/neighbor_decorrelation_function.h src/radial_count.h src/mean_closest_distance.h src/particles_between.h
 
 ## Voronoi needs to be compiled at ./src/voro++-0.4.6/ level before compiling AMDAT
 VPATH = ./src/voro++-0.4.6/src
