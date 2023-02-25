@@ -1,10 +1,10 @@
 //Add standard methods up here. Contructors, equality operator, etc.
-
-#include "particles_between.h"
 #include <math.h>
 #include <iostream>
 #include <stdlib.h>
 #include "version.h"
+
+#include "particles_between.h"
 
 using namespace std;
 
@@ -82,16 +82,27 @@ Particles_Between::Particles_Between(const Particles_Between & copy):Trajectory_
 
 Particles_Between::~Particles_Between()
 {
-  Trajectory_List::~Trajectory_List();
-  Analysis::~Analysis();
+////  Trajectory_List::~Trajectory_List();
+////  Analysis::~Analysis();
 }
 
 Particles_Between Particles_Between::operator = (const Particles_Between & copy)
 {
-  Trajectory_List::operator=(copy);
-  Analysis::operator=(copy);
+  sys=copy.system;
+  system = const_cast<System*>(sys);
+  trajectory_list = copy.trajectory_list;
+  n_trajectories = copy.n_trajectories;
+  included = copy.included;
+//  Trajectory_List::operator=(copy);
+//  Analysis::operator=(copy);
+
+  capacity=system->show_n_atoms()+system->show_n_molecules();   //This sets how much memory will be allocated for trajectory list at each time. This is just an estimate.
+
+  n_times = system->show_n_timesteps();     //sets number of times for memory allocation to equal number of times in system
+
   maxdistance=copy.maxdistance;
   radius=copy.radius;
+
 }
 
 void Particles_Between::timekernel2(int timeii)
@@ -131,7 +142,7 @@ void Particles_Between::listkernel2(Trajectory* traj1, Trajectory* traj2,int tim
          }
    }
       
-   float distance;
+  float distance;
   if(traj2!=traj3)
   {
     distance=(traj3->show_coordinate(thisii)-(traj2->show_coordinate(thisii))).length_unwrapped(system->size());	//calculate shortest distance between two coordinates, taking into account periodic boundaries
@@ -140,9 +151,28 @@ void Particles_Between::listkernel2(Trajectory* traj1, Trajectory* traj2,int tim
    
 }
 
+void Particles_Between::preprocess()
+{
+}
 
+void Particles_Between::preprocess2()
+{
+}
 
-void Particles_Between::postprocess_list()
+void Particles_Between::analyze (Trajectory_List *)
+{
+}
+
+void Particles_Between::analyze (Trajectory_List *, Trajectory_List*)
+{
+}
+
+void Particles_Between::bin_hook(Trajectory_List *,int,int,int)
+{
+}
+
+void Particles_Between::postprocess_bins()
 {
   //I don't think any postprocessing is needed in this case
 }
+
