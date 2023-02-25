@@ -162,7 +162,7 @@ void Boolean_List::operator()(int index, bool inc)
   update_size();
   if(index>=system->show_n_trajectories())
   {
-    cout << "Error: index greater than number of trajectories in system.\n";
+    cout << "Error: index = " << index << " greater than number of trajectories = " << system->show_n_trajectories() << " in system.\n";
     exit(1);
   }
   else
