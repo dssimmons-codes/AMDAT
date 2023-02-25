@@ -52,7 +52,8 @@ enum Analysis_Type
   radial_distribution_function,
   displacement_list,
   distance_neighbor_list,
-  neighbor_decorrelation_function
+  neighbor_decorrelation_function,
+  particles_between
 };
 
 
