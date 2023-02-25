@@ -37,6 +37,14 @@ Particles_Between::Particles_Between(System * sys)
   }
 }
 
+Particles_Between operator = (const Particles_Between & copy)
+{
+  Trajectory_List::operator=(copy);
+  Analysis::operator=(copy);
+  maxdistance=copy.maxdistance;
+  radius=copy.radius;
+}
+
 
 void Particles_Between::timekernel2(int timeii)
 {
