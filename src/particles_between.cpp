@@ -37,7 +37,7 @@ Particles_Between::Particles_Between(System * sys)
   system = sys;
    
   capacity=system->show_n_atoms()+system->show_n_molecules();   //This sets how much memory will be allocated for trajectory list at each time. This is just an estimate.
-  n_times = system->show_n_times();     //sets number of times for memory allocation to equal number of times in system
+  n_times = system->show_n_timesteps();     //sets number of times for memory allocation to equal number of times in system
 
   trajectories = new Trajectory ** [n_times];
   n_trajectories = new int [n_times];
@@ -100,7 +100,7 @@ void Particles_Between::listkernel2(Trajectory* traj1, Trajectory* traj2,int tim
    
    int n_trajs=trajectory_list2->show_n_trajectories(thisii);  //record how many particles are in the second trajectory list at this time
    
-   for(trajii=0;trajii<n_trajs;trajii++)  //here is the second loop over particles
+   for(int trajii=0;trajii<n_trajs;trajii++)  //here is the second loop over particles
    {
       traj3 = (*trajectory_list2)(thisii,trajii)  //this is the syntax to pull the second particle in set 2
       //we now have pointers to all 3 particles here.

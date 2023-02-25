@@ -9,7 +9,7 @@
 
 #include <iostream>
 #include "trajectory_list.h"
-#include "analysis.h"
+#include "analysis_onetime.h"
 #include "system.h"
 
 namespace std{
@@ -37,4 +37,7 @@ class Particles_Between: public Trajectory_List, public Analysis_Onetime
   void listkernel2(Trajectory *, Trajectory *, int, int, int);
   void postprocess_list();
   
+};
+
 }
+#endif
