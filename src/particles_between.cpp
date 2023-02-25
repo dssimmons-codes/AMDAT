@@ -1,5 +1,18 @@
 //Add standard methods up here. Contructors, equality operator, etc.
 
+#include "particles_between.h"
+#include <math.h>
+#include <iostream>
+#include <stdlib.h>
+#include "version.h"
+#include "analysis.h"
+#include "trajectory_list.h"
+
+using namespace std;
+
+
+/*Default constructor*/
+
 Particles_Between::Particles_Between()
 {
   int timeii;
@@ -37,6 +50,29 @@ Particles_Between::Particles_Between(System * sys)
   }
 }
 
+Particles_Between::Particles_Between(System * sys, float maxdist, float rad)
+{
+  Particles_Between::Particles_Between(sys);
+  maxdistance=maxdist;
+  radius=rad;
+}
+
+
+Particles_Between(const Particles_Between & copy)
+{
+  Trajectory_List::Trajectory_List(copy);
+  Analysis::Analysis(copy);
+  maxdistance=copy.maxdistance;
+  radius=copy.radius;
+  
+}
+
+Particles_Between::~Particles_Between()
+{
+  Trajectory_List::~Trajectory_List();
+  Analysis::~Analysis();
+}
+
 Particles_Between operator = (const Particles_Between & copy)
 {
   Trajectory_List::operator=(copy);
@@ -44,7 +80,6 @@ Particles_Between operator = (const Particles_Between & copy)
   maxdistance=copy.maxdistance;
   radius=copy.radius;
 }
-
 
 void Particles_Between::timekernel2(int timeii)
 {
@@ -84,10 +119,17 @@ void Particles_Between::listkernel2(Trajectory* traj1, Trajectory* traj2,int tim
    }
       
    float distance;
-  if(traj1!=traj2)
+  if(traj2!=traj3)
   {
-    distance=(traj2->show_coordinate(thisii)-(traj1->show_coordinate(thisii))).length_unwrapped(system->size());	//calculate shortest distance between two coordinates, taking into account periodic boundaries
+    distance=(traj3->show_coordinate(thisii)-(traj2->show_coordinate(thisii))).length_unwrapped(system->size());	//calculate shortest distance between two coordinates, taking into account periodic boundaries
     bin(thisii,distance);
   }
    
+}
+
+
+
+void Particles_Between::postprocess(list)
+{
+  //I don't think any postprocessing is needed in this case
 }
