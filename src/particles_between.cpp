@@ -1,6 +1,44 @@
 //Add standard methods up here. Contructors, equality operator, etc.
 
-void ParticlesBetween::timekernel2(int timeii)
+Particles_Between::Particles_Between()
+{
+  int timeii;
+
+  n_times = 0;
+
+  capacity = 0;
+  trajectories = new Trajectory ** [n_times];
+  n_trajectories = new int [n_times];
+  included = new Boolean_List [n_times];
+  for(timeii=0;timeii<n_times;timeii++)
+  {
+    trajectories[timeii] = new Trajectory * [capacity];
+    n_trajectories[timeii]=0;
+  }
+}
+
+Particles_Between::Particles_Between(System * sys)
+{
+  int timeii;
+
+  system = sys;
+   
+  capacity=system->show_n_atoms()+system->show_n_molecules();
+  n_times = system->show_n_exponentials();
+
+  trajectories = new Trajectory ** [n_times];
+  n_trajectories = new int [n_times];
+  included = new Boolean_List [n_times];
+  for(timeii=0;timeii<n_times;timeii++)
+  {
+    trajectories[timeii] = new Trajectory * [capacity];
+    n_trajectories[timeii]=0;
+    included[timeii].set(sys);
+  }
+}
+
+
+void Particles_Between::timekernel2(int timeii)
 {
    trajectory_list->listloop(this,0, timeii, 0);  
 }
