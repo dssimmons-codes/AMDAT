@@ -121,13 +121,41 @@ void Particles_Between::listkernel2(Trajectory* traj1, Trajectory* traj2,int tim
 {
 //  cout << "Inside listkernel2. Time: " << thisii << " ids: " << traj1->show_trajectory_ID() << " " << traj2->show_trajectory_ID() << "\n";
   Trajectory* traj3;
-  bool isbetween = false;    //boolean to store whether the particle is in the 'between' set at this time
+//  bool isbetween = false;    //boolean to store whether the particle is in the 'between' set at this time
+
+  //check if distance between traj1 and traj2 is under dist_cutoff before proceeding over tertiary loop
+  Coordinate dist_vector_1 = (traj2->show_coordinate(thisii)-(traj1->show_coordinate(thisii))).vector_unwrapped(system->size()); //calculate shortest distance between two coordinates, taking into account periodic boundaries
+  float dist_1 = dist_vector_1.length();
+  if (dist_1/2.0 > dist_cutoff)
+    return;
 
   int n_trajs=trajectory_list2->show_n_trajectories(thisii);  //record how many particles are in the second trajectory list at this time
 
   for(int trajii=0;trajii<n_trajs;trajii++)  //here is the second loop over particles
   {
+
     traj3 = (*trajectory_list2)(thisii,trajii);  //this is the syntax to pull the second particle in set 2
+
+    //check if distance between traj1 and traj3 is under dist_cutoff before proceeding over tertiary loop
+    Coordinate dist_vector_2 = (traj3->show_coordinate(thisii)-(traj1->show_coordinate(thisii))).vector_unwrapped(system->size()); //calculate shortest distance between two coordinates, taking into account periodic boundaries
+    float dist_2 = dist_vector_2.length();
+    if (dist_2/2.0 > dist_cutoff)
+      return;
+
+    float dist = (dist_1+dist_2)/2.0;
+    if (dist > dist_cutoff)
+      return;
+
+    float cos_theta = dist_vector_1&dist_vector_2/dist_1/dist_2;
+    if (cos_theta > theta_cutoff)
+      return;
+
+    cout << "Bead= " << traj1->show_trajectory_ID() << " with " << traj2->show_trajectory_ID() << " " << traj3->show_trajectory_ID() << " dist= " << dist << " cost= " << cos_theta << " at time=" << thisii << "\n";
+
+    addtrajectory(thisii,traj1);        //this line will add the trajectory to the trajectory list
+  }
+}
+
     //we now have pointers to all 3 particles here.
     //traj1 is the central particle you are trying to sort
     //traj2 is the first particle in the group you are looking between
@@ -137,20 +165,13 @@ void Particles_Between::listkernel2(Trajectory* traj1, Trajectory* traj2,int tim
     //if it is, set isbetween to true.
     //if it is not, set isbetween to false
 
-    if(isbetween)
-    {
-       addtrajectory(thisii,traj1);        //this line will add the trajectory to the trajectory list
-    }
-  }
 
-  float distance;
-  if(traj2!=traj3)
-  {
-    distance=(traj3->show_coordinate(thisii)-(traj2->show_coordinate(thisii))).length_unwrapped(system->size());	//calculate shortest distance between two coordinates, taking into account periodic boundaries
-//    bin(thisii,distance);
-  }
-
-}
+//  float distance;
+//  if(traj2!=traj3)
+//  {
+//    distance=(traj3->show_coordinate(thisii)-(traj2->show_coordinate(thisii))).length_unwrapped(system->size());	//calculate shortest distance between two coordinates, taking into account periodic boundaries
+////    bin(thisii,distance);
+//  }
 
 void Particles_Between::preprocess()
 {
