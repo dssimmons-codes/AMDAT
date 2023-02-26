@@ -2639,7 +2639,7 @@ void Control::find_between()
   Trajectory_List* trajlist1;
   Trajectory_List* trajlist2;
 
-  argcheck(3);		//check if number of arguments is correct
+  argcheck(4);		//check if number of arguments is correct
 
   bool store = tokenize.isflagged("s");
   if(store)
