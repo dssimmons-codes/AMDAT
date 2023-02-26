@@ -2635,10 +2635,12 @@ void Control::find_between()
   float dist_cutoff, theta_cutoff;
   string newlistname;
 
-  Particles_Between * pbetween;
+  Particles_Between * particles_between;
   Trajectory_List* trajlist1;
   Trajectory_List* trajlist2;
 
+	
+	
   argcheck(4);		//check if number of arguments is correct
 
   bool store = tokenize.isflagged("s");
@@ -2649,12 +2651,13 @@ void Control::find_between()
   dist_cutoff = stof(args[2]);
   theta_cutoff = stof(args[3]);
   
-  Particles_Between particles_between(analyte,dist_cutoff,theta_cutoff);
+  particles_between = new Particles_Between;
+	  
+  particles_between->set(analyte,dist_cutoff,theta_cutoff);
 	
   //the following lines set up to store this as a trajectory list.	
   Trajectory_List * trajpointer;
-  trajpointer=(Trajectory_List*)(&particles_between);
-	
+  trajpointer=(Trajectory_List*)(particles_between);
 	
   runline1 = read_line();
   cout <<"\n"<< runline1;
@@ -2671,7 +2674,7 @@ void Control::find_between()
   cout << "\nFinding particles in list 1 that are between particles in list 2.\n";cout.flush();
   start = time(NULL);
   //calls bins
-  particles_between.analyze(trajlist1,trajlist2);
+  particles_between->analyze(trajlist1,trajlist2);
   finish = time(NULL);
   cout << "\nFound particles between in " << finish-start<<" seconds.\n";
   
