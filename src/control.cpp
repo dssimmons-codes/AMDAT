@@ -2645,7 +2645,7 @@ void Control::find_between()
   if(store)
     analysisname = tokenize["s"];
 
-  newlistname=args([1]);
+  newlistname=args[1];
   dist_cutoff = stof(args[2]);
   theta_cutoff = stof(args[3]);
   
