@@ -256,6 +256,30 @@ float Coordinate::length_sq()const
 }
 
 
+/*Methods to calculate length of shortest vector, considering box crossing*/
+Coordinate Coordinate::vector_unwrapped(const Coordinate& boxsize)const
+{
+	float length; 
+	float pbcx, pbcy, pbcz;
+
+	if(x > boxsize.x/2)
+		pbcx = x - boxsize.x;
+	else if(x < -boxsize.x/2)
+		pbcx = x + boxsize.x;
+
+	if(y > boxsize.y/2)
+		pbcy = y - boxsize.y;
+	else if(y < -boxsize.y/2)
+		pbcy = y + boxsize.y;
+
+	if(z > boxsize.z/2)
+		pbcz = z - boxsize.z;
+	else if(z < -boxsize.z/2)
+		pbcz = z + boxsize.z;
+
+	Coordinate pbcr(pbcx, pbcy, pbcz);
+	return pbcr;
+}
 
 /*Methods to calculate length of shortest vector, considering box crossing*/
 float Coordinate::length_unwrapped(const Coordinate& boxsize)const
