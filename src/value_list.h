@@ -899,8 +899,6 @@ string Value_List<valType>::write_pdb(int valtime, string file_name_stem, int ti
     {
         if (included[timeii](trajii))
         {
-
-
             speciesID = trajii+1;
             x_coord = syst->show_trajectory(trajii)->show_coordinate(time).show_x();
             y_coord = syst->show_trajectory(trajii)->show_coordinate(time).show_y();
@@ -915,7 +913,7 @@ string Value_List<valType>::write_pdb(int valtime, string file_name_stem, int ti
 //            cout<<"atomname = "<<atomnames[type]<<endl;cout.flush();
 //            cout<<"value = "<<values[trajii]<<endl;cout.flush();
 
-            fprintf(pdbfile, "HETATM%5i %4s MOL A   1    %8.4f%8.4f%8.4f  1.00%6f          %2s  \n", speciesID, atomnames[type].c_str(), x_coord, y_coord, z_coord, values[timeii][trajii], atomnames[type].c_str());
+            fprintf(pdbfile, "HETATM%5i %4s MOL A   1    %8.4f%8.4f%8.4f  1.00 %6f          %2s  \n", speciesID, atomnames[type].c_str(), x_coord, y_coord, z_coord, values[timeii][trajii], atomnames[type].c_str());
 
 
 //fprintf(pdbfile, "HETATM%5i %4s MOL A   1    \n", speciesID, atomnames[type].c_str());
@@ -993,7 +991,7 @@ string Value_List<valType>::write_pdb(int valtime, string file_name_stem, int ti
 
 	    if(type>17){cout << "Error: More atom types in use than names available";exit(1);}
 
-            fprintf(pdbfile, "HETATM%5i %4s MOL A   1    %8.4f%8.4f%8.4f  1.00%6f          %2s  \n", speciesID, atomnames[type].c_str(), x_coord, y_coord, z_coord, values[timeii][trajii], atomnames[type].c_str());
+            fprintf(pdbfile, "HETATM%5i %4s MOL A   1    %8.4f%8.4f%8.4f  1.00 %6f          %2s  \n", speciesID, atomnames[type].c_str(), x_coord, y_coord, z_coord, values[timeii][trajii], atomnames[type].c_str());
 
 
 //fprintf(pdbfile, "HETATM%5i %4s MOL A   1    \n", speciesID, atomnames[type].c_str());
@@ -1056,7 +1054,7 @@ string Value_List<valType>::write_pdb(int valtime, string file_name_stem, int ti
 //            cout<<"atomname = "<<atomname[type]<<endl;cout.flush();
 //            cout<<"value = "<<values[trajii]<<endl;cout.flush();
 
-            fprintf(pdbfile, "HETATM%5i %4s MOL A   1    %8.4f%8.4f%8.4f  1.00%6f          %2s  \n", speciesID, atomnames[type].c_str(), x_coord, y_coord, z_coord, val, atomnames[type].c_str());
+            fprintf(pdbfile, "HETATM%5i %4s MOL A   1    %8.4f%8.4f%8.4f  1.00 %6f          %2s  \n", speciesID, atomnames[type].c_str(), x_coord, y_coord, z_coord, val, atomnames[type].c_str());
 
 
 //fprintf(pdbfile, "HETATM%5i %4s MOL A   1    \n", speciesID, atomnames[type].c_str());
@@ -1137,7 +1135,7 @@ string Value_List<valType>::write_pdb(int valtime, string file_name_stem, int ti
 
 	    if(type>17){cout << "Error: More atom types in use than names available";exit(1);}
 
-            fprintf(pdbfile, "HETATM%5i %4s MOL A   1    %8.4f%8.4f%8.4f  1.00%6f          %2s  \n", speciesID, atomnames[type].c_str(), x_coord, y_coord, z_coord, val, atomnames[type].c_str());
+            fprintf(pdbfile, "HETATM%5i %4s MOL A   1    %8.4f%8.4f%8.4f  1.00 %6f          %2s  \n", speciesID, atomnames[type].c_str(), x_coord, y_coord, z_coord, val, atomnames[type].c_str());
 
 
 //fprintf(pdbfile, "HETATM%5i %4s MOL A   1    \n", speciesID, atomnames[type].c_str());
