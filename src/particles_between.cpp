@@ -24,6 +24,7 @@ Particles_Between::Particles_Between()
     trajectories[timeii] = new Trajectory * [capacity];
     n_trajectories[timeii]=0;
   }
+
 }
 
 Particles_Between::Particles_Between(System * syst)
@@ -127,7 +128,10 @@ void Particles_Between::listkernel2(Trajectory* traj1, Trajectory* traj2,int tim
   Coordinate dist_vector_1 = (traj2->show_coordinate(thisii)-(traj1->show_coordinate(thisii))).vector_unwrapped(system->size()); //calculate shortest distance between two coordinates, taking into account periodic boundaries
   float dist_1 = dist_vector_1.length();
   if (dist_1/2.0 > dist_cutoff)
+  {
+//    set(currentblock, traj1->show_trajectory_ID(), 0);
     return;
+  }
 
   int n_trajs=trajectory_list2->show_n_trajectories(thisii);  //record how many particles are in the second trajectory list at this time
 
@@ -140,19 +144,29 @@ void Particles_Between::listkernel2(Trajectory* traj1, Trajectory* traj2,int tim
     Coordinate dist_vector_2 = (traj3->show_coordinate(thisii)-(traj1->show_coordinate(thisii))).vector_unwrapped(system->size()); //calculate shortest distance between two coordinates, taking into account periodic boundaries
     float dist_2 = dist_vector_2.length();
     if (dist_2/2.0 > dist_cutoff)
+    {
+//      set(currentblock, traj1->show_trajectory_ID(), 0);
       return;
+    }
 
     float dist = (dist_1+dist_2)/2.0;
     if (dist > dist_cutoff)
+    {
+//      set(currentblock, traj1->show_trajectory_ID(), 0);
       return;
+    }
 
     float cos_theta = dist_vector_1&dist_vector_2/dist_1/dist_2;
     if (cos_theta > theta_cutoff)
+    {
+//      set(currentblock, traj1->show_trajectory_ID(), 0);
       return;
+    }
 
     cout << "Bead= " << traj1->show_trajectory_ID() << " with " << traj2->show_trajectory_ID() << " " << traj3->show_trajectory_ID() << " dist= " << dist << " cost= " << cos_theta << " at time=" << thisii << "\n";
 
     addtrajectory(thisii,traj1);        //this line will add the trajectory to the trajectory list
+//    set(currentblock, traj1->show_trajectory_ID(), 1);
   }
 }
 

@@ -16,7 +16,7 @@
 
 namespace std{
 
-class Particles_Between: public Trajectory_List, public Analysis_Onetime
+class Particles_Between: public Trajectory_List, public Analysis_Onetime//, public Value_List <int>
 {
 //  float maxdistance;    //I'm guessing we need some variable like this to store the max total distance between the two secondary particles
   float dist_cutoff;         //I'm guessing we need a second variable for that lateral distance.
@@ -41,6 +41,8 @@ class Particles_Between: public Trajectory_List, public Analysis_Onetime
     void listkernel2(Trajectory *, Trajectory *, int, int, int);
     void bin_hook(Trajectory_List *,int,int,int);
     void postprocess_bins();
+
+//    Value_List<int> * vlist;
 
 };
 
