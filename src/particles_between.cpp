@@ -87,6 +87,37 @@ Particles_Between::~Particles_Between()
 ////  Analysis::~Analysis();
 }
 
+Particles_Between::set(System * syst, float d_cutoff, float t_cutoff)
+{
+  int timeii;
+  
+  for(timeii=0;timeii<n_times;timeii++)
+  {
+    delete [] trajectories[timeii];
+  }
+  delete [] trajectories;
+  delete [] included;
+  delete [n_trajectories]
+  
+  sys=syst;
+  system = const_cast<System*>(sys);
+
+  capacity=system->show_n_atoms()+system->show_n_molecules();   //This sets how much memory will be allocated for trajectory list at each time. This is just an estimate.
+  n_times = system->show_n_timesteps();     //sets number of times for memory allocation to equal number of times in system
+
+  trajectories = new Trajectory ** [n_times];
+  n_trajectories = new int [n_times];
+  included = new Boolean_List [n_times];
+  for(timeii=0;timeii<n_times;timeii++)
+  {
+    trajectories[timeii] = new Trajectory * [capacity];
+    n_trajectories[timeii]=0;
+    included[timeii].set(sys);
+  }
+  dist_cutoff=d_cutoff;
+  theta_cutoff=t_cutoff;
+}
+
 Particles_Between Particles_Between::operator = (const Particles_Between & copy)
 {
   sys=copy.system;
