@@ -260,7 +260,9 @@ float Coordinate::length_sq()const
 Coordinate Coordinate::vector_unwrapped(const Coordinate& boxsize)const
 {
 	float length; 
-	float pbcx, pbcy, pbcz;
+	float pbcx = x;
+	float pbcy = y;
+	float pbcz = z;
 
 	if(x > boxsize.x/2)
 		pbcx = x - boxsize.x;
@@ -277,6 +279,7 @@ Coordinate Coordinate::vector_unwrapped(const Coordinate& boxsize)const
 	else if(z < -boxsize.z/2)
 		pbcz = z + boxsize.z;
 
+//	cout << " " << pbcx << " " << pbcy << " " << pbcz << "\n";
 	Coordinate pbcr(pbcx, pbcy, pbcz);
 	return pbcr;
 }
