@@ -1108,7 +1108,7 @@ void System::read_custom(string xyzfilename)
       if(v_provided)
       {
 	vx_position = find_in_string_array(args,"vx")-2;
-	vy_position = find_in_string_array(args,"vz")-2;
+	vy_position = find_in_string_array(args,"vy")-2;
 	vz_position = find_in_string_array(args,"vz")-2;
       }
 
@@ -1658,7 +1658,7 @@ void System::read_custom_manual(string xyzfilename, string header_filename)
       if(v_provided)
       {
 	vx_position = find_in_string_array(args,"vx")-2;
-	vy_position = find_in_string_array(args,"vz")-2;
+	vy_position = find_in_string_array(args,"vy")-2;
 	vz_position = find_in_string_array(args,"vz")-2;
       }
 
@@ -1669,7 +1669,7 @@ void System::read_custom_manual(string xyzfilename, string header_filename)
       //Note columns in which to find coordinate data    
       x_position = find_in_string_array(args,xheader)-2;
       y_position = find_in_string_array(args,yheader)-2;
-      z_position = find_in_string_array(args,yheader)-2;
+      z_position = find_in_string_array(args,zheader)-2;
       
       if(manual_style=="wrapped_indexed")
       {
@@ -2049,7 +2049,7 @@ void System::read_custom(string xyzfilename, string structure_filename)
       if(v_provided)
       {
 	vx_position = find_in_string_array(args,"vx")-2;
-	vy_position = find_in_string_array(args,"vz")-2;
+	vy_position = find_in_string_array(args,"vy")-2;
 	vz_position = find_in_string_array(args,"vz")-2;
       }
 
@@ -2526,7 +2526,7 @@ void System::read_custom_byid(string xyzfilename)
       if(v_provided)
       {
 	vx_position = find_in_string_array(args,"vx")-2;
-	vy_position = find_in_string_array(args,"vz")-2;
+	vy_position = find_in_string_array(args,"vy")-2;
 	vz_position = find_in_string_array(args,"vz")-2;
       }
 
@@ -3008,7 +3008,7 @@ void System::read_velocity_byid(string xyzfilename)
       if(v_provided)
       {
 	vx_position = find_in_string_array(args,"vx")-2;
-	vy_position = find_in_string_array(args,"vz")-2;
+	vy_position = find_in_string_array(args,"vy")-2;
 	vz_position = find_in_string_array(args,"vz")-2;
       }
 
