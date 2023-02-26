@@ -4222,7 +4222,6 @@ void Control::value_list_to_pdb()
   if(n_args==6)
   {
     vlist->write_pdb(valuetimeindex, filestem, positiontimeindex);
-
   }
   else if(n_args==7)
   {
