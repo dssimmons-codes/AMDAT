@@ -2633,6 +2633,7 @@ void Control::find_between()
 {
   string runline1, runline2, listname1, listname2, analysisname;
   float maxdistance, radius;
+  string newlistname;
 
   Particles_Between * pbetween;
   Trajectory_List* trajlist1;
@@ -2644,12 +2645,17 @@ void Control::find_between()
   if(store)
     analysisname = tokenize["s"];
 
-
-  maxdistance = stof(args[1]);
-  radius = stof(args[2]);
+  newlistname=args([1]);
+  maxdistance = stof(args[2]);
+  radius = stof(args[3]);
   
   Particles_Between particles_between(analyte,maxdistance,radius);
-  
+	
+  //the following lines set up to store this as a trajectory list.	
+  Trajectory_List * trajpointer;
+  trajpointer=(Trajectory_List*)(&particles_between);
+	
+	
   runline1 = read_line();
   cout <<"\n"<< runline1;
   n_args = tokenize(runline1, args);
@@ -2683,6 +2689,8 @@ void Control::find_between()
       exit(0);
     }
   }
+	
+  add_trajectorylist(trajpointer, newlistname);	//add trajectory list to array
 	
 }
 
