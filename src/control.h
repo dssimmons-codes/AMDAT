@@ -28,8 +28,6 @@
 #include "vector_map.h"
 #include "neighbor_list.h"
 
-
-
 #define ARGMAX 10000
 
 #define LISTSIZE 1000
