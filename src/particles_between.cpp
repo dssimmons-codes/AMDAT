@@ -87,7 +87,7 @@ Particles_Between::~Particles_Between()
 ////  Analysis::~Analysis();
 }
 
-Particles_Between::set(System * syst, float d_cutoff, float t_cutoff)
+void Particles_Between::set(System * syst, float d_cutoff, float t_cutoff)
 {
   int timeii;
   
@@ -97,7 +97,8 @@ Particles_Between::set(System * syst, float d_cutoff, float t_cutoff)
   }
   delete [] trajectories;
   delete [] included;
-  delete [n_trajectories]
+  delete [] n_trajectories;
+  delete [] time_conversion;
   
   sys=syst;
   system = const_cast<System*>(sys);
@@ -116,6 +117,14 @@ Particles_Between::set(System * syst, float d_cutoff, float t_cutoff)
   }
   dist_cutoff=d_cutoff;
   theta_cutoff=t_cutoff;
+
+    time_conversion = new int [n_times];
+
+//    for(int timeii=0;timeii<n_times;timeii++)
+//    {
+//        time_conversion[timeii]=time_conv[timeii];
+//    }
+
 }
 
 Particles_Between Particles_Between::operator = (const Particles_Between & copy)

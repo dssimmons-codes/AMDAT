@@ -41,6 +41,7 @@ class Particles_Between: public Trajectory_List, public Analysis_Onetime//, publ
     void listkernel2(Trajectory *, Trajectory *, int, int, int);
     void bin_hook(Trajectory_List *,int,int,int);
     void postprocess_bins();
+    void set(System * syst, float d_cutoff, float t_cutoff);
 
 //    Value_List<int> * vlist;
 
