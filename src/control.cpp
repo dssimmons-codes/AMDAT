@@ -289,6 +289,10 @@ int Control::execute_commands(int iIndex, int fIndex)
     {
       value_statistics();
     }
+//    else if (command == "value_statistics_intersection")
+//    {
+//      value_statistics_intersection();
+//    }
     else if (command == "msd")
     {
       msd();
@@ -4915,14 +4919,30 @@ void Control::multibody_size_statistics()
 void Control::value_statistics()
 {
   int n_moments;
-  string filename, vlist_name;
+  string filename, vlist_name, listname;
   Value_List<float> * vlist;
+  Value_List<float> * vlist_union;
   
   filename = args[1];
   vlist_name=args[2];
   n_moments = atoi(args[3].c_str());
-  
+
   vlist = analyte->find_value_list(vlist_name);
-  
+
+  if (n_args == 5) //PK: added this to limit statistics to intersection
+  {
+    listname = args[4];
+    if(find_trajectorylist(listname)==0)
+    {
+      cout << "\nTrajectory list '"<<listname<<"' not found.";
+      return;
+    }
+    Trajectory_List* trajlist;
+    trajlist=find_trajectorylist(listname);
+    vlist_union = (vlist)*(trajlist);
+    vlist_union->write_statistics(filename, n_moments);
+    return;
+  }
+
   vlist->write_statistics(filename, n_moments);
 }

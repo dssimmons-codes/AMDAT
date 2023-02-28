@@ -256,7 +256,7 @@ float Coordinate::length_sq()const
 }
 
 
-/*Methods to calculate length of shortest vector, considering box crossing*/
+/*Methods to calculate shortest vector, considering box crossing*/
 Coordinate Coordinate::vector_unwrapped(const Coordinate& boxsize)const
 {
 	float length; 
