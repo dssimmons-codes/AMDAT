@@ -2636,6 +2636,7 @@ void Control::find_between()
   string newlistname;
 
   Particles_Between * particles_between;
+  Particles_Between * pbetween;
   Trajectory_List* trajlist1;
   Trajectory_List* trajlist2;
 
@@ -2681,7 +2682,7 @@ void Control::find_between()
   if(store)
   {
     pbetween = new Particles_Between;
-    (*pbetween)=particles_between;
+    pbetween = particles_between;
     if(analyses.insert(analysisname,(Analysis*)(pbetween)))
     {
       cout << "Saving analysis of in between particles to analysis name " << analysisname << ".\n";
