@@ -2636,12 +2636,10 @@ void Control::find_between()
   string newlistname;
 
   Particles_Between * particles_between;
-  Particles_Between * pbetween;
+//  Particles_Between * pbetween;
   Trajectory_List* trajlist1;
   Trajectory_List* trajlist2;
 
-	
-	
   argcheck(4);		//check if number of arguments is correct
 
   bool store = tokenize.isflagged("s");
@@ -2651,6 +2649,8 @@ void Control::find_between()
   newlistname=args[1];
   dist_cutoff = stof(args[2]);
   theta_cutoff = stof(args[3]);
+
+//  Particles_Between particles_between(analyte, dist_cutoff, theta_cutoff);
   
   particles_between = new Particles_Between;
 

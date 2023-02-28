@@ -97,8 +97,8 @@ void Particles_Between::set(System * syst, float d_cutoff, float t_cutoff)
 {
   int timeii;
   
-  delete [] trajectory_list;
-  delete [] trajectory_list2;
+//  delete [] trajectory_list;
+//  delete [] trajectory_list2;
  
   n_times = system->show_n_timesteps();     //sets number of times for memory allocation to equal number of times in system
   for(timeii=0;timeii<n_times;timeii++)
