@@ -19,6 +19,8 @@ Particles_Between::Particles_Between()
   trajectories = new Trajectory ** [n_times];
   n_trajectories = new int [n_times];
   included = new Boolean_List [n_times];
+  time_conversion = new int [n_times];
+  
   for(timeii=0;timeii<n_times;timeii++)
   {
     trajectories[timeii] = new Trajectory * [capacity];
@@ -40,11 +42,13 @@ Particles_Between::Particles_Between(System * syst)
   trajectories = new Trajectory ** [n_times];
   n_trajectories = new int [n_times];
   included = new Boolean_List [n_times];
+  time_conversion = new int [n_times];
   for(timeii=0;timeii<n_times;timeii++)
   {
     trajectories[timeii] = new Trajectory * [capacity];
     n_trajectories[timeii]=0;
     included[timeii].set(sys);
+    time_conversion[timeii]=timeii;
   }
 }
 
@@ -61,11 +65,13 @@ Particles_Between::Particles_Between(System * syst, float d_cutoff, float t_cuto
   trajectories = new Trajectory ** [n_times];
   n_trajectories = new int [n_times];
   included = new Boolean_List [n_times];
+  time_conversion = new int [n_times];
   for(timeii=0;timeii<n_times;timeii++)
   {
     trajectories[timeii] = new Trajectory * [capacity];
     n_trajectories[timeii]=0;
     included[timeii].set(sys);
+    time_conversion[timeii]=timeii;
   }
   dist_cutoff=d_cutoff;
   theta_cutoff=t_cutoff;
@@ -109,16 +115,17 @@ void Particles_Between::set(System * syst, float d_cutoff, float t_cutoff)
   trajectories = new Trajectory ** [n_times];
   n_trajectories = new int [n_times];
   included = new Boolean_List [n_times];
+  time_conversion = new int [n_times];
   for(timeii=0;timeii<n_times;timeii++)
   {
     trajectories[timeii] = new Trajectory * [capacity];
     n_trajectories[timeii]=0;
     included[timeii].set(sys);
+    time_conversion[timeii]=timeii;
   }
   dist_cutoff=d_cutoff;
   theta_cutoff=t_cutoff;
 
-    time_conversion = new int [n_times];
 
 //    for(int timeii=0;timeii<n_times;timeii++)
 //    {
