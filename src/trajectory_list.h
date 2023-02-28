@@ -30,9 +30,6 @@ class Trajectory_List
 
     mutable Boolean_List * included;	//stores boolean list specifying included trajectories at each time;
 
-
-
-
     int convert_time(int timeii)const{return time_conversion[timeii];};	//convert requested time (Where the index is the time index from the system object) to internal time index
 
 
@@ -51,7 +48,6 @@ class Trajectory_List
     ~Trajectory_List();
     Trajectory_List(const Trajectory_List &); // MEM - copy constructor
 
-
     void set(System* sys, int timecount, int cap, Boolean_List * boollist, int*time_conv);
     void set(System * syst, vector<Trajectory_Set*> trajectory_sets, int*time_conv);		//initialize trajectory list based on vector of trajectory sets
     
@@ -68,7 +64,6 @@ class Trajectory_List
     void listloop2(Analysis* analysis, Trajectory* traj, int timegap, int curTime, int nextTime);			//loop over trajectories at a given time
     int show_n_trajectories(int timeii)const{return n_trajectories[convert_time(timeii)];};	//return number of trajectories at a given time
 
-
     virtual void write_count(string)const;
     void write_xyz(string)const;
     void write_full_xyz(string)const;
@@ -83,7 +78,6 @@ class Trajectory_List
 
     void inversion(Trajectory_List*,Trajectory_List*);
 };
-
 
 }
 #endif
