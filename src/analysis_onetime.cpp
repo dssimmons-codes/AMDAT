@@ -17,10 +17,6 @@ Analysis_Onetime::Analysis_Onetime(const Analysis_Onetime& copy):Analysis(copy)
   time_scheme=copy.time_scheme;
 }
 
-
-
-
-
 void Analysis_Onetime::analyze(Trajectory_List * t_list)
 {
   int timeii;
@@ -80,7 +76,7 @@ void Analysis_Onetime::analyze(Trajectory_List * t_list,Trajectory_List* t_list2
       timekernel2(timeii);
     }
   }
-  
+ 
   postprocess_list();
 }
 
