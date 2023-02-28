@@ -2681,9 +2681,9 @@ void Control::find_between()
   
   if(store)
   {
-    pbetween = new Particles_Between;
-    pbetween = particles_between;
-    if(analyses.insert(analysisname,(Analysis*)(pbetween)))
+//    pbetween = new Particles_Between;
+//    pbetween = particles_between;
+    if(analyses.insert(analysisname,(Analysis*)(particles_between)))
     {
       cout << "Saving analysis of in between particles to analysis name " << analysisname << ".\n";
     }

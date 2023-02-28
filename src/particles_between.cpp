@@ -97,6 +97,10 @@ void Particles_Between::set(System * syst, float d_cutoff, float t_cutoff)
 {
   int timeii;
   
+  delete [] trajectory_list;
+  delete [] trajectory_list2;
+ 
+  n_times = system->show_n_timesteps();     //sets number of times for memory allocation to equal number of times in system
   for(timeii=0;timeii<n_times;timeii++)
   {
     delete [] trajectories[timeii];
@@ -122,10 +126,13 @@ void Particles_Between::set(System * syst, float d_cutoff, float t_cutoff)
     n_trajectories[timeii]=0;
     included[timeii].set(sys);
     time_conversion[timeii]=timeii;
+//    for(int trajii = 0; trajii < capacity; trajii++)
+//    {
+//      trajectories[timeii][trajii]=0;
+//    }
   }
   dist_cutoff=d_cutoff;
   theta_cutoff=t_cutoff;
-
 
 //    for(int timeii=0;timeii<n_times;timeii++)
 //    {
