@@ -2681,9 +2681,15 @@ void Control::find_between()
   
   if(store)
   {
+<<<<<<< HEAD
     pbetween = new Particles_Between;
     pbetween = particles_between;
     if(analyses.insert(analysisname,(Analysis*)(pbetween)))
+=======
+//    pbetween = new Particles_Between;
+//    pbetween = particles_between;
+    if(analyses.insert(analysisname,(Analysis*)(particles_between)))
+>>>>>>> 0df40ec2542a81841317297acff7789a87256033
     {
       cout << "Saving analysis of in between particles to analysis name " << analysisname << ".\n";
     }
