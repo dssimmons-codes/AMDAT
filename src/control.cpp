@@ -1325,7 +1325,7 @@ void Control::run_analysis(Analysis* analyzer, string setline)
   /*finds trajectorylist object by custom name*/
 Trajectory_List* Control::find_trajectorylist(string listname, bool allow_nofind)const
 {
-    Trajectory_List * trajectory_list;
+  Trajectory_List * trajectory_list;
 
   try
   {
@@ -2652,18 +2652,17 @@ void Control::find_between()
   theta_cutoff = stof(args[3]);
   
   particles_between = new Particles_Between;
-	  
+
   particles_between->set(analyte,dist_cutoff,theta_cutoff);
 	
   //the following lines set up to store this as a trajectory list.	
   Trajectory_List * trajpointer;
   trajpointer=(Trajectory_List*)(particles_between);
-	
+
   runline1 = read_line();
   cout <<"\n"<< runline1;
   n_args = tokenize(runline1, args);
   listname1 = args[1];
-  
   trajlist1=find_trajectorylist(listname1);
   
   runline2 = read_line();
@@ -2671,6 +2670,7 @@ void Control::find_between()
   n_args = tokenize(runline2, args);
   listname2 = args[1];
   trajlist2=find_trajectorylist(listname2);
+
   cout << "\nFinding particles in list 1 that are between particles in list 2.\n";cout.flush();
   start = time(NULL);
   //calls bins
@@ -2692,9 +2692,9 @@ void Control::find_between()
       exit(0);
     }
   }
-	
+
   add_trajectorylist(trajpointer, newlistname);	//add trajectory list to array
-	
+
 }
 
 /*--------------------------------------------------------------------------------*/
