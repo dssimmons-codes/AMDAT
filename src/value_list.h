@@ -13,6 +13,7 @@
 #include "boolean_list.h"
 #include "system.h"
 #include "trajectory_list.h"
+#include "version.h"
 
 #ifndef VALUE_LIST
 #define VALUE_LIST
@@ -91,7 +92,9 @@ protected:
   string write_pdb(int, string, int, string*,valType)const;
   string write_pdb(int, string, int,valType)const;
   void write_data_file(string filename)const;
-  virtual void write_statistics(string filename, int n_moments)const{};
+
+
+  void write_statistics(string, int)const;
 
   
   void construct_t_list(bool, valType,Trajectory_List*);
@@ -1457,6 +1460,86 @@ float Value_List<valType>::change(int trajindex,int time1,int time2)
         difference = nan("");
     }
     return difference;
+}
+
+template <class valType>
+void Value_List<valType>::write_statistics(string filename, int n_moments)const
+{
+  int timeii, trajii, binii;
+  int maximum = max();
+  int n_values=0;
+  
+  int sizeii, momentii;
+  float* moments;
+  moments=new float [n_moments];
+  
+  cout << "\nWriting value dist and statistics to file.";
+  ofstream output(filename.c_str());
+  output << "Value list statistics created by AMDAT v." << VERSION << "\n";
+   
+  vector<int> dist;
+  
+  dist.resize(maximum+1,0);
+  
+  for(timeii=0;timeii<n_times;timeii++)
+  {
+      n_values+=included->show_n_included();
+      for(trajii=0;trajii<values[timeii].size();trajii++)
+      {
+	if(included[timeii](trajii))
+	{
+	  dist[values[timeii][trajii]]++;
+	}
+      }
+  }
+  
+  
+  for(momentii=0;momentii<n_moments;momentii++)
+  {
+    moments[momentii]=0;
+  }
+  
+  
+  for(binii=0;binii<dist.size();binii++)
+  {
+    moments[0]+=dist[binii];
+    for(momentii=1;momentii<n_moments;momentii++)
+    {
+      moments[momentii]+=pow(float(binii),float(momentii))*float(dist[binii])/float(n_values);
+    }
+  }
+  
+  output << "Value\t";
+
+  for(binii=0;binii<dist.size();binii++)
+  {
+    output << binii << "\t";
+  }
+  
+    output<<"\nFrequency\t";
+  
+  for(binii=0;binii<dist.size();binii++)
+  {
+    
+    output<<float(dist[binii])/float(n_values)<<"\t";
+  }
+  
+  output<<"\n\nMoment\t";
+  
+  for(momentii=0;momentii<n_moments;momentii++)
+  {
+    output<<momentii<<"\t";
+  }
+  
+  output << "\nValue\t";
+  
+  for(momentii=0;momentii<n_moments;momentii++)
+  {
+    output<<moments[momentii]<<"\t";
+  }
+  
+  output << "\n\nTotal_Values\t" << n_values;
+  
 }
 
 }

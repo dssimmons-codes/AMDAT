@@ -126,7 +126,6 @@ void Particles_Between::set(System * syst, float d_cutoff, float t_cutoff)
   dist_cutoff=d_cutoff;
   theta_cutoff=t_cutoff;
 
-
 //    for(int timeii=0;timeii<n_times;timeii++)
 //    {
 //        time_conversion[timeii]=time_conv[timeii];
@@ -167,6 +166,10 @@ void Particles_Between::listkernel(Trajectory* current_trajectory, int timegapii
 
 void Particles_Between::listkernel2(Trajectory* traj1, Trajectory* traj2,int timegapii,int thisii, int nextii) //need to check back on which of these time indices is the right one.
 {
+
+  if (is_included(thisii, traj1->show_trajectory_ID()))
+    return;
+
 //  cout << "Inside listkernel2. Time: " << thisii << " ids: " << traj1->show_trajectory_ID() << " " << traj2->show_trajectory_ID() << "\n";
   Trajectory* traj3;
 //  bool isbetween = false;    //boolean to store whether the particle is in the 'between' set at this time
@@ -174,9 +177,18 @@ void Particles_Between::listkernel2(Trajectory* traj1, Trajectory* traj2,int tim
   //check if distance between traj1 and traj2 is under dist_cutoff before proceeding over tertiary loop
   Coordinate dist_vector_1 = (traj2->show_coordinate(thisii)-(traj1->show_coordinate(thisii))).vector_unwrapped(system->size()); //calculate shortest distance between two coordinates, taking into account periodic boundaries
   float dist_1 = dist_vector_1.length();
+
+//  if ( abs(traj1->show_coordinate(thisii).show_x() - 0.167775) < 0.000001 )
+//  {
+//    cout << traj1->show_coordinate(thisii).show_x() << " " << traj1->show_coordinate(thisii).show_y() << " " << traj1->show_coordinate(thisii).show_z() << " ";
+//    cout << "dist_1 " << dist_1 << " ";
+//  }
+
   if (dist_1/2.0 > dist_cutoff)
   {
 //    set(currentblock, traj1->show_trajectory_ID(), 0);
+//    if ( abs(traj1->show_coordinate(thisii).show_x() - 0.167775) < 0.000001 )
+//      cout << "\n";
     return;
   }
 
@@ -193,26 +205,27 @@ void Particles_Between::listkernel2(Trajectory* traj1, Trajectory* traj2,int tim
     if (dist_2/2.0 > dist_cutoff)
     {
 //      set(currentblock, traj1->show_trajectory_ID(), 0);
-      return;
+      continue;
     }
 
     float dist = (dist_1+dist_2)/2.0;
     if (dist > dist_cutoff)
     {
 //      set(currentblock, traj1->show_trajectory_ID(), 0);
-      return;
+      continue;
     }
 
     float cos_theta = dist_vector_1&dist_vector_2/dist_1/dist_2;
     if (cos_theta > theta_cutoff)
     {
 //      set(currentblock, traj1->show_trajectory_ID(), 0);
-      return;
+      continue;
     }
 
-    cout << "Bead= " << traj1->show_trajectory_ID() << " with " << traj2->show_trajectory_ID() << " " << traj3->show_trajectory_ID() << " dist= " << dist << " cost= " << cos_theta << " at time=" << thisii << "\n";
+//    cout << "Bead= " << traj1->show_trajectory_ID() << " with " << traj2->show_trajectory_ID() << " " << traj3->show_trajectory_ID() << " dist= " << dist << " cost= " << cos_theta << " at time=" << thisii << "\n";
 
     addtrajectory(thisii,traj1);        //this line will add the trajectory to the trajectory list
+    break; //break to not repeat adding traj1
 //    set(currentblock, traj1->show_trajectory_ID(), 1);
   }
 }
