@@ -21,11 +21,12 @@ class Particles_Between: public Trajectory_List, public Analysis_Onetime//, publ
 //  float maxdistance;    //I'm guessing we need some variable like this to store the max total distance between the two secondary particles
   float dist_cutoff;         //I'm guessing we need a second variable for that lateral distance.
   float theta_cutoff;
+  bool only_diff_molecule;
 
   public:
     Particles_Between();
     Particles_Between(System*);
-    Particles_Between(System*,float,float);  //put other required arguments in this one
+    Particles_Between(System*,float,float,bool only_diff=0);  //put other required arguments in this one
     Particles_Between(const Particles_Between &);
     ~Particles_Between();
 
@@ -41,7 +42,7 @@ class Particles_Between: public Trajectory_List, public Analysis_Onetime//, publ
     void listkernel2(Trajectory *, Trajectory *, int, int, int);
     void bin_hook(Trajectory_List *,int,int,int);
     void postprocess_bins();
-    void set(System * syst, float d_cutoff, float t_cutoff);
+    void set(System * syst, float d_cutoff, float t_cutoff, bool only_diff=0);
 
 //    Value_List<int> * vlist;
 

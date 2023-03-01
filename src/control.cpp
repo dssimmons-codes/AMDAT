@@ -2638,15 +2638,14 @@ void Control::find_between()
   string runline1, runline2, listname1, listname2, analysisname;
   float dist_cutoff, theta_cutoff;
   string newlistname;
+  bool only_diff_molecule=0;
 
   Particles_Between * particles_between;
   Particles_Between * pbetween;
   Trajectory_List* trajlist1;
   Trajectory_List* trajlist2;
 
-	
-	
-  argcheck(4);		//check if number of arguments is correct
+//  argcheck(4);		//check if number of arguments is correct
 
   bool store = tokenize.isflagged("s");
   if(store)
@@ -2655,10 +2654,13 @@ void Control::find_between()
   newlistname=args[1];
   dist_cutoff = stof(args[2]);
   theta_cutoff = stof(args[3]);
-  
+  if(n_args == 5)
+    only_diff_molecule=atoi(args[4].c_str());
+//  cout << "ONLY_DIFF_MOLECULE" << only_diff_molecule << "\n";
+
   particles_between = new Particles_Between;
 	  
-  particles_between->set(analyte,dist_cutoff,theta_cutoff);
+  particles_between->set(analyte,dist_cutoff,theta_cutoff,only_diff_molecule);
 	
   //the following lines set up to store this as a trajectory list.	
   Trajectory_List * trajpointer;
