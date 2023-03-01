@@ -1661,111 +1661,88 @@ void Value_List<valType>::write_statistics(string filename, Trajectory_List* tra
 template <class valType>
 void Value_List<valType>::write_statistics_pertime(string filename, int n_moments)const
 {
-  int timeii, trajii, binii, timeii_traj;
-  int maximum = max();
-  cout << "max: " << maximum << "\n";
-  
-  int sizeii, momentii;
+  int timeii, trajii;
   
   cout << "\nWriting value dist and statistics to file.";
   ofstream output(filename.c_str());
   output << "Value list statistics created by AMDAT v." << VERSION << "\n";
-  output << "Time";
-  for(momentii=0; momentii<n_moments; momentii++)
-    output << " Moment_" << momentii;
-  output << " Count\n";
+  output << "Time Count Mean StdDev\n";
   
   for(timeii=0;timeii<n_times;timeii++)
   {
-    int n_values=0;
     output << timeii << " ";
 
-    float* moments;
-    moments=new float [n_moments];
-    for(momentii=0;momentii<n_moments;momentii++)
-      moments[momentii]=0;
-
-    vector<int> dist;
-    
-    dist.resize(maximum+1,0);
+    int n_values=0;
+    valType mean = 0.0;
 
     for(trajii=0;trajii<values[timeii].size();trajii++)
     {
       if(included[timeii](trajii))
       {
-//        cout << "val: " << values[timeii][trajii] << "\n";
-        dist[int(values[timeii][trajii])]++;
+        mean += values[timeii][trajii];
         n_values++;
       }
     }
 
-    for(binii=0;binii<dist.size();binii++)
+    mean /= n_values;
+    valType variance = 0.0;
+    valType std_dev = 0.0;
+
+    for(trajii=0;trajii<values[timeii].size();trajii++)
     {
-      moments[0]+=dist[binii];
-      for(momentii=1;momentii<n_moments;momentii++)
-        moments[momentii]+=pow(float(binii),float(momentii))*float(dist[binii])/float(n_values);
+      if(included[timeii](trajii))
+      {
+        variance += pow(values[timeii][trajii] - mean, 2);
+      }
     }
 
-    for(momentii=0;momentii<n_moments;momentii++)
-      output<<moments[momentii]<<" ";
+    std_dev = sqrt(variance/n_values);
 
-    output << n_values << "\n";
-
-    delete [] moments;
+    output << n_values << " " << mean << " " << std_dev << "\n";
   }
 }
 
 template <class valType>
 void Value_List<valType>::write_statistics_pertime(string filename, Trajectory_List* trajlist, int n_moments)const
 {
-  int timeii, trajii, binii, timeii_traj;
-  int maximum = max();
-  
-  int sizeii, momentii;
+  int timeii, trajii;
   
   cout << "\nWriting value dist and statistics to file.";
   ofstream output(filename.c_str());
   output << "Value list statistics created by AMDAT v." << VERSION << "\n";
-  output << "Time";
-  for(momentii=0; momentii<n_moments; momentii++)
-    output << " Moment_" << momentii;
-  output << " Count\n";
+  output << "Time Count Mean StdDev\n";
   
   for(timeii=0;timeii<n_times;timeii++)
   {
-    int n_values=0;
     output << timeii << " ";
-    float* moments;
-    moments=new float [n_moments];
-    for(momentii=0;momentii<n_moments;momentii++)
-      moments[momentii]=0;
 
-    vector<int> dist;
-    
-    dist.resize(maximum+1,0);
+    int n_values=0;
+    valType mean = 0.0;
 
     for(trajii=0;trajii<values[timeii].size();trajii++)
     {
       if(included[timeii](trajii) && trajlist->is_included(timeii, trajii))
       {
-        dist[values[timeii][trajii]]++;
+        mean += values[timeii][trajii];
         n_values++;
       }
     }
 
-    for(binii=0;binii<dist.size();binii++)
+    mean /= n_values;
+    valType variance = 0.0;
+    valType std_dev = 0.0;
+
+    for(trajii=0;trajii<values[timeii].size();trajii++)
     {
-      moments[0]+=dist[binii];
-      for(momentii=1;momentii<n_moments;momentii++)
-        moments[momentii]+=pow(float(binii),float(momentii))*float(dist[binii])/float(n_values);
+      if(included[timeii](trajii) && trajlist->is_included(timeii, trajii))
+      {
+        variance += pow(values[timeii][trajii] - mean, 2);
+      }
     }
 
-    for(momentii=0;momentii<n_moments;momentii++)
-      output<<moments[momentii]<<" ";
+    std_dev = sqrt(variance/n_values);
 
-    output << n_values << "\n";
-
-    delete [] moments;
+    output << n_values << " " << mean << " " << std_dev << "\n";
   }
 }
 
