@@ -31,6 +31,7 @@ class Atom_Trajectory: public Trajectory
     void set(int,int,Coordinate*,int);				//method to fully define object, including coordinate list
         
     int show_atomID()const{return atomID;};
+    int show_moleculeID()const{return moleculeID;};
     void set_atomID(int ID){atomID = ID;};
     
     void set_moleculeID(int ID){moleculeID=ID;};		//set unique ID of molecule within which atome resides

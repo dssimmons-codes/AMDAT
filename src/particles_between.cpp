@@ -52,7 +52,7 @@ Particles_Between::Particles_Between(System * syst)
   }
 }
 
-Particles_Between::Particles_Between(System * syst, float d_cutoff, float t_cutoff)
+Particles_Between::Particles_Between(System * syst, float d_cutoff, float t_cutoff, bool only_diff)
 {
   int timeii;
 
@@ -73,6 +73,7 @@ Particles_Between::Particles_Between(System * syst, float d_cutoff, float t_cuto
     included[timeii].set(sys);
     time_conversion[timeii]=timeii;
   }
+  only_diff_molecule=only_diff;
   dist_cutoff=d_cutoff;
   theta_cutoff=t_cutoff;
 }
@@ -82,6 +83,7 @@ Particles_Between::Particles_Between(const Particles_Between & copy):Trajectory_
 {
 //  Trajectory_List::Trajectory_List(copy);
 //  Analysis::Analysis(copy);
+  only_diff_molecule=copy.only_diff_molecule;
   dist_cutoff=copy.dist_cutoff;
   theta_cutoff=copy.theta_cutoff;
 
@@ -93,7 +95,7 @@ Particles_Between::~Particles_Between()
 ////  Analysis::~Analysis();
 }
 
-void Particles_Between::set(System * syst, float d_cutoff, float t_cutoff)
+void Particles_Between::set(System * syst, float d_cutoff, float t_cutoff, bool only_diff)
 {
   int timeii;
   
@@ -123,6 +125,7 @@ void Particles_Between::set(System * syst, float d_cutoff, float t_cutoff)
     included[timeii].set(sys);
     time_conversion[timeii]=timeii;
   }
+  only_diff_molecule=only_diff;
   dist_cutoff=d_cutoff;
   theta_cutoff=t_cutoff;
 
@@ -147,6 +150,7 @@ Particles_Between Particles_Between::operator = (const Particles_Between & copy)
 
   n_times = system->show_n_timesteps();     //sets number of times for memory allocation to equal number of times in system
 
+  only_diff_molecule=copy.only_diff_molecule;
   dist_cutoff=copy.dist_cutoff;
   theta_cutoff=copy.theta_cutoff;
 
@@ -164,33 +168,18 @@ void Particles_Between::listkernel(Trajectory* current_trajectory, int timegapii
 }
 
 
-void Particles_Between::listkernel2(Trajectory* traj1, Trajectory* traj2,int timegapii,int thisii, int nextii) //need to check back on which of these time indices is the right one.
+void Particles_Between::listkernel2(Trajectory* traj1, Trajectory* traj2, int timegapii, int thisii, int nextii) //need to check back on which of these time indices is the right one.
 {
-
-  if (is_included(thisii, traj1->show_trajectory_ID()))
+  if (is_included(thisii, traj1->show_trajectory_ID())) //skip if traj1 is already included
     return;
 
-//  cout << "Inside listkernel2. Time: " << thisii << " ids: " << traj1->show_trajectory_ID() << " " << traj2->show_trajectory_ID() << "\n";
   Trajectory* traj3;
-//  bool isbetween = false;    //boolean to store whether the particle is in the 'between' set at this time
 
   //check if distance between traj1 and traj2 is under dist_cutoff before proceeding over tertiary loop
   Coordinate dist_vector_1 = (traj2->show_coordinate(thisii)-(traj1->show_coordinate(thisii))).vector_unwrapped(system->size()); //calculate shortest distance between two coordinates, taking into account periodic boundaries
   float dist_1 = dist_vector_1.length();
-
-//  if ( abs(traj1->show_coordinate(thisii).show_x() - 0.167775) < 0.000001 )
-//  {
-//    cout << traj1->show_coordinate(thisii).show_x() << " " << traj1->show_coordinate(thisii).show_y() << " " << traj1->show_coordinate(thisii).show_z() << " ";
-//    cout << "dist_1 " << dist_1 << " ";
-//  }
-
   if (dist_1/2.0 > dist_cutoff)
-  {
-//    set(currentblock, traj1->show_trajectory_ID(), 0);
-//    if ( abs(traj1->show_coordinate(thisii).show_x() - 0.167775) < 0.000001 )
-//      cout << "\n";
     return;
-  }
 
   int n_trajs=trajectory_list2->show_n_trajectories(thisii);  //record how many particles are in the second trajectory list at this time
 
@@ -199,53 +188,35 @@ void Particles_Between::listkernel2(Trajectory* traj1, Trajectory* traj2,int tim
 
     traj3 = (*trajectory_list2)(thisii,trajii);  //this is the syntax to pull the second particle in set 2
 
-    //check if distance between traj1 and traj3 is under dist_cutoff before proceeding over tertiary loop
-    Coordinate dist_vector_2 = (traj3->show_coordinate(thisii)-(traj1->show_coordinate(thisii))).vector_unwrapped(system->size()); //calculate shortest distance between two coordinates, taking into account periodic boundaries
+    //if only_diff_molecule==1, check that traj2 and traj3 are part of a different cluster
+    if (only_diff_molecule)
+    {
+      Atom_Trajectory* atom_traj2 = dynamic_cast<Atom_Trajectory*>(traj2);
+      Atom_Trajectory* atom_traj3 = dynamic_cast<Atom_Trajectory*>(traj3);
+      if (atom_traj2->show_moleculeID() == atom_traj3->show_moleculeID())
+        continue;
+    }
+
+    //check if distance between traj1 and traj3 is under dist_cutoff
+    Coordinate dist_vector_2 = (traj3->show_coordinate(thisii)-(traj1->show_coordinate(thisii))).vector_unwrapped(system->size());
     float dist_2 = dist_vector_2.length();
     if (dist_2/2.0 > dist_cutoff)
-    {
-//      set(currentblock, traj1->show_trajectory_ID(), 0);
       continue;
-    }
 
+    // check dist_cutoff criteria
     float dist = (dist_1+dist_2)/2.0;
     if (dist > dist_cutoff)
-    {
-//      set(currentblock, traj1->show_trajectory_ID(), 0);
       continue;
-    }
 
+    // check theta_cutoff criteria
     float cos_theta = dist_vector_1&dist_vector_2/dist_1/dist_2;
     if (cos_theta > theta_cutoff)
-    {
-//      set(currentblock, traj1->show_trajectory_ID(), 0);
       continue;
-    }
 
-//    cout << "Bead= " << traj1->show_trajectory_ID() << " with " << traj2->show_trajectory_ID() << " " << traj3->show_trajectory_ID() << " dist= " << dist << " cost= " << cos_theta << " at time=" << thisii << "\n";
-
-    addtrajectory(thisii,traj1);        //this line will add the trajectory to the trajectory list
+    addtrajectory(thisii,traj1); //this line will add the trajectory to the trajectory list
     break; //break to not repeat adding traj1
-//    set(currentblock, traj1->show_trajectory_ID(), 1);
   }
 }
-
-    //we now have pointers to all 3 particles here.
-    //traj1 is the central particle you are trying to sort
-    //traj2 is the first particle in the group you are looking between
-    //traj3 is the second particle in the group you are looking between
-
-    //do some math here to determine whether particle is in between
-    //if it is, set isbetween to true.
-    //if it is not, set isbetween to false
-
-
-//  float distance;
-//  if(traj2!=traj3)
-//  {
-//    distance=(traj3->show_coordinate(thisii)-(traj2->show_coordinate(thisii))).length_unwrapped(system->size());	//calculate shortest distance between two coordinates, taking into account periodic boundaries
-////    bin(thisii,distance);
-//  }
 
 void Particles_Between::preprocess()
 {
