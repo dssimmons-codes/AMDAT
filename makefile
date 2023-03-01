@@ -1,10 +1,10 @@
 CXX=g++ -std=gnu++0x -std=c++0x 
 ##Normal flags
-#CFLAGS=-c -fopenmp #-O2
-#CFLAGSmain= -fopenmp# -O2
+CFLAGS=-c -fopenmp #-O2
+CFLAGSmain= -fopenmp# -O2
 ##Debugging flags
-CFLAGS=-Wall -Wextra -Wcast-qual -Wcast-align -O0 -ggdb -g3 -fstack-protector-all -fno-inline -c -fopenmp #-O2
-CFLAGSmain=-Wall -Wextra -Wcast-qual -Wcast-align -O0 -ggdb -g3 -fstack-protector-all -fno-inline -fopenmp #-O2
+#CFLAGS=-Wall -Wextra -Wcast-qual -Wcast-align -O0 -ggdb -g3 -fstack-protector-all -fno-inline -c -fopenmp #-O2
+#CFLAGSmain=-Wall -Wextra -Wcast-qual -Wcast-align -O0 -ggdb -g3 -fstack-protector-all -fno-inline -fopenmp #-O2
 SERVER=TACC
 WAVEVECTORS3D="\"./src/qvectors/qvectors3d/qvector\""
 WAVEVECTORS2D="\"./src/qvectors/qvectors2d/qvector\""
