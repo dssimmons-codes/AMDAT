@@ -505,8 +505,13 @@ Rounds the value of constant _\<constant\_name\>_ up to the closest integer. Can
 
 ### 2 Selecting trajectories for analysis
 
-There are generally two ways of storing trajectories for analysis. "Trajectory\_lists" store a list of particle trajectories that may be fixed or may change from frame to frame. "Trajectory\_bin\_lists" divide all particle trajectories into the system at each frame into spatially defined bins for analysis of locally varying properties. Subsets of particles may then be treated on a local basis by analyzing the intersection of a trajectory\_list with a trajectory\_bin\_list (where intersection denotes the set of particle trajectories present in both lists. Following are a list of commands used in the selection of particle trajectories for analysis. In addition to these general commands, certain analysis objects also yield trajectory\_lists. For example, find\_fast returns a trajectory\_list containing the most mobile particles in the system.
+AMDAT allows for selection of particle trajectories for analysis in a number of ways. Several create lists of trajectories for trajectory level analysis, with selection possible based upon chemical definitions (species, element, etc), or based on position in the simulation box, or both. "Trajectory\_lists" store a list of particle trajectories that may be fixed or may change from frame to frame. "Trajectory\_bin\_lists" divide all particle trajectories into the system at each frame into spatially defined bins for analysis of locally varying properties. Subsets of particles may then be treated on a local basis by analyzing the intersection of a trajectory\_list with a trajectory\_bin\_list (where intersection denotes the set of particle trajectories present in both lists.
 
+In addition, AMDAT allows for the creation of "multibodies", which are objects of analysis that consist of multiple trajectories lumped together. The latter permits calculation of intrinsically multipoint properties such as those involving vector orientational statistics, gyration radii, and so on.
+
+Following are a list of commands used in the selection of particle trajectories for analysis at the trajectory or multibody level. In addition to these general commands, certain analysis objects also yield trajectory\_lists or multibody\_lists. For example, find\_fast returns a trajectory\_list containing the most mobile particles in the system.
+
+#### Methods to create and manipulate lists of trajectories 
 ##### create\_list
 
 Creates a static list of particle trajectories for analysis based upon set features such as the particle's type and location within molecules of a given species.
@@ -549,7 +554,19 @@ Selects atoms of type _\<atom\_type\>_ within a single molecule of species _\<sp
 
 _atom\_species \<species\_name\> \<atom\_type\> \<atom\_index\>_
 
-Selects a single atom of type _\<atom\_type\>_ within every molecule species _\<species\_name\>_, with the atom being specified by _atom\_index_, which corresponds to the order in which the atoms of that type were first read from the trajectory file for that species (again, indexed from 0).
+Selects a single atom of type _\<atom\_type\>_ within every molecule species _\<species\_name\>_, with the atom being specified by _atom\_index_, which corresponds to the order in which the atoms of that type were first read from the trajectory file for that species (again, indexed from 0). To be more specific, each atom is specified by the type of the atom, and then the index of the atom within that atomtype within that species. These indices are determined by original order of read in from the trajectory file. For a given molecule, AMDAT separately indices atoms of distinct atom types. Indexing starts at 0. Therefore for an atomtype "H", for example, an index of 4 would specify the "H" atom within that molecule that was read in after four prior "H" atoms were read into that molecule.
+
+##### combine\_trajectories
+Creates a new list of trajectories by merging a set of existing trajectory\_lists (the original trajectory\_lists are not removed and remain accessible).
+
+_combine_trajectories <name of new trajectory\_list> <name of 1st existing trajectory\_list to merge> <name of 2nd existing trajectory\_list to merge> ... <name of last existing trajectory\_list to merge>_ 
+
+##### invert\_list
+
+Creates a new trajectory list by inverting an existing trajectory list (meaning it unincludes all included trajectories and includes all unincluded trajectories) and then intersecting it with a second list (meaning it includes only those trajectories in both lists). The net effect of this is to include only trajectories that are not in trajectory\_list 1 but are in trajectory\_list 2.
+
+_clustered\_list \<linitial list\> \< second list\>\<name of inverted list\>_
+
 
 ##### thresholded\_list
 
@@ -567,11 +584,15 @@ _less_ – selects trajectories with values less than the first threshold
 
 _between_ – selects trajectories with values between and including the first and second threshold
 
-##### invert\_list
+##### flatten\_multibodies
 
-Creates a new trajectory list by inverting an existing trajectory list (meaning it unincludes all included trajectories and includes all unincluded trajectories) and then intersecting it with a second list (meaning it includes only those trajectories in both lists). The net effect of this is to include only trajectories that are not in trajectory\_list 1 but are in trajectory\_list 2.
+##### delete\_trajectory\_list
 
-_clustered\_list \<linitial list\> \< second list\>\<name of inverted list\>_
+Deletes an existing trajectory\_list, freeing up the associated memory.
+
+_delete_trajectory_list <name of existing trajectory_list to delete>_
+
+In most cases, trajectory\_lists require only a modest amount of memory to store, such that this is not strictly necessary. However, if an analysis tool defines a trajectory list that changes at every timestep in the trajectory, it required memory storage may be considerably higher, and deletion may be worthwhile if you are memory limited. 
 
 ##### create\_bin\_list
 
@@ -610,6 +631,46 @@ All trajectories are binned as a function of perpendicular distance from the spe
 Removes a bin list from memory, making it no longer accessible for analysis but freeing up any RAM it was occupying.
 
 _remove\_bin\_list \<listname\>_
+
+#### Methods to create and manipulate lists of multibodies
+
+##### create\_multibodies
+
+Creates multibodies, and an associated multibody\_list for later access, based on specified structural location within molecules. Additionally creates a new trajectory\_list of the same name, which stores a list of trajectories of either the centroids or centers of mass of the multibodies, as specified by the user.
+
+_create\_multibodies <name of multibody list to create> <name of atom type to be assigned to center of mass or centroid> <either "centroid" or "com"> <keywords (see below)_
+
+The "centroid" or "com" keywords specify whether to employ the centroid or the center of mass to compute a trajectory characteristic of the collective translational motion of each multibody. These trajectories are accesible later via a trajectory list of the same name specified for the name of the multibody list itself.
+
+Allowable keywords for atom selection, and the options required for each keyword, are as follows.
+
+_all\_molecule_
+
+Creates a list of multibodies in which each molecule in the system is converted to a multibody containing all atoms in that molecule.
+
+_species\_molecule <species\_name>_
+
+Creates a list of multibodies in which each molecule of species _<species\_name>_ in the system is converted to a multibody containing all atoms in that molecule.
+
+_species\_type <species\_name> <type\_name>_
+
+Creates a list of multibodies in which each multibody is generated from each molecule of species _<species\_name>_, with each of these multibodies containing all atoms of type _<type\_name>_ in a given molecule of that species.
+
+_species\_atomlist <species\_name> <type\_name1> <index1> <type\_name2> <index2> ... <type\_namelast> <indexlast>_
+
+Creates a list of multibodies in which each multibody is generated from each molecule of species _<species\_name>_, with each of these multibodies containing specified by a series of atom_\type atom_\index pairs. Each atom is specified by the type of the atom, and then the index of the atom within that atomtype within that species. These indices are determined by original order of read in from the trajectory file. For a given molecule, AMDAT separately indices atoms of distinct atom types. Indexing starts at 0. Therefore for an atomtype "H", for example, an index of 4 would specify the "H" atom within that molecule that was read in after four prior "H" atoms were read into that molecule.
+
+##### combine\_multibody\_lists
+
+Creates a new list of multibodies by merging a set of existing multibody\_lists (the original trajectory\_lists are not removed and remain accessible).
+
+_combine_multibodies <name of new multibody\_list> <name of 1st existing trajectory\_list to merge> <name of 2nd existing trajectory\_list to merge> ... <name of last existing trajectory\_list to merge>_ 
+
+##### delete\_multibody\_list
+
+##### region\_multibody\_list
+
+##### threshold\_multibody\_list
 
 ### 3 Analyzing trajectories
 
