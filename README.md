@@ -383,6 +383,9 @@ The remainder of the file provides a script specifying the analyses to be perfor
 
 ### 1. General commands, logic structures, and variables
 
+##### comment
+Any line in the analysis block beginning with the # symbol is ignored.
+
 ##### constant
 
 _constant \<name\> \<value\>_
