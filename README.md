@@ -429,9 +429,12 @@ Sets maximum number of frame pairings to use per time gap. Note that this method
 
 ##### processors
 
+Currently a placeholder command which does nothing, as AMDAT does not currently support multithreading.
+
 _processors \<N\>_
 
 Sets the number of processing cores to be used in multithreaded analysis methods to \<N\>, where 0 \< N ≤ MAXTHREADS, where MAXTHREADS is the number given by the –n flag when executing AMDAT (default 1).
+
 
 ##### for
 
@@ -586,6 +589,10 @@ _between_ – selects trajectories with values between and including the first a
 
 ##### flatten\_multibodies
 
+Creates a trajectory list comprised of all trajectories in a set of multibodies (see below for more detailed discussion of multibodies and their creation).
+
+_flatten\_multibodies <name of new trajectory\_list to create> <name of multibody_list from which trajectories will be generated>_
+
 ##### delete\_trajectory\_list
 
 Deletes an existing trajectory\_list, freeing up the associated memory.
@@ -666,11 +673,21 @@ Creates a new list of multibodies by merging a set of existing multibody\_lists 
 
 _combine_multibodies <name of new multibody\_list> <name of 1st existing trajectory\_list to merge> <name of 2nd existing trajectory\_list to merge> ... <name of last existing trajectory\_list to merge>_ 
 
-##### delete\_multibody\_list
-
 ##### region\_multibody\_list
 
+Creates a new time-dependent multibody list based on an existing multibody list, by selecting at each time only those multibodies in the existing list that have centroid or center of mass (as originally selected) within a specified rectangular prism within the box.
+
+_region\_multibody\_list <name of new multibody\_list to create> <name of existing multibody\_list to downselect geometrically> <xlo> <ylo> <zlo> <xhi> <yhi> <zhi>_
+
+<xlo> <ylo> <zlo> <xhi> <yhi> <zhi> set the lower and upper bounds of the domain to be selected in the x,y, and z directions. Note that this command does not actually create any new multibodies - it merely creates a new list downselected from an existing list of multibodies.
+
 ##### threshold\_multibody\_list
+
+Creates a new multibody list by downselecting a multibody list based on the number of bodies in each multibody.
+
+_threshold\_multibody\_list <name of new multibody\_list to create> <name of existing multibody\_list from which to down-select> <comparison keyword> <comparison value>_
+
+Comparison keyword is either "greater" or "less", and "value" sets what number of bodies is used as a comparator for this keyword. For example, "greater 6" would select only those multibodies comprised of 7 or more particles.
 
 ### 3 Analyzing trajectories
 
