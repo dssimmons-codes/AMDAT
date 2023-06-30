@@ -648,7 +648,7 @@ _remove\_bin\_list \<listname\>_
 
 Creates multibodies, and an associated multibody\_list for later access, based on specified structural location within molecules. Additionally creates a new trajectory\_list of the same name, which stores a list of trajectories of either the centroids or centers of mass of the multibodies, as specified by the user.
 
-_create\_multibodies <name of multibody list to create> <name of atom type to be assigned to center of mass or centroid> <either "centroid" or "com"> <keywords (see below)_
+_create\_multibodies \<name of multibody list to create\> \<name of atom type to be assigned to center of mass or centroid\> \<either "centroid" or "com"\> <keywords (see below)_
 
 The "centroid" or "com" keywords specify whether to employ the centroid or the center of mass to compute a trajectory characteristic of the collective translational motion of each multibody. These trajectories are accesible later via a trajectory list of the same name specified for the name of the multibody list itself.
 
@@ -658,15 +658,15 @@ _all\_molecule_
 
 Creates a list of multibodies in which each molecule in the system is converted to a multibody containing all atoms in that molecule.
 
-_species\_molecule <species\_name>_
+_species\_molecule \<species\_name\>_
 
 Creates a list of multibodies in which each molecule of species _<species\_name>_ in the system is converted to a multibody containing all atoms in that molecule.
 
-_species\_type <species\_name> <type\_name>_
+_species\_type \<species\_name\> \<type\_name\>_
 
 Creates a list of multibodies in which each multibody is generated from each molecule of species _<species\_name>_, with each of these multibodies containing all atoms of type _<type\_name>_ in a given molecule of that species.
 
-_species\_atomlist <species\_name> <type\_name1> <index1> <type\_name2> <index2> ... <type\_namelast> <indexlast>_
+_species\_atomlist \<species\_name\> \<type\_name1\> \<index1\> \<type\_name2\> \<index2\> ... \<type\_namelast\> \<indexlast\>_
 
 Creates a list of multibodies in which each multibody is generated from each molecule of species _<species\_name>_, with each of these multibodies containing specified by a series of atom_\type atom_\index pairs. Each atom is specified by the type of the atom, and then the index of the atom within that atomtype within that species. These indices are determined by original order of read in from the trajectory file. For a given molecule, AMDAT separately indices atoms of distinct atom types. Indexing starts at 0. Therefore for an atomtype "H", for example, an index of 4 would specify the "H" atom within that molecule that was read in after four prior "H" atoms were read into that molecule.
 
@@ -680,15 +680,15 @@ _combine_multibodies <name of new multibody\_list> <name of 1st existing traject
 
 Creates a new time-dependent multibody list based on an existing multibody list, by selecting at each time only those multibodies in the existing list that have centroid or center of mass (as originally selected) within a specified rectangular prism within the box.
 
-_region\_multibody\_list <name of new multibody\_list to create> <name of existing multibody\_list to downselect geometrically> <xlo> <ylo> <zlo> <xhi> <yhi> <zhi>_
+_region\_multibody\_list \<name of new multibody\_list to create\> \<name of existing multibody\_list to downselect geometrically\> \<xlo\> \<ylo\> \<zlo\> \<xhi\> \<yhi\> \<zhi\>_
 
-<xlo> <ylo> <zlo> <xhi> <yhi> <zhi> set the lower and upper bounds of the domain to be selected in the x,y, and z directions. Note that this command does not actually create any new multibodies - it merely creates a new list downselected from an existing list of multibodies.
+\<xlo\> \<ylo\> \<zlo\> \<xhi\> \<yhi\> \<zhi\> set the lower and upper bounds of the domain to be selected in the x,y, and z directions. Note that this command does not actually create any new multibodies - it merely creates a new list downselected from an existing list of multibodies.
 
 ##### threshold\_multibody\_list
 
 Creates a new multibody list by downselecting a multibody list based on the number of bodies in each multibody.
 
-_threshold\_multibody\_list <name of new multibody\_list to create> <name of existing multibody\_list from which to down-select> <comparison keyword> <comparison value>_
+_threshold\_multibody\_list \<name of new multibody\_list to create\> \<name of existing multibody\_list from which to down-select\> \<comparison keyword\> \<comparison value\>_
 
 Comparison keyword is either "greater" or "less", and "value" sets what number of bodies is used as a comparator for this keyword. For example, "greater 6" would select only those multibodies comprised of 7 or more particles.
 
@@ -696,7 +696,7 @@ Comparison keyword is either "greater" or "less", and "value" sets what number o
 
 Deletes an existing multibody\_list and frees the associated memory. Does not delete the underlying multibodies themselves - only a list referencing multibodies for analysis. Memory gains are therefore usually modest.
 
-_delete\_multibody\_list <name of multibody\_list to delete>_
+_delete\_multibody\_list \<name of multibody\_list to delete\>_
 
 ### 3 Analyzing trajectories
 
@@ -879,15 +879,15 @@ _\<target\>_
 
 Computes a radial distribution function
 
-_rdf <output filename> <symmetry keyword> <number of distance bins> <timescheme> <max length scale to compute to>_
+_rdf \<output filename\> \<symmetry keyword\> \<number of distance bins\> \<timescheme\> \<max length scale to compute to\>_
 
-_<symmetry keyword>_ is either "symmetric" or "asymmetric". If "symmetric", then only a single target trajectory list line is provided. The RDF is then computed between all particles of this list in a symmetric manner. If "asymmetric", then two target trajectory list lines are provided. The RDF is then constructed by binning members of the second list according to distance from the first list, leading to an asymmetric radial distribution function.
+_\<symmetry keyword\>_ is either "symmetric" or "asymmetric". If "symmetric", then only a single target trajectory list line is provided. The RDF is then computed between all particles of this list in a symmetric manner. If "asymmetric", then two target trajectory list lines are provided. The RDF is then constructed by binning members of the second list according to distance from the first list, leading to an asymmetric radial distribution function.
 
-_<number of distance bins>_ specifies at how many points (distances) to compute the radial distibution funcion
+_\<number of distance bins\>_ specifies at how many points (distances) to compute the radial distibution funcion
 
-_<timescheme>_ determines what times to loop over. If timescheme = -1, loop over all times. If timescheme is zero or positive, only use one time per block, with the value setting the time index offset from the beginning of the block.
+_\<timescheme\>_ determines what times to loop over. If timescheme = -1, loop over all times. If timescheme is zero or positive, only use one time per block, with the value setting the time index offset from the beginning of the block.
 
-_<max length scale to compute to>_ sets the maximum distance to which the rdf is computed
+_\<max length scale to compute to\>_ sets the maximum distance to which the rdf is computed
 
 
 
@@ -1095,13 +1095,13 @@ Analysis of multibody\_lists obeys a different syntax than analysis of trajector
 
 Reports statistics on the distribution of the number of bodies in multibodies in a given multibody\_list.
 
-_size_statistics <output filename> <name of multibody\_list to analyze> <number of moments to report for the distribution of number of bodies in multibodies>_
+_size_statistics \<output filename\> \<name of multibody\_list to analyze\> \<number of moments to report for the distribution of number of bodies in multibodies\>_
 
 ##### raf
 
 Computes the reorientation autocorrelation function for a list of multibodies. All multibodies in the list must consist of exactly 2 bodies so that they define a single vector (for example corresponding to a bond or other some intramolecular vector)
 
-_raf <output filename> <name of multibody\_list to analyze> <Legendre polynomial order to employ: either "1" or "2"> <optional: "xyz" or "xy" or "xz" or "yz" or "x" or "y" or "z">_
+_raf \<output filename\> \<name of multibody\_list to analyze\> \<Legendre polynomial order to employ: either "1" or "2"\> \<optional: "xyz" or "xy" or "xz" or "yz" or "x" or "y" or "z"\>_
 
 The optional argument defaults to "xyz" if not selected. Selects the plane or dimension in which reorientation is calculated. "xyz" gives the usual isotropic reorientation in all dimensions.
 
@@ -1112,14 +1112,14 @@ This command is deprecated and has been replaced by raf. It operates in precisel
 
 Calculates the orientational correlation of multibodies with an externally defined vector. All multibodies in the multibody\_list specified must consist of exactly 2 bodies so that they each define a single vector.
 
-_orientational\_correlation_ <output filnename> <name of multibody\_list to analyze> <x component of external vector> <y component of external vector> <z component of external vector>_
+_orientational\_correlation_ \<output filnename\> \<name of multibody\_list to analyze\> \<x component of external vector\> \<y component of external vector\> \<z component of external vector\>_
 
 Computes the mean value of the second Legendre Polynomial of the dot product between the multibody vector and the external vector, averaged over all multibodies in the list and over all times.
 
 ##### gyration radius
 Computes the mean multibody gyration radius of for the multibodies in a specified multibody_list. If a list of multibodies is defined to correspond to the molecules of a given species for example, this will report the mean gyration radius of molecules of that species, averaged over all molecules and all times.
 
-_gyration\_radius <output filename> <multibody\_list to analyze>_
+_gyration\_radius \<output filename\> \<multibody\_list to analyze\>_
 
 Note that this analysis method can also be employed to compute the end to end distance of a molecule. To do so, create a multibody consisting of only (two total) end atoms of the molecule, one from each end. For a two particle system of this kind, Rg is simply 1/2 the distance between the two particles.
 
