@@ -692,6 +692,12 @@ _threshold\_multibody\_list <name of new multibody\_list to create> <name of exi
 
 Comparison keyword is either "greater" or "less", and "value" sets what number of bodies is used as a comparator for this keyword. For example, "greater 6" would select only those multibodies comprised of 7 or more particles.
 
+##### delete\_multibody\_list
+
+Deletes an existing multibody\_list and frees the associated memory. Does not delete the underlying multibodies themselves - only a list referencing multibodies for analysis. Memory gains are therefore usually modest.
+
+_delete\_multibody\_list <name of multibody\_list to delete>_
+
 ### 3 Analyzing trajectories
 
 Most trajectory analysis methods consist of two lines, where the first line (the "type" line) defines the type of analysis to be performed and the output file, and the second line (the "target" line) specifies the atoms or molecules on which the analysis is to be performed. Analysis methods generally have two types of output: output files and trajectory lists. Output files are text files containing results of the analysis. Trajectory lists are lists of atoms and/or molecules identified by the analysis methods that are given a custom name by the user and are stored internally as objects of future analysis.
@@ -1064,6 +1070,43 @@ Orientational vector autocorrelation function
 ![](RackMultipart20230119-1-rugd4l_html_3a706ba0444d7ad9.gif)
 
 Where N is the number of vectors, i is an index over vectors, r denotes the vector between the two specified atoms, bars denote vector magnitude, and brackets denote an ensemble average.
+
+### Analyzing multibodies
+
+Analysis of multibody\_lists obeys a different syntax than analysis of trajectory\_lists or bin\_lists. In this case, the target for analysis is not a second 'target' line below the analysis command line, but rather is simply provided as an argument in the command line. A list of multibody analysis commands and associated syntax is provided below.
+
+##### size_statistics
+
+Reports statistics on the distribution of the number of bodies in multibodies in a given multibody\_list.
+
+_size_statistics <output filename> <name of multibody\_list to analyze> <number of moments to report for the distribution of number of bodies in multibodies>_
+
+##### raf
+
+Computes the reorientation autocorrelation function for a list of multibodies. All multibodies in the list must consist of exactly 2 bodies so that they define a single vector (for example corresponding to a bond or other some intramolecular vector)
+
+_raf <output filename> <name of multibody\_list to analyze> <Legendre polynomial order to employ: either "1" or "2"> <optional: "xyz" or "xy" or "xz" or "yz" or "x" or "y" or "z">_
+
+The optional argument defaults to "xyz" if not selected. Selects the plane or dimension in which reorientation is calculated. "xyz" gives the usual isotropic reorientation in all dimensions.
+
+##### baf
+This command is deprecated and has been replaced by raf. It operates in precisely the same manner as raf, and with the same arguments, except without the argument specifying the Legendre Polynomial order. Instead, it simply defaults to 2 for this value.
+
+##### orientational_correlation
+
+Calculates the orientational correlation of multibodies with an externally defined vector. All multibodies in the multibody\_list specified must consist of exactly 2 bodies so that they each define a single vector.
+
+_orientational\_correlation_ <output filnename> <name of multibody\_list to analyze> <x component of external vector> <y component of external vector> <z component of external vector>_
+
+Computes the mean value of the second Legendre Polynomial of the dot product between the multibody vector and the external vector, averaged over all multibodies in the list and over all times.
+
+##### gyration radius
+Computes the mean multibody gyration radius of for the multibodies in a specified multibody_list. If a list of multibodies is defined to correspond to the molecules of a given species for example, this will report the mean gyration radius of molecules of that species, averaged over all molecules and all times.
+
+_gyration\_radius <output filename> <multibody\_list to analyze>_
+
+Note that this analysis method can also be employed to compute the end to end distance of a molecule. To do so, create a multibody consisting of only (two total) end atoms of the molecule, one from each end. For a two particle system of this kind, Rg is simply 1/2 the distance between the two particles.
+
 
 # V. Developer Documentation
 
