@@ -887,7 +887,7 @@ _\<number of distance bins\>_ specifies at how many points (distances) to comput
 
 _\<timescheme\>_ determines what times to loop over. If timescheme = -1, loop over all times. If timescheme is zero or positive, only use one time per block, with the value setting the time index offset from the beginning of the block.
 
-_\<max length scale to compute to\>_ sets the maximum distance to which the rdf is computed
+_\<max length scale to compute to\>_ sets the maximum distance to which the rdf is computed. If this is set to a value of 0, the calculation defaults to something like half the smallest box dimension.
 
 
 
