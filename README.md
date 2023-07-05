@@ -1034,6 +1034,26 @@ If dynamic, it will write to file the time crosscorrelation function of the two.
 
 where f is the value stored in _value\_list 1_ and g is the value stored in _value\_list 2_, and , i is the particle index, N is the number of particles in the list, and ![](RackMultipart20230119-1-rugd4l_html_bf472d9ab051b69a.gif) and ![](RackMultipart20230119-1-rugd4l_html_bc2d965c56c35c2a.gif) are the average value of and g, respectively over all particles listed and all times . Also, note that this method does not restrict time zero to the first frame of the trajectory, but uses all available times (in accordance with the choice of either linear or exponential time scheme) as the time zero. This expression assumes the system to be at steady state.
 
+##### value\_list
+
+value\_list is a versatile command that can execute multiple operations on a value\_list depending on the keyword that follows it. The syntax is as follows.
+
+_value\_list \<keyword\> \<arguments (may be more than one)\>_
+
+A list of keywords and associated arguments is as follows.
+
+_value\_list threshold_value \<value list name\> \<new trajectory list to create\> \<threshold keyword\> \<threshold1>\ \<optional: threshold 2\>_
+Constructs a new trajectory list, by selecting only those particles with values in the selected value list that are above, below, or between selected threshold values.
+\<threshold keyword\> may be "greater", "less", or "between. When "greater", \<threshold1\> sets the value above which particles are selected and \<threshold2\> is not used. When "less", \<threshold1\> sets the value below which particles are selected and \<threshold2\> is not used. When "between", \<threshold1\> sets the value above which particles are selected and \<threshold2\> sets the value below which particles are selected.
+
+_value\_list threshold_percentile \<value list name\> \<new trajectory list to create\> \<threshold keyword\> \<percentile threshold1>\ \<optional: percentile threshold 2\>_
+Constructs a new trajectory list, by selecting only those particles whose values in the selected value list are in a specified percentile range (among all values in the list), either above, below, or between selected threshold percentile values.
+\<threshold keyword\> may be "greater", "less", or "between. When "greater", \<threshold1\> sets the percentile value above which particles are selected and \<threshold2\> is not used. When "less", \<threshold1\> sets the percentile value below which particles are selected and \<threshold2\> is not used. When "between", \<threshold1\> sets the value above which particles are selected and \<threshold2\> sets the percentile value below which particles are selected.
+
+_value\_list write_pdb \<value list name\> /<output file name stem/> /<value time index/> /<position time index/> /<optional: maximum value to write out/>_
+Writes out a .pdb file in which the value in the beta column is drawn from a value list. This can readily allow visualization of the system with particles colored by a computed per-particle value in vmd. /<output file name stem/> is the filename prior to the .pdb suffix, which will be added by AMDAT before writing. /<value time index/> species the time at which the value will be drawn from the value list. /<position time index/> species the time at which the configuration will be written. The optional maximum value argument will set a largest value to be written to the beta value in the pdb file; any value higher than this will be reduced to this value. This can help in visualization work where a small number of high values can 'blow out' the color scale.
+
+
 #### f Obsolete commands
 
 Several analysis methods are outdated and intended for removal from AMDAT but are technically still available. Use them at your own risk.
