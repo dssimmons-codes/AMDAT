@@ -1053,6 +1053,11 @@ Constructs a new trajectory list, by selecting only those particles whose values
 _value\_list write_pdb \<value list name\> /<output file name stem/> /<value time index/> /<position time index/> /<optional: maximum value to write out/>_
 Writes out a .pdb file in which the value in the beta column is drawn from a value list. This can readily allow visualization of the system with particles colored by a computed per-particle value in vmd. /<output file name stem/> is the filename prior to the .pdb suffix, which will be added by AMDAT before writing. /<value time index/> species the time at which the value will be drawn from the value list. /<position time index/> species the time at which the configuration will be written. The optional maximum value argument will set a largest value to be written to the beta value in the pdb file; any value higher than this will be reduced to this value. This can help in visualization work where a small number of high values can 'blow out' the color scale.
 
+##### value_statistics
+Outputs distribution statistics on a value\_list. 
+
+_value\_statistics \<output file\> \<name of value list\> \<how many moments of the distribution to output\>
+
 
 #### f Obsolete commands
 
