@@ -1,0 +1,240 @@
+system
+xyz_log
+./testfiles/traj.xyz ./testfiles/log.lammps
+exponential 1 77 1.2 0 0 .01
+polymer 50
+1
+32
+
+##Below is a large example set of analyses that can be run in AMDAT on a homopolymer system.
+##Many of these can simply be copy pasted, or at worse copied and then modified, into a new analysis file for a system of interest.
+
+
+### GENERAL ATOM SELECTION ###
+#create a list of all atoms in the system
+create_list all
+all
+
+### GENERAL ANALYSIS OF STRUCTURE ###
+#count the number of particles in the system and the fractions of each type
+composition composition.dat -1
+list all
+
+#compute the radial distribution function of the system between all particles, computing 100 bins.  Output to the file "rdf_sym.dat"
+#Save this analysis under the name "rdf1" for future use.
+rdf rdf_sym.dat symmetric 100 -1 0 \srdf1
+list all
+
+#compute the structure factor via a finite fourier transform of the rdf1 analysis performed just above
+structure_factor_from_rdf sfac.dat 100 rdf1 
+
+#compute the symmetric three-dimensional structure factor for all particles in the box, using the inverse space method
+structure_factor structure.dat symmetric xyz 0 0
+list all
+
+#compute the mean distance between closest particles in the system
+mean_closest_distance mcd.dat -1
+list all
+list all
+
+#end execution of analysis script prematurely
+exit
+
+### GENERAL ANALYSIS OF PARTICLE DYNAMICS ###
+#compute the mean square displacement as a function of time and save to a file named msd.dat
+msd msd.dat
+list all
+
+#compute the mean square displacement in the xyplane only and save to a file named msdxy.dat
+msd_2d msdxy.dat xy
+list all
+
+#compute the non-Gaussian parameter of all particles as a function of time
+ngp ngp.dat
+list all
+
+#compute the isotropic self-part of the intermediate scattering function for all particles, at a wavenumber of 7.07196
+isfs isfs.dat 26 26 xyz 12.4385 0
+list all
+
+#compute and write out a distribution of square displacements for particles at time index 26, writing 50 bins, with a maximum square displacmeent binned of 0.2
+u2dist displacementdistu2.dat 50 .2 26
+list all
+
+#compute and write out a distribution of inverse square displacements for particles at time index 25, writing 100 bins, with a maximum inverse square displacmeent binned of 100
+stiffness_dist stiffness_dist.dat 20 100 25
+list all
+
+#compute the displacement of all particles at a time index of 70, and write out statistics on the distribution of these displacements
+displacement_list displacement_stats.dat displacement_list 70
+list all
+
+#write a PDB file in which the displacements computed in the prior step set the value of the beta parameter, which can be used to assign color according to displacement in VMD
+value_list write_pdb displacement_list displacementpdb 0 0
+
+#compute the self part of the van Hove correlation function for all particles, out to a distance of 2, with 100 bins
+vhs vhslist.dat 2 100
+list all
+
+#calculate the displacement magnitude of all particles at the time index of 70, and save these displacements in a value list called displacement_list for later analysis.
+displacement_list displacement_stats.dat displacement_list 70
+list all
+
+#output distribution statistics on the displacements computed above
+value_statistics displacement_dist.dat displacement_list 4
+
+#output a pdb file in which each particle is colored by its displacement at time spacing 70. Note this usually only makes sense to do in a simulation with one time block.
+value_list write_pdb displacement_list displacementvis 70 1
+
+#define a new trajectory list, called "fast" by selecting those particles in the upper 6.5% of displacements stored in displacement_list.
+value_list threshold_percentile displacement_list fast greater 93.5 
+
+#perform the string analysis (originally developed by Donati et al, and later iterated on by Douglas, Starr, and coworkers), identifying particles that replace one another.
+#consider only the mobile particles identified immediately above
+#store the string clusters computed through this algorithm in a list of multibodies called "stringmbs"
+string_multibodies null 70 .6 ./testfiles/sigma_matrix stringmbs string centroid
+list fast
+
+#compute and write out statistics on the distribution of the number of particles in strings
+size_statistics stringstatistics.dat stringmbs 4
+
+#extract all particles in strings and convert them into a new trajectory list called "stringbeads"
+flatten_multibodies stringbeads stringmbs
+
+#compute the mean square displacement of particles in strings
+msd msd_strings.dat
+list stringbeads
+
+#compute and output the mean gyration radius of the strings
+gyration_radius string_gyrationrad.dat stringmbs
+
+#create a new multibody list by selecting only those strings that contain more than 5 beads.
+threshold_multibody_list bigstrings stringmbs greater 5
+
+#extract all particles in the big strings and convert them into a new trajectory list called "stringbeads"
+flatten_multibodies bigstringbeads bigstrings
+
+#compute the mean square displacement of these large strings
+msd msd_bigstrings.dat
+list bigstrings
+
+## The following four commands, together, are an alternate route to string analysis. They must be executed in this order to operate properly, as described below ##
+
+#compute the self part of the van hove correlation function
+vhs vhslist.dat 2 100
+list all
+
+#compute the MSD, then compute a Gaussian distribution for particle displacements expected for this MSD. Then find the displacement at which this Gaussian approximate distribution
+#and the actual distribution of displacements cross, at displacement time index 70. Write this analysis out.
+compare_gaussian gaussian.dat 70
+list all
+
+#create a new list of particles that have displaced a distance further than the crossover identified in the prior step
+find_fast fast_vh fast_count_list.dat
+list all
+
+#building multibodies consisting of particles undergoing stringlike motion, working with the particles found in the prior set
+string_multibodies null 70 .6 ./testfiles/sigma_matrix string_vh string centroid
+list fast_vh
+
+#compute and write out statistics on the distribution of the number of particles in strings
+size_statistics stringstatistics_vh.dat string_vh 4
+
+### NEIGHBOR LIST CONSTRUCTION AND ANALYSIS ###
+#create a neighbor list, for all particles, based upon the Voronoi tesselation.
+create_voronoi_neighborlist vneighbors
+list all
+
+#report out statistics on the number of Voronoi neighbors per particle, including 4 moments of the distribution
+value_statistics neighbors_v.dat vneighbors 4
+
+#create new multibodies comprised of clusters of particles that remain neighbors after a displacement time index of 70
+persistent_neighbors 70 vneighbors p_neighbors per_neighbors centroid
+list fast
+
+#report out size statistics on these persistent neighbor clusters
+size_statistics p_neighbors.dat p_neighbors 4
+
+#create a neighbor list, for all particles, based on a distance cutoff of 1.4 times the interparticle contact distance matrix
+create_distance_neighborlist dneighbors 1.4 ./testfiles/sigma_matrix -1
+list all
+
+#report out statistics on the number of distace-based neighbors per particle, including 4 moments of the distribution
+value_statistics neighbors_dist.dat dneighbors 4
+
+#compute a decorrelation function tracking the decorrelation of voronoi neighbors
+neighbor_decorrelation_function ndf_voronoi.dat vneighbors
+list all
+
+### ANALYSIS OF INTRAMOLECULAR VECTORS AND CENTROIDS VIA MULTIBODY CREATION ###
+#create a set of multibodies, with each multibody corresponding to one of the bonds in the chain
+create_multibodies bond2 bond centroid species_atomlist polymer 1 1 1 2
+create_multibodies bond3 bond centroid species_atomlist polymer 1 2 1 3
+create_multibodies bond4 bond centroid species_atomlist polymer 1 3 1 4
+create_multibodies bond5 bond centroid species_atomlist polymer 1 4 1 5
+create_multibodies bond6 bond centroid species_atomlist polymer 1 5 1 6
+create_multibodies bond7 bond centroid species_atomlist polymer 1 6 1 7
+create_multibodies bond8 bond centroid species_atomlist polymer 1 7 1 8
+create_multibodies bond9 bond centroid species_atomlist polymer 1 8 1 9
+create_multibodies bond10 bond centroid species_atomlist polymer 1 9 1 10
+create_multibodies bond11 bond centroid species_atomlist polymer 1 10 1 11
+create_multibodies bond12 bond centroid species_atomlist polymer 1 11 1 12
+create_multibodies bond13 bond centroid species_atomlist polymer 1 12 1 13
+create_multibodies bond14 bond centroid species_atomlist polymer 1 13 1 14
+create_multibodies bond15 bond centroid species_atomlist polymer 1 14 1 15
+create_multibodies bond16 bond centroid species_atomlist polymer 1 15 1 16
+create_multibodies bond17 bond centroid species_atomlist polymer 1 16 1 17
+create_multibodies bond18 bond centroid species_atomlist polymer 1 17 1 18
+create_multibodies bond19 bond centroid species_atomlist polymer 1 18 1 19
+create_multibodies bond20 bond centroid species_atomlist polymer 1 19 1 20
+create_multibodies bond21 bond centroid species_atomlist polymer 1 20 1 21
+create_multibodies bond22 bond centroid species_atomlist polymer 1 21 1 22
+create_multibodies bond23 bond centroid species_atomlist polymer 1 22 1 23
+create_multibodies bond24 bond centroid species_atomlist polymer 1 23 1 24
+create_multibodies bond25 bond centroid species_atomlist polymer 1 24 1 25
+create_multibodies bond26 bond centroid species_atomlist polymer 1 25 1 26
+create_multibodies bond27 bond centroid species_atomlist polymer 1 26 1 27
+create_multibodies bond28 bond centroid species_atomlist polymer 1 27 1 28
+create_multibodies bond29 bond centroid species_atomlist polymer 1 28 1 29
+create_multibodies bond30 bond centroid species_atomlist polymer 1 29 1 30
+create_multibodies bond31 bond centroid species_atomlist polymer 1 30 1 31
+
+#create a merged multibody list of all bonds in the chain
+combine_multibody_lists bonds bond1 bond2 bond3 bond4 bond5 bond6 bond7 bond8 bond9 bond10 bond11 bond12 bond13 bond14 bond15 bond16 bond17 bond18 bond19 bond20 bond21 bond22 bond23 bond24 bond25 bond26 bond27 bond28 bond29 bond30 bond31
+
+#create a merged trajectory list of the centroids of all chain bonds
+combine_trajectories bonds bond1 bond2 bond3 bond4 bond5 bond6 bond7 bond8 bond9 bond10 bond11 bond12 bond13 bond14 bond15 bond16 bond17 bond18 bond19 bond20 bond21 bond22 bond23 bond24 bond25 bond26 bond27 bond28 bond29 bond30 bond31
+
+#compute and write out statistics for the second Legendre reorientational autocorrelation function for all bonds in the chain
+raf c2_c.dat bonds 2
+
+#compute and write out statistics for the second Legendre reorientational autocorrelation function for all bonds in chain, in xy plane only
+raf c2xy.dat bonds 2 xy
+
+#compute and write out statistics for the first Legendre reorientational autocorrelation function for all bonds in the chain
+raf c1.dat bonds 1
+
+#create a list of multibodies in which each multibody is an entire polymer chain
+create_multibodies chain centroid species_atomlist polymer 1 0 1 1 1 2 1 3 1 4 1 5 1 6 1 7 1 8 1 9 1 10 1 11 1 12 1 13 1 14 1 15 1 16 1 17 1 18 1 19 1 20 1 21 1 22 1 23 1 24 1 25 1 26 1 27 1 28 1 29 1 30 1 31
+
+#compute the mean gyration radius of the polymers
+gyration_radius chain_gyrationrad.dat chain
+
+#compute the radial distribution of chain centroids
+rdf rdf_sym.dat symmetric 100 -1 0
+list chain
+
+#write out an xyz file comprised of the chain center of mass locations
+write_list_trajectory chain chain_com.xyz
+
+#create multibodies consisting of chain end-to-end vectors
+create_multibodies endtoendvector ee centroid species_atomlist polymer 1 0 1 31
+
+#compute and write out statistics for the second Legendre reorientational autocorrelation function for chain end to end vectors
+raf c2_c.dat endtoendvector 2
+
+#compute the mean correlation between chain end to end vectors and the vector (0,0,1)
+orientational_correlation chainorientation.dat endtoendvector 0 0 1 
+
+
+
