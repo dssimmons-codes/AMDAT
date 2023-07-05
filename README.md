@@ -712,8 +712,6 @@ _list \<listname\>_
 
 _listname_ is the name of a trajectory list previously specified by the user. Lists may be created by the command create\_list (described below), which creates a trajectory list corresponding to a trajectory set. They also may be created by various analysis methods.
 
-      1.
-####
 
 #### b) Bin Lists
 
@@ -737,7 +735,7 @@ _\<target\>_
 
 Calculates self-part of the intermediate scattering function. MC
 
-_ **isfs** _ _\<output file\> \>\<first wavevector index\> \<last wavevector index\> \<geometry\> \<max\_length\_scale\> \<(optional) fullblock\>_
+_isfs \<output file\> \>\<first wavevector index\> \<last wavevector index\> \<geometry\> \<max\_length\_scale\> \<(optional) fullblock\>_
 
 _\<target\>_
 
@@ -841,11 +839,20 @@ _\<method\>_ is either _manual_ or _automatic_. If _automatic_, include addition
 
 Calculate intermediate scattering function, using a trajectory list.
 
-_Isf\_list \<output file\> \<list name\> \<plane\> \<first wavenumber index\> \<last wavenumber index\>_
+_isf\_list \<output file\> \<list name\> \<plane\> \<first wavenumber index\> \<last wavenumber index\>_
 
 Options for _\<geometry\>_ are _xyz, xy, xz, yz, x, y,_ and _z_. This chooses which dimensions in k-space to include in the calculation of the intermediate scattering function. _xyz_ computes the full radial three dimensional isf, _xy, yz, and xz_ calculate two-dimensional in-plane radial isf's, and _x, y, and z_ compute one-dimensional isf's.
 
-#### n\_fold
+
+##### mean_closest_distance
+
+Requires specification of two target lists. Calculates the average distance from particles in list 1 to the closest member of list 2.
+
+_mean\_closest\_distance \<output file name\> \<timescheme>_
+
+\<timescheme\> selects which times are averaged over. If timescheme = -1, loop over all times. If timescheme is zero or positive, only use one time per block, with the value setting the time index offset from the beginning of the block.
+
+##### n\_fold
 
 Calculates mean and time dependence of n-fold order parameter and writes maps to files.
 
