@@ -11,9 +11,6 @@
 
 using namespace std;
 
-
-
-
 Trajectory_List::Trajectory_List(int timecount, int cap)
 {
 
@@ -801,6 +798,7 @@ void Trajectory_List::inversion(Trajectory_List* t_list,Trajectory_List* origina
         }
     }
    t_list->set(sys, n_times, n_system_trajectories(), new_included, time_conversion);
+
 }
 
 

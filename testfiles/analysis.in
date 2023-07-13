@@ -9,6 +9,16 @@ polymer 50
 create_list all
 all
 
+create_distance_neighborlist dneighbors 1.4 ./testfiles/sigma_matrix -1
+list all
+
+neighbor_decorrelation_function ndf_distance.dat dneighbors
+list all
+
+value_statistics neighbors_dist.dat dneighbors 4
+
+exit
+
 mean_closest_distance mcd.dat -1
 list all
 list all

@@ -6,7 +6,6 @@
 
 using namespace std;
 
-
 Exptime_Trajectory_List::Exptime_Trajectory_List()
 {
 

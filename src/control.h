@@ -200,6 +200,7 @@ class Control
     void autocorrelate_value_list();
     void remove_valuelist();		//allows user to delete a value_list
     void value_statistics();		//alows user to write value list statistics to file
+    void value_statistics_pertime();	//alows user to write value list statistics to file for every time
     void write_single_particle();	//write single trajectory to file as simple list of coordinates
     void find_edge();
     void unsteady_velocity();
@@ -208,6 +209,7 @@ class Control
     void baf();
     void raf();
     void neighbor_decorrelation_function();	//compute neighbor decorrelation function
+    void find_between();		//find particle between pairs of particles in a second trajectory list
     
     void orientational_correlation();
     void region_multibody_list();	//creates new multibody list based on region
