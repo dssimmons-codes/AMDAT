@@ -17,6 +17,8 @@
 #include "multibody_analysis.h"
 #include "tokenize.h"
 #include "vector_map.h"
+#include "value_list.h"
+
 namespace std {
 
 class Multibody_Set;
@@ -48,7 +50,7 @@ class System
     int first_exponent;				//set value of first exponent in exponential timescheme.  This is usually either zero or one, and it not count the zeroth time, if one exists.
    
 
-
+    Vector_Map<string,Value_List<float>*> value_lists;      //stores value lists
 
     Molecule ** molecules;			//array of molecules in rows by type
 
@@ -77,6 +79,7 @@ class System
     int displacement_limit;			//sets limit on number of time-datapoints used for linear time-scaled displacement times
 
 
+    
     /*methods to read in various trajectory formats*/
     void read_trajectory(string trajectory_type, vector<string> file_in, string fileline);
     void count_atoms(int **);					//method to calculate number of atoms
@@ -93,6 +96,13 @@ class System
     void read_custom(string);
     void read_custom(string, string);
     void read_custom_byid(string);
+    
+    void custom_manual_prep(vector<string> file_in, string fileline);
+    void read_custom_manual(string, string);
+    //void read_custom_manual(string, string, string); TODO add this later
+    //TODO: should implement manual for the by_id versions as well
+
+
 
     bool floatCompare(float, float);
     
@@ -119,6 +129,12 @@ class System
     void boxify();						//method to check every coordinate to see if it is within the system boundaries; if not, it treats it as an image coordinate and replaces it with the 'real' coordinate
 
 
+    /*Methods to handle value lists*/
+    Value_List<float>* find_value_list(string,bool allow_nofind=0)const;
+    void add_value_list(Value_List<float>*, string);
+    void delete_value_list(string);
+    
+    
     /*------Methods to handle multibodies and multibody_sets--------*/
     Multibody_Set* create_multibody_set(string setname, int n_args, string * args);
     Multibody_Set* create_multibody_set();			//creates a multibody_set containing a multibody for each molecule in the system, with each multibody containing all the trajectories in the corresponding molecule

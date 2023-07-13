@@ -13,6 +13,7 @@
 #include "boolean_list.h"
 #include "system.h"
 #include "trajectory_list.h"
+#include "version.h"
 
 #ifndef VALUE_LIST
 #define VALUE_LIST
@@ -29,12 +30,12 @@ protected:
 
   vector<vector<valType>> values;	//array of values stored: [internal_time][trajectory_ID]
   //valType ** values;			//array of values stored: [internal_time][trajectory_ID]
-  mutable Boolean_List * included;		//array of boolean lists specifying which trajectories are in value list at each time: [internal_time]
+  mutable Boolean_List * included;	//array of boolean lists specifying which trajectories are in value list at each time: [internal_time]
 
   //data on time scheme
   int n_times;				//number of unique times stored
-  int * time_conversion;	//time conversion table converting system time index to internal storage time index
-  bool * defined_times;		//stores a 1 at times for which the value_list was originall calculated
+  int * time_conversion;		//time conversion table converting system time index to internal storage time index
+  bool * defined_times;			//stores a 1 at times for which the value_list was originall calculated
 
   bool threshold(int, int, bool, valType)const;
   bool threshold(int, int, valType, valType)const;
@@ -55,7 +56,11 @@ protected:
   ~Value_List();
 
   void set(System*);
+  void set_static(System*);
   void set(int,int,valType);
+  Value_List get_intersection(Trajectory_List*);
+  
+  void push(int,valType);
 
   virtual valType show_value(int timeii, int trajii){return values[convert_time(timeii)][trajii];};
   void operator () (int timeii, int trajii){return show_value(timeii, trajii);};
@@ -80,7 +85,6 @@ protected:
   virtual void dynamic_crosscorrelation_function(string filename, const Value_List&)const;
   virtual void dynamic_autocorrelation_function(string filename)const;
 
-
   int convert_time(int timeii)const{return time_conversion[timeii];};	//convert requested time (Where the index is the time index from the system object) to internal time index
 
   string write_pdb(int, string, int, string*)const;
@@ -88,9 +92,12 @@ protected:
   string write_pdb(int, string, int, string*,valType)const;
   string write_pdb(int, string, int,valType)const;
   void write_data_file(string filename)const;
-  virtual void write_statistics(string filename, int n_moments)const{};
 
-  
+  void write_statistics(string, int)const;
+  void write_statistics(string, Trajectory_List*, int)const;
+  void write_statistics_pertime(string, Trajectory_List*, int)const;
+  void write_statistics_pertime(string, int)const;
+
   void construct_t_list(bool, valType,Trajectory_List*);
   void construct_t_list(valType, valType,Trajectory_List*);
   void percentile_t_list(bool, float,Trajectory_List*);
@@ -98,9 +105,7 @@ protected:
 
   virtual void set_time_conv(){};
 
- // Value_List operator *(Trajectory_List)const;
 };
-
 
 template <class valType>
 Value_List<valType>::Value_List()
@@ -210,6 +215,34 @@ Value_List<valType>::~Value_List()
 }
 
 
+//template <class valType>
+//Value_List<valType> Value_List<valType>::get_intersection(Trajectory_List *t_list)
+//{
+////PK: broken. Needs fixing or delete
+//  delete [] included;
+//  delete [] time_conversion;
+//  delete [] defined_times;
+//
+//  syst=t_list->syst;
+//  n_times = syst->show_n_timesteps();
+//
+//  included = new Boolean_List[n_times];
+//  for(int timeii=0;timeii<n_times;timeii++)
+//  {
+//    included[timeii].set(syst);
+//  }
+//
+//  time_conversion = new int [syst->show_n_timesteps()];
+//  defined_times = new bool [syst->show_n_timesteps()];
+//  for(int timeii=0;syst->show_n_timesteps();timeii++)
+//  {
+//    time_conversion[timeii]=timeii;
+//    defined_times[timeii]=1;
+//  }
+//  
+//}
+//
+//
 template <class valType>
 void Value_List<valType>::set(System * sys)
 {
@@ -234,6 +267,38 @@ void Value_List<valType>::set(System * sys)
     time_conversion[timeii]=timeii;
     defined_times[timeii]=1;
   }
+  
+}
+
+
+/*Method that sets system for value list and sets it to be static, storing values at only a single distinct time*/
+template <class valType>
+void Value_List<valType>::set_static(System * sys)
+{
+  
+  delete [] included;
+  delete [] time_conversion;
+  delete [] defined_times;
+
+  syst=sys;
+  n_times = syst->show_n_timesteps();
+
+  included = new Boolean_List[n_times];
+  for(int timeii=0;timeii<n_times;timeii++)
+  {
+    included[timeii].set(syst);
+  }
+
+  time_conversion = new int [n_times];
+  defined_times = new bool [n_times];
+  for(int timeii=0;timeii<n_times;timeii++)
+  {
+    time_conversion[timeii]=timeii;
+    defined_times[timeii]=1;
+  }
+  
+  values.resize(n_times);
+  
 }
 
 
@@ -245,6 +310,15 @@ void Value_List<valType>::set(int timeii, int trajii, valType val)
   values[timeii][trajii] = val;
 }
 
+
+/*Method to add an additional value to the end of the list at a given time*/
+template <class valType>
+void Value_List<valType>::push(int timeii,valType val)
+{
+    //note that here timeii is the internally stored time index, not the time. This should probably be fixed in a future version
+    values[timeii].push_back(val);
+    (included[timeii])(values[timeii].size()-1,1);
+}
 
 
 
@@ -381,6 +455,8 @@ void Value_List<valType>::distribution(string filename, float max, int n_bins)co
 	{
 		dist[binii]/=float(weighting);
 	}
+
+        delete [] dist;
 }
 
 template <class valType>
@@ -855,8 +931,6 @@ string Value_List<valType>::write_pdb(int valtime, string file_name_stem, int ti
     {
         if (included[timeii](trajii))
         {
-
-
             speciesID = trajii+1;
             x_coord = syst->show_trajectory(trajii)->show_coordinate(time).show_x();
             y_coord = syst->show_trajectory(trajii)->show_coordinate(time).show_y();
@@ -871,7 +945,7 @@ string Value_List<valType>::write_pdb(int valtime, string file_name_stem, int ti
 //            cout<<"atomname = "<<atomnames[type]<<endl;cout.flush();
 //            cout<<"value = "<<values[trajii]<<endl;cout.flush();
 
-            fprintf(pdbfile, "HETATM%5i %4s MOL A   1    %8.4f%8.4f%8.4f  1.00%6f          %2s  \n", speciesID, atomnames[type].c_str(), x_coord, y_coord, z_coord, values[timeii][trajii], atomnames[type].c_str());
+            fprintf(pdbfile, "HETATM%5i %4s MOL A   1    %8.4f%8.4f%8.4f  1.00 %6f          %2s  \n", speciesID, atomnames[type].c_str(), x_coord, y_coord, z_coord, values[timeii][trajii], atomnames[type].c_str());
 
 
 //fprintf(pdbfile, "HETATM%5i %4s MOL A   1    \n", speciesID, atomnames[type].c_str());
@@ -949,7 +1023,7 @@ string Value_List<valType>::write_pdb(int valtime, string file_name_stem, int ti
 
 	    if(type>17){cout << "Error: More atom types in use than names available";exit(1);}
 
-            fprintf(pdbfile, "HETATM%5i %4s MOL A   1    %8.4f%8.4f%8.4f  1.00%6f          %2s  \n", speciesID, atomnames[type].c_str(), x_coord, y_coord, z_coord, values[timeii][trajii], atomnames[type].c_str());
+            fprintf(pdbfile, "HETATM%5i %4s MOL A   1    %8.4f%8.4f%8.4f  1.00 %6f          %2s  \n", speciesID, atomnames[type].c_str(), x_coord, y_coord, z_coord, values[timeii][trajii], atomnames[type].c_str());
 
 
 //fprintf(pdbfile, "HETATM%5i %4s MOL A   1    \n", speciesID, atomnames[type].c_str());
@@ -1012,7 +1086,7 @@ string Value_List<valType>::write_pdb(int valtime, string file_name_stem, int ti
 //            cout<<"atomname = "<<atomname[type]<<endl;cout.flush();
 //            cout<<"value = "<<values[trajii]<<endl;cout.flush();
 
-            fprintf(pdbfile, "HETATM%5i %4s MOL A   1    %8.4f%8.4f%8.4f  1.00%6f          %2s  \n", speciesID, atomnames[type].c_str(), x_coord, y_coord, z_coord, val, atomnames[type].c_str());
+            fprintf(pdbfile, "HETATM%5i %4s MOL A   1    %8.4f%8.4f%8.4f  1.00 %6f          %2s  \n", speciesID, atomnames[type].c_str(), x_coord, y_coord, z_coord, val, atomnames[type].c_str());
 
 
 //fprintf(pdbfile, "HETATM%5i %4s MOL A   1    \n", speciesID, atomnames[type].c_str());
@@ -1093,7 +1167,7 @@ string Value_List<valType>::write_pdb(int valtime, string file_name_stem, int ti
 
 	    if(type>17){cout << "Error: More atom types in use than names available";exit(1);}
 
-            fprintf(pdbfile, "HETATM%5i %4s MOL A   1    %8.4f%8.4f%8.4f  1.00%6f          %2s  \n", speciesID, atomnames[type].c_str(), x_coord, y_coord, z_coord, val, atomnames[type].c_str());
+            fprintf(pdbfile, "HETATM%5i %4s MOL A   1    %8.4f%8.4f%8.4f  1.00 %6f          %2s  \n", speciesID, atomnames[type].c_str(), x_coord, y_coord, z_coord, val, atomnames[type].c_str());
 
 
 //fprintf(pdbfile, "HETATM%5i %4s MOL A   1    \n", speciesID, atomnames[type].c_str());
@@ -1306,6 +1380,7 @@ void Value_List<valType>::percentile_t_list(bool greater, float percentile, Traj
     t_list->set(syst, n_times, n_trajectories, thresholded, time_conversion);
 
 
+    delete [] thresh;
     delete [] thresholded;
 
 }
@@ -1327,6 +1402,7 @@ void Value_List<valType>::percentile_t_list(float low_percentile, float high_per
     valType * high;
     low = new valType [n_times];
     high = new valType [n_times];
+//TODO PK: don't we need to delete those?
 
     if(low_percentile<0||high_percentile<0)
     {
@@ -1415,6 +1491,259 @@ float Value_List<valType>::change(int trajindex,int time1,int time2)
         difference = nan("");
     }
     return difference;
+}
+
+template <class valType>
+void Value_List<valType>::write_statistics(string filename, int n_moments)const
+{
+  int timeii, trajii, binii;
+  int maximum = max();
+  int n_values=0;
+  
+  int sizeii, momentii;
+  float* moments;
+  moments=new float [n_moments];
+  
+  cout << "\nWriting value dist and statistics to file.";
+  ofstream output(filename.c_str());
+  output << "Value list statistics created by AMDAT v." << VERSION << "\n";
+   
+  vector<int> dist;
+  
+  dist.resize(maximum+1,0);
+  
+  for(timeii=0;timeii<n_times;timeii++)
+  {
+      n_values+=included->show_n_included();
+      for(trajii=0;trajii<values[timeii].size();trajii++)
+      {
+	if(included[timeii](trajii))
+	{
+	  dist[values[timeii][trajii]]++;
+	}
+      }
+  }
+  
+  
+  for(momentii=0;momentii<n_moments;momentii++)
+  {
+    moments[momentii]=0;
+  }
+  
+  
+  for(binii=0;binii<dist.size();binii++)
+  {
+    moments[0]+=dist[binii];
+    for(momentii=1;momentii<n_moments;momentii++)
+    {
+      moments[momentii]+=pow(float(binii),float(momentii))*float(dist[binii])/float(n_values);
+    }
+  }
+  
+  output << "Value\t";
+
+  for(binii=0;binii<dist.size();binii++)
+  {
+    output << binii << "\t";
+  }
+  
+    output<<"\nFrequency\t";
+  
+  for(binii=0;binii<dist.size();binii++)
+  {
+    
+    output<<float(dist[binii])/float(n_values)<<"\t";
+  }
+  
+  output<<"\n\nMoment\t";
+  
+  for(momentii=0;momentii<n_moments;momentii++)
+  {
+    output<<momentii<<"\t";
+  }
+  
+  output << "\nValue\t";
+  
+  for(momentii=0;momentii<n_moments;momentii++)
+  {
+    output<<moments[momentii]<<"\t";
+  }
+  
+  output << "\n\nTotal_Values\t" << n_values;
+  
+  delete [] moments;
+
+}
+
+template <class valType>
+void Value_List<valType>::write_statistics(string filename, Trajectory_List* trajlist, int n_moments)const
+{
+  int timeii, trajii, binii, timeii_traj;
+  int maximum = max();
+  int n_values=0;
+  
+  int sizeii, momentii;
+  float* moments;
+  moments=new float [n_moments];
+  
+  cout << "\nWriting value dist and statistics to file.";
+  ofstream output(filename.c_str());
+  output << "Value list statistics created by AMDAT v." << VERSION << "\n";
+   
+  vector<int> dist;
+  
+  dist.resize(maximum+1,0);
+  
+  for(timeii=0;timeii<n_times;timeii++)
+  {
+//      n_values+=included->show_n_included();
+      for(trajii=0;trajii<values[timeii].size();trajii++)
+      {
+	if(included[timeii](trajii) && trajlist->is_included(timeii, trajii))
+	{
+	  dist[values[timeii][trajii]]++;
+          n_values++;
+	}
+      }
+  }
+  
+  
+  for(momentii=0;momentii<n_moments;momentii++)
+  {
+    moments[momentii]=0;
+  }
+  
+  
+  for(binii=0;binii<dist.size();binii++)
+  {
+    moments[0]+=dist[binii];
+    for(momentii=1;momentii<n_moments;momentii++)
+    {
+      moments[momentii]+=pow(float(binii),float(momentii))*float(dist[binii])/float(n_values);
+    }
+  }
+  
+  output << "Value\t";
+
+  for(binii=0;binii<dist.size();binii++)
+  {
+    output << binii << "\t";
+  }
+  
+    output<<"\nFrequency\t";
+  
+  for(binii=0;binii<dist.size();binii++)
+  {
+    
+    output<<float(dist[binii])/float(n_values)<<"\t";
+  }
+  
+  output<<"\n\nMoment\t";
+  
+  for(momentii=0;momentii<n_moments;momentii++)
+  {
+    output<<momentii<<"\t";
+  }
+  
+  output << "\nValue\t";
+  
+  for(momentii=0;momentii<n_moments;momentii++)
+  {
+    output<<moments[momentii]<<"\t";
+  }
+  
+  output << "\n\nTotal_Values\t" << n_values;
+
+  delete [] moments;
+  
+}
+
+template <class valType>
+void Value_List<valType>::write_statistics_pertime(string filename, int n_moments)const
+{
+  int timeii, trajii;
+  
+  cout << "\nWriting value dist and statistics to file.";
+  ofstream output(filename.c_str());
+  output << "Value list statistics created by AMDAT v." << VERSION << "\n";
+  output << "Time Count Mean StdDev\n";
+  
+  for(timeii=0;timeii<n_times;timeii++)
+  {
+    output << timeii << " ";
+
+    int n_values=0;
+    valType mean = 0.0;
+
+    for(trajii=0;trajii<values[timeii].size();trajii++)
+    {
+      if(included[timeii](trajii))
+      {
+        mean += values[timeii][trajii];
+        n_values++;
+      }
+    }
+
+    mean /= n_values;
+    valType variance = 0.0;
+    valType std_dev = 0.0;
+
+    for(trajii=0;trajii<values[timeii].size();trajii++)
+    {
+      if(included[timeii](trajii))
+      {
+        variance += pow(values[timeii][trajii] - mean, 2);
+      }
+    }
+
+    std_dev = sqrt(variance/n_values);
+
+    output << n_values << " " << mean << " " << std_dev << "\n";
+  }
+}
+
+template <class valType>
+void Value_List<valType>::write_statistics_pertime(string filename, Trajectory_List* trajlist, int n_moments)const
+{
+  int timeii, trajii;
+  
+  cout << "\nWriting value dist and statistics to file.";
+  ofstream output(filename.c_str());
+  output << "Value list statistics created by AMDAT v." << VERSION << "\n";
+  output << "Time Count Mean StdDev\n";
+  
+  for(timeii=0;timeii<n_times;timeii++)
+  {
+    output << timeii << " ";
+
+    int n_values=0;
+    valType mean = 0.0;
+
+    for(trajii=0;trajii<values[timeii].size();trajii++)
+    {
+      if(included[timeii](trajii) && trajlist->is_included(timeii, trajii))
+      {
+        mean += values[timeii][trajii];
+        n_values++;
+      }
+    }
+
+    mean /= n_values;
+    valType variance = 0.0;
+    valType std_dev = 0.0;
+
+    for(trajii=0;trajii<values[timeii].size();trajii++)
+    {
+      if(included[timeii](trajii) && trajlist->is_included(timeii, trajii))
+      {
+        variance += pow(values[timeii][trajii] - mean, 2);
+      }
+    }
+
+    std_dev = sqrt(variance/n_values);
+
+    output << n_values << " " << mean << " " << std_dev << "\n";
+  }
 }
 
 }
