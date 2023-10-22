@@ -173,8 +173,6 @@ void Particles_Between::listkernel2(Trajectory* traj1, Trajectory* traj2, int ti
   if (is_included(thisii, traj1->show_trajectory_ID())) //skip if traj1 is already included
     return;
 
-  Trajectory* traj3;
-
   //check if distance between traj1 and traj2 is under dist_cutoff before proceeding over tertiary loop
   Coordinate dist_vector_1 = (traj2->show_coordinate(thisii)-(traj1->show_coordinate(thisii))).vector_unwrapped(system->size()); //calculate shortest distance between two coordinates, taking into account periodic boundaries
   float dist_1 = dist_vector_1.length();
@@ -183,19 +181,22 @@ void Particles_Between::listkernel2(Trajectory* traj1, Trajectory* traj2, int ti
 
   int n_trajs=trajectory_list2->show_n_trajectories(thisii);  //record how many particles are in the second trajectory list at this time
 
+  Trajectory* traj3; //holds second reference bead
+  Atom_Trajectory* atom_traj2 = dynamic_cast<Atom_Trajectory*>(traj2); //to compare atomIDs with second reference bead
+
   for(int trajii=0;trajii<n_trajs;trajii++)  //here is the second loop over particles
   {
 
     traj3 = (*trajectory_list2)(thisii,trajii);  //this is the syntax to pull the second particle in set 2
 
+    //skip if traj3 is the same bead as traj2
+    Atom_Trajectory* atom_traj3 = dynamic_cast<Atom_Trajectory*>(traj3);
+    if (atom_traj2->show_atomID() == atom_traj3->show_atomID())
+      continue;
+
     //if only_diff_molecule==1, check that traj2 and traj3 are part of a different cluster
-    if (only_diff_molecule)
-    {
-      Atom_Trajectory* atom_traj2 = dynamic_cast<Atom_Trajectory*>(traj2);
-      Atom_Trajectory* atom_traj3 = dynamic_cast<Atom_Trajectory*>(traj3);
-      if (atom_traj2->show_moleculeID() == atom_traj3->show_moleculeID())
-        continue;
-    }
+    if (only_diff_molecule && atom_traj2->show_moleculeID() == atom_traj3->show_moleculeID())
+      continue;
 
     //check if distance between traj1 and traj3 is under dist_cutoff
     Coordinate dist_vector_2 = (traj3->show_coordinate(thisii)-(traj1->show_coordinate(thisii))).vector_unwrapped(system->size());
@@ -215,6 +216,13 @@ void Particles_Between::listkernel2(Trajectory* traj1, Trajectory* traj2, int ti
 
     addtrajectory(thisii,traj1); //this line will add the trajectory to the trajectory list
     break; //break to not repeat adding traj1
+//    //print stuff to checkk
+//    cout << "Bead: "    << traj1->show_coordinate(thisii).show_x() << " " << traj1->show_coordinate(thisii).show_y() << " " <<traj1->show_coordinate(thisii).show_z() << "\n";
+//    cout << "Center1: " << atom_traj2->show_moleculeID() << " " << atom_traj2->show_atomID() << " " << traj2->show_coordinate(thisii).show_x() << " " << traj2->show_coordinate(thisii).show_y() << " " <<traj2->show_coordinate(thisii).show_z() << "\n";
+//    cout << "Center2: " << atom_traj3->show_moleculeID() << " " << atom_traj3->show_atomID() << " " << traj3->show_coordinate(thisii).show_x() << " " << traj3->show_coordinate(thisii).show_y() << " " <<traj3->show_coordinate(thisii).show_z() << "\n";
+//    cout << "Diff1: "   << dist_vector_1.show_x() << " " << dist_vector_1.show_y() << " " <<dist_vector_1.show_z() << "\n";
+//    cout << "Diff2: "   << dist_vector_2.show_x() << " " << dist_vector_2.show_y() << " " <<dist_vector_2.show_z() << "\n";
+//    cout << dist_1 << " " << dist_2 << " " << cos_theta << "\n";
   }
 }
 
