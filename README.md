@@ -131,7 +131,7 @@ AMDAT presently can read multiple file formats produced by the LAMMPS molecular 
 
 ## B. Non-capabilities
 
-AMDAT includes no built-in tools for visualization of either trajectories or properties of trajectories. All results are output in a text-based form and must be viewed in another software (exe pytho, julia, excel, matlab,...). AMDAT does not include the ability to aggregate statistics acquired based on multiple simulations; this requires use of post-analysis software, such as python, julia, matlab, igor, excel, or similar. 
+AMDAT includes no built-in tools for visualization of either trajectories or properties of trajectories. All results are output in a text-based form and must be viewed in another software (exe python, julia, excel, matlab,...). AMDAT does not include the ability to aggregate statistics acquired based on multiple simulations; this requires use of post-analysis software, such as python, julia, matlab, igor, excel, or similar. 
 
 AMDAT presently does not include multithreading, although this capability is planned for introduction in a future update.
 
