@@ -702,7 +702,7 @@ _delete\_multibody\_list \<name of multibody\_list to delete\>_
 
 Most trajectory analysis methods consist of two lines, where the first line (the "type" line) defines the type of analysis to be performed and the output file, and the second line (the "target" line) specifies the atoms or molecules on which the analysis is to be performed. Analysis methods generally have two types of output: output files and trajectory lists. Output files are text files containing results of the analysis. Trajectory lists are lists of atoms and/or molecules identified by the analysis methods that are given a custom name by the user and are stored internally as objects of future analysis.
 
-Currently, target trajectories may be specifies in two ways (denoted by _\<target\>_ herein). The first (and preferred) method is to specify a trajectory list that was defined earlier in the input script. The second is to specify a set of trajectories by name (these do not work with a spatially binned system).
+Currently, target trajectories may be specified in two ways (denoted by _\<target\>_ herein). The first (and preferred) method is to specify a trajectory list that was defined earlier in the input script. The second is to specify a set of trajectories by name (these do not work with a spatially binned system).
 
 #### a) Trajectory Lists
 
