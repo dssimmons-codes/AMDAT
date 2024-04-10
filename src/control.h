@@ -140,6 +140,7 @@ class Control
     void remove_bin_list();                     // Removes a bin list from memory
     void write_bin_xyz();						//writes xyz file for binned_trajectories (all or single)
     void skip();
+    void traj_list_from_bin_list();     //create a trajectory list from one bin in a bin list
 
     /*Methods to handle value lists*/
     Vector_Map<string,Value_List<float>*> value_lists;

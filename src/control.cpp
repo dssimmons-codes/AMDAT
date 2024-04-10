@@ -405,6 +405,8 @@ int Control::execute_commands(int iIndex, int fIndex)
     {create_bin_list();}
     else if (command == "remove_bin_list")
     {remove_bin_list();}
+    else if (command == "traj_list_from_bin_list")
+    {traj_list_from_bin_list();}
     else if (command == "write_bin_xyz")
     {write_bin_xyz();}
     else if (command == "thresholded_list")
@@ -3947,6 +3949,31 @@ void Control::remove_bin_list()
   }
 }
 
+
+void Control::traj_list_from_bin_list()
+{
+    /**Creates a trajectory list from one bin in a bin list**/
+  
+  Trajectory_List * trajlist;
+  trajlist = new Trajectory_List;
+  int xii,yii,zii;
+  
+  int expected=6;
+  argcheck(expected); //checks first line of input section for format of remove_bin_list <name>
+  
+  string trajlistname = args[1];
+  string binlistname = args[2];		//user-input name of list to remove
+  xii = atoi(args[3].c_str());
+  yii = atoi(args[4].c_str());
+  zii = atoi(args[5].c_str());
+  
+  int listii = find_trajectorylist_bins(binlistname);
+  Trajectory_List_Bins* tempbinlist;
+  tempbinlist=binned_trajectories[listii];
+  
+  *trajlist = (*tempbinlist)(xii,yii,zii);
+  add_trajectorylist(trajlist,trajlistname);
+}
 
 void Control::write_bin_xyz()
 {
