@@ -9,6 +9,17 @@ polymer 50
 create_list all
 all
 
+create_bin_list bins
+all 2 1 1
+
+traj_list_from_bin_list onebin bins 1 0 0
+
+msd msd.dat
+list onebin
+
+exit
+
+
 create_distance_neighborlist dneighbors 1.4 ./testfiles/sigma_matrix -1
 list all
 
