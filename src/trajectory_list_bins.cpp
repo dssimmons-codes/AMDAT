@@ -16,6 +16,7 @@ Written by Mark Mackura*/
 #include <iostream>
 #include <float.h>
 #include <cmath>
+#include <algorithm>
 
 using namespace std;
 
@@ -1094,7 +1095,7 @@ void Trajectory_List_Bins::assign_bins()
 
 void Trajectory_List_Bins::assign_bins_distance_clusters(Trajectory_List * binned_list,Trajectory_List * cluster_list,float bin_thickness)
 {
-  /**Rectangularly bins all trajs at all times within given dimensions (each bin has it's own Boolean_List)
+  /**bin based on distance to a second trajectory list (each bin has it's own Boolean_List)
      * @author Mark Mackura and David Simmons
      * @date 3/1/2013
      */
@@ -1102,6 +1103,10 @@ void Trajectory_List_Bins::assign_bins_distance_clusters(Trajectory_List * binne
   int **** tempcount;
   int *** temp_bins;
 
+  Coordinate dist;
+  float length;
+  float temp_length;
+  
   temp_bins = new int ** [n_trajs];
   for(int trajii=0; trajii<n_trajs; trajii++)
   {
@@ -1111,22 +1116,65 @@ void Trajectory_List_Bins::assign_bins_distance_clusters(Trajectory_List * binne
       temp_bins[trajii][timeii]=new int [3];
     }
   }
+  
+  
+  
   for(int xii=0; xii<n_xbins; xii++)
    {
      for(int yii=0; yii<n_ybins; yii++)
      {
- 	for(int zii=0; zii<n_zbins; zii++)
-	{
-	  for(int timeii=0; timeii<n_times; timeii++)
-	  {
-	    trajcount[xii][yii][zii][timeii]=0;
-	  }
-	}
+        for(int zii=0; zii<n_zbins; zii++)
+        {
+        for(int timeii=0; timeii<n_times; timeii++)
+            {
+                trajcount[xii][yii][zii][timeii]=0;
+            }
+        }
      }
    }
 
 
+   
 
+for(int timeii=0; timeii<n_times; timeii++)
+{
+    for(int trajii=0; trajii<binned_list->show_n_trajectories(timeii); trajii++)
+    {
+        length = sys->size(timeii).max();
+        for(int traj2ii=0; traj2ii<clustered_list->show_n_trajectories(timeii); traj2ii++)
+        {
+            temp_length=((binned_list(timeii,trajii)->show_coordinate(timeii)-clustered_list(timeii,traj2ii)->show_coordinate(timeii)).vector_unwrapped(system->size())).length();
+            
+            length=min(length,temp_length);
+        }
+        zii = int(length/bin_thickness);
+        if (zii<=n_zbins-1)
+        {
+            vectorstoragething[0,0,zii,timeii].push_back(binned_list(timeii,trajii)->show_trajectory_ID())
+        }
+    }
+}
+   
+
+   
+     
+  for(int xii=0; xii<n_xbins; xii++)
+   {
+     for(int yii=0; yii<n_ybins; yii++)
+     {
+        for(int zii=0; zii<n_zbins; zii++)
+        {
+        for(int timeii=0; timeii<n_times; timeii++)
+            {
+                /*allocate memory for include IDs at each x,y,z,t; then loop over included IDs in vectorstoragething[xii,yii,zii,timeii] and then copyt them to include[xii][yii][zii][timeii][ii]*/
+            }
+        }
+     }
+   }
+
+   /*loops after here are old - delete*/
+   
+   
   for(int trajii=0; trajii<n_trajs; trajii++)
   {
     for(int timeii=0; timeii<n_times; timeii++)
@@ -1228,15 +1276,20 @@ void Trajectory_List_Bins::assign_bins_distance_clusters(Trajectory_List * binne
                 if (xii<=n_xbins-1 && yii<=n_ybins-1 && zii<=n_zbins-1)
                 {
                      if(tempcount[xii][yii][zii][timeii]==trajcount[xii][yii][zii][timeii]){cout<<"\n"<<xii<<"\t"<<yii<<"\t"<<zii<<"\t"<<timeii<<"\t"<<trajii<<"\t"<<n_times<<"\t";cout.flush();}
-                      if(tempcount[xii][yii][zii][timeii]==trajcount[xii][yii][zii][timeii]){cout<<tempcount[xii][yii][zii][timeii]<<"\t"<<include[xii][yii][zii][timeii][tempcount[xii][yii][zii][timeii]]<<"\t"<<trajcount[xii][yii][zii][timeii]<<"\t";cout.flush();}
 
-                      include[xii][yii][zii][timeii][tempcount[xii][yii][zii][timeii]]=trajii;
-                      tempcount[xii][yii][zii][timeii]++;
+                     if(tempcount[xii][yii][zii][timeii]==trajcount[xii][yii][zii][timeii])
+                     {cout<<tempcount[xii][yii][zii][timeii]<<"\t"<<include[xii][yii][zii][timeii][tempcount[xii][yii][zii][timeii]]<<"\t"<<trajcount[xii][yii][zii][timeii]<<"\t";cout.flush();}
+
+                     include[xii][yii][zii][timeii][tempcount[xii][yii][zii][timeii]]=trajii;
+                     
+                     tempcount[xii][yii][zii][timeii]++;
                 }
 
           }
     }
   }
+  
+  /*possibly stop deleting after this - check whether tempcount still exists*/
 
   for(int xii=0; xii<n_xbins; xii++)
    {
