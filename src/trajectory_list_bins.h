@@ -24,6 +24,7 @@ class Trajectory_List_Bins
     float *xlo,*xhi,*ylo,*yhi,*zlo,*zhi;                //box dimensions
     int ***** include;
     int **** trajcount;
+    vector<vector<vector<vector<vector<int>>>>> vectorstoragething;
 
     int * time_conversion;			        //time_conversion array pointer (note this is the same for all bins)
 
