@@ -18,7 +18,8 @@ Development Version Documentation
       - **[a) xyz](#a-xyz)**<br>
       - **[b) xyz\_log](#b-xyz\_log)**<br>
       - **[c) custom](#c-custom)**<br>
-      - **[d) xtc](#d-xtc)**<br>
+      - **[d) custom\_manual](#d-custom\_manual)**<br>
+      - **[e) xtc](#e-xtc)**<br>
     - **[3. Time Scheme](#3-Time-Scheme)**<br>
   - **[B. Analysis Block](#B-Analysis-Block)**<br>
     - **[1. General commands, logic structures, and variables](#1-General-commands-logic-structures-and-variables)**<br>
