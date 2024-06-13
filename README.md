@@ -137,7 +137,7 @@ AMDAT presently does not include multithreading, although this capability is pla
 
 ## C. General Concepts and Terminology
 
-AMDAT is run from the command line (see section on Running AMDAT). The user provides an input file (see section on Input File), which provides information on the trajectory file and system metadata (see section on System block) and provides a script specifying analyses to be performed (see section on Analysis Block). AMDAT reads in the specified simulation trajectory (see section on Trajectory file types), and based on this constructs a database of particle trajectories (corresponding the the particles in the simulation trajectory). In order to perform analyses on these trajectories, the selects one or more lists of trajectories (trajectory lists) specifying a set of particle trajectories for analysis (see section on Selecting trajectories for analysis). A number of analysis methods themselves generate trajectory lists, and the set of particle trajectories included in these lists may in general vary over the duration of the simulation trajectory (for example, a trajectory list of the most mobile particles – see analysis method find\_fast – will vary over the course of the simulation as particles become more or less mobile with time). The user can also define "multibodies", which are entities comprised of multiple particle trajectories (for example, one could define a multibody corresponding to a whole molecule or a single sidegroup). In a similar manner to trajectories, the user may define lists of these multibodies for analysis (for example, calculation of the multibody gyration radius).
+AMDAT is run from the command line (see section on Running AMDAT). The user provides an input file (see section on Input File), which provides information on the trajectory file and system metadata (see section on System block) and provides a script specifying analyses to be performed (see section on Analysis Block). AMDAT reads in the specified simulation trajectory (see section on Trajectory file types), and based on this constructs a database of particle trajectories (corresponding the the particles in the simulation trajectory). In order to perform analyses on these trajectories, the user selects one or more lists of trajectories (trajectory lists) specifying a set of particle trajectories for analysis (see section on Selecting trajectories for analysis). A number of analysis methods themselves generate trajectory lists, and the set of particle trajectories included in these lists may in general vary over the duration of the simulation trajectory (for example, a trajectory list of the most mobile particles – see analysis method find\_fast – will vary over the course of the simulation as particles become more or less mobile with time). The user can also define "multibodies", which are entities comprised of multiple particle trajectories (for example, one could define a multibody corresponding to a whole molecule or a single sidegroup). In a similar manner to trajectories, the user may define lists of these multibodies for analysis (for example, calculation of the multibody gyration radius).
 
 **Simulation Trajectory** : The set of configurations being analyzed
 
@@ -185,13 +185,13 @@ This is the standard linux command to redirect screen output to \<LOGFILE\>. Thi
 
 # III. Making AMDAT
 
-To make AMDAT, cd to the main AMDAT directory and run _make_.
+Several steps are required to make AMDAT. First, you must open the makefile and edit lines 9-11 so that they point to the locations of the qvectors folders provided with AMDAT (see more on this in section IIIB below). Then ensure that the packages in section A below are properly configured. To make AMDAT, then cd to the main AMDAT directory and run _make_.
 
 ## A. Required packages
 
 Fftw3 – must be installed
 
-Xdrfile-1.1b – must be installed, provided with AMDAT distribution
+Xdrfile-1.1b – must be installed, provided with AMDAT distribution. To do so, cd to the xrdfile-1.1b directory included in the AMDAT release, run configure, and then run make.
 
 tnt\_126 – directory must be specified in CPLUS\_INCLUDE\_PATH, provided with AMDAT distribution and available from NIST at http://math.nist.gov/tnt/download.html
 
@@ -324,7 +324,17 @@ _..._
 
 _\<# of first type in last species\>…\<# of last type in last species\>_
 
-#### d) xtc
+#### d) custom\_manual
+This method also reads custom files, but provides increased versatility regarding read-in. This method requires that a path to an additional header_file be provided via the following format:
+
+_custom_manual \<header_file name\> \<(optional) template file name\>_
+
+The header_file must be structured as follows. The first line must begin with a keyword specifying which type of coordinates to employ - wrapped with indexing or unwrapped. This is followed by a set of arguments specifying the headers of the columns providing these coordinates. For unwrapped coordinates, 3 headers must be provided, corresponding to the headers of columns containing x, y, and z data. For wrapped coordinates, 6 headers must be provided, corresponding to headers of columns containing x coordinates, y coordinates, z coordinates, x image indices, y image indices, and z image indices. These structures are as follows.
+
+_unwrapped \<x header\> \<y header\> \<z header\>_
+_wrapped\_indexed \<x header\> \<y header\> \<z header\> <x image index header\> <y image index header\> <z image index header\>_
+
+#### e) xtc
 
 This is a binary format produced by the GROMACS molecular dynamics package.
 
