@@ -35,31 +35,31 @@ A large number of analysis tools target trajectory\_list objects.
 
 | Command | Effect | Output |
 |----------|----------|----------|
-| composition | Calculates the composition and number density. | Tab demarkated data file |
-| isfs | Calculates the self-part of the intermediate scattering function. | Tab demarkated data file |
-| msd | Calculates the mean-square displacement. | Tab demarkated data file |
-| msd\_2d | Calculates the two-dimensional mean-square displacement. | Tab demarkated data file |
-| structure\_factor | Computes the structure factor. | Tab demarkated data file |
-| trajectory\_list\_decay | Computes an autocorrelation function for inclusion in the trajectory\_list. | Tab demarkated data file |
-| clustered\_list | Generates a new trajectory list by finding clustered particles in the original list. | New trajectory\_list |
-| compare_gaussian | Finds points where the self Van Hove crosses the Gaussian approximation to the self Van Hove. | Tab demarkated data file |
-| displacement_map | Generates maps of particle displacement magnitude and writes to pdb files with value beta specifying displacement.| PDB file |
-| isfs\_list | Calculate full intermediate scattering function | Tab demarkated data file |
-| mean\_closest\_distance | Calculates the average distance between particles in two distinct trajectory\_lists. | Tab demarkated data file |
-| n\_fold | Calculates mean and time dependence of n-fold order parameter and writes maps to files. | Tab demarkated data file and a PDB file |
-| ngp | Calculates non-Gaussian parameter of the mean squared displacement. | Tab demarkated data file |
-| rdf | Computes the radial distribution function. | Tab demarkated data file |
-| rgtensor\_stats | Calculates statistics describing the radius of gyration tensor characterizing particle trajectories as a function of time. | Tab demarkated data file |
-| stiffness\_dist | Calculates distribution of inverse Debye-Waller factor values 1/u2. | Tab demarkated data file |
-| strings | Analyzes 'stringlike' collective motion | - |
-| u2dist | Calculates distribution of square displacements at a specified time. | Tab demarkated data file |
-| vac\_fourier | Calculates fourier transform of velocity autocorrelation function. | Tab demarkated data file |
-| vac\_function | Calculates velocity autocorrelation function by taking two derivatives of the mean-square-displacement. | Tab demarkated data file |
-| vhd | Calculates distinct part of the Van Hove function.| Tab demarkated data file |
-| vhs | Calculates self-part of the Van Hove function. | Tab demarkated data file |
-| vht | Adds together previously computed vhd and vhs. | Tab demarkated data file |
-| write\_list\_trajectory | Writes to file an xyz trajectory from a trajectory list.| Trajectory file in wrapped xyz format |
-| write\_list\_trajectory\_full | Writes to file an xyz trajectory from a trajectory list.| Trajectory file in wrapped xyz format |
+| [clustered\_list](clustered_list_decay.md) | Generates a new trajectory list by finding clustered particles in the original list. | New trajectory\_list |
+| [compare_gaussian](compare_gaussian.md) | Finds points where the self Van Hove crosses the Gaussian approximation to the self Van Hove. | Tab demarkated data file |
+| [composition](composition.md) | Calculates the composition and number density. | Tab demarkated data file |
+| [displacement_map](displacement_map.md) | Generates maps of particle displacement magnitude and writes to pdb files with value beta specifying displacement.| PDB file |
+| [isf\_list](isf_list.md) | Calculate full intermediate scattering function | Tab demarkated data file |
+| [isfs](isfs.md) | Calculates the self-part of the intermediate scattering function. | Tab demarkated data file |
+| [mean\_closest\_distance](mean_closest_distance.md) | Calculates the average distance between particles in two distinct trajectory\_lists. | Tab demarkated data file |
+| [msd](msd.md) | Calculates the mean-square displacement. | Tab demarkated data file |
+| [msd\_2d](msd_2d.md) | Calculates the two-dimensional mean-square displacement. | Tab demarkated data file |
+| [n\_fold](n_fold.md) | Calculates mean and time dependence of n-fold order parameter and writes maps to files. | Tab demarkated data file and a PDB file |
+| [ngp](ngp.md) | Calculates non-Gaussian parameter of the mean squared displacement. | Tab demarkated data file |
+| [rdf](rdf.md) | Computes the radial distribution function. | Tab demarkated data file |
+| [rgtensor\_stats](rgtensor_stats.md) | Calculates statistics describing the radius of gyration tensor characterizing particle trajectories as a function of time. | Tab demarkated data file |
+| [stiffness\_dist](stiffness_dist.md) | Calculates distribution of inverse Debye-Waller factor values 1/u2. | Tab demarkated data file |
+| [strings](strings.md) | Analyzes 'stringlike' collective motion | - |
+| [structure\_factor](structure_factor.md) | Computes the structure factor. | Tab demarkated data file |
+| [trajectory\_list\_decay](trajectory_list_decay.md) | Computes an autocorrelation function for inclusion in the trajectory\_list. | Tab demarkated data file |
+| [u2dist](u2dist.md) | Calculates distribution of square displacements at a specified time. | Tab demarkated data file |
+| [vac\_fourier](vac_fourier.md) | Calculates fourier transform of velocity autocorrelation function. | Tab demarkated data file |
+| [vac\_function](vac_function.md) | Calculates velocity autocorrelation function by taking two derivatives of the mean-square-displacement. | Tab demarkated data file |
+| [vhd](vhd.md) | Calculates distinct part of the Van Hove function.| Tab demarkated data file |
+| [vhs](vhs.md) | Calculates self-part of the Van Hove function. | Tab demarkated data file |
+| [vht](vht.md) | Adds together previously computed vhd and vhs. | Tab demarkated data file |
+| [write\_list\_trajectory](write_list_trajectory.md) | Writes to file an xyz trajectory from a trajectory list.| Trajectory file in wrapped xyz format |
+| [write\_list\_trajectory\_full](write_list_trajectory_full.md) | Writes to file an xyz trajectory from a trajectory list.| Trajectory file in wrapped xyz format |
 | find_fast | Deprecated; does not work properly. In principle find particles that are 'fast' based on the above comparison between the self Van Hove and Gaussian approximation.| - |
 | gyration_radius | Deprecated; to be removed. | - |
 | isf | Deprecated; to be removed. | - |
