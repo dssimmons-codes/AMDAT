@@ -38,6 +38,7 @@ A large number of analysis tools target trajectory\_list objects.
 | composition | Calculates the composition and number density. | Tab demarkated data file |
 | isfs | Calculates the self-part of the intermediate scattering function. | Tab demarkated data file |
 | msd | Calculates the mean-square displacement. | Tab demarkated data file |
+| msd\_2d | Calculates the two-dimensional mean-square displacement. | Tab demarkated data file |
 | structure\_factor | Computes the structure factor. | Tab demarkated data file |
 | trajectory\_list\_decay | Computes an autocorrelation function for inclusion in the trajectory\_list. | Tab demarkated data file |
 | clustered\_list | Generates a new trajectory list by finding clustered particles in the original list. | New trajectory\_list |
