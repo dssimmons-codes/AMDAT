@@ -521,14 +521,33 @@ _ceiling \<constant\_name\>_
 Rounds the value of constant _\<constant\_name\>_ up to the closest integer. Can be shortened from _ceiling_ to _ceil_.
 
 ### 2 Data objects and their use in trajectory analysis
+AMDAT analysis can involve up to 5 types of data objects:
+* _trajectory\_list_: Stores, at each time, a list of particles for analysis.
+* _trajectory\_bin\_list_: Stores, at each time, a list of particles, sorted by spatial location in the box, for analysis.
+* _multibody_list: Stores a list of multibodies (potentially different at each time), each of which is comprised of multiple particles.
+* _neighbor\_list_: For a selected set of particles, stores a list of their neigboring particles.
+* _value\_list_: Stores a value for each of a list of particles.
 
-AMDAT allows for selection of particle trajectories for analysis in a number of ways. Several create lists of trajectories for trajectory level analysis, with selection possible based upon chemical definitions (species, element, etc), or based on position in the simulation box, or both. "Trajectory\_lists" store a list of particle trajectories that may be fixed or may change from frame to frame. "Trajectory\_bin\_lists" divide all particle trajectories into the system at each frame into spatially defined bins for analysis of locally varying properties. Subsets of particles may then be treated on a local basis by analyzing the intersection of a trajectory\_list with a trajectory\_bin\_list (where intersection denotes the set of particle trajectories present in both lists.
-
-In addition, AMDAT allows for the creation of "multibodies", which are objects of analysis that consist of multiple trajectories lumped together. The latter permits calculation of intrinsically multipoint properties such as those involving vector orientational statistics, gyration radii, and so on.
+These types of data objects often interact. For example, there are analysis tools that perform an analysis on a _trajectory\_list_ and generate a _value\_list_ corresponding to a time-dependent value for each particle in the original list.
 
 Following are a list of commands used in the selection of particle trajectories for analysis at the trajectory or multibody level. In addition to these general commands, certain analysis objects also yield trajectory\_lists or multibody\_lists. For example, find\_fast returns a trajectory\_list containing the most mobile particles in the system.
 
-#### Methods to create and manipulate lists of trajectories 
+#### Methods to create and manipulate _trajectory\_list_ objects
+
+**Commands that create or destroy trajectory\_lists**
+| Command | Effect |
+|----------|----------|
+| create\_list    | Creates a static list of particle trajectories |
+| combine\_trajectories    | Creates a new list of trajectories by merging multiple existing of existing trajectory\_lists|
+| invert\_list    | Creates a new trajectory list by inverting an existing trajectory list and then intersecting it with a second list |
+| thresholded\_list    | Creates a  list of trajectories by applying a value threshold to a specified value\_list. |
+| flatten\_multibodies    | Creates a trajectory list comprised of all trajectories in a set of multibodies |
+| delete\_trajectory_list| Deletes an existing trajectory\_list, freeing up the associated memory. |
+
+**Commands that analyze trajectory\_lists**
+  
+The remainder of the file provides a script specifying the analyses to be performed on the trajectory by AMDAT. AMDAT includes a modest set of control structures including loops, if structures and variables, described below. Analysis tools are built around a set of data objects that store various types of data for analysis. The most important is the _trajectory\_list_, which stores a set of particle trajectories for analysis. AMDAT can also defined _trajectory\_bin\_list_ objects, which store particle trajectories within a spatially resolved structure to allow for facile spatially-resolved analysis. In addition, AMDAT allows definition of _multibodies_, which are data objects that define sets of multiple particles allowing multibody analysis. AMDAT also allows definition of _neighbor\_lists_ that track the neighbors of a set of central particles. Finally, it can store _value\_lists_, which are versatile data objects that store a single value per time per particle in the list. This latter category also allows direct read-in from custom trajectory files, allowing ancillary data columns in the trajectory file to be associated with particles and analyzed.
+
 ##### create\_list
 
 Creates a static list of particle trajectories for analysis based upon set features such as the particle's type and location within molecules of a given species.
