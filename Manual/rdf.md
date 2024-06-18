@@ -1,7 +1,13 @@
 <h1>rdf</h1>
 
-Calculates non-Gaussian parameter of the mean squared displacement.
+Computes a radial distribution function.
 
-_ngp \<output file\>_
+_rdf \<output filename\> \<symmetry keyword\> \<number of distance bins\> \<timescheme\> \<max length scale to compute to\>_
 
-_\<target\>_
+_\<symmetry keyword\>_ is either "symmetric" or "asymmetric". If "symmetric", then only a single target trajectory list line is provided. The RDF is then computed between all particles of this list in a symmetric manner. If "asymmetric", then two target trajectory list lines are provided. The RDF is then constructed by binning members of the second list according to distance from the first list, leading to an asymmetric radial distribution function.
+
+_\<number of distance bins\>_ specifies at how many points (distances) to compute the radial distibution funcion
+
+_\<timescheme\>_ determines what times to loop over. If timescheme = -1, loop over all times. If timescheme is zero or positive, only use one time per block, with the value setting the time index offset from the beginning of the block.
+
+_\<max length scale to compute to\>_ sets the maximum distance to which the rdf is computed. If this is set to a value of 0, the calculation defaults to something like half the smallest box dimension.
