@@ -1,3 +1,4 @@
+<h1>create_list</h1>
 Creates a static list of particle trajectories for analysis based upon set features such as the particle's type and location within molecules of a given species.
 
 _create\_list \<listname\>_
