@@ -390,7 +390,7 @@ _Snapshot_ (no args)
 
 ## B. Analysis Block
 
-The remainder of the file provides a script specifying the analyses to be performed on the trajectory by AMDAT. AMDAT includes a modest set of logic structures including loops, if structures and variables, described below. It also provides a number of ways of selecting particles for analysis and defining multibodies – entities consisting of multiple particles – for analysis. AMDAT incorporates a considerable number of analysis methods applicable to these selections, also described below.
+The remainder of the file provides a script specifying the analyses to be performed on the trajectory by AMDAT. AMDAT includes a modest set of control structures including loops, if structures and variables, described below. Analysis tools are built around a set of data objects that store various types of data for analysis. The most important is the _trajectory\_list_, which stores a set of particle trajectories for analysis. AMDAT can also defined _trajectory\_bin\_list_ objects, which store particle trajectories within a spatially resolved structure to allow for facile spatially-resolved analysis. In addition, AMDAT allows definition of _multibodies_, which are data objects that define sets of multiple particles allowing multibody analysis. AMDAT also allows definition of _neighbor\_lists_ that track the neighbors of a set of central particles. Finally, it can store _value\_lists_, which are versatile data objects that store a single value per time per particle in the list. This latter category also allows direct read-in from custom trajectory files, allowing ancillary data columns in the trajectory file to be associated with particles and analyzed.
 
 ### 1. General commands, logic structures, and variables
 
@@ -520,7 +520,7 @@ _ceiling \<constant\_name\>_
 
 Rounds the value of constant _\<constant\_name\>_ up to the closest integer. Can be shortened from _ceiling_ to _ceil_.
 
-### 2 Selecting trajectories for analysis
+### 2 Data objects and their use in trajectory analysis
 
 AMDAT allows for selection of particle trajectories for analysis in a number of ways. Several create lists of trajectories for trajectory level analysis, with selection possible based upon chemical definitions (species, element, etc), or based on position in the simulation box, or both. "Trajectory\_lists" store a list of particle trajectories that may be fixed or may change from frame to frame. "Trajectory\_bin\_lists" divide all particle trajectories into the system at each frame into spatially defined bins for analysis of locally varying properties. Subsets of particles may then be treated on a local basis by analyzing the intersection of a trajectory\_list with a trajectory\_bin\_list (where intersection denotes the set of particle trajectories present in both lists.
 
