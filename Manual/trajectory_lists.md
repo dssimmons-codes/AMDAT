@@ -38,6 +38,9 @@ A large number of analysis tools target trajectory\_list objects.
 | [clustered\_list](clustered_list_decay.md) | Generates a new trajectory list by finding clustered particles in the original list. | New trajectory\_list |
 | [compare_gaussian](compare_gaussian.md) | Finds points where the self Van Hove crosses the Gaussian approximation to the self Van Hove. | Tab demarkated data file |
 | [composition](composition.md) | Calculates the composition and number density. | Tab demarkated data file |
+| create_distance_neighborlist | Constructs a neighborlist object based on a distance cutoff criterion | neighbor_list |
+| create_voronoi_neighborlist | Constructs a neighborlist object based on the voronoi tesselation | neighbor_list |
+| displacement_list | Computes the displacement of each particle at some time separation and stores the results in a value_list | Tab demarkated data file and value_list |
 | [displacement_map](displacement_map.md) | Generates maps of particle displacement magnitude and writes to pdb files with value beta specifying displacement.| PDB file |
 | [isf\_list](isf_list.md) | Calculate full intermediate scattering function | Tab demarkated data file |
 | [isfs](isfs.md) | Calculates the self-part of the intermediate scattering function. | Tab demarkated data file |
@@ -49,7 +52,8 @@ A large number of analysis tools target trajectory\_list objects.
 | [rdf](rdf.md) | Computes the radial distribution function. | Tab demarkated data file |
 | [rgtensor\_stats](rgtensor_stats.md) | Calculates statistics describing the radius of gyration tensor characterizing particle trajectories as a function of time. | Tab demarkated data file |
 | [stiffness\_dist](stiffness_dist.md) | Calculates distribution of inverse Debye-Waller factor values 1/u2. | Tab demarkated data file |
-| [strings](strings.md) | Analyzes 'stringlike' collective motion | - |
+| [strings](strings.md) | Analyzes 'stringlike' collective motion. Planned for deprecation in favor of string_multibodies. | Tab demarkated data file. |
+| string_multibodies | Builds multibodies comprised of 'stringlike' collective displacements | multibody_list |
 | [structure\_factor](structure_factor.md) | Computes the structure factor. | Tab demarkated data file |
 | [trajectory\_list\_decay](trajectory_list_decay.md) | Computes an autocorrelation function for inclusion in the trajectory\_list. | Tab demarkated data file |
 | [u2dist](u2dist.md) | Calculates distribution of square displacements at a specified time. | Tab demarkated data file |
