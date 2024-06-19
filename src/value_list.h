@@ -11,15 +11,17 @@
 #include <algorithm>
 
 #include "boolean_list.h"
-#include "system.h"
 #include "trajectory_list.h"
 #include "version.h"
+#include "system.h"
 
 #ifndef VALUE_LIST
 #define VALUE_LIST
 
 namespace std
 {
+
+class System;
 
 template <class valType>
 class Value_List
