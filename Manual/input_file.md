@@ -22,7 +22,7 @@ AMDAT divides trajectories into two types, with the type denoted a the _\<system
 
 1. The only trajectory file type presently supported for non-constant volume trajectories is _custom_.
 2. In order to obtain unwrapped coordinates in non-constant volume systems, either unwrapped coordinates must be directly provided by the custom trajectory file or image index values must be provided (i\_x, i\_y, and i\_z in the LAMMPS custom dump file format). Otherwise, any analysis techniques relying on unwrapped coordinates will not work correctly
-3. The "distinct van hove" analysis method does not presently work for non-constant volume systems
+3. The "distinct van hove",  "structure_factor", and "isf" analysis methods do not presently work for non-constant volume systems (additional constraints apply to some of these even for constant volume systems). This will hopefully be addressed in a future update.
 
 <h3>trajectory file types</h3>
 
