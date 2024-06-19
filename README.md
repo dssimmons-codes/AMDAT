@@ -1,6 +1,8 @@
 # Amorphous Molecular Dynamics Analysis Toolkit (AMDAT)
 Development Version Documentation
 
+**This document will soon be replaced with a hyperlinked manual that is more readable and complete. For the working version of that Manual, go [here](Manual/overview.md).**
+
 # I. Table of Contents
 - **[I. Table of Contents](#i-table-of-contents)**<br>
 - **[II. Overview](#ii-overview)**<br>
