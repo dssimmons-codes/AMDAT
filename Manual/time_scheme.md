@@ -30,27 +30,39 @@ Here _\<number of timesteps\>_ is the number of frames in the trajectory and $<\
 
 <h2>Blocked exponential time spacing</h2>
 
-In blocked exponential time spacing, frames are written out in blocks, with times in each block spaced exponentially. If the underlying timestep of the simulation is $\Delta \tau$, then the times at which frames are written in the first block is given by
+In blocked exponential time spacing, frames are written out in blocks, with times in each block spaced exponentially. Generally 
 
-frame indices written to the trajectory are broadly speaking governed by an exponential $b^k$, where $b$ is an exponential base and $k$ is an integer iterator. However, this equation does not generally yield intergers, and in some cases leads to spacings between time steps that are less than one timestep apart. This is resolved by, first, taking the floor of $b^k$ and, second, defaulting to linear spacing for k such that $b^k < k$.
+If the underlying timestep of the simulation is $\Delta \tau$, then the times at which frames are written in the first block are broadly speaking governed by an exponential $b^k$, where $b$ is an exponential base and $k$ is an integer iterator. However, this equation does not generally yield intergers, and in some cases leads to spacings between time steps that are less than one timestep apart. This is resolved by, first, taking the floor of $b^k$ and, second, defaulting to linear spacing for k such that $b^k < k$.
 
-In a single-exponential timescheme, the $k^{th}$ frame is written out at a time $t(k)$ given by
+Within the first block of a blocked exponential time scheme, the $k^{th}$ frame is written out at a time $t(k)$ given by
 
-$t(k)=\Delta \tau k$ when $\left\lfloor{(b^k)}\right\rfloor < k$
+$t(k=0)=0$
 
-$t(k)=\Delta \tau \left\lfloor{(b^k)}\right\rfloor$ when $\left\lfloor{(b^k)}\right\rfloor > k$
+$t(0 < k \leq K)=\Delta \tau k$ when $\left\lfloor{(b^{k-1+a_0})}\right\rfloor < k$
 
-where $k=k_0,k_0+1,...K$
+$t(0 < k \leq K)=\Delta \tau \left\lfloor{(b^{k-1+a_0})}\right\rfloor$ when $\left\lfloor{(b^{k-1+a_0})}\right\rfloor > k$
 
+where $k=0,1,2,...K$ and where $K$ is called the "block size". At the end of this block, the time spacing repeats the exponential algorithm above, such that frames in the next block are written out at times as follows
+
+$t(K < k \leq 2K))=\Delta \tau \left\lfloor{(b^{K-1+a_0})}\right\rfloor + \Delta \tau k$ when $\left\lfloor{(b^{k-K-1+a_0})}\right\rfloor < k - K$
+
+$t(K < k \leq 2K)=\Delta \tau \left\lfloor{(b^{K-1+a_0})}\right\rfloor + \Delta \tau \left\lfloor{(b^{k-K-1+a_0})}\right\rfloor$ when $\left\lfloor{(b^{k-K-1+a_0})}\right\rfloor > k - K$
+
+In a run with $I$ sequential blocks, this is then repeated with the general pattern
+
+$t(k > 0)=\Delta \tau \left\lfloor{(b^{i K-1+a_0})}\right\rfloor + \Delta \tau k$ when $\left\lfloor{(b^{k-i K-1+a_0})}\right\rfloor < k-iK$
+
+$t(k > 0)=\Delta \tau \left\lfloor{(b^{i K-1+a_0})}\right\rfloor + \Delta \tau \left\lfloor{(b^{k-i K-1+a_0})}\right\rfloor$ when $\left\lfloor{(b^{k-i K-1+a_0})}\right\rfloor > k-iK$
+
+where $i = 0, 1, 2, ...I-1$ and where $i$ is the index of the block.
 
 The time scheme line for blocked exponential time schemes is formatted as follows.
 
-_Exponential \<# of exponential blocks\> \<timesteps per block\> \<exp base\> \<frt\> \<first exp\> \<time unit\>_
+_exponential_ $< I >$ $< K >$ $< b >$ \<frt\> $< a_0 >$ $< \Delta t >$
 
+_exponential \<# of exponential blocks\> \<timesteps per block\> \<exp base\> \<frt\> \<first exp\> \<time unit\>_
 
-
-
-where m is the block number (m = 0,1,2,3,…,M) and k is the frame (k=0,1,2,3… if _frt_ = 0 and k = 1,2,3,… if _frt_ = 1), N is the number of timesteps per block. If _frt_ is zero, then an extra initial time frame at time zero is used at the beginning of the trajectory. If _frt_ is one, then the first time frame is at time (dt)b^_\<first exponent\>_. This has significant implications for how time blocks are handled. First exponent is usually zero or one and is the first value of the exponent for the power law progression in time. Deltat is the time unit. For clarity, below is a segment of pseudocode describing the list of simulation times corresponding to this scheme. Also packaged with AMDAT is an example LAMMPS input file yielding a trajectory file corresponding to this time scheme.
+If _frt_ is zero, then an extra initial time frame at time zero is used at the beginning of the trajectory. If _frt_ is one, then the first time frame is at time (dt)b^_\<first exponent\>_. This has significant implications for how time blocks are handled. First exponent is usually zero or one and is the first value of the exponent for the power law progression in time. For clarity, below is a segment of pseudocode describing the list of simulation times corresponding to this scheme. Also packaged with AMDAT is an example LAMMPS input file yielding a trajectory file corresponding to this time scheme.
 
     block_starttime=0;
     for(blockii=0;blockii<#_of_exponentials;blockii++)
