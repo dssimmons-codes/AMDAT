@@ -6,31 +6,42 @@ $$C(\Delta t)=\sum_{j=1}^{S}(\langle A(s_j)B(s_j+\Delta t) \rangle$$
 
 In addition to inferring different values for the times read in, linear and blocked exponential time schemes lead to different choices of the set of start times s_j to be employed in stationary dynamical calculations.
 
+In AMDAT, the time scheme is specified in the input file header section via the _\<time scheme\>_ line, which is formatted as follows
+
+_\<type\> \<arguments\>_
+
+Here _\<type\>_ is _linear_ or _exponential_. The sections for each of these time schemes below describe the required arguments. 
+
 <h2>Linear time spacing</h2>
 
 In linear time spacing, every pair of sequential snapshots is separated by the same $\Delta \tau$. Formally, snapshots are written out at times following the equation
 $$t=k\Delta \tau$$
 where $k=0,1,2,...T-1$, and were $T$ is the total number of frames.
 
-For dynamical quantities, every time is employed as a starting time for dynamical calculations, and every possible pair of snapshots is employed.
+For dynamical quantities, every time is employed as a starting time for dynamical calculations, and every possible pair of snapshots is employed. This means that the number of start times $S$ is a function of the timegap $\Delta t$ considered, as
+$$S(\Delta t)=T-\frac{\Delta t}{\Delta \tau}$$
+This has two implications. First, in general statistical strength at a minimum drops linearly as per the equation above at larger timegaps simply because of the reduced number of starting times available to average over. Second, the drop is actually somewhat worse than this because time windows for larger time gaps become increasingly overlapping and hence correlated. For most purposes, linear time schemes are therefore not a very efficient way of writing out or analyzing trajectories for the purposes of  dynamical correlation functions in stationary systems.
+
+The time scheme line for linear time schemes is formatted as follows.
+
+_linear \<number of timesteps\>_ $<\Delta t>$
+
+Here _\<number of timesteps\>_ is the number of frames in the trajectory and $<\Delta t>$ is the time separating sequential frames.
 
 <h2>Blocked exponential time spacing</h2>
 
-The _\<time scheme\>_ line is formatted as follows
+In blocked exponential time spacing, frames are written out in blocks, with times in each block spaced exponentially. If the underlying timestep of the simulation is $\Delta \tau$, then the times at which frames are written in the first block is given by
 
-_\<type\> \<arguments\>_
+frame indices written to the trajectory are broadly speaking governed by an exponential $b^k$, where $b$ is an exponential base and $k$ is an integer iterator. However, this equation does not generally yield intergers, and in some cases leads to spacings between time steps that are less than one timestep apart. This is resolved by, first, taking the floor of $b^k$ and, second, defaulting to linear spacing for k such that $b^k < k$.
 
-Formatting for each type is:
 
-typeargs
-
-_linear \<number of timesteps\> \<time unit\>_
-
-Here _\<number of timesteps\>_ is the number of frames in the trajectory and \<time unit\> is the time between each frame.
+The time scheme line for blocked exponential time schemes is formatted as follows.
 
 _Exponential \<# of exponential blocks\> \<timesteps per block\> \<exp base\> \<frt\> \<first exp\> \<time unit\>_
 
 In an exponential timescheme, frame times are given by the following formula:
+
+$$t=
 
 where m is the block number (m = 0,1,2,3,…,M) and k is the frame (k=0,1,2,3… if _frt_ = 0 and k = 1,2,3,… if _frt_ = 1), N is the number of timesteps per block. If _frt_ is zero, then an extra initial time frame at time zero is used at the beginning of the trajectory. If _frt_ is one, then the first time frame is at time (dt)b^_\<first exponent\>_. This has significant implications for how time blocks are handled. First exponent is usually zero or one and is the first value of the exponent for the power law progression in time. Deltat is the time unit. For clarity, below is a segment of pseudocode describing the list of simulation times corresponding to this scheme. Also packaged with AMDAT is an example LAMMPS input file yielding a trajectory file corresponding to this time scheme.
 
