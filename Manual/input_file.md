@@ -35,3 +35,52 @@ LAMMPS can read multiple trajectory file types, each requiring a different set o
 | [custom](read_custom.md) | Reads in a LAMMPS custom trajectory file.|
 | [custom_ manual](read_custom_manual.md) | Reads in a LAMMPS custom trajectory file. Provides more customizability regarding which columns are assocated with which coordinate data, and also enables read-in of additional columns as [value_list](value_list.md) objects for analysis.|
 | [xtc](read_xtc.md) | Reads in xtc binary format produced by GROMACS. Developed on a much earlier version of GROMACS and requires updated testing. |
+
+<h3>time scheme</h3>
+
+The _\<time scheme\>_ line is formatted as follows
+
+_\<type\> \<arguments\>_
+
+Formatting for each type is:
+
+typeargs
+
+_linear \<number of timesteps\> \<time unit\>_
+
+Here _\<number of timesteps\>_ is the number of frames in the trajectory and \<time unit\> is the time between each frame.
+
+_Exponential \<# of exponential blocks\> \<timesteps per block\> \<exp base\> \<frt\> \<first exp\> \<time unit\>_
+
+In an exponential timescheme, frame times are given by the following formula:
+
+where m is the block number (m = 0,1,2,3,…,M) and k is the frame (k=0,1,2,3… if _frt_ = 0 and k = 1,2,3,… if _frt_ = 1), N is the number of timesteps per block. If _frt_ is zero, then an extra initial time frame at time zero is used at the beginning of the trajectory. If _frt_ is one, then the first time frame is at time (dt)b^_\<first exponent\>_. This has significant implications for how time blocks are handled. First exponent is usually zero or one and is the first value of the exponent for the power law progression in time. Deltat is the time unit. For clarity, below is a segment of pseudocode describing the list of simulation times corresponding to this scheme. Also packaged with AMDAT is an example LAMMPS input file yielding a trajectory file corresponding to this time scheme.
+
+    block_starttime=0;
+    for(blockii=0;blockii<#_of_exponentials;blockii++)
+    {
+      for(expii=1;expii<=timesteps_per_block;expii++)
+      {
+        timeii++;
+        if(pow(exp_base,expii-1+first_exponent) <= expii)
+        {
+          time[timeii] = block_starttime+expii*time_unit;
+        }
+        else
+        {
+          time[timeii] = block_starttime+floor(pow(exp_base,expii-1+first_exponent))*time_unit;
+        }
+      }
+      block_starttime = timelist[timeii];
+    }
+  
+_Snapshot_ (no args)
+
+| type        | args                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           |
+|-------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| linear      | <number of timesteps> <time unit>                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              |
+| Here <number of timesteps> is the number of frames in the trajectory and <time unit> is the time between each frame. ||
+| Exponential | <# of exponential blocks> <timesteps per block> <exp base> <frt> <first exp> <time unit>                |
+|             | In an exponential timescheme, frame times are given by the following formula:  where m is the block number (m = 0,1,2,3,…,M) and k is the frame (k=0,1,2,3… if frt = 0 and k = 1,2,3,… if frt = 1), N is the number of timesteps per block. If frt is zero, then an extra initial time frame at time zero is used at the beginning of the trajectory. If frt is one, then the first time frame is at time (dt)b^<first exponent>. This has significant implications for how time blocks are handled. First exponent is usually zero or one and is the first value of the exponent for the power law progression in time. Deltat is the time unit. For clarity, below is a segment of pseudocode describing the list of simulation times corresponding to this scheme. Also packaged with AMDAT is an example LAMMPS input file yielding a trajectory file corresponding to this time scheme.  block_starttime=0; for(blockii=0;blockii<#_of_exponentials;blockii++) {   for(expii=1;expii<=timesteps_per_block;expii++)   {     timeii++;     if(pow(exp_base,expii-1+first_exponent) <= expii)     {       time[timeii] = block_starttime+expii*time_unit;     }     else     {       time[timeii] = block_starttime+floor(pow(exp_base,expii-1+first_exponent))*time_unit;     }   }   block_starttime = timelist[timeii]; } |
+| Snapshot | no args |
+|          | Snapshot is used for a single frame trajectory.|
