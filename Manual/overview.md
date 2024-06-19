@@ -66,6 +66,7 @@ This is the standard linux command to redirect screen output to \<LOGFILE\>. Thi
 Look in the following links for information on how to:
 * Write an [input file](input_file.md)
 * Create and use [trajectory_lists](trajectory_lists.md) to select and analyze particle trajectories
+* Create and use [trajectory_bin_lists](trajectory_bin_list.md) to efficiently perform spatially-resolved analysis of trajectories.
 * Create and use [multibodies](multibodies.md) to create and analyze entities comprised of multiple particles
 * Create and use [neighbor_lists](neighbor_list.md) to analyze particle adjacencies
 * Create and use [value_lists](value_list.md) to analyze additional per-particle quantities
