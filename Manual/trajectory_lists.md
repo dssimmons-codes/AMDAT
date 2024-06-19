@@ -17,6 +17,8 @@ There are many methods of creating _trajectory\_list_ objects. The simplest way 
 | [invert\_list](invert_list.md)    | Creates a new trajectory list by inverting an existing trajectory list and then intersecting it with a second list. |
 | [thresholded\_list](thresholded_list.md)    | Creates a  list of trajectories by applying a value threshold to a specified value\_list. |
 
+In addition to the above, all commands that create multibodies also creates an associated trajectory_list comprised of either the centroids or centers of mass of the multibodies, as specified by the user. See the [multibodies](multibodies.md) page for more information.
+
 <h2>Analyzing trajectory_lists</h2>
 
 Most trajectory analysis methods consist of two lines, where the first line (the "type" line) defines the type of analysis to be performed and the output file, and the second line (the "target" line) specifies the atoms or molecules on which the analysis is to be performed. The target line generally has the syntax
