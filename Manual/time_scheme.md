@@ -1,6 +1,6 @@
 <h1>Time Schemes</h1>
 
-AMDAT is currently capable of handling two schema for the time-spacing with which snapshots are output from an MD simulation to the system trajectory: _linear_ and _blocked exponential_. The choice between these two schema has major implications for how dynamical quantities are analyzed. In particular, AMDAT assumes _stationarity_ for most dynamical calculations, such that dynamics are averaged over many start times. The handling of which times are employed as start times is quite different in the cases of the two schema. Formally, if we have some correlation function $C(\Delta t)$, this function is typically averaged over $S$ start times $s_j$, as
+AMDAT is currently capable of handling three schema for the time-spacing with which snapshots are output from an MD simulation to the system trajectory: _snapshot_, _linear_ and _blocked exponential_. The choice between these two schema has major implications for how dynamical quantities are analyzed. In particular, AMDAT assumes _stationarity_ for most dynamical calculations, such that dynamics are averaged over many start times. The handling of which times are employed as start times is quite different in the cases of the two schema. Formally, if we have some correlation function $C(\Delta t)$, this function is typically averaged over $S$ start times $s_j$, as
 
 $$C(\Delta t)=\sum_{j=1}^{S}(\langle A(s_j)B(s_j+\Delta t) \rangle$$
 
@@ -11,6 +11,12 @@ In AMDAT, the time scheme is specified in the input file header section via the 
 _\<type\> \<arguments\>_
 
 Here _\<type\>_ is _linear_ or _exponential_. The sections for each of these time schemes below describe the required arguments. 
+
+<h2>Snapshot</h2>
+
+_snapshot_ reads in a single initial frame of a trajectory. The syntax is as follows.
+
+_Snapshot_ (no args)
 
 <h2>Linear time spacing</h2>
 
@@ -42,7 +48,9 @@ $t(0 < k \leq K)=\Delta \tau k$ when $\left\lfloor{(b^{k-1+a_0})}\right\rfloor <
 
 $t(0 < k \leq K)=\Delta \tau \left\lfloor{(b^{k-1+a_0})}\right\rfloor$ when $\left\lfloor{(b^{k-1+a_0})}\right\rfloor > k$
 
-where $k=0,1,2,...K$ and where $K$ is called the "block size". At the end of this block, the time spacing repeats the exponential algorithm above, such that frames in the next block are written out at times as follows
+where $k=0,1,2,...K$ and where $K$ is called the "block size". $a_0$ is the first index of the exponent. It is most commonly set to 0 but may be set to 1.
+
+At the end of this block, the time spacing repeats the exponential algorithm above, such that frames in the next block are written out at times as follows
 
 $t(K < k \leq 2K))=\Delta \tau \left\lfloor{(b^{K-1+a_0})}\right\rfloor + \Delta \tau k$ when $\left\lfloor{(b^{k-K-1+a_0})}\right\rfloor < k - K$
 
@@ -62,7 +70,9 @@ _exponential_ $< I >$ $< K >$ $< b >$ \<frt\> $< a_0 >$ $< \Delta t >$
 
 _exponential \<# of exponential blocks\> \<timesteps per block\> \<exp base\> \<frt\> \<first exp\> \<time unit\>_
 
-If _frt_ is zero, then an extra initial time frame at time zero is used at the beginning of the trajectory. If _frt_ is one, then the first time frame is at time (dt)b^_\<first exponent\>_. This has significant implications for how time blocks are handled. First exponent is usually zero or one and is the first value of the exponent for the power law progression in time. For clarity, below is a segment of pseudocode describing the list of simulation times corresponding to this scheme. Also packaged with AMDAT is an example LAMMPS input file yielding a trajectory file corresponding to this time scheme.
+_frt_ should in most cases be set to 0. The value of this quantity does not impact file read-in but does impact which pairs of frames are used for a given time-spacing, as discussed below. When _frt_ = 0, AMDAT essentially treats the last frame of each block as being the same as the first frame of the next block, which is almost always preferrable in maximizing data use. Using _frt_ = 1 instead treats the first frame of a given block as being one frame after the last frame of the prior block, which both reduces the longest time gap accessible by one increment and slightly decreases data efficiency. 
+
+For clarity, below is a segment of pseudocode describing the list of simulation times corresponding to this scheme. Also packaged with AMDAT is an example LAMMPS input file yielding a trajectory file corresponding to this time scheme.
 
     block_starttime=0;
     for(blockii=0;blockii<#_of_exponentials;blockii++)
@@ -81,16 +91,3 @@ If _frt_ is zero, then an extra initial time frame at time zero is used at the b
       }
       block_starttime = timelist[timeii];
     }
-  
-_Snapshot_ (no args)
-
-| type        | args                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           |
-|-------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| linear      | <number of timesteps> <time unit>                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              |
-| Here <number of timesteps> is the number of frames in the trajectory and <time unit> is the time between each frame. ||
-| Exponential | <# of exponential blocks> <timesteps per block> <exp base> <frt> <first exp> <time unit>                |
-|             | In an exponential timescheme, frame times are given by the following formula:  where m is the block number (m = 0,1,2,3,…,M) and k is the frame (k=0,1,2,3… if frt = 0 and k = 1,2,3,… if frt = 1), N is the number of timesteps per block. If frt is zero, then an extra initial time frame at time zero is used at the beginning of the trajectory. If frt is one, then the first time frame is at time (dt)b^<first exponent>. This has significant implications for how time blocks are handled. First exponent is usually zero or one and is the first value of the exponent for the power law progression in time. Deltat is the time unit. For clarity, below is a segment of pseudocode describing the list of simulation times corresponding to this scheme. Also packaged with AMDAT is an example LAMMPS input file yielding a trajectory file corresponding to this time scheme.  block_starttime=0; for(blockii=0;blockii<#_of_exponentials;blockii++) {   for(expii=1;expii<=timesteps_per_block;expii++)   {     timeii++;     if(pow(exp_base,expii-1+first_exponent) <= expii)     {       time[timeii] = block_starttime+expii*time_unit;     }     else     {       time[timeii] = block_starttime+floor(pow(exp_base,expii-1+first_exponent))*time_unit;     }   }   block_starttime = timelist[timeii]; } |
-| Snapshot | no args |
-|          | Snapshot is used for a single frame trajectory.|
-
-<h2>Analysis block</h2>
