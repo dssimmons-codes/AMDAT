@@ -48,9 +48,31 @@ AMDAT can handle multiple types of time schema reflecting different algorithms d
 
 <h2>Analysis block</h2>
 
-The remainder of the file provides a script specifying the analyses to be performed on the trajectory by AMDAT. AMDAT includes a modest set of control structures including loops, if structures and variables, described below. Analysis tools are built around a set of data objects that store various types of data for analysis. The most important is the _trajectory\_list_, which stores a set of particle trajectories for analysis. AMDAT can also defined _trajectory\_bin\_list_ objects, which store particle trajectories within a spatially resolved structure to allow for facile spatially-resolved analysis. In addition, AMDAT allows definition of _multibodies_, which are data objects that define sets of multiple particles allowing multibody analysis. AMDAT also allows definition of _neighbor\_lists_ that track the neighbors of a set of central particles. Finally, it can store _value\_lists_, which are versatile data objects that store a single value per time per particle in the list. This latter category also allows direct read-in from custom trajectory files, allowing ancillary data columns in the trajectory file to be associated with particles and analyzed.
+The remainder of the file provides a script specifying the analyses to be performed on the trajectory by AMDAT. Analysis tools are built around a set of data objects that store various types of data for analysis. The most important is the _trajectory\_list_, which stores a set of particle trajectories for analysis. AMDAT can also defined _trajectory\_bin\_list_ objects, which store particle trajectories within a spatially resolved structure to allow for facile spatially-resolved analysis. In addition, AMDAT allows definition of _multibodies_, which are data objects that define sets of multiple particles allowing multibody analysis. AMDAT also allows definition of _neighbor\_lists_ that track the neighbors of a set of central particles. Finally, it can store _value\_lists_, which are versatile data objects that store a single value per time per particle in the list. This latter category also allows direct read-in from custom trajectory files, allowing ancillary data columns in the trajectory file to be associated with particles and analyzed.
 
-<h3>General commands, logic structures, and variables</h3>
+<h3>General commands, logic structures, mathematics, and variables</h3>
+
+AMDAT includes a modest set of control structures including loops, if structures and variables, summarized below. 
+
+| Command | function |
+|----------|----------|
+| \# | Comment |
+| constant | Defines a constant with some fixed value. |
+| user_input | Pauses script execution and allows the user to manually input commands. |
+| print | Prints to screen. |
+| wait | Pauses execution. |
+| exit | Terminates execution. |
+| skip...endskip | Skips execution of lines between these commands. |
+| limit | Sets maximum number of frame pairings to use per time gap. |
+| processors | Does nothing - placeholder command for when multithreading is implemented. |
+| for...end | Loops over lines between for and end. |
+| break | Breaks out of a loop. |
+| if...else | Execute a block of lines conditionally. |
+| evaluate | Evaluates a mathematical expression and saves the result to a constant. |
+| round | Rounds a constant to the nearest integer. |
+| floor | Rounds a constant down to the closest lower integer. |
+| ceil | Rounds a constant up to the next higher integer. |
+
 
 ##### comment
 Any line in the analysis block beginning with the # symbol is ignored.
