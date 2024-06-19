@@ -34,14 +34,21 @@ In blocked exponential time spacing, frames are written out in blocks, with time
 
 frame indices written to the trajectory are broadly speaking governed by an exponential $b^k$, where $b$ is an exponential base and $k$ is an integer iterator. However, this equation does not generally yield intergers, and in some cases leads to spacings between time steps that are less than one timestep apart. This is resolved by, first, taking the floor of $b^k$ and, second, defaulting to linear spacing for k such that $b^k < k$.
 
+In a single-exponential timescheme, the $k^{th}$ frame is written out at a time $t(k)$ given by
+
+$t(k)=\Delta \tau k$ when $\left\lfloor{(b^k)}\right\rfloor < k$
+
+$t(k)=\Delta \tau \left\lfloor{(b^k)}\right\rfloor$ when $\left\lfloor{(b^k)}\right\rfloor > k$
+
+where $k=k_0,k_0+1,...K$
+
 
 The time scheme line for blocked exponential time schemes is formatted as follows.
 
 _Exponential \<# of exponential blocks\> \<timesteps per block\> \<exp base\> \<frt\> \<first exp\> \<time unit\>_
 
-In an exponential timescheme, frame times are given by the following formula:
 
-$$t=
+
 
 where m is the block number (m = 0,1,2,3,…,M) and k is the frame (k=0,1,2,3… if _frt_ = 0 and k = 1,2,3,… if _frt_ = 1), N is the number of timesteps per block. If _frt_ is zero, then an extra initial time frame at time zero is used at the beginning of the trajectory. If _frt_ is one, then the first time frame is at time (dt)b^_\<first exponent\>_. This has significant implications for how time blocks are handled. First exponent is usually zero or one and is the first value of the exponent for the power law progression in time. Deltat is the time unit. For clarity, below is a segment of pseudocode describing the list of simulation times corresponding to this scheme. Also packaged with AMDAT is an example LAMMPS input file yielding a trajectory file corresponding to this time scheme.
 
