@@ -17,12 +17,15 @@
 #include "multibody_analysis.h"
 #include "tokenize.h"
 #include "vector_map.h"
-#include "value_list.h"
+
 
 namespace std {
 
 class Multibody_Set;
-  
+
+template <class valType>
+class Value_List;
+
 class System
 {
   protected:
