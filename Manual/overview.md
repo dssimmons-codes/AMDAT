@@ -68,7 +68,7 @@ Look in the following links for information on how to:
 * Create and use [trajectory_lists](trajectory_lists.md) to select and analyze particle trajectories
 * Create and use [trajectory_bin_lists](trajectory_bin_list.md) to efficiently perform spatially-resolved analysis of trajectories.
 * Create and use [multibodies](multibodies.md) to create and analyze entities comprised of multiple particles
-* Create and use [neighbor_lists](neighbor_list.md) to analyze particle adjacencies
+* Create and use [neighbor_lists](neighborlist.md) to analyze particle adjacencies
 * Create and use [value_lists](value_list.md) to analyze additional per-particle quantities
 
 Developer documentation is currently incomplete, but a stub can be found [here](developer_documentation.md).
