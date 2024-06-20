@@ -13,9 +13,11 @@
 
 The target for these analysis tools is specified in a second line that follows the line providing the analysis command line. This target line involves specifying a defined trajectory\_bin\_list and a [trajectory\_list](trajectory_list.md). Analysis will occur on a bin-by-bin basis as determined by the trajectory\_bin\_list specified. Only those particles included in the specified trajectory\_list at each time will be employed in the analysis. The syntax of the target line is as follows.
 
-_bin\_list \<name of trajectory\_bin\_list\> \<name of trajectory_list\>_
+_bin\_list \<name of trajectory\_bin\_list\> \<name of trajectory_list\> <persistence check? 0 or 1 (optional)>_
 
-The analysis will in general output a separate tab-demarcated file for each bin, which may produce a large number of files.  
+Put another way, this takes the intersection of the trajectory_list and (separatedly_) each bin of the trajectory_bin_list, and performs the calculation on each bin individually. The analysis will in general output a separate tab-demarcated file for each bin, which may produce a large number of files. An ending will be appended to the name of each output file with the bin indicies (e.g. <output file>.2.1.2.bindata)
+
+The optional argument _\<persistence check\>_ specifies whether or not, for dynamic analyses, the algorithm retains only particles that are in the bin at start and end times of a given time gap. The default is zero, meaning this check is not performed.
 
 | Command | Effect | Output |
 |----------|----------|----------|
