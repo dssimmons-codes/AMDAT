@@ -10,8 +10,8 @@ Presently there are two commands for neighborlist creation, which differ in thei
 
 | Command | Effect |
 |----------|----------|
-| create_distance_neighborlist | Constructs a neighborlist object based on a distance cutoff criterion. | 
-| create_voronoi_neighborlist | Constructs a neighborlist object based on the voronoi tesselation. |
+| [create_distance_neighborlist](create_distance_neighborlist.md) | Constructs a neighborlist object based on a distance cutoff criterion. | 
+| [create_voronoi_neighborlist](create_voronoi_neighborlist.md) | Constructs a neighborlist object based on the voronoi tesselation. |
 
 <h2>Analyzing neighborlists</h2>
 
@@ -21,6 +21,6 @@ In general, the target neighborlist for analysis is provided as an argument with
 
 | Command | Effect | Output |
 |----------|----------|----------|
-| neighbor_decorrelation_function | compute an autocorrelation function for the decay in number of conserved neighbors | Tab-demarcated data file |
-| persistent\_neighbors | Constructs multibodies comprised of particles that remain neighbors after a specified time gap | Multibody_list|
-| value\_statistics | Computes statistics on the distribution of neighbors per particle. | Tab-demarcated data file |
+| [neighbor_decorrelation_function](neighbor_decorrelation_function.md) | compute an autocorrelation function for the decay in number of conserved neighbors | Tab-demarcated data file |
+| [persistent\_neighbors](persistent_neighbors.md) | Constructs multibodies comprised of particles that remain neighbors after a specified time gap | Multibody_list|
+| [value\_statistics](value_statistics.md) | Computes statistics on the distribution of neighbors per particle. | Tab-demarcated data file |
