@@ -17,12 +17,15 @@
 #include "multibody_analysis.h"
 #include "tokenize.h"
 #include "vector_map.h"
-#include "value_list.h"
+
 
 namespace std {
 
 class Multibody_Set;
-  
+
+template <class valType>
+class Value_List;
+
 class System
 {
   protected:
@@ -133,7 +136,7 @@ class System
     Value_List<float>* find_value_list(string,bool allow_nofind=0)const;
     void add_value_list(Value_List<float>*, string);
     void delete_value_list(string);
-    
+
     
     /*------Methods to handle multibodies and multibody_sets--------*/
     Multibody_Set* create_multibody_set(string setname, int n_args, string * args);

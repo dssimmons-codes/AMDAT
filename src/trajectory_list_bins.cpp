@@ -16,6 +16,7 @@ Written by Mark Mackura*/
 #include <iostream>
 #include <float.h>
 #include <cmath>
+#include <algorithm>
 
 using namespace std;
 
@@ -1094,174 +1095,215 @@ void Trajectory_List_Bins::assign_bins()
 
 void Trajectory_List_Bins::assign_bins_distance_clusters(Trajectory_List * binned_list,Trajectory_List * cluster_list,float bin_thickness)
 {
-  /**Rectangularly bins all trajs at all times within given dimensions (each bin has it's own Boolean_List)
+  /**bin based on distance to a second trajectory list (each bin has it's own Boolean_List)
      * @author Mark Mackura and David Simmons
      * @date 3/1/2013
      */
   int xii,yii,zii;
-  int **** tempcount;
-  int *** temp_bins;
+  xii=0;
+  yii=0;
 
-  temp_bins = new int ** [n_trajs];
-  for(int trajii=0; trajii<n_trajs; trajii++)
+  Coordinate dist;
+  float length;
+  float temp_length;
+  
+  for(int xii=0; xii<n_xbins; xii++)
   {
-    temp_bins[trajii]=new int * [n_times];
-    for(int timeii=0; timeii<n_times; timeii++)
+    for(int yii=0; yii<n_ybins; yii++)
     {
-      temp_bins[trajii][timeii]=new int [3];
+      for(int zii=0; zii<n_zbins; zii++)
+      {
+        for(int timeii=0; timeii<n_times; timeii++)
+        {
+          trajcount[xii][yii][zii][timeii]=0;
+        }
+      }
     }
   }
-  for(int xii=0; xii<n_xbins; xii++)
-   {
-     for(int yii=0; yii<n_ybins; yii++)
-     {
- 	for(int zii=0; zii<n_zbins; zii++)
-	{
-	  for(int timeii=0; timeii<n_times; timeii++)
-	  {
-	    trajcount[xii][yii][zii][timeii]=0;
-	  }
-	}
-     }
-   }
 
-
-
-  for(int trajii=0; trajii<n_trajs; trajii++)
+  vectorstoragething.resize(n_xbins,vector<vector<vector<vector<int>>>>(n_ybins,vector<vector<vector<int>>>(n_zbins,vector<vector<int>>(n_times,vector<int>(0)))));
+  for(int timeii=0; timeii<n_times; timeii++)
   {
-    for(int timeii=0; timeii<n_times; timeii++)
+    for(int trajii=0; trajii<binned_list->show_n_trajectories(timeii); trajii++)
     {
-//cout << binned_list->is_included(timeii,trajii)<<"\t";cout.flush();
-          Coordinate box_size(system->boundaries(timeii)[1](0)-system->boundaries(timeii)[0](0),system->boundaries(timeii)[1](1)-system->boundaries(timeii)[0](1),system->boundaries(timeii)[1](2)-system->boundaries(timeii)[0](2));
-          if (binned_list->is_included(timeii,trajii))
-          {
-//              cout<<"traj "<< trajii <<" at time "<< timeii<<" is included in binned list"<<endl;cout.flush();
-//              cout << cluster_list->show_n_trajectories(timeii)<< endl;cout.flush();
+      length = system->size(timeii).max();
+      for(int traj2ii=0; traj2ii<cluster_list->show_n_trajectories(timeii); traj2ii++)
+      {
+//        temp_length=((binned_list(timeii,trajii)->show_coordinate(timeii)-cluster_list(timeii,traj2ii)->show_coordinate(timeii)).vector_unwrapped(system->size())).length();
+//  (*traj_list_bins)(xii,yii,zii)      
+        temp_length=(((*binned_list)(timeii,trajii)->show_coordinate(timeii)-(*cluster_list)(timeii,traj2ii)->show_coordinate(timeii)).vector_unwrapped(system->size())).length();
 
-           Coordinate dist;
-           float length=100000;
-            for(int traj2ii=0; traj2ii<n_trajs; traj2ii++)
-            {//cout << cluster_list->is_included(timeii,trajii)<<"\t";cout.flush();
-                if (cluster_list->is_included(timeii,traj2ii))
-                {
-                    //cout <<"traj "<< traj2ii<<" is included in clustered list"<<endl;cout.flush();
-                    float temp_length;
-                    dist = system->show_trajectory(trajii)->show_coordinate(timeii) - system->show_trajectory(traj2ii)->show_coordinate(timeii);
-                    dist -= box_size * ((dist/(box_size*.5)).integer());
-
-                    //cout <<dist.show_x()<<"\t"<<dist.show_y()<<"\t"<<dist.show_z()<<endl; cout.flush();
-                    temp_length = dist.length();
-
-                    if (temp_length <length)
-                    {
-                        length=temp_length;
-                    }
-                }
-            }
-
-
-
-
-            xii = 0;
-            yii =0;
-            zii = int(length/bin_thickness);
-
-                    temp_bins[trajii][timeii][0]=xii;
-                    temp_bins[trajii][timeii][1]=yii;
-                    temp_bins[trajii][timeii][2]=zii;
-                      if (xii<=n_xbins-1 && yii<=n_ybins-1 && zii<=n_zbins-1)
-                {
-                    //            cout <<xii<<"\t"; cout.flush();
-        //            cout <<yii<<"\t"; cout.flush();
-        //            cout <<zii<<"\t"; cout.flush();
-        //            cout << timeii<<"\t"; cout.flush();
-        //            cout <<trajcount[xii][yii][zii][timeii]<<endl; cout.flush();
-
-
-                    trajcount[xii][yii][zii][timeii]++;
-                }
-            }
+        length=min(length,temp_length);
+      }
+      zii = int(length/bin_thickness);
+      if (zii<n_zbins)
+      {
+        trajcount[xii][yii][zii][timeii]++;
+        vectorstoragething[0][0][zii][timeii].push_back((*binned_list)(timeii,trajii)->show_trajectory_ID());
+      }
     }
-}
-
-   tempcount = new int***[n_xbins];
-   for(int xii=0; xii<n_xbins; xii++)
-   {
-     tempcount[xii] = new int**[n_ybins];
-     for(int yii=0; yii<n_ybins; yii++)
-     {
-	tempcount[xii][yii] = new int*[n_zbins];
- 	for(int zii=0; zii<n_zbins; zii++)
- 	{
-	    tempcount[xii][yii][zii] = new int[n_times];
- 	}
-     }
-   }
+  }
 
   for(int xii=0; xii<n_xbins; xii++)
-   {
-     for(int yii=0; yii<n_ybins; yii++)
-     {
- 	for(int zii=0; zii<n_zbins; zii++)
- 	{
-	  for(int timeii=0; timeii<n_times; timeii++)
-	  {
-	    include[xii][yii][zii][timeii]=new int [trajcount[xii][yii][zii][timeii]];
-	    tempcount[xii][yii][zii][timeii]=0;
-	  }
-	}
-     }
-   }
-
-
-  for(int trajii=0; trajii<n_trajs; trajii++)
   {
-
-    for(int timeii=0; timeii<n_times; timeii++)
+    for(int yii=0; yii<n_ybins; yii++)
     {
-
-          if (binned_list->is_included(timeii,trajii))
+      for(int zii=0; zii<n_zbins; zii++)
+      {
+        for(int timeii=0; timeii<n_times; timeii++)
+        {
+          /*allocate memory for include IDs at each x,y,z,t; then loop over included IDs in vectorstoragething[xii,yii,zii,timeii] and then copyt them to include[xii][yii][zii][timeii][ii]*/
+	        include[xii][yii][zii][timeii] = new int [vectorstoragething[xii][yii][zii][timeii].size()];
+//          include[xii][yii][zii][timeii][tempcount[xii][yii][zii][timeii]]=trajii;
+          for (int trajii=0; trajii < vectorstoragething[xii][yii][zii][timeii].size(); trajii++)
           {
-              xii=temp_bins[trajii][timeii][0];
-              yii=temp_bins[trajii][timeii][1];
-              zii=temp_bins[trajii][timeii][2];
-                if (xii<=n_xbins-1 && yii<=n_ybins-1 && zii<=n_zbins-1)
-                {
-                     if(tempcount[xii][yii][zii][timeii]==trajcount[xii][yii][zii][timeii]){cout<<"\n"<<xii<<"\t"<<yii<<"\t"<<zii<<"\t"<<timeii<<"\t"<<trajii<<"\t"<<n_times<<"\t";cout.flush();}
-                      if(tempcount[xii][yii][zii][timeii]==trajcount[xii][yii][zii][timeii]){cout<<tempcount[xii][yii][zii][timeii]<<"\t"<<include[xii][yii][zii][timeii][tempcount[xii][yii][zii][timeii]]<<"\t"<<trajcount[xii][yii][zii][timeii]<<"\t";cout.flush();}
-
-                      include[xii][yii][zii][timeii][tempcount[xii][yii][zii][timeii]]=trajii;
-                      tempcount[xii][yii][zii][timeii]++;
-                }
-
+            include[xii][yii][zii][timeii][trajii] = vectorstoragething[xii][yii][zii][timeii][trajii];
           }
+        }
+      }
     }
   }
 
-  for(int xii=0; xii<n_xbins; xii++)
-   {
-     for(int yii=0; yii<n_ybins; yii++)
-     {
- 	for(int zii=0; zii<n_zbins; zii++)
- 	{
-	  delete [] tempcount[xii][yii][zii];
-	}
-	delete [] tempcount[xii][yii];
-     }
-     delete [] tempcount[xii];
-   }
-   delete [] tempcount;
-
-
-  for(int trajii=0; trajii<n_trajs; trajii++)
-  {
-    for(int timeii=0; timeii<n_times; timeii++)
-    {
-      delete [] temp_bins[trajii][timeii];
-    }
-    delete [] temp_bins[trajii];
-  }
-  delete [] temp_bins;
+//   /*loops after here are old - delete*/
+//   
+//   
+//  for(int trajii=0; trajii<n_trajs; trajii++)
+//  {
+//    for(int timeii=0; timeii<n_times; timeii++)
+//    {
+////cout << binned_list->is_included(timeii,trajii)<<"\t";cout.flush();
+//          Coordinate box_size(system->boundaries(timeii)[1](0)-system->boundaries(timeii)[0](0),system->boundaries(timeii)[1](1)-system->boundaries(timeii)[0](1),system->boundaries(timeii)[1](2)-system->boundaries(timeii)[0](2));
+//          if (binned_list->is_included(timeii,trajii))
+//          {
+////              cout<<"traj "<< trajii <<" at time "<< timeii<<" is included in binned list"<<endl;cout.flush();
+////              cout << cluster_list->show_n_trajectories(timeii)<< endl;cout.flush();
+//
+//           Coordinate dist;
+//           float length=100000;
+//            for(int traj2ii=0; traj2ii<n_trajs; traj2ii++)
+//            {//cout << cluster_list->is_included(timeii,trajii)<<"\t";cout.flush();
+//                if (cluster_list->is_included(timeii,traj2ii))
+//                {
+//                    //cout <<"traj "<< traj2ii<<" is included in clustered list"<<endl;cout.flush();
+//                    float temp_length;
+//                    dist = system->show_trajectory(trajii)->show_coordinate(timeii) - system->show_trajectory(traj2ii)->show_coordinate(timeii);
+//                    dist -= box_size * ((dist/(box_size*.5)).integer());
+//
+//                    //cout <<dist.show_x()<<"\t"<<dist.show_y()<<"\t"<<dist.show_z()<<endl; cout.flush();
+//                    temp_length = dist.length();
+//
+//                    if (temp_length <length)
+//                    {
+//                        length=temp_length;
+//                    }
+//                }
+//            }
+//
+//
+//
+//
+//            xii = 0;
+//            yii =0;
+//            zii = int(length/bin_thickness);
+//
+//                    temp_bins[trajii][timeii][0]=xii;
+//                    temp_bins[trajii][timeii][1]=yii;
+//                    temp_bins[trajii][timeii][2]=zii;
+//                      if (xii<=n_xbins-1 && yii<=n_ybins-1 && zii<=n_zbins-1)
+//                {
+//                    //            cout <<xii<<"\t"; cout.flush();
+//        //            cout <<yii<<"\t"; cout.flush();
+//        //            cout <<zii<<"\t"; cout.flush();
+//        //            cout << timeii<<"\t"; cout.flush();
+//        //            cout <<trajcount[xii][yii][zii][timeii]<<endl; cout.flush();
+//
+//
+//                    trajcount[xii][yii][zii][timeii]++;
+//                }
+//            }
+//    }
+//}
+//
+//   tempcount = new int***[n_xbins];
+//   for(int xii=0; xii<n_xbins; xii++)
+//   {
+//     tempcount[xii] = new int**[n_ybins];
+//     for(int yii=0; yii<n_ybins; yii++)
+//     {
+//	tempcount[xii][yii] = new int*[n_zbins];
+// 	for(int zii=0; zii<n_zbins; zii++)
+// 	{
+//	    tempcount[xii][yii][zii] = new int[n_times];
+// 	}
+//     }
+//   }
+//
+//  for(int xii=0; xii<n_xbins; xii++)
+//   {
+//     for(int yii=0; yii<n_ybins; yii++)
+//     {
+// 	for(int zii=0; zii<n_zbins; zii++)
+// 	{
+//	  for(int timeii=0; timeii<n_times; timeii++)
+//	  {
+//	    include[xii][yii][zii][timeii]=new int [trajcount[xii][yii][zii][timeii]];
+//	    tempcount[xii][yii][zii][timeii]=0;
+//	  }
+//	}
+//     }
+//   }
+//
+//
+//  for(int trajii=0; trajii<n_trajs; trajii++)
+//  {
+//
+//    for(int timeii=0; timeii<n_times; timeii++)
+//    {
+//
+//          if (binned_list->is_included(timeii,trajii))
+//          {
+//              xii=temp_bins[trajii][timeii][0];
+//              yii=temp_bins[trajii][timeii][1];
+//              zii=temp_bins[trajii][timeii][2];
+//                if (xii<=n_xbins-1 && yii<=n_ybins-1 && zii<=n_zbins-1)
+//                {
+//                     if(tempcount[xii][yii][zii][timeii]==trajcount[xii][yii][zii][timeii]){cout<<"\n"<<xii<<"\t"<<yii<<"\t"<<zii<<"\t"<<timeii<<"\t"<<trajii<<"\t"<<n_times<<"\t";cout.flush();}
+//
+//                     if(tempcount[xii][yii][zii][timeii]==trajcount[xii][yii][zii][timeii])
+//                     {cout<<tempcount[xii][yii][zii][timeii]<<"\t"<<include[xii][yii][zii][timeii][tempcount[xii][yii][zii][timeii]]<<"\t"<<trajcount[xii][yii][zii][timeii]<<"\t";cout.flush();}
+//
+//                     include[xii][yii][zii][timeii][tempcount[xii][yii][zii][timeii]]=trajii;
+//                     
+//                     tempcount[xii][yii][zii][timeii]++;
+//                }
+//
+//          }
+//    }
+//  }
+//
+//  for(int xii=0; xii<n_xbins; xii++)
+//   {
+//     for(int yii=0; yii<n_ybins; yii++)
+//     {
+// 	for(int zii=0; zii<n_zbins; zii++)
+// 	{
+//	  delete [] tempcount[xii][yii][zii];
+//	}
+//	delete [] tempcount[xii][yii];
+//     }
+//     delete [] tempcount[xii];
+//   }
+//   delete [] tempcount;
+//  
+//  for(int trajii=0; trajii<n_trajs; trajii++)
+//  {
+//    for(int timeii=0; timeii<n_times; timeii++)
+//    {
+//      delete [] temp_bins[trajii][timeii];
+//    }
+//    delete [] temp_bins[trajii];
+//  }
+//  delete [] temp_bins;
 
 }
 
