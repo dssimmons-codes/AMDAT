@@ -15,7 +15,7 @@ Presently there are two commands for neighborlist creation, which differ in thei
 
 <h2>Analyzing neighborlists</h2>
 
-In general, the target neighborlist for analysis is provided as an argument within the analysis command line as specified in each analysis command page.
+In general, the target neighborlist for analysis is provided as an argument within the analysis command line as specified in each analysis command page. In some cases a trajectory list for downselection of particles to be included may be input as an additional target line or in the command line. See the page for each analysis tool for details.
 
 **Commands that analyze neighborlists**
 
