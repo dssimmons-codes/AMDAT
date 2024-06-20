@@ -142,11 +142,11 @@ class Control
     void skip();
     void traj_list_from_bin_list();     //create a trajectory list from one bin in a bin list
 
-    /*Methods to handle value lists*/
-    Vector_Map<string,Value_List<float>*> value_lists;
-    Value_List<float>* find_value_list(string,bool allow_nofind=0)const;
-    void add_value_list(Value_List<float>*, string);
-    void delete_value_list(string);
+    /*Methods to handle value lists - ALL NOW MOVED TO SYSTEM, SO DISABLED HERE.*/
+    //Vector_Map<string,Value_List<float>*> value_lists;
+    //Value_List<float>* find_value_list(string,bool allow_nofind=0)const;
+    //void add_value_list(Value_List<float>*, string);
+    //void delete_value_list(string);
     
     
     /*Methods to handle neighbor lists*/
