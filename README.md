@@ -3,4 +3,5 @@ Development Version Documentation
 
 For an overview of AMDAT, how to make it, and how to use it, go to the [AMDAT overview](Manual/overview.md).
 
+For an index of commands (still in progress), go the the [index](Manual/index.md).
 
