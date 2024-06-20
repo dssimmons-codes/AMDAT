@@ -1,6 +1,6 @@
 <h1>neighborlist</h1>
 
-neighborlist objects store a list of neighbors at each time of each particle in a list of particles.
+neighborlist objects store a list of neighbors at each time of each particle in a list of particles. Every neighborlist is also a [value_list](value_list.md), with the stored values corresponding to the number of neighbors of each particle at each time. neighborlists are thus also subject to all analysis tools that can be applied to value_lists.
 
 <h2>Creating neighborlists</h2>
 
