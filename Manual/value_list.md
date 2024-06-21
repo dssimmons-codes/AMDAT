@@ -9,6 +9,7 @@ To be compiled. For now, see the page on [trajectory_lists](trajectory_lists.md)
 | Command | Effect |
 |----------|----------|
 |[delete\_valuelist](delete_valuelist.md)| Deletes a value\_list from memory.|
+|[displacement\_list](displacement_list.md)| Creates a value list containing particle displacements at a specified time gap.|
 
 <h2>Analysis tools that operate on value_list objects</h2>
 
