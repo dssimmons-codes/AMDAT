@@ -72,4 +72,5 @@ A large number of analysis tools target trajectory\_list objects.
 | find_fast | Deprecated; does not work properly. In principle find particles that are 'fast' based on the above comparison between the self Van Hove and Gaussian approximation.| - |
 | gyration_radius | Deprecated; to be removed. | - |
 | isf | Deprecated; to be removed. | - |
+| isfd | Deprecated and likely incorrect; to be removed. | - |
 
