@@ -44,6 +44,7 @@ A large number of analysis tools target trajectory\_list objects.
 | [create_distance_neighborlist](create_distance_neighborlist.md) | Constructs a neighborlist object based on a distance cutoff criterion | neighbor_list |
 | [create_voronoi_neighborlist](create_voronoi_neighborlist.md) | Constructs a neighborlist object based on the voronoi tesselation | neighbor_list |
 | [displacement_list](displacement_list.md) | Computes the displacement of each particle at some time separation and stores the results in a value_list | Tab demarkated data file and value_list |
+| [displacement_dist](displacement_dist.md) | Computes the displacement of each particle at some time separation and reports a distribution | Tab demarcated data file. |
 | [displacement_map](displacement_map.md) | Generates maps of particle displacement magnitude and writes to pdb files with value beta specifying displacement.| PDB file |
 | [isf\_list](isf_list.md) | Calculate full intermediate scattering function | Tab demarkated data file |
 | [isfs](isfs.md) | Calculates the self-part of the intermediate scattering function. | Tab demarkated data file |
@@ -53,11 +54,12 @@ A large number of analysis tools target trajectory\_list objects.
 | [msd\_2d](msd_2d.md) | Calculates the two-dimensional mean-square displacement. | Tab demarkated data file |
 | [n\_fold](n_fold.md) | Calculates mean and time dependence of n-fold order parameter and writes maps to files. | Tab demarkated data file and a PDB file |
 | [ngp](ngp.md) | Calculates non-Gaussian parameter of the mean squared displacement. | Tab demarkated data file |
-| [radial_count](radial_count.md) | Computes the mean number of particles in shells around a set of central particles | Tab demarcated data file |
+| [rnf](radial_count.md) | Computes the mean number of particles in shells around a set of central particles | Tab demarcated data file |
 | [rdf](rdf.md) | Computes the radial distribution function. | Tab demarkated data file |
 | [rgtensor\_stats](rgtensor_stats.md) | Calculates statistics describing the radius of gyration tensor characterizing particle trajectories as a function of time. | Tab demarkated data file |
 | [stiffness\_dist](stiffness_dist.md) | Calculates distribution of inverse Debye-Waller factor values 1/u2. | Tab demarkated data file |
 | [strings](strings.md) | Analyzes 'stringlike' collective motion. Planned for deprecation in favor of string_multibodies. | Tab demarkated data file. |
+| [streamlined_strings] | Functionality unknown. Requires additional investigation. | Tab demarkated data file. |
 | string_multibodies | Builds multibodies comprised of 'stringlike' collective displacements | multibody_list |
 | [structure\_factor](structure_factor.md) | Computes the structure factor. | Tab demarkated data file |
 | [trajectory\_list\_decay](trajectory_list_decay.md) | Computes an autocorrelation function for inclusion in the trajectory\_list. | Tab demarkated data file |
@@ -70,7 +72,17 @@ A large number of analysis tools target trajectory\_list objects.
 | [write\_list\_trajectory](write_list_trajectory.md) | Writes to file an xyz trajectory from a trajectory list.| Trajectory file in wrapped xyz format |
 | [write\_list\_trajectory\_full](write_list_trajectory_full.md) | Writes to file an xyz trajectory from a trajectory list.| Trajectory file in wrapped xyz format |
 | find_fast | Deprecated; does not work properly. In principle find particles that are 'fast' based on the above comparison between the self Van Hove and Gaussian approximation.| - |
+| find_fast_fixedthreshold | Finds fast particles based on displacements higher than some value. Likely to become deprecated in favor of valuelist approach. | new trajectory_list |
+| find_between | Finds  particles with displacements in some value range. Likely to become deprecated in favor of valuelist approach. | new trajectory_list |
 | gyration_radius | Deprecated; to be removed. | - |
 | isf | Deprecated; to be removed. | - |
+| radial_debye_waller | Computes dwf as a function of distance from (0,0,0). Planned for deprecation.|
+
+
+Finally, there are a small number of analysis tools that do not directly run on trajectory\_lists, but output some transformation of a prior analysis performed on a trajectory list.
+
+| Command | Effect | Output |
+|----------|----------|----------|
 | isfd | Deprecated and likely incorrect; to be removed. | - |
+| structure\_factor\_from\_rdf | Performs a fourier transform on data from a prior rdf calculation to arrive at a structure factor. | Tab demarcated data file |
 
