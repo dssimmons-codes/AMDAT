@@ -41,9 +41,9 @@ A large number of analysis tools target trajectory\_list objects.
 | [clustered\_list](clustered_list_decay.md) | Generates a new trajectory list by finding clustered particles in the original list. | New trajectory\_list |
 | [compare_gaussian](compare_gaussian.md) | Finds points where the self Van Hove crosses the Gaussian approximation to the self Van Hove. | Tab demarkated data file |
 | [composition](composition.md) | Calculates the composition and number density. | Tab demarkated data file |
-| create_distance_neighborlist | Constructs a neighborlist object based on a distance cutoff criterion | neighbor_list |
-| create_voronoi_neighborlist | Constructs a neighborlist object based on the voronoi tesselation | neighbor_list |
-| displacement_list | Computes the displacement of each particle at some time separation and stores the results in a value_list | Tab demarkated data file and value_list |
+| [create_distance_neighborlist](create_distance_neighborlist.md) | Constructs a neighborlist object based on a distance cutoff criterion | neighbor_list |
+| [create_voronoi_neighborlist](create_voronoi_neighborlist.md) | Constructs a neighborlist object based on the voronoi tesselation | neighbor_list |
+| [displacement_list](displacement_list.md) | Computes the displacement of each particle at some time separation and stores the results in a value_list | Tab demarkated data file and value_list |
 | [displacement_map](displacement_map.md) | Generates maps of particle displacement magnitude and writes to pdb files with value beta specifying displacement.| PDB file |
 | [isf\_list](isf_list.md) | Calculate full intermediate scattering function | Tab demarkated data file |
 | [isfs](isfs.md) | Calculates the self-part of the intermediate scattering function. | Tab demarkated data file |
