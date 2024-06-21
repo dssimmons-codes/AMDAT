@@ -29,4 +29,5 @@ The target multibody_list for these analysis tools is generally provided as an a
 | [raf](raf.md) | Computes the reorientation autocorrelation function for a list of 2-body multibodies. | Tab-demarcated data file |
 | [orientational\_correlation](orientational_correlation.md) | Calculates the orientational correlation of 2-body multibodies with an externally defined vector. | Tab-demarcated data file |
 | [gyration\_radius](gyration_radius.md) | Computes the mean multibody gyration radius of for the multibodies in a specified multibody_list. | Tab-demarcated data file |
+| [flatten\_multibodies](flatten_multibodies.md) | Generates a trajectory list containing all particles in multibodies in the specified multibody\_list. | new trajectory_list |
 | baf | Deprecated and planned for removal. | - |
