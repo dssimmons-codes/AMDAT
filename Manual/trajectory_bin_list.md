@@ -23,6 +23,7 @@ The optional argument _\<persistence check\>_ specifies whether or not, for dyna
 |----------|----------|----------|
 | [composition](composition.md) | Calculates the composition and number density. | Tab demarcated data file |
 | [isfs](isfs.md) | Calculates the self-part of the intermediate scattering function. | Tab demarcated data file |
+| [mean\_displacement](mean_displacement.md) | Calculates the mean (not mean square) displacement vector of all particles as a function of time. | Tab demarcated data file |
 | [msd](msd.md) | Calculates the mean-square displacement. | Tab demarcated data file |
 | [msd\_2d](msd_2d.md) | Calculates the two-dimensional mean-square displacement. | Tab demarcated data file |
 | [structure\_factor](structure_factor.md) | Computes the structure factor. | Tab demarcated data file |
