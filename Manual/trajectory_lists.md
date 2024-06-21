@@ -50,7 +50,6 @@ A large number of analysis tools target trajectory\_list objects.
 | [mean\_closest\_distance](mean_closest_distance.md) | Calculates the average distance between particles in two distinct trajectory\_lists. | Tab demarkated data file |
 | [mean\_displacement](mean_displacement.md) | Calculates the mean (not mean square) displacement vector of all particles as a function of time. | Tab demarcated data file |
 | [msd](msd.md) | Calculates the mean-square displacement. | Tab demarkated data file |
-| [msd_printlist] | Functionality not known - requires investigation. | Tab demarkated data file |
 | [msd\_2d](msd_2d.md) | Calculates the two-dimensional mean-square displacement. | Tab demarkated data file |
 | [n\_fold](n_fold.md) | Calculates mean and time dependence of n-fold order parameter and writes maps to files. | Tab demarkated data file and a PDB file |
 | [ngp](ngp.md) | Calculates non-Gaussian parameter of the mean squared displacement. | Tab demarkated data file |
