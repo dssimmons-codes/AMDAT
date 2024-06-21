@@ -52,6 +52,7 @@ A large number of analysis tools target trajectory\_list objects.
 | [msd\_2d](msd_2d.md) | Calculates the two-dimensional mean-square displacement. | Tab demarkated data file |
 | [n\_fold](n_fold.md) | Calculates mean and time dependence of n-fold order parameter and writes maps to files. | Tab demarkated data file and a PDB file |
 | [ngp](ngp.md) | Calculates non-Gaussian parameter of the mean squared displacement. | Tab demarkated data file |
+| [radial_count](radial_count.md) | Computes the mean number of particles in shells around a set of central particles | Tab demarcated data file |
 | [rdf](rdf.md) | Computes the radial distribution function. | Tab demarkated data file |
 | [rgtensor\_stats](rgtensor_stats.md) | Calculates statistics describing the radius of gyration tensor characterizing particle trajectories as a function of time. | Tab demarkated data file |
 | [stiffness\_dist](stiffness_dist.md) | Calculates distribution of inverse Debye-Waller factor values 1/u2. | Tab demarkated data file |
