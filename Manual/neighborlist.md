@@ -6,12 +6,13 @@ neighborlist objects store a list of neighbors at each time of each particle in 
 
 Presently there are two commands for neighborlist creation, which differ in their criteria for idenfying neighbors. For most applications, it is suggested that neighborlists be computed using all particles in the system. Use of a subset of particles may lead to strange behavior (exe. in voroni tesselation). This implies that one should typically employ a static trajectory_list. Neighborlist analysis tools (discussed further below) allow for downselection of which particles to be analyzed at a later time.
 
-**Commands that create neighborlists**
+**Commands that create or remove neighborlists**
 
 | Command | Effect |
 |----------|----------|
-| [create_distance_neighborlist](create_distance_neighborlist.md) | Constructs a neighborlist object based on a distance cutoff criterion. | 
-| [create_voronoi_neighborlist](create_voronoi_neighborlist.md) | Constructs a neighborlist object based on the voronoi tesselation. |
+| [create\_distance\_neighborlist](create_distance_neighborlist.md) | Constructs a neighborlist object based on a distance cutoff criterion. | 
+| [create\_voronoi\_neighborlist](create_voronoi_neighborlist.md) | Constructs a neighborlist object based on the voronoi tesselation. |
+| [delete\_neighborlist](delete_neighborlist.md) | Removes a neighborlist from memory. |
 
 <h2>Analyzing neighborlists</h2>
 
