@@ -6,6 +6,7 @@ A multibody is an entity that consists of multiple particles (each with its own 
 
 | Command | Effect |
 |----------|----------|
+| [comover\_multibodies](comover_multibodies.md) | Creates a |
 | [create\_multibodies](create_multibodies.md) | Creates multibodies based upon specified locations within molecules |
 | [string\_multibodies](string_multibodies.md) | Builds multibodies comprised of 'stringlike' collective displacements | 
 
@@ -25,9 +26,9 @@ The target multibody_list for these analysis tools is generally provided as an a
 
 | Command | Effect | Output |
 |----------|----------|----------|
-| [size\_statistics](size_statistics.md) | Reports statistics on the distribution of the number of bodies in multibodies in a given multibody\_list. | Tab-demarcated data file |
-| [raf](raf.md) | Computes the reorientation autocorrelation function for a list of 2-body multibodies. | Tab-demarcated data file |
-| [orientational\_correlation](orientational_correlation.md) | Calculates the orientational correlation of 2-body multibodies with an externally defined vector. | Tab-demarcated data file |
-| [gyration\_radius](gyration_radius.md) | Computes the mean multibody gyration radius of for the multibodies in a specified multibody_list. | Tab-demarcated data file |
 | [flatten\_multibodies](flatten_multibodies.md) | Generates a trajectory list containing all particles in multibodies in the specified multibody\_list. | new trajectory_list |
+| [gyration\_radius](gyration_radius.md) | Computes the mean multibody gyration radius of for the multibodies in a specified multibody_list. | Tab-demarcated data file |
+| [orientational\_correlation](orientational_correlation.md) | Calculates the orientational correlation of 2-body multibodies with an externally defined vector. | Tab-demarcated data file |
+| [raf](raf.md) | Computes the reorientation autocorrelation function for a list of 2-body multibodies. | Tab-demarcated data file |
+| [size\_statistics](size_statistics.md) | Reports statistics on the distribution of the number of bodies in multibodies in a given multibody\_list. | Tab-demarcated data file |
 | baf | Deprecated and planned for removal. | - |
