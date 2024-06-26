@@ -103,7 +103,9 @@ class Control
     void delete_analysis();					//method to delete saved analysis
 
     /*Some general methods*/
-    void system();			//create system object with input file data
+    void system();
+    void pathcheck(string path_to_check);
+    // create system object with input file data
     void argcheck(int);			//check if the number of arguments to a analysis method is correct
     void argcheck(int,int);		//check if the number of arguments to a analysis method is correct with two options for argument count
     bool bool_argcheck(int);    //check if the number of arguments to a analysis method is correct and returns true if it is

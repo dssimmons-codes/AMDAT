@@ -1,6 +1,7 @@
 AMDAT
 build/*.o
 *.o
+.vscode/
 
 # voro temp files
 src/voro++-0.4.6/examples/basic/import

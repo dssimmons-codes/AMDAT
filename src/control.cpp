@@ -73,7 +73,20 @@
 
 using namespace std;
 
-
+#ifndef __has_include
+  static_assert(false, "__has_include not supported");
+#else
+#  if __cplusplus >= 201703L && __has_include(<filesystem>)
+#    include <filesystem>
+     namespace fs = std::filesystem;
+#  elif __has_include(<experimental/filesystem>)
+#    include <experimental/filesystem>
+     namespace fs = std::experimental::filesystem;
+#  elif __has_include(<boost/filesystem.hpp>)
+#    include <boost/filesystem.hpp>
+     namespace fs = boost::filesystem;
+#  endif
+#endif
 
 //TODO: Convert all argcheck() calls to bool_argcheck() for error handling
 //      Convert all errors to use Error class
@@ -1098,6 +1111,20 @@ void Control::get_user_input(bool show_tips)
 
  }
 
+
+/*Gives error if path won't work*/
+ void Control::pathcheck(string path_to_check)
+ {
+  //bool filepathExists = true;
+  fs::path filepath = string(path_to_check);
+  bool filepathExists = fs::is_directory(filepath.parent_path());
+  if(!filepathExists)
+  {
+    stringstream ss;
+    ss << "bad path";
+    Error(ss.str(), -6);
+  }
+}
 
 /*Gives error if number of arguments does not match that expected*/
  void Control::argcheck(int expected)
@@ -2540,9 +2567,10 @@ void Control::structure_factor()
 
   argcheck(4,6);
 
-
-
   filename = args[1];			//name of file to which to save calculated data
+
+  pathcheck(filename);
+
   symmetry = args[2];			//determine if atom sets are the same or different
   plane = args[3];
   //fullblock = bool(atoi(args[5].c_str()));
