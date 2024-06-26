@@ -178,7 +178,9 @@ int Control::read_input_file(char * filename_input)
   {
     cout << inputFileVector[i] << endl;
   }*/
-  cout << "Running with " << omp_get_max_threads() << " threads.\n" << endl;
+  int thread_count = omp_get_max_threads();
+
+  cout << "Running with " << thread_count << " thread" << ((thread_count == 1) ? "" : "s") << ".\n" << endl;
   return numLines;
 }
 
