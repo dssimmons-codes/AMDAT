@@ -1115,15 +1115,22 @@ void Control::get_user_input(bool show_tips)
 /*Gives error if path won't work*/
  void Control::pathcheck(string path_to_check)
  {
-  //bool filepathExists = true;
-  fs::path filepath = string(path_to_check);
-  bool filepathExists = fs::is_directory(filepath.parent_path());
-  if(!filepathExists)
-  {
-    stringstream ss;
-    ss << "bad path";
-    Error(ss.str(), -6);
-  }
+  if (__cplusplus >= 201703L)
+	{
+	  fs::path filepath = string (path_to_check);
+	  bool filepathExists = fs::is_directory (filepath.parent_path ());
+	  if (!filepathExists)
+		{
+      stringstream ss;
+		  ss << "Cannot write to filename.";
+		  Error (ss.str (), -6);
+		}
+	}
+  else
+	{
+	  cout << "\nWarning: no path check. Path out may be invalid.\n";
+	  cout.flush ();
+	}
 }
 
 /*Gives error if number of arguments does not match that expected*/
