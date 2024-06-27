@@ -64,6 +64,7 @@ A large number of analysis tools target trajectory\_list objects.
 | [structure\_factor](structure_factor.md) | Computes the structure factor. | Tab demarkated data file |
 | [trajectory\_list\_decay](trajectory_list_decay.md) | Computes an autocorrelation function for inclusion in the trajectory\_list. | Tab demarkated data file |
 | [u2dist](u2dist.md) | Calculates distribution of square displacements at a specified time. | Tab demarkated data file |
+| [unsteady\_velocity](unsteady_velocity.md) | Calculates mean velocity as a function of time, provided that velocities were read in at file read time. | Tab demarcated data file. |
 | [vac\_fourier](vac_fourier.md) | Calculates fourier transform of velocity autocorrelation function. | Tab demarkated data file |
 | [vac\_function](vac_function.md) | Calculates velocity autocorrelation function by taking two derivatives of the mean-square-displacement. | Tab demarkated data file |
 | [vhd](vhd.md) | Calculates distinct part of the Van Hove function.| Tab demarkated data file |
