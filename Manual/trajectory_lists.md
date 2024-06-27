@@ -77,6 +77,7 @@ A large number of analysis tools target trajectory\_list objects.
 | gyration_radius | Deprecated; to be removed. | - |
 | isf | Deprecated; to be removed. | - |
 | radial_debye_waller | Computes dwf as a function of distance from (0,0,0). Planned for deprecation.|
+| vector_autocorrelation_function | Computes autocorrelation function for a specified set of vectors. Essentially replaced by [raf](raf.md) [multibody](multibodies.md) functionality and planned for deprecation. | Tab-demarcated data file. |
 
 
 Finally, there are a small number of analysis tools that do not directly run on trajectory\_lists, but output some transformation of a prior analysis performed on a trajectory list.
