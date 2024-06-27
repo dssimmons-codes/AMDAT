@@ -73,6 +73,7 @@ A large number of analysis tools target trajectory\_list objects.
 | [vht](vht.md) | Adds together previously computed vhd and vhs. | Tab demarkated data file |
 | [write\_list\_trajectory](write_list_trajectory.md) | Writes to file an xyz trajectory from a trajectory list.| Trajectory file in wrapped xyz format |
 | [write\_list\_trajectory\_full](write_list_trajectory_full.md) | Writes to file an xyz trajectory from a trajectory list.| Trajectory file in wrapped xyz format |
+| [write\_single\_particle](write_single_particle.md) | Writes an xyz file from a single particle, in which its locations at distinct times are written out at a single time. | xyz trajectory file |
 | find_fast | Deprecated; does not work properly. In principle find particles that are 'fast' based on the above comparison between the self Van Hove and Gaussian approximation.| - |
 | find_fast_fixedthreshold | Finds fast particles based on displacements higher than some value. Likely to become deprecated in favor of valuelist approach. | new trajectory_list |
 | find_between | Finds  particles with displacements in some value range. Likely to become deprecated in favor of valuelist approach. | new trajectory_list |
