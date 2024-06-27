@@ -216,3 +216,4 @@ These types of data objects often interact. For example, there are analysis tool
 
 In addition to the analysis methods associated with these data objects, AMDAT contains several [miscellatious analysis tools](misc_tools.md) that do not directly operate on any data object but instead further process the results of a prior analysis.
 
+AMDAT includes a partially implemented capability of storing completed analyses, but the details are lost in the mists of time and must be recovered with some investigation. It appears that use of an "s" flag at some point around the input command will trigger this functionality for some analysis tools, allowing use of the later commands _write\_analysis_ and _delete\_analysis_. This will be clarified in a future manual update.
