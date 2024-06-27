@@ -208,7 +208,7 @@ AMDAT analysis can involve up to 5 types of data objects, as specified in the fo
 |----------|----------|
 | [trajectory\_list](trajectory_lists.md) | Stores, at each time, a list of particles for analysis. |
 | [trajectory\_bin\_list](trajectory_bin_list.md) | Stores, at each time, a list of particles, sorted by spatial location in the box, for analysis. |
-| [multibody_list](multibody_list.md) | Stores a list of multibodies (potentially different at each time), each of which is comprised of multiple particles. |
+| [multibody_list](multibodies.md) | Stores a list of multibodies (potentially different at each time), each of which is comprised of multiple particles. |
 | [neighbor\_list](neighbor_list.md) | For a selected set of particles, stores a list of their neigboring particles. |
 | [value\_list](value_list.md) | Stores a value for each of a list of particles. |
 
