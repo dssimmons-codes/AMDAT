@@ -6,7 +6,7 @@ A multibody is an entity that consists of multiple particles (each with its own 
 
 | Command | Effect |
 |----------|----------|
-| [comover\_multibodies](comover_multibodies.md) | Creates a |
+| [comover\_multibodies](comover_multibodies.md) | Creates multibodies comprised of particles that remain neighbors based on some distance cutoff. |
 | [create\_multibodies](create_multibodies.md) | Creates multibodies based upon specified locations within molecules |
 | [string\_multibodies](string_multibodies.md) | Builds multibodies comprised of 'stringlike' collective displacements | 
 
