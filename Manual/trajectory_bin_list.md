@@ -22,11 +22,12 @@ The optional argument _\<persistence check\>_ specifies whether or not, for dyna
 | Command | Effect | Output |
 |----------|----------|----------|
 | [composition](composition.md) | Calculates the composition and number density. | Tab demarcated data file |
+| [find_edge](find_edge.md) | Finds the leading edge of a set of particles along a vector. | Tab demarcated data file |
 | [isfs](isfs.md) | Calculates the self-part of the intermediate scattering function. | Tab demarcated data file |
 | [mean\_displacement](mean_displacement.md) | Calculates the mean (not mean square) displacement vector of all particles as a function of time. | Tab demarcated data file |
 | [msd](msd.md) | Calculates the mean-square displacement. | Tab demarcated data file |
 | [msd\_2d](msd_2d.md) | Calculates the two-dimensional mean-square displacement. | Tab demarcated data file |
 | [structure\_factor](structure_factor.md) | Computes the structure factor. | Tab demarcated data file |
 | [trajectory\_list\_decay](trajectory_list_decay.md) | Computes an autocorrelation function for inclusion in the trajectory\_list. | Tab demarcated data file |
-| [find_edge](find_edge.md) | Finds the leading edge of a set of particles along a vector. | Tab demarcated data file |
+| [unsteady\_velocity](unsteady_velocity.md) | Calculates mean velocity as a function of time, provided that velocities were read in at file read time. | Tab demarcated data file. |
 | [write\_bin\_xyz](write_bin_xyz.md) | Writes xyz files for all bins. | Series of xyz trajectory files |]
