@@ -29,3 +29,4 @@ The optional argument _\<persistence check\>_ specifies whether or not, for dyna
 | [structure\_factor](structure_factor.md) | Computes the structure factor. | Tab demarcated data file |
 | [trajectory\_list\_decay](trajectory_list_decay.md) | Computes an autocorrelation function for inclusion in the trajectory\_list. | Tab demarcated data file |
 | find_edge | Finds the leading edge of a set of particles along a vector. | Tab demarcated data file |
+| [write\_bin\_xyz](write_bin_xyz.md) | Writes xyz files for all bins. | Series of xyz trajectory files |]
