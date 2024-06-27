@@ -46,6 +46,7 @@ A large number of analysis tools target trajectory\_list objects.
 | [displacement_list](displacement_list.md) | Computes the displacement of each particle at some time separation and stores the results in a value_list | Tab demarkated data file and value_list |
 | [displacement_dist](displacement_dist.md) | Computes the displacement of each particle at some time separation and reports a distribution | Tab demarcated data file. |
 | [displacement_map](displacement_map.md) | Generates maps of particle displacement magnitude and writes to pdb files with value beta specifying displacement.| PDB file |
+| [incremental\_mean\_displacement](incremental_mean_displacement.md) | Calculates mean displacement of particles as a function of time. | Tab demarcated data file. |
 | [isf\_list](isf_list.md) | Calculate full intermediate scattering function | Tab demarkated data file |
 | [isfs](isfs.md) | Calculates the self-part of the intermediate scattering function. | Tab demarkated data file |
 | [mean\_closest\_distance](mean_closest_distance.md) | Calculates the average distance between particles in two distinct trajectory\_lists. | Tab demarkated data file |
