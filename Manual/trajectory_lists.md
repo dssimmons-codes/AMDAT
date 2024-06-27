@@ -16,7 +16,7 @@ There are many methods of creating _trajectory\_list_ objects. The simplest way 
 | [flatten\_multibodies](flatten_multibodies.md)    | Creates a trajectory list comprised of all trajectories in a set of multibodies. |
 | [invert\_list](invert_list.md)    | Creates a new trajectory list by inverting an existing trajectory list and then intersecting it with a second list. |
 | [thresholded\_list](thresholded_list.md)    | Creates a  list of trajectories by applying a value threshold to a specified value\_list. |
-| traj_list_from_bin_list | Creates a trajectory\_list object from a bin of a [trajectory\_bin\_list](trajectory_bin_list.md) |
+| [traj_list_from_bin_list](traj_list_from_bin_list.md) | Creates a trajectory\_list object from a bin of a [trajectory\_bin\_list](trajectory_bin_list.md) |
 
 In addition to the above, all commands that create multibodies also creates an associated trajectory_list comprised of either the centroids or centers of mass of the multibodies, as specified by the user. See the [multibodies](multibodies.md) page for more information.
 
