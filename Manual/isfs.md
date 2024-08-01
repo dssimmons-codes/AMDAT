@@ -5,8 +5,9 @@ Calculates self-part of the intermediate scattering function over a specified ra
 
 $$  F_s(q,t) = \frac{1}{H} \sum_{h=1}^{H} \sum_{j=1}^{S} \sum_{i=1}^{N(s)} \cos\left((\boldsymbol{q}_h \cdot (\boldsymbol{r}_i(s_j+\Delta t)-\boldsymbol{r}_i(s_j))\right)   $$
 
-where H is the number of wavevectors employed corresponding to the specified wavenumber, S is the number of start times employed, N is the number of particles, $\boldsymbol{r}_i(t)$ is the position of particle $i$ at time $t$, and $\Delta t$ is a timegap.
+where H is the number of wavevectors employed corresponding to the specified wavenumber, S is the number of start times employed, N is the number of particles, $\boldsymbol{r}_i(t)$ is the position of particle $i$ at time $t$, and $\Delta t$ is a timegap. 
 
+The use of the cosine transform rather than the full fourier transform reflects the use of spherical symmetry.
 
 <h2>Syntax</h2>
 
