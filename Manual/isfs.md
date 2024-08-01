@@ -1,6 +1,14 @@
 <h1>isfs</h1>
+<h2>Function</h2>
 
-Calculates self-part of the intermediate scattering function. 
+Calculates self-part of the intermediate scattering function over a specified range of wavenumbers. For a given wavenumber, the underlying code computes the function first over a wavevector corresponding to that wavenumber. It performs this computation at multiple such wavevectors corresponding to that wavenumber, and then averages over all such wavevectors to compute the result at the specified wavenumber.
+
+$$  F_s(q,t) = \frac{1}{H} \sum_{h=1}^{H} \sum_{j=1}^{S} \sum_{i=1}^{N(s)} \cos\left((\boldsymbol{q}_h \cdot (\boldsymbol{r}_i(s_j+\Delta t)-\boldsymbol{r}_i(s_j))\right)   $$
+
+where H is the number of wavevectors employed corresponding to the specified wavenumber, S is the number of start times employed, N is the number of particles, $\boldsymbol{r}_i(t)$ is the position of particle $i$ at time $t$, and $\Delta t$ is a timegap.
+
+
+<h2>Syntax</h2>
 
 _isfs \<output file\> \>\<first wavevector index\> \<last wavevector index\> \<geometry\> \<max\_length\_scale\> \<(optional) fullblock\>_
 
