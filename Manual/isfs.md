@@ -7,7 +7,7 @@ $$  F_s(q,t) = \frac{1}{H} \sum_{h=1}^{H} \sum_{j=1}^{S} \sum_{i=1}^{N(s)} \cos\
 
 where H is the number of wavevectors employed corresponding to the specified wavenumber, S is the number of start times employed, N is the number of particles, $\boldsymbol{r}_i(t)$ is the position of particle $i$ at time $t$, and $\Delta t$ is a timegap. 
 
-The use of the cosine transform rather than the full fourier transform reflects the use of spherical symmetry.
+The use of the cosine transform rather than the full fourier transform reflects the use of symmetry.
 
 <h2>Syntax</h2>
 
