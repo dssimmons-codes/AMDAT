@@ -11,6 +11,6 @@ where S is the number of start times employed, N is the number of particles, $\b
 
 _msd \<output file\>_
 
-\<target\>
+_\<target\>_
 
 
