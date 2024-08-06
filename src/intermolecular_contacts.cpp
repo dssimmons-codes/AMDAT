@@ -97,18 +97,19 @@ void Intermolecular_Contacts::set(System * sys, float distance_threshold)
 
 
 //copy constructor
-Intermolecular_Contacts::Intermolecular_Contacts(const Intermolecular_Contacts & copy):Analysis_Onetime(copy):Everytime_Trajectory_List(copy)
+Intermolecular_Contacts::Intermolecular_Contacts(const Intermolecular_Contacts & copy):Analysis_Onetime(copy),Everytime_Trajectory_List(copy)
 {
     threshold=copy.threshold;
 }
 
 
 //assignment operator
-Intermolecular_Contacts operator = (const Intermolecular_Contacts & copy)
+Intermolecular_Contacts Intermolecular_Contacts::operator = (const Intermolecular_Contacts & copy)
 {
     threshold=copy.threshold;
     system=copy.system;
-    reset();
+    int cap = system->show_n_trajectories();
+    reset(system, cap);
     Analysis_Onetime::operator=(copy);
     Everytime_Trajectory_List::operator=(copy);
 }
@@ -120,13 +121,13 @@ void Intermolecular_Contacts::timekernel2(int timeii)
 }
 
 
-void Radial_Distribution_Function::listkernel(Trajectory* current_trajectory, int timegapii, int thisii, int nextii)
+void Intermolecular_Contacts::listkernel(Trajectory* current_trajectory, int timegapii, int thisii, int nextii)
 {
   trajectory_list2->listloop2(this, current_trajectory, 0, thisii, 0);
 }
 
 
-void Radial_Distribution_Function::listkernel2(Trajectory* traj1, Trajectory* traj2,int timegapii,int thisii, int nextii)
+void Intermolecular_Contacts::listkernel2(Trajectory* traj1, Trajectory* traj2,int timegapii,int thisii, int nextii)
 {
   float distance;
 
@@ -136,9 +137,9 @@ void Radial_Distribution_Function::listkernel2(Trajectory* traj1, Trajectory* tr
   if(traj1!=traj2)
   {
     distance=(traj2->show_coordinate(thisii)-(traj1->show_coordinate(thisii))).length_unwrapped(system->size());	//calculate shortest distance between two coordinates, taking into account periodic boundaries
-    if distance<threshold
+    if (distance<threshold)
     {
-        if(n_trajectories[expindex]==capacity){cout<<"Error: particle list memory allocation full.\n";exit(1);}
+        if(n_trajectories[timegapii]==capacity){cout<<"Error: particle list memory allocation full.\n";exit(1);}
         addtrajectory(thisii,traj1);
 
     }

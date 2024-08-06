@@ -5,7 +5,6 @@
 #ifndef INTERMOLECULAR_CONTACTS
 #define INTERMOLECULAR_CONTACTS
 
-#include "analysis.h"
 #include "everytime_trajectory_list.h"
 #include "system.h"
 
@@ -17,12 +16,12 @@ class Intermolecular_Contacts: public Everytime_Trajectory_List
     float threshold;
 
   public:
-    Fast_Particles();
-    Fast_Particles(System * sys);
-    Fast_Particles(System * sys, float distance_threshold);	//construct to find  contacting particles based on user-specificed distance cutoff
+    Intermolecular_Contacts();
+    Intermolecular_Contacts(System * sys);
+    Intermolecular_Contacts(System * sys, float distance_threshold);	//construct to find  contacting particles based on user-specificed distance cutoff
 
-    Fast_Particles operator = (const Fast_Particles &);	//assignment
-    Fast_Particles(const Fast_Particles &);		//copy constructor
+    Intermolecular_Contacts operator = (const Intermolecular_Contacts &);	//assignment
+    Intermolecular_Contacts(const Intermolecular_Contacts &);		//copy constructor
 
     void set(System *);		//construct to find fast_particles based on distance cutoff
     void set(System * sys, float distance_threshold);	//set to find particles based on user-specificed distance cutoff

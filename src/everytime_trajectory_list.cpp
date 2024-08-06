@@ -2,7 +2,7 @@
 /*Amorphous Molecular Dynamics Analysis Toolkit (AMDAT)*/
 /*Written by David S. Simmons*/
 
-#include "exptime_trajectory_list.h"
+#include "everytime_trajectory_list.h"
 
 using namespace std;
 
@@ -39,7 +39,7 @@ Everytime_Trajectory_List::Everytime_Trajectory_List(System* syst, int capacity)
   included = new Boolean_List [n_times];
   for(timeii=0;timeii<n_times;timeii++)
   {
-    trajectories[timeii] = new Trajectory * [capacity];+
+    trajectories[timeii] = new Trajectory * [capacity];
     n_trajectories[timeii]=0;
     included[timeii].set(system);
   }

@@ -9,12 +9,12 @@
 
 #include <iostream>
 #include "trajectory_list.h"
-#include "analysis.h"
+#include "analysis_onetime.h"
 #include "system.h"
 
 namespace std{
 
-class Everytime_Trajectory_List: public Trajectory_List, public Analysis
+class Everytime_Trajectory_List: public Trajectory_List, public Analysis_Onetime
 {
 
   public:

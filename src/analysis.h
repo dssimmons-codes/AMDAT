@@ -34,6 +34,7 @@ enum Analysis_Type
   displacement_dist,
   displacement_map,
   exptime_trajectory_list,
+  everytime_trajectory_list,
   fast_particles,
   gaussian_comparison,
   incoherent_scattering_function,
