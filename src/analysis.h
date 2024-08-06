@@ -53,7 +53,8 @@ enum Analysis_Type
   displacement_list,
   distance_neighbor_list,
   neighbor_decorrelation_function,
-  particles_between
+  particles_between,
+  intermolecular_contacts
 };
 
 

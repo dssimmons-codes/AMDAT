@@ -18,7 +18,7 @@ $(OBJDIR)/gaussian_comparison.o $(OBJDIR)/radial_debye_waller.o $(OBJDIR)/mean_s
 $(OBJDIR)/displacement_distribution.o $(OBJDIR)/boolean_list.o $(OBJDIR)/fast_particles.o $(OBJDIR)/displacement_map.o $(OBJDIR)/composition.o $(OBJDIR)/n_fold_order_parameter.o $(OBJDIR)/trajectory_list_bins.o $(OBJDIR)/structure_factor.o $(OBJDIR)/clustered_list.o $(OBJDIR)/trajectory_list_decay.o \
 $(OBJDIR)/vector_autocorrelation.o $(OBJDIR)/error.o $(OBJDIR)/mean_displacement.o $(OBJDIR)/multibody.o $(OBJDIR)/multibody_set.o $(OBJDIR)/multibody_list.o $(OBJDIR)/multibody_analysis.o $(OBJDIR)/gyration_radius.o $(OBJDIR)/trajectory_set.o $(OBJDIR)/edge_detector_timedependent.o $(OBJDIR)/mean_velocity_unsteady.o \
 $(OBJDIR)/mean_unsteady_displacement.o $(OBJDIR)/analysis_onetime.o $(OBJDIR)/radial_distribution_function.o $(OBJDIR)/bond_autocorrelation_function.o $(OBJDIR)/displacement_list.o $(OBJDIR)/orientational_correlation.o $(OBJDIR)/size_statistics.o $(OBJDIR)/multibody_region.o $(OBJDIR)/provisional_multibodies.o \
-$(OBJDIR)/dynamic_cluster_multibodies.o $(OBJDIR)/string_multibodies.o $(OBJDIR)/comover_multibodies.o $(OBJDIR)/relative_displacement_strings.o $(OBJDIR)/neighbor_list.o $(OBJDIR)/distance_neighbor_list.o $(OBJDIR)/persistent_neighbors.o $(OBJDIR)/voronoi_neighbor_list.o $(OBJDIR)/neighbor_decorrelation_function.o $(OBJDIR)/radial_count.o $(OBJDIR)/mean_closest_distance.o $(OBJDIR)/particles_between.o
+$(OBJDIR)/dynamic_cluster_multibodies.o $(OBJDIR)/string_multibodies.o $(OBJDIR)/comover_multibodies.o $(OBJDIR)/relative_displacement_strings.o $(OBJDIR)/neighbor_list.o $(OBJDIR)/distance_neighbor_list.o $(OBJDIR)/persistent_neighbors.o $(OBJDIR)/voronoi_neighbor_list.o $(OBJDIR)/neighbor_decorrelation_function.o $(OBJDIR)/radial_count.o $(OBJDIR)/mean_closest_distance.o $(OBJDIR)/particles_between.o $(OBJDIR)/everytime_trajectory_list.o $(OBJDIR)/intermolecular_contacts
 
 CONTROLHEADERS=src/control.h src/system.h src/van_hove_self.h src/mean_square_displacement.h src/van_hove_distinct.h src/molecule.h src/atom_trajectory.h src/coordinate.h src/analysis.h src/debyewaller_dist.h src/stiffness_dist.h src/non_gaussian_parameter.h \
 src/gaussian_comparison.h src/fast_particles.h src/tokenize.h src/radial_debye_waller.h src/mean_square_displacement_2d.h src/velocity_autocorrelation.h src/strings.h src/rgtensor_stats.h src/displacement_map.h src/trajectory_list_bins.h src/bin_dynamics_analysis.h \
@@ -122,6 +122,8 @@ $(OBJDIR)/static_trajectory_list.o: src/static_trajectory_list.cpp src/static_tr
 
 $(OBJDIR)/exptime_trajectory_list.o: src/exptime_trajectory_list.cpp src/exptime_trajectory_list.h src/trajectory_list.h src/analysis.h src/system.h src/atom_trajectory.h src/coordinate.h src/molecule.h src/trajectory.h 
 
+$(OBJDIR)/everytime_trajectory_list.o: src/everytime_trajectory_list.cpp src/everytime_trajectory_list.h src/trajectory_list.h src/analysis.h src/system.h src/atom_trajectory.h src/coordinate.h src/molecule.h src/trajectory.h
+
 $(OBJDIR)/rgtensor.o: src/rgtensor.cpp src/rgtensor.h src/analysis.h src/system.h src/atom_trajectory.h src/coordinate.h src/molecule.h src/analysis.h src/trajectory.h src/trajectory_list.h
 
 $(OBJDIR)/trajmath.o: src/trajmath.h src/trajmath.cpp src/coordinate.h 
@@ -131,6 +133,8 @@ $(OBJDIR)/rgtensor_stats.o: src/rgtensor_stats.cpp src/rgtensor_stats.h src/anal
 $(OBJDIR)/boolean_list.o: src/boolean_list.cpp src/boolean_list.h src/system.h src/molecule.h src/analysis.h src/atom_trajectory.h src/coordinate.h src/tokenize.h src/trajectory.h
 
 $(OBJDIR)/fast_particles.o: src/fast_particles.h src/fast_particles.cpp src/analysis.h src/atom_trajectory.h src/coordinate.h src/molecule.h src/system.h src/gaussian_comparison.h src/trajectory.h src/exptime_trajectory_list.h src/trajectory_list.h 
+
+$(OBJDIR)/intermolecular_contacts: src/intermolecular_contacts.h src/intermolecular_contacts.cpp src/analysis.h src/analysis_onetime.h src/atom_trajectory.h src/coordinate.h src/molecule.h src/system.h src/ src/trajectory.h src/everytime_trajectory_list.h src/trajectory_list.h
 
 $(OBJDIR)/n_fold_order_parameter.o: src/n_fold_order_parameter.h src/n_fold_order_parameter.cpp src/version.h src/value_list.h src/system.h src/atom_trajectory.h src/coordinate.h src/molecule.h src/analysis.h src/trajectory.h src/trajectory_list.h src/boolean_list.h
 
