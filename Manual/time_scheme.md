@@ -46,7 +46,7 @@ This has two implications. First, in general statistical strength at a minimum d
 
 <h2>Blocked exponential time spacing</h2>
 
-<h3>Synthax</h3>
+<h3>Syntax</h3>
 
 The time scheme line for blocked exponential time schemes is formatted as follows in terms of the variables in the discussion below.
 
