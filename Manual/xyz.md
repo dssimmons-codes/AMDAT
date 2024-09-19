@@ -1,4 +1,4 @@
-<h1>read_xyz</h1>
+<h1>xyz</h1>
 
 <h2>Overview</h2>
 
