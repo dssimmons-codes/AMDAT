@@ -26,14 +26,22 @@ Minimally, <filenames> must include the path to the custom trajectory file and t
 
 The first line must begin with a coordinate style keyword, which is either _unwrapped_ or _wrapped\_indexed_. This is followed, on the same line, by the column headers (the headers at the tops of the columns in the custom trajectory file) for the associated coordinate data. For style _unwrapped_, three headers must be provided: those corresponding to the columns containing the unwrapped x-coordinate, y-coordinate, and z-coordinate (in this order). For style _wrapped\_indexed_, six headers must be provided: those corresponding to the columns containing the wrapped x-coordinate, y-coordinate, and z-coordinate, and those corresponding to the image index flags in the x dimension, y dimension, and z dimension (in this order).
 
+Following this initial line, the user may include additional lines, each of which specifies the header of an additional data column for read-in as a value_list, followed by the name of the value\_list to be created. The overall syntax for this file is thus as follows
+
+_<coordinate\_style\_keyword> <coordinate\_headers>_  
+_<optional: additional\_column\_header> <value\_list name>_  
+...
+
+Where an unlimited number of optional lines can be included to read in additional data columns.
 
 If the user provides only thes two files, AMDAT will assume that the trajectory is ordered such that all molecules of a given species are grouped together, with the species appearing in the custom file in the order in which they are provided in the list of species above.
 
 Alternatively, the user may include an optional ‘template’ file, which provides the order of molecules by species type. The format is:
 
-<species_k_name> <# of continuous molecules of species k>
-<species_j_name> <# of continuous molecules of species j>
-…   
+<species_k_name> <# of continuous molecules of species k>  
+<species_j_name> <# of continuous molecules of species j>  
+…     
+
 Species in the template file may generally be repeated (ie, molecules of a given species need not be continuous). This permits more complex orderings of molecule types within the file.
 
 Since box size data is included in LAMMPS custom file output at each time step, time-dependent box dimensions are automatically read in from the custom file.
