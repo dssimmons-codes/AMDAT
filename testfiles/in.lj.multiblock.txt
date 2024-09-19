@@ -1,0 +1,117 @@
+# 2d LJ liquid with thermostat
+
+# ---------------
+# model variables
+# ---------------
+
+variable        rho index 0.7
+variable        temp index 1.0
+variable        cutoff index 2.5
+variable        srate equal 2.5
+
+# ---------------
+# settings
+# ---------------
+
+units           lj
+dimension       2
+atom_style      atomic
+boundary        p p p
+neighbor        0.3 bin
+neigh_modify    every 20 delay 0 check no
+
+# ---------------
+# create simulation box and atoms
+# ---------------
+
+lattice         sq2 ${rho}
+region          box block 0 20 0 20 -0.25 0.25
+#region         box prism 0 20 0 20 -0.25 0.25 0 0 0
+create_box      1 box
+create_atoms    1 box
+
+mass            1 1.0
+
+# ---------------
+# LJ potential
+# ---------------
+
+pair_style      lj/cut ${cutoff}
+pair_coeff      1 1 1.0 1.0
+
+# ---------------
+# initial velocities
+# ---------------
+
+velocity        all create ${temp} 87287 loop geom
+
+# ---------------
+# fixes for time integration and thermostatting
+# ---------------
+
+fix             1 all nve
+fix             2 all langevin ${temp} ${temp} 1.0 77478 zero yes
+
+fix             3 all enforce2d
+
+# ---------------
+# material properties
+# ---------------
+
+# ---------------
+# output
+# ---------------
+
+thermo          1000
+thermo_modify   line yaml
+thermo_modify   flush yes
+
+#variable        blocksize index 50
+
+#one could in principle choose either blocksize/blocklength or the inner timescale
+#this script chooses the latter
+#by rounding up "innertarget" to get the last step in the block
+
+variable        innertarget index 100000
+variable        blocknumber index 2
+
+#assume an exponential base of 1.2
+#get blocklength from innertarget
+
+variable        blocklength equal "1+ceil(ln(v_innertarget)/ln(1.2))"
+
+print "size of exponential blocks: $(v_blocklength)"
+
+variable        lastinner equal "floor(1.2^(v_blocklength-1))"
+
+variable        lastouter equal "v_lastinner * v_blocknumber"
+
+variable        getstep equal step
+
+variable        innerstep equal "v_getstep % v_lastinner"
+variable        blockindex equal "floor(v_getstep / v_lastinner)"
+
+#logic for lin/log spacing
+
+variable        nextlinear equal "v_innerstep + 1"
+variable        nextlogindex equal "1 + ceil(ln(v_nextlinear) / ln(1.2))"
+
+variable        nextinnerindex equal "ternary(v_nextlinear < v_nextlogindex, v_nextlinear, v_nextlogindex)"
+
+variable        nextloginnerstep equal "floor(1.2^(v_nextinnerindex - 1))"
+variable        nextinnerstep equal "ternary(v_nextinnerindex > v_nextloginnerstep, v_nextinnerindex, v_nextloginnerstep)"
+variable        nextoutput equal "v_nextinnerstep + v_blockindex * v_lastinner"
+
+thermo          v_nextoutput
+
+#AMDAT style dump
+
+dump            1 all custom 500 lj2d.lammpstrj type x y z ix iy iz
+dump_modify	    1 first yes sort id
+dump_modify	    1 every v_nextoutput
+
+# ---------------
+# run
+# ---------------
+
+run             ${lastouter}
