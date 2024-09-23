@@ -13,7 +13,3 @@ where S is the number of start times employed, M is the number of bonds, $\hat{r
 _raf \<output filename\> \<name of multibody\_list to analyze\> \<Legendre polynomial order to employ: either "1" or "2"\> \<optional: "xyz" or "xy" or "xz" or "yz" or "x" or "y" or "z"\>_
 
 The optional argument specifies which spatial dimensions are including in the calculation (i.e. in the dot product). This defaults to "xyz" if not specified, in which case the full three-dimensional dot product is employed. If, for example, "xy" is specified, only the x and y dimensions of the unit vector are included in the dot product.
-
-_msd \<output file\>_
-
-_\<target\>_
