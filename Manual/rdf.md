@@ -1,6 +1,13 @@
 <h1>rdf</h1>
 
-Computes a radial distribution function.
+Computes a radial distribution function. The radial distribution may in general be asymmetric, computed between two distinct sets of atoms $a$ and $b$ ($a$ and $b$ may be the same). When asymmetric, $a$ is the central particle in the g(r) calculation and $b$ is the set of particles for which densities around the central particles are computed.
+
+This is computed as follows.
+
+$$  g(r) = \frac{1}{\sum_{i=1}^{T} N^a(t_i)} \sum_{i=1}^{T} \sum_{k=1}^{N^a(t_i)}  \frac{n_{k}^{b}(r \pm \Delta r,t_i)}{V(r \pm \Delta r) \rho^b(t_i)} $$
+
+Here T is the number of times in the trajectory, $N^a(t_i)$ is the number of particles in group $a$ at time $t_i$.
+
 
 _rdf \<output filename\> \<symmetry keyword\> \<number of distance bins\> \<timescheme\> \<max length scale to compute to\>_
 
