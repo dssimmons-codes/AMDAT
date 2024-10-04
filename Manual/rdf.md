@@ -4,7 +4,7 @@
 
 Computes a radial distribution function. The radial distribution may in general be asymmetric, computed between two distinct sets of atoms $a$ and $b$ ($a$ and $b$ may be the same). When asymmetric, $a$ is the central particle in the {g(r)} calculation and $b$ is the set of particles for which densities around the central particles are computed.
 
-This computes a binned radial distribution function at distances from a central particle given by the equation $r_j = \frac{\Delta r}{2} + j \Delta r $
+This computes a binned radial distribution function at distances from a central particle given by the equation $r_j = \frac{\Delta r}{2} + j \Delta r $, where $j=0,1,2,...$
 
 $$  g(r) = \frac{1}{\sum_{i=1}^{T} N^a(t_i)} \sum_{i=1}^{T} \sum_{k=1}^{N^a(t_i)}  \frac{n_{k}^{b}(r \pm \frac{\Delta r}{2},t_i)}{V_{shell}(r \pm \frac{\Delta r}{2}) \rho^b(t_i)} $$
 
