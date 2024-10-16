@@ -269,9 +269,13 @@ int Control::execute_commands(int iIndex, int fIndex)
     {
 	create_distance_neighborlist();
     }
-        else if(command == "create_voronoi_neighborlist")
+    else if(command == "create_voronoi_neighborlist")
     {
 	create_voronoi_neighborlist();
+    }
+    else if (command == "read_bond_neighbors")
+    {
+      read_bond_neighbors();
     }
     else if(command == "delete_neighborlist")
     {
@@ -1487,6 +1491,32 @@ void Control::create_voronoi_neighborlist()
   analyte->add_value_list(vnlist_pointer,nlist_name);
   
 }
+
+
+
+/*--------------------------------------------------------------------------------*/
+
+
+void Control::read_bond_neighbors()
+{
+  Neighbor_List * nlist_pointer;
+  nlist_pointer = new Neighbor_List;
+  string input_filename;
+  string nlist_name;
+
+  nlist_name=args[1];
+  input_filename=args[2];
+
+  Neighbor_List nlist(analyte);
+
+  nlist.read_bonds(input_filename);
+  cout << "Constructed neighbor list from file of bonds."<<endl;
+
+  (*nlist_pointer)=nlist;
+  add_neighborlist(nlist_pointer,nlist_name);
+  analyte->add_value_list(nlist_pointer,nlist_name);
+}
+
 
 
 /*--------------------------------------------------------------------------------*/
