@@ -160,7 +160,6 @@ int Neighbor_List::n_persistent_neighbors(int trajii, int time1, int time2)const
       }
     }
   }
-  
   return n_count;
 }
 
@@ -258,6 +257,9 @@ void Neighbor_List::read_bonds(string filename)
   ifstream filexyz(filename.c_str());
   ifstream * fileobject = &filexyz;
 
+  computed_times.clear();
+  computed_times.resize(n_times,true);
+
   for(int timestepii=0; timestepii<n_times; timestepii++)
   {
     /*read in header information from  file*/
@@ -281,8 +283,9 @@ void Neighbor_List::read_bonds(string filename)
        line = "";
        getline(*fileobject,line);   //read in next bond
        args = tokenize(line);
-       trajid1 = atoi(args[0].c_str())-1;   //get trajectory index from bond line; assume trajectory index is lammps atom number - 1. This will work provided that the trajectory file itself was sorted in the order of atom IDs. Otherwise, this method will nominally work for bond statistics but will not correctly associated bonds with their correct atoms.
-       trajid2 = atoi(args[1].c_str())-1;  //same for second atom in bond
+
+       trajid1 = (atoi(args[0].c_str())-1);   //get trajectory index from bond line; assume trajectory index is lammps atom number - 1. This will work provided that the trajectory file itself was sorted in the order of atom IDs. Otherwise, this method will nominally work for bond statistics but will not correctly associated bonds with their correct atoms.
+       trajid2 = (atoi(args[1].c_str())-1);  //same for second atom in bond
 
        /*make sure that both bonded atoms are in the boolean list of atoms with neighbors*/
        (included[timestepii])(trajid1,1);
@@ -291,6 +294,7 @@ void Neighbor_List::read_bonds(string filename)
        /*add the two atoms to each others' neighbor lists*/
        neighbors[timestepii][trajid1].push_back(syst->show_trajectory(trajid2));
        neighbors[timestepii][trajid2].push_back(syst->show_trajectory(trajid1));
+
      }
   }
 
