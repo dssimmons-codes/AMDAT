@@ -61,6 +61,7 @@ class System
     Molecule ** moleculelist;			//direct list of molecules by molecule ID
     vector <Trajectory *> trajectorylist;		//direct list of trajectories by trajectory ID
 
+
     int n_multibodies;
     //vector <Multibody_Set*> multibody_sets;	//store sets of multibodies defined by user
     Vector_Map <string, Multibody_Set*> multibody_sets;
@@ -175,7 +176,10 @@ class System
     Molecule* show_molecule(int moleculeID)const{return moleculelist[moleculeID];};	//return pointer to molecule via moleculeID
     Trajectory* show_trajectory(int trajectoryID)const{return trajectorylist[trajectoryID];};	//return pointer to trajectory via trajectoryID
     Molecule* show_molecule(int species_index, int molecule_index)const{return &molecules[species_index][molecule_index];};		//return molecule from master list of molecules
-    
+
+
+
+
     int show_species_index(string) const;
     int show_atomtype_index(string) const;
     bool atomtype_exists (string) const;

@@ -168,10 +168,11 @@ System::System(vector<string> file_in, bool ensemble)
       {
         for(atomii=0;atomii<molecules[speciesii][moleculeii].typecount(typeii);atomii++)
         {
-          atomlist[atomcount]=molecules[speciesii][moleculeii].show_atom_trajectory(typeii,atomii);	//add atom to master atom list
-	  trajectorylist[atomcount]=atomlist[atomcount];	//add atom to master trajectory list
-          atomlist[atomcount]->set_atomID(atomcount);		//set atom id in atom_trajectory object to correspond to position in master atom list
-	  atomlist[atomcount]->set_trajectory_ID(atomcount);	//set trajectory id in atom_trajectory object to correspond to position in master trajectory list
+
+          atomlist[molecules[speciesii][moleculeii].show_atom_trajectory(typeii,atomii)->show_trajectory_ID()]=molecules[speciesii][moleculeii].show_atom_trajectory(typeii,atomii);	//add atom to master atom list in location indicated by trajectory_ID
+
+          trajectorylist[molecules[speciesii][moleculeii].show_atom_trajectory(typeii,atomii)->show_trajectory_ID()]=molecules[speciesii][moleculeii].show_atom_trajectory(typeii,atomii);	//add atom to master trajectory list in location indicated by trajectory ID
+
           atomcount++;
         }
       }
@@ -995,6 +996,8 @@ void System::read_custom(string xyzfilename)
   int * n_typeii;			//array of indices to track how many of each type have been passed to particular molecule
   int typeii;				//index over elements of above aray
   int timetally=0;
+  int running_atomcount=0;    //track number of atoms read in during first timestep
+
   float xlo, xhi, ylo, yhi, zlo, zhi, Lx, Ly, Lz;
   int n_columns;		//number of columns of atom data in custom dump file
   bool r_provided, rs_provided, ru_provided, rsu_provided;		//booleans specifying whether a complete set of wrapped, scaled wraped, unwrapped, and scaled unwrapped coordinates are provided by the trajectory file
@@ -1107,9 +1110,9 @@ void System::read_custom(string xyzfilename)
       v_provided = in_string_array(args,"vx")&&in_string_array(args,"vy")&&in_string_array(args,"vz");
       if(v_provided)
       {
-	vx_position = find_in_string_array(args,"vx")-2;
-	vy_position = find_in_string_array(args,"vy")-2;
-	vz_position = find_in_string_array(args,"vz")-2;
+        vx_position = find_in_string_array(args,"vx")-2;
+        vy_position = find_in_string_array(args,"vy")-2;
+        vz_position = find_in_string_array(args,"vz")-2;
       }
 
       /*Check if mass is provided; if so, note its column*/
@@ -1192,89 +1195,97 @@ void System::read_custom(string xyzfilename)
     {
       for(moleculeii=0; moleculeii<n_molecules[speciesii]; moleculeii++)
       {
-        for(typeii=0;typeii<n_atomtypes;typeii++)
+        for(typeii=0;typeii<n_atomtypes;typeii++) //only used to zero out typecount array
         {n_typeii[typeii]=0;}  //initiate type count array to zero at start of each molecule
 
         for(atomii=0; atomii < ((molecules[speciesii][moleculeii]).atomcount());atomii++)
         {
-	  line = "";
-	  getline(*fileobject,line);
-	  args = tokenize(line);
+        line = "";
+        getline(*fileobject,line);
+        args = tokenize(line);
 
 
-	  /*read type and check whether it is valid*/
-	  type = show_atomtype_index(args[type_position]);
+        /*read type and check whether it is valid*/
+        type = show_atomtype_index(args[type_position]);
 
-	  if(type > n_atomtypes)
-          {
-            cout << "Atom type " << type << " in trajectory file out of range!\n";
-            exit(1);
-          }
+        if(type > n_atomtypes)
+        {
+          cout << "Atom type " << type << " in trajectory file out of range!\n";
+          exit(1);
+        }
 
-	  if(read_r) /*read wrapped, unscaled coordinates if appropriate*/
-	  {
-	    x = atof(args[x_position].c_str());
-	    y = atof(args[y_position].c_str());
-	    z = atof(args[z_position].c_str());
-	    coordinate.set(x,y,z);		//store coordinates temporarily in coordinate object
-	    (molecules[speciesii][moleculeii]).set_coordinate(type,n_typeii[type],coordinate,timestepii);	//send coordinates to atom
-	  }
-	  else if(read_rs) /*read wrapped, scaled coordinates if appropriate*/
-	  {
-	    x = box_size[timestepii].show_x()*atof(args[xs_position].c_str())+box_boundary[timestepii][0].show_x();
-	    y = box_size[timestepii].show_y()*atof(args[ys_position].c_str())+box_boundary[timestepii][0].show_y();
-	    z = box_size[timestepii].show_z()*atof(args[zs_position].c_str())+box_boundary[timestepii][0].show_z();
-	    coordinate.set(x,y,z);		//store coordinates temporarily in coordinate object
-	    (molecules[speciesii][moleculeii]).set_coordinate(type,n_typeii[type],coordinate,timestepii);	//send coordinates to atom
-	  }
+        if(timestepii==0)
+        {
+          (molecules[speciesii][moleculeii]).show_atom_trajectory(type,n_typeii[type])->set_trajectory_ID(running_atomcount);
+          (molecules[speciesii][moleculeii]).show_atom_trajectory(type,n_typeii[type])->set_atomID(running_atomcount);
+          running_atomcount++;
+        }
 
-	  if(read_i)
-	  {
-	    x=x+atof(args[ix_position].c_str())*box_size[timestepii].show_x();
-	    y=y+atof(args[iy_position].c_str())*box_size[timestepii].show_y();
-	    z=z+atof(args[iz_position].c_str())*box_size[timestepii].show_z();
-	    coordinate.set(x,y,z);		//store coordinates temporarily in coordinate object
-	    (molecules[speciesii][moleculeii]).set_unwrapped(type,n_typeii[type],coordinate,timestepii);	//send coordinates to atom
-	  }
-	  else if(read_ru)	/*read unwrapped, scaled coordinates if appropriate*/
-	  {
-	    x = atof(args[xu_position].c_str());
-	    y = atof(args[yu_position].c_str());
-	    z = atof(args[zu_position].c_str());
-	    coordinate.set(x,y,z);		//store coordinates temporarily in coordinate object
-	    (molecules[speciesii][moleculeii]).set_unwrapped(type,n_typeii[type],coordinate,timestepii);	//send coordinates to atom
-	  }
-	  else if(read_rsu)	/*read unwrapped, scaled coordinates if appropriate*/
-	  {
-	    x = box_size[timestepii].show_x()*atof(args[xsu_position].c_str())+box_boundary[timestepii][0].show_x();;
-	    y = box_size[timestepii].show_y()*atof(args[ysu_position].c_str())+box_boundary[timestepii][0].show_y();;
-	    z = box_size[timestepii].show_z()*atof(args[zsu_position].c_str())+box_boundary[timestepii][0].show_z();;
-	    coordinate.set(x,y,z);		//store coordinates temporarily in coordinate object
-	    (molecules[speciesii][moleculeii]).set_unwrapped(type,n_typeii[type],coordinate,timestepii);	//send coordinates to atom
-	  }
 
-	  if(calc_wrapped) /*calculate wrapped from unwrapped coordinates, if necessary*/
-	  {
-	    coordinate -= box_size[timestepii]*((coordinate-box_boundary[timestepii][0])/box_size[timestepii]).coord_floor();
-	    (molecules[speciesii][moleculeii]).set_coordinate(type,n_typeii[type],coordinate,timestepii);	//send coordinates to atom
-	  }
+        if(read_r) /*read wrapped, unscaled coordinates if appropriate*/
+        {
+          x = atof(args[x_position].c_str());
+          y = atof(args[y_position].c_str());
+          z = atof(args[z_position].c_str());
+          coordinate.set(x,y,z);		//store coordinates temporarily in coordinate object
+          (molecules[speciesii][moleculeii]).set_coordinate(type,n_typeii[type],coordinate,timestepii);	//send coordinates to atom
+        }
+        else if(read_rs) /*read wrapped, scaled coordinates if appropriate*/
+        {
+          x = box_size[timestepii].show_x()*atof(args[xs_position].c_str())+box_boundary[timestepii][0].show_x();
+          y = box_size[timestepii].show_y()*atof(args[ys_position].c_str())+box_boundary[timestepii][0].show_y();
+          z = box_size[timestepii].show_z()*atof(args[zs_position].c_str())+box_boundary[timestepii][0].show_z();
+          coordinate.set(x,y,z);		//store coordinates temporarily in coordinate object
+          (molecules[speciesii][moleculeii]).set_coordinate(type,n_typeii[type],coordinate,timestepii);	//send coordinates to atom
+        }
+
+        if(read_i)
+        {
+          x=x+atof(args[ix_position].c_str())*box_size[timestepii].show_x();
+          y=y+atof(args[iy_position].c_str())*box_size[timestepii].show_y();
+          z=z+atof(args[iz_position].c_str())*box_size[timestepii].show_z();
+          coordinate.set(x,y,z);		//store coordinates temporarily in coordinate object
+          (molecules[speciesii][moleculeii]).set_unwrapped(type,n_typeii[type],coordinate,timestepii);	//send coordinates to atom
+        }
+        else if(read_ru)	/*read unwrapped, scaled coordinates if appropriate*/
+        {
+          x = atof(args[xu_position].c_str());
+          y = atof(args[yu_position].c_str());
+          z = atof(args[zu_position].c_str());
+          coordinate.set(x,y,z);		//store coordinates temporarily in coordinate object
+          (molecules[speciesii][moleculeii]).set_unwrapped(type,n_typeii[type],coordinate,timestepii);	//send coordinates to atom
+        }
+        else if(read_rsu)	/*read unwrapped, scaled coordinates if appropriate*/
+        {
+          x = box_size[timestepii].show_x()*atof(args[xsu_position].c_str())+box_boundary[timestepii][0].show_x();;
+          y = box_size[timestepii].show_y()*atof(args[ysu_position].c_str())+box_boundary[timestepii][0].show_y();;
+          z = box_size[timestepii].show_z()*atof(args[zsu_position].c_str())+box_boundary[timestepii][0].show_z();;
+          coordinate.set(x,y,z);		//store coordinates temporarily in coordinate object
+          (molecules[speciesii][moleculeii]).set_unwrapped(type,n_typeii[type],coordinate,timestepii);	//send coordinates to atom
+        }
+
+        if(calc_wrapped) /*calculate wrapped from unwrapped coordinates, if necessary*/
+        {
+          coordinate -= box_size[timestepii]*((coordinate-box_boundary[timestepii][0])/box_size[timestepii]).coord_floor();
+          (molecules[speciesii][moleculeii]).set_coordinate(type,n_typeii[type],coordinate,timestepii);	//send coordinates to atom
+        }
 
           if(v_provided)	/*read velocities if they are provided*/
-	  {
-	    x = atof(args[vx_position].c_str());
-	    y = atof(args[vy_position].c_str());
-	    z = atof(args[vz_position].c_str());
-	    coordinate.set(x,y,z);		//store velocities temporarily in coordinate object
-	    (molecules[speciesii][moleculeii]).set_velocity(type,n_typeii[type],coordinate,timestepii);	//send coordinates to atom
-	  }
+        {
+          x = atof(args[vx_position].c_str());
+          y = atof(args[vy_position].c_str());
+          z = atof(args[vz_position].c_str());
+          coordinate.set(x,y,z);		//store velocities temporarily in coordinate object
+          (molecules[speciesii][moleculeii]).set_velocity(type,n_typeii[type],coordinate,timestepii);	//send coordinates to atom
+        }
          if(mass_provided)
-	 {
-	   molecules[speciesii][moleculeii].show_atom_trajectory(type,n_typeii[type])->set_mass(atof(args[mass_position].c_str()));
-	 }
+        {
+          molecules[speciesii][moleculeii].show_atom_trajectory(type,n_typeii[type])->set_mass(atof(args[mass_position].c_str()));
+        }
 
          n_typeii[type]++;		//increment count of atoms of this type
-       }
-     }
+      }
+    }
    }
     print_progress(++timetally, n_timesteps);
   }
@@ -1442,8 +1453,11 @@ void System::read_custom_manual(string xyzfilename, string header_filename)
   float y;				//temporary storage for y coordinate
   float z;				//temporary storage for z coordinate
   int * n_typeii;			//array of indices to track how many of each type have been passed to particular molecule
-  int typeii;				//index over elements of above aray
+  int typeii;				//index over elements of above array
   int timetally=0;
+  int running_atomcount=0;  //keeps track of how many atoms have been read; used in initial timestep
+
+
   float xlo, xhi, ylo, yhi, zlo, zhi, Lx, Ly, Lz;
   int n_columns;		//number of columns of atom data in custom dump file
   bool r_provided, rs_provided, ru_provided, rsu_provided;		//booleans specifying whether a complete set of wrapped, scaled wraped, unwrapped, and scaled unwrapped coordinates are provided by the trajectory file
@@ -1543,14 +1557,14 @@ void System::read_custom_manual(string xyzfilename, string header_filename)
   {
       
     /*read in header information from custom trajectory file*/
-     line = "";
-     getline(*fileobject,line);		//read in "ITEM: TIMESTEP" line
-     getline(*fileobject,line);		//read in timestep line
-     getline(*fileobject,line);		//read in "ITEM: NUMBER OF ATOMS" line
-     line = "";
-     getline(*fileobject,line);		//read in number of atoms
-     args = tokenize(line);
-     file_atoms=atoi(args[0].c_str());
+    line = "";
+    getline(*fileobject,line);		//read in "ITEM: TIMESTEP" line
+    getline(*fileobject,line);		//read in timestep line
+    getline(*fileobject,line);		//read in "ITEM: NUMBER OF ATOMS" line
+    line = "";
+    getline(*fileobject,line);		//read in number of atoms
+    args = tokenize(line);
+    file_atoms=atoi(args[0].c_str());
     if(file_atoms!=n_atoms)		//check if the number of atoms listed in file is consistent with the molecule and atom counts given by the user
     {
       stringstream ss;
@@ -1580,31 +1594,18 @@ void System::read_custom_manual(string xyzfilename, string header_filename)
     zhi = atof(args[1].c_str());
     line = "";
 
-//    if(timestepii==0)
-//    {
-      /*set box size*/
-      Lx = xhi - xlo;
-      Ly = yhi - ylo;
-      Lz = zhi - zlo;
-      box_size[timestepii].set(Lx,Ly,Lz);
-      box_boundary[timestepii][0].set(xlo, ylo, zlo);
-      box_boundary[timestepii][1].set(xhi, yhi, zhi);
-//    }
-//    else
-//    {
-//      if(np) /*if non-constant volume, set box size at each frame*/
-//      {
-//	Lx = xhi - xlo;
-//	Ly = yhi - ylo;
-//	Lz = zhi - zlo;
-//	box_size[timestepii].set(Lx,Ly,Lz);
-//	box_boundary[timestepii][0].set(xlo, ylo, zlo);
-//	box_boundary[timestepii][1].set(xhi, yhi, zhi);
-//    }
+    /*set box size*/
+    Lx = xhi - xlo;
+    Ly = yhi - ylo;
+    Lz = zhi - zlo;
+    box_size[timestepii].set(Lx,Ly,Lz);
+    box_boundary[timestepii][0].set(xlo, ylo, zlo);
+    box_boundary[timestepii][1].set(xhi, yhi, zhi);
+
 //      else /*if constant volume, return error if file box bounds do not equal previous bounds*/
       if(!np)
       {
-//	if(box_boundary[0][0].show_x()!=xlo||box_boundary[0][1].show_x()!=xhi||box_boundary[0][0].show_y()!=ylo||box_boundary[0][1].show_y()!=yhi||box_boundary[0][0].show_z()!=zlo||box_boundary[0][1].show_z()!=zhi)
+        //	if(box_boundary[0][0].show_x()!=xlo||box_boundary[0][1].show_x()!=xhi||box_boundary[0][0].show_y()!=ylo||box_boundary[0][1].show_y()!=yhi||box_boundary[0][0].show_z()!=zlo||box_boundary[0][1].show_z()!=zhi)
         if (!(floatCompare(box_boundary[0][0].show_x(), xlo)&&floatCompare(box_boundary[0][1].show_x(), xhi)&&floatCompare(box_boundary[0][0].show_y(), ylo)&&floatCompare(box_boundary[0][1].show_y(), yhi)&&floatCompare(box_boundary[0][0].show_z(), zlo)&&floatCompare(box_boundary[0][1].show_z(), zhi)))
         {
             Error( "The box boundaries provided in the custom file are not constant. For varying-volume trajectory, please select system_np system type.", 0);
@@ -1657,19 +1658,18 @@ void System::read_custom_manual(string xyzfilename, string header_filename)
       v_provided = in_string_array(args,"vx")&&in_string_array(args,"vy")&&in_string_array(args,"vz");
       if(v_provided)
       {
-	vx_position = find_in_string_array(args,"vx")-2;
-	vy_position = find_in_string_array(args,"vy")-2;
-	vz_position = find_in_string_array(args,"vz")-2;
+        vx_position = find_in_string_array(args,"vx")-2;
+        vy_position = find_in_string_array(args,"vy")-2;
+        vz_position = find_in_string_array(args,"vz")-2;
       }
 
       /*Check if mass is provided; if so, note its column*/
       mass_provided = in_string_array(args,"mass");
       if(mass_provided) mass_position = find_in_string_array(args,"mass")-2;
-
-      //Note columns in which to find coordinate data    
-      x_position = find_in_string_array(args,xheader)-2;
-      y_position = find_in_string_array(args,yheader)-2;
-      z_position = find_in_string_array(args,zheader)-2;
+        //Note columns in which to find coordinate data
+        x_position = find_in_string_array(args,xheader)-2;
+        y_position = find_in_string_array(args,yheader)-2;
+        z_position = find_in_string_array(args,zheader)-2;
       
       if(manual_style=="wrapped_indexed")
       {
@@ -1680,19 +1680,19 @@ void System::read_custom_manual(string xyzfilename, string header_filename)
       
       for(int customii=0;customii<n_custom_columns;customii++)
       {
-          custom_position[customii]=find_in_string_array(args,custom_headers[customii])-2;
+        custom_position[customii]=find_in_string_array(args,custom_headers[customii])-2;
       }
       
 
       /*Find and store position of type column; if not present, return error*/
       if(in_string_array(args,"type"))
       {
-	type_position=find_in_string_array(args,"type")-2;
+        type_position=find_in_string_array(args,"type")-2;
       }
       else
       {
-	cout << "Error: atom type data not provided.\n";
-	exit(0);
+        cout << "Error: atom type data not provided.\n";
+        exit(0);
       }
     }
 
@@ -1701,76 +1701,88 @@ void System::read_custom_manual(string xyzfilename, string header_filename)
     {
       for(moleculeii=0; moleculeii<n_molecules[speciesii]; moleculeii++)
       {
-        for(typeii=0;typeii<n_atomtypes;typeii++)
+        for(typeii=0;typeii<n_atomtypes;typeii++) //only used to zero out typecounts
         {n_typeii[typeii]=0;}  //initiate type count array to zero at start of each molecule
 
         for(atomii=0; atomii < ((molecules[speciesii][moleculeii]).atomcount());atomii++)
         {
-	  line = "";
-	  getline(*fileobject,line);
-	  args = tokenize(line);
+          line = "";
+          getline(*fileobject,line);
+          args = tokenize(line);
 
+          /*read type and check whether it is valid*/
+          type = show_atomtype_index(args[type_position]);
 
-	  /*read type and check whether it is valid*/
-	  type = show_atomtype_index(args[type_position]);
-
-	  if(type > n_atomtypes)
+          if(type > n_atomtypes)
           {
             cout << "Atom type " << type << " in trajectory file out of range!\n";
             exit(1);
           }
           
-    if(manual_style=="unwrapped")
-    {
-        //read unwrapped coordinates
-        x = atof(args[x_position].c_str());
-	y = atof(args[y_position].c_str());
-	z = atof(args[z_position].c_str());
-        coordinate.set(x,y,z);		//store coordinates temporarily in coordinate object
-	    (molecules[speciesii][moleculeii]).set_unwrapped(type,n_typeii[type],coordinate,timestepii);	//send coordinates to atom
-        
-        //wrap coordinates
-        coordinate -= box_size[timestepii]*((coordinate-box_boundary[timestepii][0])/box_size[timestepii]).coord_floor();
-	    (molecules[speciesii][moleculeii]).set_coordinate(type,n_typeii[type],coordinate,timestepii);	//send coordinates to atom
-    }
-    
-    else if(manual_style=="wrapped_indexed")
-    {
-        //read wrapped coordinates
-        x = atof(args[x_position].c_str());
-	    y = atof(args[y_position].c_str());
-	    z = atof(args[z_position].c_str());
-        coordinate.set(x,y,z);		//store coordinates temporarily in coordinate object
-	    (molecules[speciesii][moleculeii]).set_coordinate(type,n_typeii[type],coordinate,timestepii);	//send coordinates to atom
-        
-        //compute unwrapped coordinates using image flags
-        x=x+atof(args[ix_position].c_str())*box_size[timestepii].show_x();
-	    y=y+atof(args[iy_position].c_str())*box_size[timestepii].show_y();
-	    z=z+atof(args[iz_position].c_str())*box_size[timestepii].show_z();
-	    coordinate.set(x,y,z);		//store coordinates temporarily in coordinate object
-	    (molecules[speciesii][moleculeii]).set_unwrapped(type,n_typeii[type],coordinate,timestepii);	//send coordinates to atom
-    }
-    
-    for(int customii=0;customii<n_custom_columns;customii++)
-    {
-        (value_lists[vlist_names[customii]])->push(timestepii,atof((args[custom_position[customii]]).c_str()));  //add next value from custom column to appropriate column list
-    }
-    
+          /*Store a map of external (simulation software) atom ID to internal trajectory ID*/
+          /*Current code assumes that external ID numbers, starting at 1, in order of appearance in file*/
+          /*Future edit should allow read-in of atom ID from custom file*/
+          if(timestepii==0)
+          {
+            (molecules[speciesii][moleculeii]).show_atom_trajectory(type,n_typeii[type])->set_trajectory_ID(running_atomcount);
+            (molecules[speciesii][moleculeii]).show_atom_trajectory(type,n_typeii[type])->set_atomID(running_atomcount);
+            running_atomcount++;
+          }
 
-      if(v_provided)	/*read velocities if they are provided*/
-	  {
-	    x = atof(args[vx_position].c_str());
-	    y = atof(args[vy_position].c_str());
-	    z = atof(args[vz_position].c_str());
-	    coordinate.set(x,y,z);		//store velocities temporarily in coordinate object
-	    (molecules[speciesii][moleculeii]).set_velocity(type,n_typeii[type],coordinate,timestepii);	//send coordinates to atom
-	  }
-         if(mass_provided)
-	  {
-	   molecules[speciesii][moleculeii].show_atom_trajectory(type,n_typeii[type])->set_mass(atof(args[mass_position].c_str()));
-	 }
+          if(manual_style=="unwrapped")
+          {
+            //read unwrapped coordinates
+            x = atof(args[x_position].c_str());
+            y = atof(args[y_position].c_str());
+            z = atof(args[z_position].c_str());
+            coordinate.set(x,y,z);		//store coordinates temporarily in coordinate object
+            (molecules[speciesii][moleculeii]).set_unwrapped(type,n_typeii[type],coordinate,timestepii);	//send coordinates to atom
+        
+            //wrap coordinates
+            coordinate -= box_size[timestepii]*((coordinate-box_boundary[timestepii][0])/box_size[timestepii]).coord_floor();
+            (molecules[speciesii][moleculeii]).set_coordinate(type,n_typeii[type],coordinate,timestepii);	//send coordinates to atom
+          }
+    
+          else if(manual_style=="wrapped_indexed")
+          {
+            //read wrapped coordinates
+            x = atof(args[x_position].c_str());
+            y = atof(args[y_position].c_str());
+            z = atof(args[z_position].c_str());
+            coordinate.set(x,y,z);		//store coordinates temporarily in coordinate object
+            (molecules[speciesii][moleculeii]).set_coordinate(type,n_typeii[type],coordinate,timestepii);	//send coordinates to atom
+        
+            //compute unwrapped coordinates using image flags
+            x=x+atof(args[ix_position].c_str())*box_size[timestepii].show_x();
+            y=y+atof(args[iy_position].c_str())*box_size[timestepii].show_y();
+            z=z+atof(args[iz_position].c_str())*box_size[timestepii].show_z();
+            coordinate.set(x,y,z);		//store coordinates temporarily in coordinate object
+            (molecules[speciesii][moleculeii]).set_unwrapped(type,n_typeii[type],coordinate,timestepii);	//send coordinates to atom
+          }
 
-         n_typeii[type]++;		//increment count of atoms of this type
+          /*The following reads in extra columns into a value list*/
+          for(int customii=0;customii<n_custom_columns;customii++)
+          {
+            //(value_lists[vlist_names[customii]])->push(timestepii,atof((args[custom_position[customii]]).c_str()));  //add next value from custom column to appropriate column list
+
+            (value_lists[vlist_names[customii]])->set(timestepii,(molecules[speciesii][moleculeii]).show_atom_trajectory(type,n_typeii[type])->show_trajectory_ID(),atof((args[custom_position[customii]]).c_str()));
+
+          }
+
+          if(v_provided)	/*read velocities if they are provided*/
+          {
+            x = atof(args[vx_position].c_str());
+            y = atof(args[vy_position].c_str());
+            z = atof(args[vz_position].c_str());
+            coordinate.set(x,y,z);		//store velocities temporarily in coordinate object
+            (molecules[speciesii][moleculeii]).set_velocity(type,n_typeii[type],coordinate,timestepii);	//send coordinates to atom
+          }
+          if(mass_provided)
+          {
+            molecules[speciesii][moleculeii].show_atom_trajectory(type,n_typeii[type])->set_mass(atof(args[mass_position].c_str()));
+          }
+
+          n_typeii[type]++;		//increment count of atoms of this type
        }
      }
    }
@@ -1848,8 +1860,6 @@ void System::read_custom(string xyzfilename, string structure_filename)
   n_typeii = new int [n_atomtypes];
   cout << "\nReading a " << n_timesteps <<" timestep trajectory of " << n_atoms << " atoms.\n";
 
-
-
   /*read in template file containing information on trajectory file structure*/
   while(!structurefile.eof())
   {
@@ -1882,8 +1892,6 @@ void System::read_custom(string xyzfilename, string structure_filename)
       moleculeblockii++;
     }
   }
-
-
 
    /*determine atom order template for each species*/
    /*header lines*/
@@ -2048,9 +2056,9 @@ void System::read_custom(string xyzfilename, string structure_filename)
       v_provided = in_string_array(args,"vx")&&in_string_array(args,"vy")&&in_string_array(args,"vz");
       if(v_provided)
       {
-	vx_position = find_in_string_array(args,"vx")-2;
-	vy_position = find_in_string_array(args,"vy")-2;
-	vz_position = find_in_string_array(args,"vz")-2;
+        vx_position = find_in_string_array(args,"vx")-2;
+        vy_position = find_in_string_array(args,"vy")-2;
+        vz_position = find_in_string_array(args,"vz")-2;
       }
 
       /*Check if mass is provided; if so, note its column*/
@@ -2122,7 +2130,7 @@ void System::read_custom(string xyzfilename, string structure_filename)
       /*Find and store position of type column; if not present, return error*/
       if(in_string_array(args,"type"))
       {
-	type_position=find_in_string_array(args,"type")-2;
+        type_position=find_in_string_array(args,"type")-2;
       }
       else
       {
@@ -2138,8 +2146,9 @@ void System::read_custom(string xyzfilename, string structure_filename)
       for(moleculeii=0;moleculeii<moleculeblock_size[moleculeblockii];moleculeii++)
       {
         for(typeii=0;typeii<n_atomtypes;typeii++) {n_typeii[typeii]=0;}  //initiate type count array to zero at start of each molecule
-	line = "";
+        line = "";
         for(argii=0;argii<ARGMAX;argii++){args[argii]="";}
+
         for(atomii=0;atomii<molecules[moleculeblock_type[moleculeblockii]][0].atomcount();atomii++)
         {
 	  line = "";
@@ -2203,7 +2212,7 @@ void System::read_custom(string xyzfilename, string structure_filename)
 	    (molecules[moleculeblock_type[moleculeblockii]][moleculecount[moleculeblock_type[moleculeblockii]]]).set_coordinate(atomorder[moleculeblock_type[moleculeblockii]][atomii],n_typeii[atomorder[moleculeblock_type[moleculeblockii]][atomii]],coordinate,timestepii);	//send coordinates to atom
 	  }
 
-          if(v_provided)	/*read velocities if they are provided*/
+      if(v_provided)	/*read velocities if they are provided*/
 	  {
 	    x = atof(args[vx_position].c_str());
 	    y = atof(args[vy_position].c_str());
@@ -2212,10 +2221,10 @@ void System::read_custom(string xyzfilename, string structure_filename)
 	    (molecules[moleculeblock_type[moleculeblockii]][moleculecount[moleculeblock_type[moleculeblockii]]]).set_velocity(atomorder[moleculeblock_type[moleculeblockii]][atomii],n_typeii[atomorder[moleculeblock_type[moleculeblockii]][atomii]],coordinate,timestepii);	//send coordinates to atom
 	  }
 
-         if(mass_provided)
-	 {
+      if(mass_provided)
+      {
 	   molecules[moleculeblock_type[moleculeblockii]][moleculecount[moleculeblock_type[moleculeblockii]]].show_atom_trajectory(atomorder[moleculeblock_type[moleculeblockii]][atomii],n_typeii[atomorder[moleculeblock_type[moleculeblockii]][atomii]])->set_mass(atof(args[mass_position].c_str()));
-	 }
+      }
 
          n_typeii[atomorder[moleculeblock_type[moleculeblockii]][atomii]]++;		//increment count of atoms of this type
        }
