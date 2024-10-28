@@ -2881,6 +2881,11 @@ void System::read_custom_byid(string xyzfilename)
 	 {
 	   molecules[speciesii][moleculeii].show_atom_trajectory(type,atomii)->set_mass(atof(args[mass_position].c_str()));
 	 }
+
+    //attempt to correctly set atom ID. Need to test if this works
+	 molecules[speciesii][moleculeii].show_atom_trajectory(type,atomii)->set_trajectory_ID(atomii-1);
+     molecules[speciesii][moleculeii].show_atom_trajectory(type,atomii)->set_atomID(atomii-1);
+
        }
     print_progress(++timetally, n_timesteps);
   }
