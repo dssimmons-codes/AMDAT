@@ -605,6 +605,8 @@ void System::read_xyz(string xyzfilename)
   int * n_typeii;			//array of indices to track how many of each type have been passed to particular molecule
   int typeii;				//index over elements of above aray
   int timetally=0;
+  int running_atomcount=0;
+  string type_name;
 
   ifstream filexyz(xyzfilename.c_str());
   ifstream * fileobject = &filexyz;
@@ -637,12 +639,25 @@ void System::read_xyz(string xyzfilename)
 
         for(atomii=0; atomii < ((molecules[speciesii][moleculeii]).atomcount());atomii++)
         {
-	      *fileobject >> type >> x >> y >> z;
+	      *fileobject >> type_name >> x >> y >> z;
+          type=atoi(type_name.c_str());
           if(type > n_atomtypes)
           {
             cout << "Atom type in trajectory file out of range!\n";
             exit(1);
           }
+
+          /*Set atom index to match LAMMPS atom index - 1, assuming that atoms in the xyz file are in order*/
+          if(timestepii==0)
+          {
+            (molecules[speciesii][moleculeii]).show_atom_trajectory(show_atomtype_index(type_name),n_typeii[show_atomtype_index(type_name)])->set_trajectory_ID(running_atomcount);
+
+            (molecules[speciesii][moleculeii]).show_atom_trajectory(show_atomtype_index(type_name),n_typeii[show_atomtype_index(type_name)])->set_atomID(running_atomcount);
+            running_atomcount++;
+          }
+
+
+
          coordinate.set(x,y,z);		//store coordinates temporarily in coordinate object
          (molecules[speciesii][moleculeii]).set_coordinate(type-1,n_typeii[type-1],coordinate,timestepii);	//send coordinates to atom
          n_typeii[type-1]++;		//increment count of atoms of this type
@@ -692,6 +707,7 @@ void System::read_xyz(string xyzfilename, string structure_filename)
   int moleculeblockii, argii;
   int ** atomorder;			//store order of atoms within molecules of each species
   int * moleculecount;
+  int running_atomcount = 0;
 
   moleculecount = new int [n_species];
   for(speciesii=0;speciesii<n_species;speciesii++)
@@ -823,6 +839,20 @@ void System::read_xyz(string xyzfilename, string structure_filename)
           z = atof(args[3].c_str());
           coordinate.set(x,y,z);		//store coordinates temporarily in coordinate object
           (molecules[moleculeblock_type[moleculeblockii]][moleculecount[moleculeblock_type[moleculeblockii]]]).set_coordinate(atomorder[moleculeblock_type[moleculeblockii]][atomii],n_typeii[atomorder[moleculeblock_type[moleculeblockii]][atomii]],coordinate,timestepii);	//send coordinates to atom
+
+
+          /*Set atom index to match LAMMPS atom index - 1, assuming that atoms in the xyz file are in order*/
+          if(timestepii==0)
+          {
+
+            (molecules[moleculeblock_type[moleculeblockii]][moleculeii]).show_atom_trajectory(atomorder[moleculeblock_type[moleculeblockii]][atomii],n_typeii[atomorder[moleculeblock_type[moleculeblockii]][atomii]])->set_trajectory_ID(running_atomcount);
+
+            (molecules[moleculeblock_type[moleculeblockii]][moleculeii]).show_atom_trajectory(atomorder[moleculeblock_type[moleculeblockii]][atomii],n_typeii[atomorder[moleculeblock_type[moleculeblockii]][atomii]])->set_atomID(running_atomcount);
+
+            running_atomcount++;
+
+          }
+
           n_typeii[atomorder[moleculeblock_type[moleculeblockii]][atomii]]++;		//increment count of atoms of this type
         }
         moleculecount[moleculeblock_type[moleculeblockii]]++;
@@ -1831,6 +1861,8 @@ void System::read_custom(string xyzfilename, string structure_filename)
   int ** atomorder;			//store order of atoms within molecules of each species
   int * moleculecount;
   int type;
+  int running_atomcount=0;
+
   float xlo, xhi, ylo, yhi, zlo, zhi, Lx, Ly, Lz;
   int n_columns;		//number of columns of atom data in custom dump file
   bool r_provided, rs_provided, ru_provided, rsu_provided;		//booleans specifying whether a complete set of wrapped, scaled wraped, unwrapped, and scaled unwrapped coordinates are provided by the trajectory file
@@ -2151,17 +2183,26 @@ void System::read_custom(string xyzfilename, string structure_filename)
 
         for(atomii=0;atomii<molecules[moleculeblock_type[moleculeblockii]][0].atomcount();atomii++)
         {
-	  line = "";
-	  getline(*fileobject,line);
-	  args = tokenize(line);
+          line = "";
+          getline(*fileobject,line);
+          args = tokenize(line);
 
 
-	  /*read type and check whether it is valid*/
-	  type = show_atomtype_index(args[type_position]);
-	  if(type > n_atomtypes)
+          /*read type and check whether it is valid*/
+          type = show_atomtype_index(args[type_position]);
+          if(type > n_atomtypes)
           {
             cout << "Atom type " << type << " in trajectory file out of range!\n";
             exit(1);
+          }
+
+          if(timestepii==0)
+          {
+            (molecules[moleculeblock_type[moleculeblockii]][moleculeii]).show_atom_trajectory(atomorder[moleculeblock_type[moleculeblockii]][atomii],n_typeii[atomorder[moleculeblock_type[moleculeblockii]][atomii]])->set_trajectory_ID(running_atomcount);
+
+            (molecules[moleculeblock_type[moleculeblockii]][moleculeii]).show_atom_trajectory(atomorder[moleculeblock_type[moleculeblockii]][atomii],n_typeii[atomorder[moleculeblock_type[moleculeblockii]][atomii]])->set_atomID(running_atomcount);
+
+            running_atomcount++;
           }
 
 	  if(read_r) /*read wrapped, unscaled coordinates if appropriate*/
