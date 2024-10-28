@@ -33,6 +33,7 @@ LAMMPS can read multiple trajectory file types, each requiring a different set o
 | [xyz](xyz.md) | Reads in xyz files produced by LAMMPS. Generally reads in wrapped coordinates and attempts to infer unwrapped coordinates as best it can. Only works with fixed box size (system\_nv) systems. |
 | [xyz_log](xyz_log.md) | Reads in xyz files produced by LAMMPS, as with xyz. Also reads in a LAMMPS log file to obtain box size information. Only works with fixed box size (system\_nv) systems. |
 | [custom](custom.md) | Reads in a LAMMPS custom trajectory file.|
+| [custom_byid](custom_byid.md) | Reads in a LAMMPS custom trajectory file, making use of atom IDs in file.|
 | [custom_ manual](custom_manual.md) | Reads in a LAMMPS custom trajectory file. Provides more customizability regarding which columns are assocated with which coordinate data, and also enables read-in of additional columns as [value_list](value_list.md) objects for analysis.|
 | [xtc](xtc.md) | Reads in xtc binary format produced by GROMACS. Developed on a much earlier version of GROMACS and requires updated testing. |
 
