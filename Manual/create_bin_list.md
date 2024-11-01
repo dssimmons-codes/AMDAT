@@ -8,8 +8,8 @@ Formatting of second line is:
 
 |type	|	args | effect |
 |----------|----------|----------|
-|all	|		<n_xbins> <n_ybins> <n_zbins>| All trajectories are binned into a (n_xbins,n_ybins,n_zbins) structure where the bins are evenly distributed across the dimensions of the entire system |
-| region	|		<n_xbins> <n_ybins> <n_zbins> <xlo> <xhi> <ylo> <yhi> <zlo> <zhi> |All trajectories are binned similarly to <all>, but the bins are evenly split across the specified region.|
-| distance	| trajectory <list_to_bin> <list_to_take_distance_from> <bin_thickness> <n_bins> | All trajectories are binned as a function of distance from the nearest particle in a second list. |
-| distance |	point <list_to_bin> <x_coordinate> <y_coordinate> <z_coordinate> <bin_thickness> <n_bins> | All trajectories are binned as a function of radial distance from the specified point.  |
-| distance |	plane <direction> <list_to_bin> <axes perpendicular to plane> <position of plane> <bin_thickness> <n_bins> | All trajectories are binned as a function of perpendicular distance from the specified plane. <direction> can be “above” or “below”, which will only include particles above or below the plane, or “average” which will include particles on both sides of the plane. |
+|all	|		\<n\_xbins\> \<n\_ybins\> \<n\_zbins\>| All trajectories are binned into a (n_xbins,n_ybins,n_zbins) structure where the bins are evenly distributed across the dimensions of the entire system |
+| region	|		\<n_xbins\> \<n_ybins\> \<n_zbins\> \<xlo\> \<xhi\> \<ylo\> \<yhi\> \<zlo\> \<zhi\> |All trajectories are binned similarly to <all>, but the bins are evenly split across the specified region.|
+| distance	| trajectory \<list\_to\_bin\> \<list\_to\_take\_distance\_from\> \<bin\_thickness\> \<n\_bins\> | All trajectories are binned as a function of distance from the nearest particle in a second list. |
+| distance |	point \<list\_to\_bin\> \<x\_coordinate\> \<y\_coordinate\> \<z\_coordinate\> \<bin\_thickness\> \<n\_bins\> | All trajectories are binned as a function of radial distance from the specified point.  |
+| distance |	plane \<direction\> \<list\_to\_bin\> \<axes perpendicular to plane\> \<position of plane\> \<bin\_thickness\> \<n\_bins\> | All trajectories are binned as a function of perpendicular distance from the specified plane. \<direction\> can be “above” or “below”, which will only include particles above or below the plane, or “average” which will include particles on both sides of the plane. |
