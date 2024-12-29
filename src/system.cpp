@@ -4780,39 +4780,39 @@ void System::loop_system(Analysis* analysis)const
 /*Method to impose periodic boundary conditions, in case lammps has let any particles slip out (it does not impose periodic boundaries every timestep)*/
 void System::boxify()
 {
- float xmin, ymin, zmin, xmax, ymax, zmax;
- int speciesii, moleculeii, typeii, atomii, timeii;
- Coordinate coordinate;
- Coordinate unitx(1,0,0);
- Coordinate unity(0,1,0);
- Coordinate unitz(0,0,1);
- Coordinate xshifter, yshifter, zshifter;
- int xshift, yshift, zshift;
+  float xmin, ymin, zmin, xmax, ymax, zmax;
+  int speciesii, moleculeii, typeii, atomii, timeii;
+  Coordinate coordinate;
+  Coordinate unitx(1,0,0);
+  Coordinate unity(0,1,0);
+  Coordinate unitz(0,0,1);
+  Coordinate xshifter, yshifter, zshifter;
+  int xshift, yshift, zshift;
 
- if (!boxified)
- {
-   cout << "\nBoxifying system."<<endl;
-   for(timeii=0;timeii<n_timesteps;timeii++)
-   {
-     xmin = box_boundary[timeii][0].show_x();
-     ymin = box_boundary[timeii][0].show_y();
-     zmin = box_boundary[timeii][0].show_z();
-     xmax = box_boundary[timeii][1].show_x();
-     ymax = box_boundary[timeii][1].show_y();
-     zmax = box_boundary[timeii][1].show_z();
+  if (!boxified)
+  {
+    cout << "\nBoxifying system."<<endl;
+    for(timeii=0;timeii<n_timesteps;timeii++)
+    {
+      xmin = box_boundary[timeii][0].show_x();
+      ymin = box_boundary[timeii][0].show_y();
+      zmin = box_boundary[timeii][0].show_z();
+      xmax = box_boundary[timeii][1].show_x();
+      ymax = box_boundary[timeii][1].show_y();
+      zmax = box_boundary[timeii][1].show_z();
 
-     xshifter=unitx*(xmax-xmin);
-     yshifter=unity*(ymax-ymin);
-     zshifter=unitz*(zmax-zmin);
-     for(speciesii=0;speciesii<n_species;speciesii++)
-     {
-       for(moleculeii=0;moleculeii<n_molecules[speciesii];moleculeii++)
-       {
-	 for(typeii=0;typeii<n_atomtypes;typeii++)
-	 {
-	   for(atomii=0;atomii<molecules[speciesii][moleculeii].typecount(typeii);atomii++)
-	   {
-	      xshift=yshift=zshift=0;
+      xshifter=unitx*(xmax-xmin);
+      yshifter=unity*(ymax-ymin);
+      zshifter=unitz*(zmax-zmin);
+      for(speciesii=0;speciesii<n_species;speciesii++)
+      {
+        for(moleculeii=0;moleculeii<n_molecules[speciesii];moleculeii++)
+        {
+	        for(typeii=0;typeii<n_atomtypes;typeii++)
+	        {
+	          for(atomii=0;atomii<molecules[speciesii][moleculeii].typecount(typeii);atomii++)
+	          {
+	            xshift=yshift=zshift=0;
               coordinate = molecules[speciesii][moleculeii].show_atom_trajectory(typeii,atomii)->show_coordinate(timeii);
               if(coordinate.show_x()<xmin||coordinate.show_x()>xmax||coordinate.show_y()<ymin||coordinate.show_y()>ymax||coordinate.show_z()<zmin||coordinate.show_z()>zmax)
               {
@@ -4851,6 +4851,7 @@ void System::boxify()
         }
       }
     }
+    cout << "\nFinished boxifying."<<endl;
   }
 }
 
