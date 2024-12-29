@@ -217,10 +217,7 @@ Coordinate Coordinate::coord_round()const
 /*Methods to calculate in-box vector length*/
 float Coordinate::length()const
 {
-	float length;
-	//length = pow((pow(x,2)+pow(y,2)+pow(z,2)),.5);
-	length = pow((x*x+y*y+z*z),.5);
-	return length;
+	return powf((x*x+y*y+z*z),.5);
 }
 
 float Coordinate::length_xy()const
@@ -254,7 +251,6 @@ float Coordinate::length_sq()const
 	lengthsq = x*x+y*y+z*z;
 	return lengthsq;
 }
-
 
 /*Methods to calculate shortest vector, considering box crossing*/
 Coordinate Coordinate::vector_unwrapped(const Coordinate& boxsize)const
@@ -293,7 +289,7 @@ float Coordinate::length_unwrapped(const Coordinate& boxsize)const
 	miny = min(abs(y),boxsize.y-abs(y));
 	minz = min(abs(z),boxsize.z-abs(z));
 
-	length = pow((minx*minx+miny*miny+minz*minz),.5);
+	length = powf((minx*minx+miny*miny+minz*minz),.5);
 
 	return length;
 }
