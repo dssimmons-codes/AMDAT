@@ -1,8 +1,8 @@
-<h1>composition</h1>
+<h1>composition_vs_time</h1>
 
 Calculates the composition and number density.
 
-_composition \<output file\>_
+_composition\_vs\_time \<output file\>_
 
 _\<target\>_
 

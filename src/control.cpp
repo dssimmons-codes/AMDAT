@@ -35,6 +35,7 @@
 #include "rgtensor_stats.h"
 #include "displacement_map.h"
 #include "composition.h"
+#include "composition_timedependent.h"
 #include "n_fold_order_parameter.h"
 #include "structure_factor.h"
 #include "clustered_list.h"
@@ -419,6 +420,8 @@ int Control::execute_commands(int iIndex, int fIndex)
     {process_value_list();}
     else if (command == "composition")
     {composition();}
+    else if (command == "composition_vs_time")
+    {composition_vs_time();}
     else if (command == "nfold")
     {nfold();}
     else if (command == "vector_autocorrelation_function")
@@ -4401,6 +4404,102 @@ void Control::composition()
 
      cout << "\nCalculated composition in " << finish-start<<" seconds.";
 }
+
+
+void Control::composition_vs_time()
+{
+    /** returns the average and time dependent composition
+  * @date 10/31/2024
+  **/
+    string runline;
+  string filename;
+  int timescheme;
+
+  argcheck(2,3);
+  dynamic=0;
+  filename=args[1];
+
+  if(n_args==3)
+  {
+    timescheme=atoi(args[2].c_str());
+  }
+  else
+  {
+    timescheme=-1;
+  }
+
+  int num_xbins, num_ybins, num_zbins;
+  float lx, ly, lz;
+
+  string setargs[ARGMAX];		//array of arguments in runline
+  int n_setargs;			//number of arguments in runline
+  string command;			//command specifying type of set to loop over
+//  int bin_expected;
+  string listname;
+
+  string bin_listname;
+  int bin_listnum;
+
+//  getline(input,runline);
+  runline = read_line();
+  n_setargs = tokenize(runline, setargs);
+   if ( n_setargs==0 )
+     {
+	  cout << "Error: No atom set command found.";
+	  exit(1);
+     }
+   else
+     {
+	  command = setargs[0];
+     }
+
+  cout << endl << command << endl; cout.flush();
+  if ( command=="bin_list")
+  {
+
+     if(n_setargs<3)
+	  {
+	    cout << "Error: Insufficient number of arguments in bin_list target line.\n";
+	    exit(0);
+	  }
+    //bin_expected = 3; // <command> <bin_list_ID> <list_ID>
+     //setargcheck(bin_expected, n_setargs, command);
+     bin_listname = setargs[1];
+     bin_listnum = find_trajectorylist_bins(bin_listname);
+     if(bin_listnum!=-1)
+      {
+	num_xbins = binned_trajectories[bin_listnum]->show_n_xbins();
+	num_ybins = binned_trajectories[bin_listnum]->show_n_ybins();
+	num_zbins = binned_trajectories[bin_listnum]->show_n_zbins();
+	lx = binned_trajectories[bin_listnum]->show_lx();
+	ly = binned_trajectories[bin_listnum]->show_ly();
+	lz = binned_trajectories[bin_listnum]->show_lz();
+      }
+      else
+      {
+	  cout << "\nBinned Trajectory list '"<<bin_listname<<"' not found.";
+	  exit(1);
+      }
+  }
+  else
+  {
+     num_xbins = 1;
+     num_ybins = 1;
+     num_zbins = 1;
+     lx = (analyte->size()).show_x();
+     ly = (analyte->size()).show_y();
+     lz = (analyte->size()).show_z();
+  }
+     Composition_TimeDependent comp(analyte,num_xbins,num_ybins,num_zbins,lx,ly,lz,timescheme);
+     cout << "\nCalculating composition.\n"; cout.flush();
+     start = time(NULL);
+     run_analysis <Composition_TimeDependent> (comp, runline, filename);
+
+     finish = time(NULL);
+
+     cout << "\nCalculated composition in " << finish-start<<" seconds.";
+}
+
 
 
 void Control::find_edge()
