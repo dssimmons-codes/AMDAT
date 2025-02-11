@@ -89,6 +89,12 @@ System::System(vector<string> file_in, bool ensemble)
 
   if(timetype=="linear")
   {
+    if(args.size()!=3)
+    {
+      cout << "\nError: Incorrect number of arguments for linear time style. Terminating execution.\n";
+      exit(0);
+    }
+
     n_timesteps = atoi(args[1].c_str());
     n_exponentials = n_timesteps-1;
     exp_base = 1.0;
@@ -99,6 +105,11 @@ System::System(vector<string> file_in, bool ensemble)
   }
   else if (timetype == "exponential")
   {
+    if(args.size()!=7)
+    {
+      cout << "\nError: Incorrect number of arguments for exponential time style. Terminating execution.\n";
+      exit(0);
+    }
     n_exponentials = atoi(args[1].c_str());
     n_exponential_steps = atoi(args[2].c_str());
     exp_base = atof(args[3].c_str());
@@ -109,6 +120,11 @@ System::System(vector<string> file_in, bool ensemble)
   }
   else if (timetype == "snapshot")
   {
+    if(args.size()!=1)
+    {
+      cout << "\nError: Incorrect number of arguments for snapshot time style. Terminating execution.\n";
+      exit(0);
+    }
     n_timesteps = 1;
     n_exponentials = 1;
     exp_base = 1.0;

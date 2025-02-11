@@ -192,6 +192,7 @@ class Control
     void rgtensor_stats();	//calculate rg tensor statistics
     void nfold();		//calculate n-fold orientational order parameter
     void composition();     	//writes a file detailing the compostion of the system
+    void composition_vs_time(); //writes a file detailing the compostion of the system, as a function of time
     void clustered_list();	//generates a list clustered from a trajectoory list
     void invert_list();     //inverts a trajectory_list
     void displacement_map();
