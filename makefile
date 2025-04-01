@@ -6,23 +6,23 @@ CFLAGSmain= -fopenmp# -O2
 #CFLAGS=-Wall -Wextra -Wcast-qual -Wcast-align -O0 -ggdb -g3 -fstack-protector-all -fno-inline -c -fopenmp #-O2
 #CFLAGSmain=-Wall -Wextra -Wcast-qual -Wcast-align -O0 -ggdb -g3 -fstack-protector-all -fno-inline -fopenmp #-O2
 SERVER=TACC
-WAVEVECTORS3D="\"./src/qvectors/qvectors3d/qvector\""
-WAVEVECTORS2D="\"./src/qvectors/qvectors2d/qvector\""
-WAVEVECTORS1D="\"./src/qvectors/qvectors1d/qvector\""
+WAVEVECTORS3D="\"$(CURDIR)/src/qvectors/qvectors3d/qvector\""
+WAVEVECTORS2D="\"$(CURDIR)/src/qvectors/qvectors2d/qvector\""
+WAVEVECTORS1D="\"$(CURDIR)/src/qvectors/qvectors1d/qvector\""
 
 OBJDIR = ./build
 
 OBJECTS= $(OBJDIR)/amdat.o $(OBJDIR)/tokenize.o $(OBJDIR)/coordinate.o $(OBJDIR)/trajectory.o $(OBJDIR)/atom_trajectory.o $(OBJDIR)/molecule.o $(OBJDIR)/system.o $(OBJDIR)/analysis.o $(OBJDIR)/space-time_correlation_function.o $(OBJDIR)/van_hove_self.o $(OBJDIR)/progress.o $(OBJDIR)/mean_square_displacement.o $(OBJDIR)/van_hove_distinct.o $(OBJDIR)/control.o \
 $(OBJDIR)/wave_vectors.o $(OBJDIR)/wave_density.o $(OBJDIR)/intermediate_scattering_function.o $(OBJDIR)/correlation_2d.o $(OBJDIR)/incoherent_scattering_function.o $(OBJDIR)/debyewaller_dist.o $(OBJDIR)/stiffness_dist.o $(OBJDIR)/non_gaussian_parameter.o \
 $(OBJDIR)/gaussian_comparison.o $(OBJDIR)/radial_debye_waller.o $(OBJDIR)/mean_square_displacement_2d.o $(OBJDIR)/velocity_autocorrelation.o $(OBJDIR)/strings.o $(OBJDIR)/trajectory_list.o $(OBJDIR)/static_trajectory_list.o $(OBJDIR)/exptime_trajectory_list.o $(OBJDIR)/rgtensor.o $(OBJDIR)/trajmath.o $(OBJDIR)/rgtensor_stats.o \
-$(OBJDIR)/displacement_distribution.o $(OBJDIR)/boolean_list.o $(OBJDIR)/fast_particles.o $(OBJDIR)/displacement_map.o $(OBJDIR)/composition.o $(OBJDIR)/n_fold_order_parameter.o $(OBJDIR)/trajectory_list_bins.o $(OBJDIR)/structure_factor.o $(OBJDIR)/clustered_list.o $(OBJDIR)/trajectory_list_decay.o \
+$(OBJDIR)/displacement_distribution.o $(OBJDIR)/boolean_list.o $(OBJDIR)/fast_particles.o $(OBJDIR)/displacement_map.o $(OBJDIR)/composition.o $(OBJDIR)/composition_timedependent.o $(OBJDIR)/n_fold_order_parameter.o $(OBJDIR)/trajectory_list_bins.o $(OBJDIR)/structure_factor.o $(OBJDIR)/clustered_list.o $(OBJDIR)/trajectory_list_decay.o \
 $(OBJDIR)/vector_autocorrelation.o $(OBJDIR)/error.o $(OBJDIR)/mean_displacement.o $(OBJDIR)/multibody.o $(OBJDIR)/multibody_set.o $(OBJDIR)/multibody_list.o $(OBJDIR)/multibody_analysis.o $(OBJDIR)/gyration_radius.o $(OBJDIR)/trajectory_set.o $(OBJDIR)/edge_detector_timedependent.o $(OBJDIR)/mean_velocity_unsteady.o \
 $(OBJDIR)/mean_unsteady_displacement.o $(OBJDIR)/analysis_onetime.o $(OBJDIR)/radial_distribution_function.o $(OBJDIR)/bond_autocorrelation_function.o $(OBJDIR)/displacement_list.o $(OBJDIR)/orientational_correlation.o $(OBJDIR)/size_statistics.o $(OBJDIR)/multibody_region.o $(OBJDIR)/provisional_multibodies.o \
 $(OBJDIR)/dynamic_cluster_multibodies.o $(OBJDIR)/string_multibodies.o $(OBJDIR)/comover_multibodies.o $(OBJDIR)/relative_displacement_strings.o $(OBJDIR)/neighbor_list.o $(OBJDIR)/distance_neighbor_list.o $(OBJDIR)/persistent_neighbors.o $(OBJDIR)/voronoi_neighbor_list.o $(OBJDIR)/neighbor_decorrelation_function.o $(OBJDIR)/radial_count.o $(OBJDIR)/mean_closest_distance.o $(OBJDIR)/particles_between.o
 
 CONTROLHEADERS=src/control.h src/system.h src/van_hove_self.h src/mean_square_displacement.h src/van_hove_distinct.h src/molecule.h src/atom_trajectory.h src/coordinate.h src/analysis.h src/debyewaller_dist.h src/stiffness_dist.h src/non_gaussian_parameter.h \
 src/gaussian_comparison.h src/fast_particles.h src/tokenize.h src/radial_debye_waller.h src/mean_square_displacement_2d.h src/velocity_autocorrelation.h src/strings.h src/rgtensor_stats.h src/displacement_map.h src/trajectory_list_bins.h src/bin_dynamics_analysis.h \
-src/bin_static_analysis.h src/composition.h src/n_fold_order_parameter.h src/trajectory_list_decay.h src/multibody_set.h src/multibody.h src/multibody_list.h src/multibody_analysis.h src/gyration_radius.h src/trajectory_set.h src/edge_detector_timedependent.h \
+src/bin_static_analysis.h src/composition.h src/composition_timedependent.h src/n_fold_order_parameter.h src/trajectory_list_decay.h src/multibody_set.h src/multibody.h src/multibody_list.h src/multibody_analysis.h src/gyration_radius.h src/trajectory_set.h src/edge_detector_timedependent.h \
 src/mean_velocity_unsteady.h src/mean_unsteady_displacement.h src/radial_distribution_function.h src/bond_autocorrelation_function.h src/orientational_correlation.h src/size_statistics.h src/provisional_multibodies.h src/dynamic_cluster_multibodies.h \
 src/string_multibodies.h src/comover_multibodies.h src/relative_displacement_strings.h src/neighbor_list.h src/distance_neighbor_list.h src/persistent_neighbors.h src/voronoi_neighbor_list.h src/neighbor_decorrelation_function.h src/radial_count.h src/mean_closest_distance.h src/particles_between.h
 
@@ -135,6 +135,8 @@ $(OBJDIR)/fast_particles.o: src/fast_particles.h src/fast_particles.cpp src/anal
 $(OBJDIR)/n_fold_order_parameter.o: src/n_fold_order_parameter.h src/n_fold_order_parameter.cpp src/version.h src/value_list.h src/system.h src/atom_trajectory.h src/coordinate.h src/molecule.h src/analysis.h src/trajectory.h src/trajectory_list.h src/boolean_list.h
 
 $(OBJDIR)/composition.o: src/composition.h src/composition.cpp src/analysis.h src/version.h src/system.h src/molecule.h src/atom_trajectory.h src/coordinate.h src/tokenize.h src/trajectory.h src/trajectory_list.h
+
+$(OBJDIR)/composition_timedependent.o: src/composition_timedependent.h src/composition_timedependent.cpp src/composition.h src/analysis.h src/version.h src/system.h src/molecule.h src/atom_trajectory.h src/coordinate.h src/tokenize.h src/trajectory.h src/trajectory_list.h
 
 $(OBJDIR)/displacement_map.o: src/displacement_map.h src/displacement_map.cpp src/version.h src/value_list.h src/system.h src/atom_trajectory.h src/coordinate.h src/molecule.h src/analysis.h src/trajectory.h src/trajectory_list.h src/boolean_list.h
 
