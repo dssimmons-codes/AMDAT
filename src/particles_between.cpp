@@ -174,7 +174,7 @@ void Particles_Between::listkernel2(Trajectory* traj1, Trajectory* traj2, int ti
     return;
 
   //check if distance between traj1 and traj2 is under dist_cutoff before proceeding over tertiary loop
-  Coordinate dist_vector_1 = (traj2->show_coordinate(thisii)-(traj1->show_coordinate(thisii))).vector_unwrapped(system->size()); //calculate shortest distance between two coordinates, taking into account periodic boundaries
+  Coordinate dist_vector_1 = (traj2->show_coordinate(thisii)-(traj1->show_coordinate(thisii))).vector_unwrapped(system->size(thisii)); //calculate shortest distance between two coordinates, taking into account periodic boundaries
   float dist_1 = dist_vector_1.length();
   if (dist_1/2.0 > dist_cutoff)
     return;
@@ -199,7 +199,7 @@ void Particles_Between::listkernel2(Trajectory* traj1, Trajectory* traj2, int ti
       continue;
 
     //check if distance between traj1 and traj3 is under dist_cutoff
-    Coordinate dist_vector_2 = (traj3->show_coordinate(thisii)-(traj1->show_coordinate(thisii))).vector_unwrapped(system->size());
+    Coordinate dist_vector_2 = (traj3->show_coordinate(thisii)-(traj1->show_coordinate(thisii))).vector_unwrapped(system->size(thisii));
     float dist_2 = dist_vector_2.length();
     if (dist_2/2.0 > dist_cutoff)
       continue;
