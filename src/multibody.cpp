@@ -239,6 +239,25 @@ Coordinate Multibody::calculate_centroid(int timeii)const
 
 
 /*Method to calculate multibody gyration radis at a given time*/
+float Multibody::square_endtoend_distance(int timeii)
+{
+  int bodyii;
+  float endtoend_distance=0;
+  int n_trajectories=trajectories.size();
+
+  endtoend_distance=(trajectories[0]->show_coordinate(timeii)-trajectories[1]->show_coordinate(timeii)).vector_unwrapped(system->size(timeii)).length_sq();
+
+//    //print stuff to checkk
+//    cout << "Bead1: "    << trajectories[0]->show_coordinate(timeii).show_x() << " " << trajectories[0]->show_coordinate(timeii).show_y() << " " <<trajectories[0]->show_coordinate(timeii).show_z() << "\n";
+//    cout << "Bead2: "    << trajectories[1]->show_coordinate(timeii).show_x() << " " << trajectories[1]->show_coordinate(timeii).show_y() << " " <<trajectories[1]->show_coordinate(timeii).show_z() << "\n";
+//    cout << "Box: "      << system->size(timeii).show_x() << " " << system->size(timeii).show_y() << " " <<system->size(timeii).show_z() << "\n";
+////    cout << "Diff1: "   << dist_vector_1.show_x() << " " << dist_vector_1.show_y() << " " <<dist_vector_1.show_z() << "\n";
+//    cout << endtoend_distance << "\n";
+
+  return endtoend_distance;
+}
+
+/*Method to calculate multibody gyration radis at a given time*/
 float Multibody::square_gyration_radius(int timeii)
 {
   int bodyii;

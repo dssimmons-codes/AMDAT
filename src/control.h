@@ -207,6 +207,7 @@ class Control
     void find_edge();
     void unsteady_velocity();
     /*Multibody analysis method calls*/
+    void endtoend_distance();		//calculate mean endtoend distance of multibody list
     void gyration_radius();		//calculate mean gyration radius of multibody list
     void baf();
     void raf();

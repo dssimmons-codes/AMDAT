@@ -63,6 +63,7 @@ namespace std
 
       int show_n_bodies()const{return trajectories.size();};
 
+      float square_endtoend_distance(int timeii);
       float square_gyration_radius(int timeii);
       void gyr_tensor(int timeii, sixfloat*);
       //threefloat principle_axes(int timeii);

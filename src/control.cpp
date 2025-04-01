@@ -44,6 +44,7 @@
 #include "mean_displacement.h"
 #include "edge_detector_timedependent.h"
 #include "multibody_set.h"
+#include "endtoend_distance.h"
 #include "gyration_radius.h"
 #include "multibody_list.h"
 #include "multibody_analysis.h"
@@ -434,6 +435,8 @@ int Control::execute_commands(int iIndex, int fIndex)
     {trajectory_list_decay();}
     else if (command == "gyration_radius")
     {gyration_radius();}
+    else if (command == "endtoend_distance")
+    {endtoend_distance();}
     else if (command == "baf")
     {baf();}
     else if (command == "raf")
@@ -4821,6 +4824,29 @@ void Control::trajectory_list_decay()
     cout << "\nCalculated trajectory list decay in " << finish-start<<" seconds.";
 }
 
+
+void Control::endtoend_distance()
+{
+  string filename, multibody_list_name;
+  Multibody_List * multibodylist;
+
+  int expected=3;
+  argcheck(expected);
+
+  filename = args[1];
+  multibody_list_name=args[2];
+
+  multibodylist = find_multibody_list(multibody_list_name);
+
+  Endtoend_Distance enddist(analyte);
+  cout << "\nCalculating endtoend distance.\n";cout.flush();
+  start = time(NULL);
+  enddist.analyze(multibodylist); // pass run_analysis template the analysis type 'Mean_Square_Displacement'
+  finish = time(NULL);
+  cout << "\nCalculated endtoend distance in " << finish-start<<" seconds."<<endl;
+  enddist.write(filename);
+
+}
 
 
 void Control::gyration_radius()
