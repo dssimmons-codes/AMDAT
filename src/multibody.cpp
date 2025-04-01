@@ -237,8 +237,25 @@ Coordinate Multibody::calculate_centroid(int timeii)const
   return centroid;
 }
 
+/*Method to calculate multibody endtoend distances at a given time*/
+float Multibody::square_endtoend_distance(int timeii, float *ree_xsq, float *ree_ysq, float *ree_zsq)
+{
+  int bodyii;
+  float endtoend_distance=0;
+  int n_trajectories=trajectories.size();
 
-/*Method to calculate multibody gyration radis at a given time*/
+  Coordinate endtoend_distance_ = (trajectories[0]->show_coordinate(timeii)-trajectories[1]->show_coordinate(timeii)).vector_unwrapped(system->size(timeii));
+
+  *ree_xsq = pow(endtoend_distance_.show_x(), 2);
+  *ree_ysq = pow(endtoend_distance_.show_y(), 2);
+  *ree_zsq = pow(endtoend_distance_.show_z(), 2);
+
+  endtoend_distance = endtoend_distance_.length_sq();
+
+  return endtoend_distance;
+}
+
+/*Method to calculate multibody endtoend distances at a given time*/
 float Multibody::square_endtoend_distance(int timeii)
 {
   int bodyii;
