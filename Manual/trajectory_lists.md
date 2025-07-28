@@ -1,6 +1,6 @@
 <h1>trajectory_list</h1>
 
-`trajectory_lists` are the foundational data object in AMDAT. A `trajectory_list` stores a list of particles for analysis, which may (or may not) vary with the time frame in the trajectory. Some `trajectory_lists` are static and contain a fixed list of particles for analysis. Some are dynamic and may contain different particles at each time step or in each time block (in exponential or blocked time schemes). 
+`trajectory_list`s are the foundational data object in AMDAT. A `trajectory_list` stores a list of particles for analysis, which may (or may not) vary with the time frame in the trajectory. Some `trajectory_list`s are static and contain a fixed list of particles for analysis. Some are dynamic and may contain different particles at each time step or in each time block (in exponential or blocked time schemes). 
 
 <h2>Creating and manipulating `trajectory_list`s</h2>
 
