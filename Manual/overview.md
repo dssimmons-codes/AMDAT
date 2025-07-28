@@ -30,7 +30,7 @@ AMDAT is run from the command line, specifying the filename of a user [input fil
 
 _./AMDAT \<FLAGS\>_
 
-\<FLAGS\> refers to a series of options built in to AMDAT. These flags can given in any combination in any order. Below is a list of flags and their respective syntax.
+\<FLAGS\> refers to a series of options built in to AMDAT. These flags can be given in any combination in any order. Below is a list of flags and their respective syntax.
 
 _-i \<INPUT FILE\>_
 
