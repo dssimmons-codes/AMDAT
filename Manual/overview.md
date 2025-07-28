@@ -28,37 +28,37 @@ AMDAT is run from the command line (see section below on Running AMDAT). The use
 
 AMDAT is run from the command line, specifying the filename of a user [input file](input_file.md):
 
-_./AMDAT \<FLAGS\>_
+`./AMDAT <FLAGS>`
 
-\<FLAGS\> refers to a series of options built in to AMDAT. These flags can be given in any combination in any order. Below is a list of flags and their respective syntax.
+`<FLAGS>` refers to a series of options built in to AMDAT. These flags can be given in any combination in any order. Below is a list of flags and their respective syntax.
 
-_-i \<INPUT FILE\>_
+`-i <INPUT FILE>`
 
-\<INPUTFILE\> is the path to a file directing AMDAT to a trajectory file for analysis, providing some metadata on the trajectory, and specifying the analysis to be performed. A more detailed description can be found in section 1. \<INPUTFILE\> is required to run the program.
+`<INPUTFILE>` is the path to a file directing AMDAT to a trajectory file for analysis, providing some metadata on the trajectory, and specifying the analysis to be performed. A more detailed description can be found in section 1. `<INPUTFILE>` is required to run the program.
 
-_-n \<# OF PROCESSORS\>_
+`-n <# OF PROCESSORS>`
 
-Presently, no analysis methods allow for multithreading, so this option does nothing. Eventually, this will permit AMDAT to run some analyses on \<# OF PROCESSORS\> processing cores. Defaults to 1 if not given..
+Presently, no analysis methods allow for multithreading, so this option does nothing. Eventually, this will permit AMDAT to run some analyses on `<# OF PROCESSORS>` processing cores. Defaults to 1 if not given..
 
-_-c \<CONSTANT NAME\> \<CONSTANT VALUE\>_
+`-c <CONSTANT NAME> <CONSTANT VALUE>`
 
-This flag passes to AMDAT the value of a constant (aka, variable) with name by \<CONSTANT NAME\> with an initial value of \<CONSTANT VALUE\>. AMDAT will replace any text in the input file with the format "${\<CONSTANT NAME\>}" with "\<CONSTANT VALUE\>" during execution. This flag is not required. Constants alternatively may be specified in the input file using the _constant_ command.
+This flag passes to AMDAT the value of a constant (aka, variable) with name by `<CONSTANT NAME>` with an initial value of `<CONSTANT VALUE>`. AMDAT will replace any text in the input file with the format `${<CONSTANT NAME>}` with `<CONSTANT VALUE>` during execution. This flag is not required. Constants alternatively may be specified in the input file using the `constant` command.
 
-_-h or –help_
+`-h or –help`
 
 This flag returns a help menu detailing the AMDAT verstion and date of release as well as the command line format detailed here.
 
--v
+`-v`
 
 This flag returns the AMDAT version and date of release.
 
--w \<TIME\>
+`-w <TIME>`
 
-This flag causes the program to wait for \<TIME\> seconds before beginning.
+This flag causes the program to wait for `<TIME>` seconds before beginning.
 
-\> \<LOGFILE\> 2\>&1
+`> <LOGFILE> 2>&1`
 
-This is the standard linux command to redirect screen output to \<LOGFILE\>. This command must be used after all other flags.
+This is the standard linux command to redirect screen output to `<LOGFILE>`. This command must be used after all other flags.
 
 
 <h2>Essential links</h2>
