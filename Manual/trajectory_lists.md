@@ -63,8 +63,8 @@ A large number of analysis tools target `trajectory_list` objects.
 | [`rgtensor_stats`](rgtensor_stats.md) | Calculates statistics describing the radius of gyration tensor characterizing particle trajectories as a function of time. | Tab demarkated data file |
 | [`stiffness_dist`](stiffness_dist.md) | Calculates distribution of inverse Debye-Waller factor values 1/u2. | Tab demarkated data file |
 | [`strings`](strings.md) | Analyzes 'stringlike' collective motion. Planned for deprecation in favor of string_multibodies. | Tab demarkated data file. |
-| [`streamlined_strings`] | Functionality unknown. Requires additional investigation. | Tab demarkated data file. |
-| s`tring_multibodies | Builds multibodies comprised of 'stringlike' collective displacements | `multibody_list` |
+| `streamlined_strings` | Functionality unknown. Requires additional investigation. | Tab demarkated data file. |
+| `string_multibodies` | Builds multibodies comprised of 'stringlike' collective displacements | `multibody_list` |
 | [`structure_factor`](structure_factor.md) | Computes the structure factor. | Tab demarkated data file |
 | [`trajectory_list_decay`](trajectory_list_decay.md) | Computes an autocorrelation function for inclusion in the `trajectory_list`. | Tab demarkated data file |
 | [`u2dist`](u2dist.md) | Calculates distribution of square displacements at a specified time. | Tab demarkated data file |
