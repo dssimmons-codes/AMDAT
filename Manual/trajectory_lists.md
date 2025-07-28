@@ -4,7 +4,7 @@
 
 <h2>Creating and manipulating trajectory_lists</h2>
 
-There are many methods of creating `trajectory_list` objects. The simplest way to create a static trajectory list is the [create_list](create_list.md) command, which allow the user to select particles based on molecular species, atom types, or other characteristics within the chemical structure of the system. More complex methods may perform some analysis on a trajectory list or some other data object and generate a dynamical `trajectory_list` based on some analysis of the system. A table of commands that create or destroy `trajectory_list` objects follows.
+There are many methods of creating `trajectory_list` objects. The simplest way to create a static trajectory list is the [`create_list`](create_list.md) command, which allow the user to select particles based on molecular species, atom types, or other characteristics within the chemical structure of the system. More complex methods may perform some analysis on a trajectory list or some other data object and generate a dynamical `trajectory_list` based on some analysis of the system. A table of commands that create or destroy `trajectory_list` objects follows.
 
 **Commands that create or destroy `trajectory_list` objects**
 
