@@ -1,24 +1,24 @@
 <h1>trajectory_list</h1>
 
-trajectory\_lists are the foundational data object in AMDAT. A trajectory\_list stores a list of particles for analysis, which may (or may not) vary with the time frame in the trajectory. Some trajectory\_lists are static and contain a fixed list of particles for analysis. Some are dynamic and may contain different particles at each time step or in each time block (in exponential or blocked time schemes). 
+`trajectory_lists` are the foundational data object in AMDAT. A `trajectory_list` stores a list of particles for analysis, which may (or may not) vary with the time frame in the trajectory. Some `trajectory_lists` are static and contain a fixed list of particles for analysis. Some are dynamic and may contain different particles at each time step or in each time block (in exponential or blocked time schemes). 
 
 <h2>Creating and manipulating trajectory_lists</h2>
 
-There are many methods of creating _trajectory\_list_ objects. The simplest way to create a static trajectory list is the _[create\_list](create_list.md)_ command, which allow the user to select particles based on molecular species, atom types, or other characteristics within the chemical structure of the system. More complex methods may perform some analysis on a trajectory list or some other data object and generate a dynamical trajectory\_list based on some analysis of the system. A table of commands that create or destroy trajectory\_list objects follows.
+There are many methods of creating `trajectory_list` objects. The simplest way to create a static trajectory list is the [create_list](create_list.md) command, which allow the user to select particles based on molecular species, atom types, or other characteristics within the chemical structure of the system. More complex methods may perform some analysis on a trajectory list or some other data object and generate a dynamical `trajectory_list` based on some analysis of the system. A table of commands that create or destroy `trajectory_list` objects follows.
 
-**Commands that create or destroy trajectory\_list objects**
+**Commands that create or destroy `trajectory_list` objects**
 
 | Command | Effect |
 |----------|----------|
-| [combine\_trajectories](combine_trajectories.md)    | Creates a new list of trajectories by merging multiple existing of existing trajectory\_lists. |
-| [create\_list](create_list.md)    | Creates a static list of particle trajectories. |
-| [delete\_trajectory_list](delete_trajectories.md) | Deletes an existing trajectory\_list, freeing up the associated memory. |
-| [flatten\_multibodies](flatten_multibodies.md)    | Creates a trajectory list comprised of all trajectories in a set of multibodies. |
-| [invert\_list](invert_list.md)    | Creates a new trajectory list by inverting an existing trajectory list and then intersecting it with a second list. |
+| [combine_trajectories](combine_trajectories.md)    | Creates a new list of trajectories by merging multiple existing of existing `trajectory_list` objects. |
+| [create_list](create_list.md)    | Creates a static list of particle trajectories. |
+| [delete_trajectory_list](delete_trajectories.md) | Deletes an existing `trajectory_list`, freeing up the associated memory. |
+| [flatten_multibodies](flatten_multibodies.md)    | Creates a trajectory list comprised of all trajectories in a set of multibodies. |
+| [invert_list](invert_list.md)    | Creates a new trajectory list by inverting an existing trajectory list and then intersecting it with a second list. |
 | [thresholded\_list](thresholded_list.md)    | Creates a  list of trajectories by applying a value threshold to a specified value\_list. |
-| [traj_list_from_bin_list](traj_list_from_bin_list.md) | Creates a trajectory\_list object from a bin of a [trajectory\_bin\_list](trajectory_bin_list.md) |
+| [traj_list_from_bin_list](traj_list_from_bin_list.md) | Creates a `trajectory_list` object from a bin of a [trajectory_bin_list](trajectory_bin_list.md) |
 
-In addition to the above, all commands that create multibodies also creates an associated trajectory_list comprised of either the centroids or centers of mass of the multibodies, as specified by the user. See the [multibodies](multibodies.md) page for more information.
+In addition to the above, all commands that create multibodies also creates an associated `trajectory_list` comprised of either the centroids or centers of mass of the multibodies, as specified by the user. See the [multibodies](multibodies.md) page for more information.
 
 <h2>Analyzing trajectory_lists</h2>
 
