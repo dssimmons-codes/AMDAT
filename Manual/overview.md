@@ -28,7 +28,7 @@ AMDAT is run from the command line (see section below on Running AMDAT). The use
 
 AMDAT is run from the command line, specifying the filename of a user [input file](input_file.md):
 
-`./AMDAT <FLAGS>`
+`</PATH/TO/AMDAT>/AMDAT <FLAGS>`
 
 `<FLAGS>` refers to a series of options built in to AMDAT. These flags can be given in any combination in any order. Below is a list of flags and their respective syntax.
 
