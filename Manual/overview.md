@@ -71,4 +71,4 @@ Look in the following links for information on how to:
 * Create and use [neighbor_lists](neighborlist.md) to analyze particle adjacencies
 * Create and use [value_lists](value_list.md) to analyze additional per-particle quantities
 
-Developer documentation is currently incomplete, but a stub can be found [here](developer_documentation.md).
+Developer documentation is currently incomplete, but a stub can be found [here](../developer_documentation.md).
