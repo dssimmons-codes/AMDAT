@@ -28,7 +28,7 @@ Most trajectory analysis methods consist of two lines, where the first line (the
 
 Some trajectory analysis methods must be provided two targets, which are specified via two consecutive lines below the command itself. The overall structure is then as follows.
 
-``
+```
 <Analysis command> <keywords>
 list <name of trajectory_list 1 for analysis>
 list <name of trajectory_list 2 for analysis>
