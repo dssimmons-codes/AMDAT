@@ -4,8 +4,8 @@
 
 | Command | Effect |
 |----------|----------|
-| [create\_bin\_list](create_bin_list.md) | Creates a list of all trajectories based on a binning scheme |
-| remove\_bin\_list | Deletes a bin list from memory |
+| [`create_bin_list`](create_bin_list.md) | Creates a list of all trajectories based on a binning scheme |
+| `remove_bin_list` | Deletes a bin list from memory |
 
 <h2>Analyzing trajectory_bin_list objects</h2>
 
