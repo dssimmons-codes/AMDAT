@@ -18,7 +18,7 @@ There are many methods of creating `trajectory_list` objects. The simplest way t
 | [`thresholded_list`](thresholded_list.md)    | Creates a  list of trajectories by applying a value threshold to a specified `value_list`. |
 | [`traj_list_from_bin_list`](traj_list_from_bin_list.md) | Creates a `trajectory_list` object from a bin of a [`trajectory_bin_list`](trajectory_bin_list.md) |
 
-In addition to the above, all commands that create multibodies also creates an associated `trajectory_list` comprised of either the centroids or centers of mass of the multibodies, as specified by the user. See the [multibodies](multibodies.md) page for more information.
+In addition to the above, all commands that create multibodies also create an associated `trajectory_list` comprised of either the centroids or centers of mass of the multibodies, as specified by the user. See the [multibodies](multibodies.md) page for more information.
 
 <h2>Analyzing trajectory lists</h2>
 
