@@ -22,85 +22,85 @@ Presently, all analysis classes should preferably be made compatible with both m
 ### 2. class coordinate
 
 > ([coordinate.h](../src/coordinate.h), [coordinate.cpp](../src/coordinate.cpp))
-
+>
 > Class to store a coordinate in three dimensions, with some associated methods and operator definitions.
 
 ### 3. class trajectory
 
 > ([trajectory.h](../src/trajectory.h), [trajectory.cpp](../src/trajectory.cpp))
-
+>
 > Stores information about a particle, molecule, or point and its trajectory through time (stores an array of coordinates).
 
 ### 4. class atom_trajectory
 
 > ([atom_trajectory.h](../src/atom_trajectory.h), [atom_trajectory.cpp](../src/atom_trajectory.cpp))
-
+>
 > Stores information about an atom (particle) and its trajectory through time (stores an array of coordinates).
 
 ### 5. class molecule
 
 > ([molecule.h](../src/molecule.h), [molecule.cpp](../src/molecule.cpp))
-
+>
 > Stores information about a molecule, its substituent atoms (stored in arrays) and in some cases the center-of-mass trajectory of the molecule.
 
 ### 6. class system
 
 > ([system.h](../src/system.h), [system.cpp](../src/system.cpp))
-
+>
 > This is the master class that reads trajectory files and stores information about their contents, including: molecules, atoms, time scheme, box size, and so on. Also contains methods to run loops over subsets of atoms and molecules as well as over times for use by analysis objects.
 
 ### 7. class analysis
 
 > ([analysis.h](../src/analysis.h), [analysis.cpp](../src/analysis.cpp))
-
+>
 > Parent class for many analysis techniques, with methods for interfacing with the atom, molecule, and time loops provided by the system class.
-
+>
 > Basic public methods for running this:
-
+>
 > `analyze(string)`
-
+>
 > `analyze(Trajectory_List*)`
 
 ### 8. class time_correlation_function
 
 > Parent class for several analysis classes that calculate a time correlation function.
-
+>
 > ([time_correlation_function.h](../src/time_correlation_function.h), [time_correlation_function.cpp](../src/time_correlation_function.cpp))
 
 ### 9. class van_hove_self
 
 > ([van_hove_self.h](../src/van_hove_self.h), [van_hove_self.cpp](../src/van_hove_self.cpp))
-
+>
 > Analysis class to calculate self van hove.
 
 ### 10. class progress
 
 > ([progress.h](../src/progress.h), [progress.cpp](../src/progress.cpp))
-
+>
 > Class to track progress of a calculation.
 
 ### 11. class mean_square_displacement
 
 > ([mean_square_displacement.h](../src/mean_square_displacement.h), [mean_square_displacement.cpp](../src/mean_square_displacement.cpp))
-
+>
 > Class to calculate mean square displacement as a function of time.
 
 ### 12. class van_hove_distinct
 
 > ([van_hove_distinct.h](../src/van_hove_distinct.h), [van_hove_distinct.cpp](../src/van_hove_distinct.cpp))
-
+>
 > Class to calculate distinct van hove.
 
 ### 13. class spacial_decomposition
 
 > ([spacial_decomposition.h](../src/spacial_decomposition.h), [spacial_decomposition.cpp](../src/spacial_decomposition.cpp))
-
+>
 > Class to spatially decompose the system into smaller cells by sorting atoms at each time into these cells.
 
 ### 14. class control
 
 > ([control.h](../src/control.h), [control.cpp](../src/control.cpp))
-
+>
 > Master class that reads input file and calls other objects accordingly.
 
 ### 15. class wave_vectors
