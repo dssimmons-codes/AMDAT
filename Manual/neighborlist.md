@@ -23,5 +23,5 @@ In general, the target `neighborlist` for analysis is provided as an argument wi
 | Command | Effect | Output |
 |----------|----------|----------|
 | [`neighbor_decorrelation_function`](neighbor_decorrelation_function.md) | compute an autocorrelation function for the decay in number of conserved neighbors | Tab-demarcated data file |
-| [`persistent_neighbors`](persistent_neighbors.md) | Constructs multibodies comprised of particles that remain neighbors after a specified time gap | `Multibody_list`|
+| [`persistent_neighbors`](persistent_neighbors.md) | Constructs multibodies comprised of particles that remain neighbors after a specified time gap | `multibody_list`|
 | [`value_statistics`](value_statistics.md) | Computes statistics on the distribution of neighbors per particle. | Tab-demarcated data file |
