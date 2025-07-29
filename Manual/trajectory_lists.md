@@ -20,7 +20,7 @@ There are many methods of creating `trajectory_list` objects. The simplest way t
 
 In addition to the above, all commands that create multibodies also creates an associated `trajectory_list` comprised of either the centroids or centers of mass of the multibodies, as specified by the user. See the [multibodies](multibodies.md) page for more information.
 
-<h2>Analyzing `trajectory_list`s</h2>
+<h2>Analyzing trajectory lists</h2>
 
 Most trajectory analysis methods consist of two lines, where the first line (the "type" line) defines the type of analysis to be performed and the output file, and the second line (the "target" line) specifies the atoms or molecules on which the analysis is to be performed. The target line generally has the syntax
 
