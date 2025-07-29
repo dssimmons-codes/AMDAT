@@ -4,24 +4,26 @@ This developer documentation is somewhat out of date, but it may still provide s
 
 Broadly speaking, there are two parts of the AMDAT code: 1) the data structure and 2) analysis classes.
 
-The purpose of the data structure is to store _trajectories_. A trajectory is a sequence of coordinates in time, with some additional metadata. Common trajectories include trajectories of atoms (or particles), and potentially also molecular centers of mass. The core data structure includes the classes System, Trajectory, Molecule, Atom\_Trajectory, and Coordinate. Molecule and Atom\_Trajectory are both daughter classes of Trajectory, and any Trajectory contains an array of Coordinates.
+The purpose of the data structure is to store trajectories. A `trajectory` is a sequence of coordinates in time, with some additional metadata. Common trajectories include trajectories of atoms (or particles), and potentially also molecular centers of mass. The core data structure includes the classes `System`, `Trajectory`, `Molecule`, `Atom_Trajectory`, and `Coordinate`. `Molecule` and `Atom_Trajectory` are both daughter classes of `Trajectory`, and any `Trajectory` contains an array of `Coordinates`.
 
 The analysis classes comprise a set of classes which operate on this data structure to yield output data. There are generally two ways by which an analysis class may interact with the data structure:
 
-1. It may use preexisting loops in the System class to loop over rational subsets of trajectories.
-2. It may use an intermediary set of classes, Trajectory\_List and its daughters, to loop over a subset of trajectories previously defined by the user.
+1. It may use preexisting loops in the `System` class to loop over rational subsets of trajectories.
+2. It may use an intermediary set of classes, `Trajectory_List` and its daughters, to loop over a subset of trajectories previously defined by the user.
 
 Presently, all analysis classes should preferably be made compatible with both methods; however, method 2) should be given priority as method 1) may be phased out at a later time.
 
-Classes shown in blue are those that inherit the functionality of parent class analysis. Classes shown in green are part of the
+<!-- Classes shown in blue are those that inherit the functionality of parent class analysis. Classes shown in green are part of the -->
 
-### 1. class coordinate(coordinate.h, coordinate.cpp)
+### 1. main
 
-Class to store a coordinate in three dimensions, with some associated methods and operator definitions.
+> (amdat.cpp)
 
-### 2. main
+### 2. class coordinate
 
-(amdat.cpp)
+> (coordinate.h, coordinate.cpp)
+
+> Class to store a coordinate in three dimensions, with some associated methods and operator definitions.
 
 ### 3. class trajectory
 
