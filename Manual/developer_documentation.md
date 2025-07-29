@@ -21,7 +21,7 @@ Presently, all analysis classes should preferably be made compatible with both m
 
 ### 2. class coordinate
 
-> ([coordinate.h](src/coordinate.h), coordinate.cpp)
+> ([coordinate.h](../src/coordinate.h), coordinate.cpp)
 
 > Class to store a coordinate in three dimensions, with some associated methods and operator definitions.
 
