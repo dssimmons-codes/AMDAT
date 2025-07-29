@@ -1,15 +1,19 @@
 <h1>create_list</h1>
 Creates a static list of particle trajectories for analysis based upon set features such as the particle's type and location within molecules of a given species.
 
-_create\_list \<listname\>_
+```
+create_list <listname>
 
-_\<keyword\> \<arguments\>_
+<keyword> <arguments>
+```
 
 Available keywords and associated arguments are listed below. It is possible to combine multiple keywords and associated arguments to enable selection of complex sets, as follows:
 
-_create\_list \<listname\>_
+```
+create_list <listname>
 
-_\<keyword1 \> \<arguments1\> \<keyword2 \> \<arguments2\>_
+<keyword1> <arguments1> <keyword2> <arguments2>
+```
 
 keywordargs
 
