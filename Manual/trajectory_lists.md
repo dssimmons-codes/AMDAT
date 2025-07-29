@@ -10,8 +10,8 @@ There are many methods of creating `trajectory_list` objects. The simplest way t
 
 | Command | Effect |
 |----------|----------|
-| [`combine_trajectories`](combine_trajectories.md)    | Creates a new list of trajectories by merging multiple existing of existing `trajectory_list` objects. |
 | [`create_list`](create_list.md)    | Creates a static list of particle trajectories. |
+| [`combine_trajectories`](combine_trajectories.md)    | Creates a new list of trajectories by merging multiple existing of existing `trajectory_list` objects. |
 | [`delete_trajectory_list`](delete_trajectories.md) | Deletes an existing `trajectory_list`, freeing up the associated memory. |
 | [`flatten_multibodies`](flatten_multibodies.md)    | Creates a trajectory list comprised of all trajectories in a set of multibodies. |
 | [`invert_list`](invert_list.md)    | Creates a new trajectory list by inverting an existing trajectory list and then intersecting it with a second list. |
