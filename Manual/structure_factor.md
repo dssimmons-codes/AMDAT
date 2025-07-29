@@ -1,6 +1,27 @@
 <h1>structure_factor</h1>
+<h2>function</h2>
 
-Calculates structure factor.
+Calculates the structure factor of the system via the Fourier transform of the density, as per the following equations.
+
+$$ S\left( {\vec{k}} \right) = \left\langle \frac{1}{N}\rho _{{\vec{k}}}^{I}\rho _{-\vec{k}}^{II} \right\rangle $$
+
+$$ {{\rho }^{I}}\left( {\vec{k}} \right)=\sum\limits_{i=1}^{{{N}^{I}}}{\exp \left( -i{{{\vec{k}}}_{j}}\cdot {{{\vec{r}}}_{i}} \right)} $$
+
+(For scientific background and discussion, see Chapter 4 of Hansen and McDonald’s “Theory of Simple Liquids). Here the superscripts I and II denote the set of particles under consideration. When I and II refer to the same set of particles, this is the symmetric structure factor. When they are different sets of particles, this is an asymmetric structure factor reporting on the cross-correlations between distinct sets of particles.
+
+Mechanically, AMDAT first computes the Fourier transform of the density for each required wavevector as follows.
+
+$$ \[\rho \left( {{{\vec{k}}}_{j}},t \right)=\sum\limits_{i=1}^{N}{\cos \left( {{{\vec{k}}}_{j}}\cdot {{{\vec{r}}}_{i}}\left( t \right) \right)}+i\sum\limits_{i=1}^{N}{\sin \left( {{{\vec{k}}}_{j}}\cdot {{{\vec{r}}}_{i}}\left( t \right) \right)}\] $$
+
+If the computation being performed is a symmetric structure factor, this calculation is performed once. If it is an asymmetric structure factor, it is performed distinctly for each set of particles. These calculations are separately performed at each timestep being analyzed.
+
+AMDAT ultimately outputs the structure factor as a function of scalar wavenumber rather an as a function of wavevector. To do so, it averages over many wavevectors with approximately equivalent wavenumber (more on this below). It also averages over many times. AMDAT thus computes the structure factor at a wavenumber k as follows.
+
+$$ \[S\left( k \right)=\frac{1}{SH}\sum\limits_{l=1}^{S}{\sum\limits_{j=1}^{H}{\left[ \rho _{real}^{I}\left( {{{\vec{k}}}_{j}},{{t}_{l}} \right)\rho _{real}^{II}\left( {{{\vec{k}}}_{j}},{{t}_{l}} \right)+\rho _{imag}^{I}\left( {{{\vec{k}}}_{j}},{{t}_{l}} \right)\rho _{imag}^{II}\left( {{{\vec{k}}}_{j}},{{t}_{l}} \right) \right]}}\] $$
+
+where S is the number of times over with S is averaged and H is the number of wavevectors corresponding to the wavenumber k. 
+
+
 
 _structure\_factor \<output file\> \<symmetry\> \<geometry\> \<max\_length\_scale\> \<(optional) timescheme\>_
 
