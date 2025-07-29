@@ -11,7 +11,7 @@
 
 **Analysis commands that target trajectory list objects**
 
-The target for these analysis tools is specified in a second line that follows the line providing the analysis command line. This target line involves specifying a defined `trajectory_bin_list` and a [`trajectory_list`](trajectory_list.md). Analysis will occur on a bin-by-bin basis as determined by the `trajectory_bin_list` specified. Only those particles included in the specified `trajectory_list` at each time will be employed in the analysis. The syntax of the target line is as follows.
+Similarly to `trajectory_list`, these commands' syntax includes a "type" line, which has the name of the analysis method, followed by a "target" line. This target line involves specifying a defined `trajectory_bin_list` and a [`trajectory_list`](trajectory_list.md). Analysis will occur on a bin-by-bin basis as determined by the `trajectory_bin_list` specified. Only those particles included in the specified `trajectory_list` at each time will be employed in the analysis. The syntax of the target line is as follows.
 
 `bin_list <name of trajectory_bin_list> <name of trajectory_list> <persistence check? 0 or 1 (optional)>`
 
