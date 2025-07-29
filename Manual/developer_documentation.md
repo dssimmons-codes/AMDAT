@@ -27,31 +27,31 @@ Presently, all analysis classes should preferably be made compatible with both m
 
 ### 3. class trajectory
 
-> (trajectory.h, trajectory.cpp)
+> ([trajectory.h](../src/trajectory.h), trajectory.cpp)
 
 > Stores information about a particle, molecule, or point and its trajectory through time (stores an array of coordinates)
 
 ### 4. class atom_trajectory
 
-> (atom_trajectory.h, atom_trajectory.cpp)
+> ([atom_trajectory.h](../src/atom_trajectory.h), atom_trajectory.cpp)
 
 > Stores information about an atom (particle) and its trajectory through time (stores an array of coordinates)
 
 ### 5. class molecule
 
-> (molecule.h, molecule.cpp)
+> ([molecule.h](../src/molecule.h), molecule.cpp)
 
 > Stores information about a molecule, its substituent atoms (stored in arrays) and in some cases the center-of-mass trajectory of the molecule
 
 ### 6. class system
 
-> (system.h, system.cpp)
+> ([system.h](../src/system.h), system.cpp)
 
 > This is the master class that reads trajectory files and stores information about their contents, including: molecules, atoms, time scheme, box size, and so on. Also contains methods to run loops over subsets of atoms and molecules as well as over times for use by analysis objects.
 
 ### 7. class analysis
 
-> (analysis.h, analysis.cpp)
+> ([analysis.h](../src/analysis.h), analysis.cpp)
 
 > Parent class for many analysis techniques, with methods for interfacing with the atom, molecule, and time loops provided by the system class.
 
@@ -65,79 +65,79 @@ Presently, all analysis classes should preferably be made compatible with both m
 
 > Parent class for several analysis classes that calculate a time correlation function.
 
-> (time_correlation_function.h, time_correlation_function.cpp)
+> ([time_correlation_function.h](../src/time_correlation_function.h), time_correlation_function.cpp)
 
 ### 9. class van_hove_self
 
 > Analysis class to calculate self van hove.
 
-> (van_hove_self.h, van_hove_self.cpp)
+> ([van_hove_self.h](../src/van_hove_self.h), van_hove_self.cpp)
 
 ### 10. class progress
 
-> (progress.h, progress.cpp)
+> ([progress.h](../src/progress.h), progress.cpp)
 
 > Class to track progress of a calculation.
 
 ### 11. class mean_square_displacement
 
-> (mean_square_displacement.h, mean_square_displacement.cpp)
+> ([mean_square_displacement.h](../src/mean_square_displacement.h), mean_square_displacement.cpp)
 
 > Class to calculate mean square displacement as a function of time.
 
 ### 12. class van_hove_distinct
 
-> (van_hove_distinct.h, van_hove_distinct.cpp)
+> ([van_hove_distinct.h](../src/van_hove_distinct.h), van_hove_distinct.cpp)
 
 > Class to calculate distinct van hove.
 
 ### 13. class spacial_decomposition
 
-> (spacial_decomposition.h, spacial_decomposition.cpp)
+> ([spacial_decomposition.h](../src/spacial_decomposition.h), spacial_decomposition.cpp)
 
 > Class to spatially decompose the system into smaller cells by sorting atoms at each time into these cells.
 
 ### 14. class control
 
-> (control.h, control.cpp)
+> ([control.h](../src/control.h), control.cpp)
 
 > Master class that reads input file and calls other objects accordingly.
 
 ### 15. class wave_vectors
 
-> (wave_vectors.h, wave_vectors.cpp)
+> ([wave_vectors.h](../src/wave_vectors.h), wave_vectors.cpp)
 
 ### 16. class spherical_wave_vectors
 
-> (spherical_wave_vectors.h, spherical_wave_vectors.cpp)
+> ([spherical_wave_vectors.h](../src/spherical_wave_vectors.h), spherical_wave_vectors.cpp)
 
 ### 17. class wave_density
 
-> (wave_density.o, wave_density.cpp)
+> ([wave_density.h](../src/wave_density.h, wave_density.cpp)
 
 ### 18. class intermediate_scattering_function
 
-> (intermediate_scattering_function.h, intermediate_scattering_function.cpp)
+> ([intermediate_scattering_function.h](../src/intermediate_scattering_function.h), intermediate_scattering_function.cpp)
 
 ### 19. class correlation_2d
 
-> (correlation_2d.h, correlation_2d.cpp)
+> ([correlation_2d.h](../src/correlation_2d.h), correlation_2d.cpp)
 
 ### 20. class incoherent_scattering_function
 
-> (incoherent_scattering_function.h, incoherent_scattering_function.cpp)
+> ([incoherent_scattering_function.h](../src/incoherent_scattering_function.h), incoherent_scattering_function.cpp)
 
 ### 21. class debyewaller_dist
 
-> (debyewaller_dist.h, debyewaller_dist.cpp)
+> ([debyewaller_dist.h](../src/debyewaller_dist.h), debyewaller_dist.cpp)
 
 ### 22. class stiffness_dist
 
-> (stiffness_dist.h, stiffness_dist.cpp)
+> ([stiffness_dist.h](../src/stiffness_dist.h), stiffness_dist.cpp)
 
 ### 23. class non_gaussian_parameter
 
-> (non_gaussian_parameter.h, non_gaussian_parameter.cpp)
+> ([non_gaussian_parameter.h](../src/non_gaussian_parameter.h), non_gaussian_parameter.cpp)
 
 ### 24. class gaussian_comparison
 
