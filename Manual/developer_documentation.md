@@ -29,19 +29,19 @@ Presently, all analysis classes should preferably be made compatible with both m
 
 > ([trajectory.h](../src/trajectory.h), [trajectory.cpp](../src/trajectory.cpp))
 
-> Stores information about a particle, molecule, or point and its trajectory through time (stores an array of coordinates)
+> Stores information about a particle, molecule, or point and its trajectory through time (stores an array of coordinates).
 
 ### 4. class atom_trajectory
 
 > ([atom_trajectory.h](../src/atom_trajectory.h), [atom_trajectory.cpp](../src/atom_trajectory.cpp))
 
-> Stores information about an atom (particle) and its trajectory through time (stores an array of coordinates)
+> Stores information about an atom (particle) and its trajectory through time (stores an array of coordinates).
 
 ### 5. class molecule
 
 > ([molecule.h](../src/molecule.h), [molecule.cpp](../src/molecule.cpp))
 
-> Stores information about a molecule, its substituent atoms (stored in arrays) and in some cases the center-of-mass trajectory of the molecule
+> Stores information about a molecule, its substituent atoms (stored in arrays) and in some cases the center-of-mass trajectory of the molecule.
 
 ### 6. class system
 
@@ -55,7 +55,7 @@ Presently, all analysis classes should preferably be made compatible with both m
 
 > Parent class for many analysis techniques, with methods for interfacing with the atom, molecule, and time loops provided by the system class.
 
-> Basic public methods for running this
+> Basic public methods for running this:
 
 > `analyze(string)`
 
@@ -69,9 +69,9 @@ Presently, all analysis classes should preferably be made compatible with both m
 
 ### 9. class van_hove_self
 
-> Analysis class to calculate self van hove.
-
 > ([van_hove_self.h](../src/van_hove_self.h), [van_hove_self.cpp](../src/van_hove_self.cpp))
+
+> Analysis class to calculate self van hove.
 
 ### 10. class progress
 
