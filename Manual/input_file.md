@@ -213,14 +213,14 @@ AMDAT analysis can involve up to 5 types of data objects, as specified in the fo
 
 | Data object | Purpose |
 |----------|----------|
-| [trajectory\_list](trajectory_lists.md) | Stores, at each time, a list of particles for analysis. |
-| [trajectory\_bin\_list](trajectory_bin_list.md) | Stores, at each time, a list of particles, sorted by spatial location in the box, for analysis. |
-| [multibody_list](multibodies.md) | Stores a list of multibodies (potentially different at each time), each of which is comprised of multiple particles. |
-| [neighbor\_list](neighbor_list.md) | For a selected set of particles, stores a list of their neigboring particles. |
-| [value\_list](value_list.md) | Stores a value for each of a list of particles. |
+| [`trajectory_list`](trajectory_lists.md) | Stores, at each time, a list of particles for analysis. |
+| [`trajectory_bin_list`](trajectory_bin_list.md) | Stores, at each time, a list of particles, sorted by spatial location in the box, for analysis. |
+| [`multibody_list`](multibodies.md) | Stores a list of multibodies (potentially different at each time), each of which is comprised of multiple particles. |
+| [`neighbor_list`](neighbor_list.md) | For a selected set of particles, stores a list of their neigboring particles. |
+| [`value_list`](value_list.md) | Stores a value for each of a list of particles. |
 
 These types of data objects often interact. For example, there are analysis tools that perform an analysis on a `trajectory_list` and generate a `value_list` corresponding to a time-dependent value for each particle in the original list.
 
-In addition to the analysis methods associated with these data objects, AMDAT contains several [miscellatious analysis tools](misc_tools.md) that do not directly operate on any data object but instead further process the results of a prior analysis.
+In addition to the analysis methods associated with these data objects, AMDAT contains several [miscellaneous analysis tools](misc_tools.md) that do not directly operate on any data object but instead further process the results of a prior analysis.
 
 AMDAT includes a partially implemented capability of storing completed analyses, but the details are lost in the mists of time and must be recovered with some investigation. It appears that use of an "s" flag at some point around the input command will trigger this functionality for some analysis tools, allowing use of the later commands `write_analysis` and `delete_analysis`. This will be clarified in a future manual update.
