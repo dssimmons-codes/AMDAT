@@ -16,12 +16,12 @@ Presently, there are two commands for `neighborlist` creation, which differ in t
 
 <h2>Analyzing neighbor lists</h2>
 
-In general, the target `neighborlist` for analysis is provided as an argument within the analysis command line as specified in each analysis command page. In some cases, a trajectory list for downselection of particles to be included may be input as an additional target line or in the command line. See the page for each analysis tool for details.
+In general, the target `neighborlist` for analysis is provided as an argument within the analysis command line as specified in each analysis command page. In some cases, a `trajectory_list` for downselection of particles to be included may be input as an additional target line or in the command line. See the page for each analysis tool for details.
 
 **Commands that analyze neighbor lists**
 
 | Command | Effect | Output |
 |----------|----------|----------|
 | [`neighbor_decorrelation_function`](neighbor_decorrelation_function.md) | compute an autocorrelation function for the decay in number of conserved neighbors | Tab-demarcated data file |
-| [`persistent_neighbors`](persistent_neighbors.md) | Constructs multibodies comprised of particles that remain neighbors after a specified time gap | Multibody_list|
+| [`persistent_neighbors`](persistent_neighbors.md) | Constructs multibodies comprised of particles that remain neighbors after a specified time gap | `Multibody_list`|
 | [`value_statistics`](value_statistics.md) | Computes statistics on the distribution of neighbors per particle. | Tab-demarcated data file |
