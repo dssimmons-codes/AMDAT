@@ -27,39 +27,39 @@ Presently, all analysis classes should preferably be made compatible with both m
 
 ### 3. class trajectory
 
-(trajectory.h, trajectory.cpp)
+> (trajectory.h, trajectory.cpp)
 
-Stores information about a particle, molecule, or point and its trajectory through time (stores an array of coordinates)
+> Stores information about a particle, molecule, or point and its trajectory through time (stores an array of coordinates)
 
 ### 4. class atom\_trajectory
 
-(atom\_trajectory.h, atom\_trajectory.cpp)
+> (atom_trajectory.h, atom_trajectory.cpp)
 
-Stores information about an atom (particle) and its trajectory through time (stores an array of coordinates)
+> Stores information about an atom (particle) and its trajectory through time (stores an array of coordinates)
 
 ### 5. class molecule
 
-(molecule.h, molecule.cpp)
+> (molecule.h, molecule.cpp)
 
-Stores information about a molecule, its substituent atoms (stored in arrays) and in some cases the center-of-mass trajectory of the molecule
+> Stores information about a molecule, its substituent atoms (stored in arrays) and in some cases the center-of-mass trajectory of the molecule
 
 ### 6. class system
 
-(system.h, system.cpp)
+> (system.h, system.cpp)
 
-This is the master class that reads trajectory files and stores information about their contents, including: molecules, atoms, time scheme, box size, and so on. Also contains methods to run loops over subsets of atoms and molecules as well as over times for use by analysis objects.
+> This is the master class that reads trajectory files and stores information about their contents, including: molecules, atoms, time scheme, box size, and so on. Also contains methods to run loops over subsets of atoms and molecules as well as over times for use by analysis objects.
 
 ### 7. class analysis
 
-(analysis.h, analysis.cpp)
+> (analysis.h, analysis.cpp)
 
-Parent class for many analysis techniques, with methods for interfacing with the atom, molecule, and time loops provided by the system class.
+> Parent class for many analysis techniques, with methods for interfacing with the atom, molecule, and time loops provided by the system class.
 
-Basic public methods for running this
+> Basic public methods for running this
 
-analyze(string)
+> `analyze(string)`
 
-analyze(Trajectory\_List\*)
+> `analyze(Trajectory_List*)`
 
 ### 8. class time\_correlation\_function
 
