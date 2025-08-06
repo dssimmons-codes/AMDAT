@@ -10,8 +10,9 @@ Here T is the number of starting times to be employed in the dynamical analysis 
 
 <h2>Syntax</h2>
 
-_vhd \<output file\> \<min cell size\> \<maximum range binned\> \<# of bins\>_
+```
+vhd <output file> <min cell size> <maximum range binned> <# of bins>
+<target>
+```
 
-_\<target\>_
-
-This algorithm uses a spatial decomposition of the box into cells, with cells guaranteed to be of size _\<min cell size\>_ or larger (the algorithm will select the minimum cell size that is an integer divisor of the box size and is larger than _\<min cell size\>_.
+This algorithm uses a spatial decomposition of the box into cells, with cells guaranteed to be of size ``<min cell size>`` or larger (the algorithm will select the minimum cell size that is an integer divisor of the box size and is larger than ``<min cell size>``.
