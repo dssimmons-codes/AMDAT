@@ -1,6 +1,6 @@
 <h1>stiffness_dist</h1>
 
-Calculates distribution of inverse Debye-Waller factor values 1/u2.
+Calculates distribution of inverse Debye-Waller factor values $1/u_2$.
 
 ```
 stiffness_dist <output file> <# of bins> <maximum stiffness value> <displacement time index>
