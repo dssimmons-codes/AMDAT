@@ -474,7 +474,8 @@ int Control::execute_commands(int iIndex, int fIndex)
     else if (command == "if")
     { int error = do_if_statement();
         if (error != 1)
-            return error; }
+            return error;
+    }
     else if (command == "end" || command == "else")
     {}
     else if (command == "eval" || command == "evaluate")
@@ -489,8 +490,8 @@ int Control::execute_commands(int iIndex, int fIndex)
     {get_user_input(true);}
     else if (command == "processors")
     {change_processors();}
-	else if (command == "shell")
-	{shell_command();}
+    else if (command == "shell")
+    {shell_command();}
     else if (command == "none")
     {}
     else
@@ -4049,66 +4050,58 @@ void Control::nfold()
   string sigma_file;
   string f_stem;
   string orient;
-  int ord;
+  int order;
   int s_time;
   int e_time;
   float cutoff;
   int expected=10;
   string nfold_listname="n_fold";
   if (n_args==expected)
-{
-  filename = args[1];
-  ord = atof(args[2].c_str());
-  sigma_file = args[3];
-  orient = args[4];
-  cutoff = atof(args[5].c_str());
-  nfold_listname = args[6];
-  f_stem = args[7];
-  s_time = atoi(args[8].c_str());
-  e_time = atoi(args[9].c_str());
-}
-else if (n_args == 7)
-{
+  {
     filename = args[1];
-    ord = atof(args[2].c_str());
+    order = atof(args[2].c_str());
     sigma_file = args[3];
     orient = args[4];
     cutoff = atof(args[5].c_str());
     nfold_listname = args[6];
-    s_time = 0;
-    e_time = -1;
-}
-else
-{
-    argcheck(expected);
-}
-//  getline(input,runline);
+    f_stem = args[7];
+    s_time = atoi(args[8].c_str());
+    e_time = atoi(args[9].c_str());
+  }
+  else if (n_args == 7)
+  {
+      filename = args[1];
+      order = atof(args[2].c_str());
+      sigma_file = args[3];
+      orient = args[4];
+      cutoff = atof(args[5].c_str());
+      nfold_listname = args[6];
+      s_time = 0;
+      e_time = -1;
+  }
+  else
+  {
+      argcheck(expected);
+  }
+  //getline(input,runline);
   runline = read_line();
   //analyte->unwrap();	//should already be unwrapped
 
   N_Fold_Order_Parameter* nfold;
 
-  nfold = new N_Fold_Order_Parameter(analyte, ord, sigma_file, orient, cutoff, f_stem, s_time, e_time);
-
-
+  nfold = new N_Fold_Order_Parameter(analyte, order, sigma_file, orient, cutoff, f_stem, s_time, e_time);
 
   cout << "\nCalculating n_fold order parameter.\n";
   start = time(NULL);
   run_analysis(nfold, runline);
   analyte->add_value_list(nfold,nfold_listname);
 
-
-
   finish = time(NULL);
-
-
 
   cout << "\nCalculated n_fold order parameter in " << finish-start<<" seconds.";
   nfold->write(filename);
 
 }
-
-
 
 void Control::process_value_list()
 {
