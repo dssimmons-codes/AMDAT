@@ -2167,7 +2167,7 @@ void Control::displacement_list()
   timegap_index = atoi(args[3].c_str());
 
   runline = read_line();
-  cout << "\n" << runline;
+  cout << "\n" << runline << "\n";
 
   Displacement_List*dlist_pointer;
   dlist_pointer = new Displacement_List();
