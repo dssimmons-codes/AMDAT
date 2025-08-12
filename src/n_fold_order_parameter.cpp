@@ -210,7 +210,6 @@ void N_Fold_Order_Parameter::analyze(Trajectory_List * t_list)
         distribution[binii] = distribution[binii]/float(atomcount_total);
     }
 
-
 }
 
 void N_Fold_Order_Parameter::listkernel(Trajectory * current_trajectory)
