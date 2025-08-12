@@ -3,7 +3,7 @@
 Calculates mean and time dependence of n-fold order parameter and writes maps to files.
 
 ```
-nfold <output file name> <n-fold order> <plane:"xy","yz","xz"> <neighbor cutoff distance> <sigma matrix file> <analysis_value_list name> <optional 2: map file name stem> <optional 2: first map time> <optional 2: last map time>
+nfold <output file name> <n-fold order> <sigma matrix file> <plane:"xy","yz","xz"> <neighbor cutoff distance> <analysis_value_list name> <optional 2: map file name stem> <optional 2: first map time> <optional 2: last map time>
 <target>
 ```
 
