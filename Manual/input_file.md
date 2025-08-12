@@ -154,7 +154,7 @@ Breaks out of a loop, returning to the code immediately after the `end` command 
 ##### if...else
 
 ```
-if <val1> <compare> <val2>`
+if <val1> <compare> <val2>
 
 ...
 
