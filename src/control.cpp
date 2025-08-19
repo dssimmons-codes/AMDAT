@@ -69,6 +69,7 @@
 #include "radial_count.h"
 #include "mean_closest_distance.h"
 #include "particles_between.h"
+#include "multibody_bead_region.h"
 
 //#include "msd_listprint.h"
 
@@ -253,6 +254,10 @@ int Control::execute_commands(int iIndex, int fIndex)
     else if (command == "region_multibody_list")
     {
       region_multibody_list();
+    }
+    else if (command == "region_bead_multibody_list")
+    {
+      region_bead_multibody_list();
     }
     else if (command == "threshold_multibody_list")
     {
@@ -1878,6 +1883,48 @@ void Control::region_multibody_list()
   mbr->write(statistics_file);
   
   
+}
+
+
+/*--------------------------------------------------------------------------------*/
+
+
+
+void Control::region_bead_multibody_list()
+{
+  string new_multibody_list_name, target_multibody_list_name, statistics_file;
+  float xlo,ylo,zlo,xhi,yhi,zhi;
+  int expected = 11;
+  int thresh;
+  argcheck(expected);
+
+  Multibody_Bead_Region * mbr;
+  mbr = new Multibody_Bead_Region;
+  Multibody_List * target_multibodylist;
+  Coordinate lo, hi;
+
+  new_multibody_list_name = args[1];
+  target_multibody_list_name = args[2];
+  xlo = atof(args[3].c_str());
+  ylo = atof(args[4].c_str());
+  zlo = atof(args[5].c_str());
+  xhi = atof(args[6].c_str());
+  yhi = atof(args[7].c_str());
+  zhi = atof(args[8].c_str());
+  lo.set(xlo,ylo,zlo);
+  hi.set(xhi,yhi,zhi);
+
+  statistics_file=args[9];
+  thresh = atoi(args[10].c_str());
+
+  target_multibodylist = find_multibody_list(target_multibody_list_name);
+  (*mbr)=Multibody_Bead_Region(analyte,lo,hi,thresh);
+  mbr->analyze(target_multibodylist);
+  add_multibody_list((Multibody_List*)mbr, new_multibody_list_name);
+
+  mbr->write(statistics_file);
+
+
 }
 
 /*--------------------------------------------------------------------------------*/
