@@ -1,4 +1,4 @@
-<h1>region_mulitbody_lists</h1>
+<h1>region_multibody_list</h1>
 
 Creates a new time-dependent multibody list based on an existing multibody list, by selecting at each time only those multibodies in the existing list that have centroid or center of mass (as originally selected) within a specified rectangular prism within the box.
 
