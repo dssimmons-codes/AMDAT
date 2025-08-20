@@ -6,7 +6,7 @@
 #include "atom_trajectory.h"
 #include "molecule.h"
 #include <fstream>
-#include <string.h>
+#include <string>
 #include <stdlib.h>
 #include <iostream>
 #include <math.h>
