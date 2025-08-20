@@ -74,18 +74,8 @@ XDR_OBJS  := $(patsubst $(XDR_SRC_DIR)/%.c,$(BUILD_DIR)/xdr/%.o,$(XDR_CSRCS))
 # Some distros require -lm for math symbols used by xdrfile
 LDLIBS += -lm
 
-## --- voro++ integration ------------------------------------------------------
-#VORO_DIR ?= src/voro++-0.4.6/src
-## Isolated include path; do not inherit project headers.
-## Force inclusion of core base declaration to satisfy v_base_wl.cc definitions.
-#VORO_CPPFLAGS := -I./$(VORO_DIR)
-#
-## Collect voro++ library sources (avoid examples/CLIs by scoping to src dir)
-#VORO_SRCS := $(wildcard $(VORO_DIR)/*.cc)
-#VORO_OBJS := $(patsubst $(VORO_DIR)/%.cc,$(BUILD_DIR)/voro/%.o,$(VORO_SRCS))
-#
 # Ensure dir exists
-$(shell mkdir -p $(BUILD_DIR)/xdr $(BUILD_DIR)/voro)
+$(shell mkdir -p $(BUILD_DIR)/xdr)
 
 # --- Source discovery (flat, only src/*.cpp) ---------------------------------
 SRCS := $(wildcard $(SRC_DIR)/*.cpp)
