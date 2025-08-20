@@ -91,11 +91,11 @@ class Control
 
     /*Arrays to store analysis results with a name given by the user, for later recall and use in other analysis techniques*/
     //To be added
-    //Space-Time_Correlation_Function * space-time_correlations [LISTSIZE];
-    //string space-time_correlationnames [LISTSIZE];
-    //int n_space-time_correlations;
-    //int find_space-time_correlations();
-    //void add_space-time_correlations();
+    //Space_Time_Correlation_Function * space_time_correlations [LISTSIZE];
+    //string space_time_correlationnames [LISTSIZE];
+    //int n_space_time_correlations;
+    //int find_space_time_correlations();
+    //void add_space_time_correlations();
 
     /*Members to store, access, and use analysis objects*/
     Vector_Map <string, Analysis*> analyses;			//object to hold list of saved analyses

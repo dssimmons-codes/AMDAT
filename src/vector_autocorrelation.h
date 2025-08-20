@@ -5,7 +5,7 @@
 #ifndef VECTOR_AUTOCORRELATION
 #define VECTOR_AUTOCORRELATION
 
-#include <string.h>
+#include <string>
 #include "analysis.h"
 #include "system.h"
 

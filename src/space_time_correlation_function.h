@@ -38,10 +38,10 @@ class Space_Time_Correlation_Function: public Analysis
 
     Analysis_Type what_are_you(){Analysis_Type type = space_time_correlation_function; return type;};		//virtual method to report the type of analysis
     
-    void clear_memory(); 
+    void clear_memory();
     
     Space_Time_Correlation_Function operator + (const Space_Time_Correlation_Function &)const;	//add two correlation functions
-    //Space-Time_Correlation_Function operator = (Space-Time_Correlation_Function);
+    //Space_Time_Correlation_Function operator = (Space_Time_Correlation_Function);
     
     void write(string filename)const;
     void write(ofstream& output)const;

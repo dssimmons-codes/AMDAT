@@ -4,7 +4,7 @@
 /*Written by David S. Simmons*/
 
 
-#include "space-time_correlation_function.h"
+#include "space_time_correlation_function.h"
 #include <stdlib.h>
 #include <iostream>
 #include <math.h>

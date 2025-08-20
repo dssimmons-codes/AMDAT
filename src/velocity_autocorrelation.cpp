@@ -7,9 +7,10 @@
 #include <iostream>
 #include <stdlib.h>
 #include "version.h"
-#ifndef TACC
 #include <fftw3.h>
-#endif
+//#ifndef TACC
+//#include <fftw3.h>
+//#endif
 
 using namespace std;
 
@@ -113,7 +114,8 @@ void Velocity_Autocorrelation::calculate()
   vac[n_times-1]=(2*msd->show(n_times-1)-5*msd->show(n_times-2)+4*msd->show(n_times-3)-msd->show(n_times-4))/(time_unit*time_unit);
   
 }
-#ifndef TACC
+
+//#ifndef TACC
 void Velocity_Autocorrelation::fourier_transform()
 {
 
@@ -140,7 +142,8 @@ void Velocity_Autocorrelation::fourier_transform()
   }
   
 }
-#endif
+//#endif
+
 void Velocity_Autocorrelation::write(string filename)const
 {
   int timeii;
