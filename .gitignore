@@ -28,3 +28,5 @@ src/voro++-0.4.6/src/libvoro++.a
 src/voro++-0.4.6/src/voro++
 *.dat
 *.xyz
+
+build
