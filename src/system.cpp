@@ -3242,7 +3242,7 @@ void System::xtc_prep(vector<string> file_in, string fileline)
   string gro_file, xtc_file;
   int ** atomidentifier;
 
-  tokenize.count() = tokenize(fileline, args);
+//  tokenize.count() = tokenize(fileline, args);
 
   if(tokenize.count()!=2){Error( "Incorrect number of files given for xtc trajectory.  File line must contain two files: an xtc file and a gro file.", -2);}
 
