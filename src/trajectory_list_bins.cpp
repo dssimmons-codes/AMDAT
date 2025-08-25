@@ -1099,12 +1099,13 @@ void Trajectory_List_Bins::assign_bins_distance_clusters(Trajectory_List * binne
      * @author Mark Mackura and David Simmons
      * @date 3/1/2013
      */
-  int zii;
+  int xii,yii,zii;
+  xii=0;
+  yii=0;
 
+  Coordinate dist;
   float length;
   float temp_length;
-
-  Coordinate box_size = system->size();
   
   for(int xii=0; xii<n_xbins; xii++)
   {
@@ -1126,21 +1127,18 @@ void Trajectory_List_Bins::assign_bins_distance_clusters(Trajectory_List * binne
     for(int trajii=0; trajii<binned_list->show_n_trajectories(timeii); trajii++)
     {
       length = system->size(timeii).max();
-      Coordinate coordii = (*binned_list)(timeii,trajii)->show_coordinate(timeii);
-      int n_traj2s = cluster_list->show_n_trajectories(timeii);
-      for(int traj2ii=0; traj2ii<n_traj2s; traj2ii++)
+      for(int traj2ii=0; traj2ii<cluster_list->show_n_trajectories(timeii); traj2ii++)
       {
 //        temp_length=((binned_list(timeii,trajii)->show_coordinate(timeii)-cluster_list(timeii,traj2ii)->show_coordinate(timeii)).vector_unwrapped(system->size())).length();
 //  (*traj_list_bins)(xii,yii,zii)      
-        temp_length=((coordii-(*cluster_list)(timeii,traj2ii)->show_coordinate(timeii)).vector_unwrapped(box_size)).length();
-//        temp_length=(coordii-(*cluster_list)(timeii,traj2ii)->show_coordinate(timeii)).length_unwrapped(box_size);
+        temp_length=(((*binned_list)(timeii,trajii)->show_coordinate(timeii)-(*cluster_list)(timeii,traj2ii)->show_coordinate(timeii)).vector_unwrapped(system->size())).length();
 
         length=min(length,temp_length);
       }
       zii = int(length/bin_thickness);
       if (zii<n_zbins)
       {
-        trajcount[0][0][zii][timeii]++;
+        trajcount[xii][yii][zii][timeii]++;
         vectorstoragething[0][0][zii][timeii].push_back((*binned_list)(timeii,trajii)->show_trajectory_ID());
       }
     }
@@ -1154,7 +1152,7 @@ void Trajectory_List_Bins::assign_bins_distance_clusters(Trajectory_List * binne
       {
         for(int timeii=0; timeii<n_times; timeii++)
         {
-          /*allocate memory for include IDs at each x,y,z,t; then loop over included IDs in vectorstoragething[xii,yii,zii,timeii] and then copy them to include[xii][yii][zii][timeii][ii]*/
+          /*allocate memory for include IDs at each x,y,z,t; then loop over included IDs in vectorstoragething[xii,yii,zii,timeii] and then copyt them to include[xii][yii][zii][timeii][ii]*/
 	        include[xii][yii][zii][timeii] = new int [vectorstoragething[xii][yii][zii][timeii].size()];
 //          include[xii][yii][zii][timeii][tempcount[xii][yii][zii][timeii]]=trajii;
           for (int trajii=0; trajii < vectorstoragething[xii][yii][zii][timeii].size(); trajii++)
