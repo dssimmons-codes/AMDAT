@@ -29,6 +29,7 @@ N_Fold_Order_Parameter::N_Fold_Order_Parameter(System * sys, float ord, string s
     Tokenize tokenize;
     
     system = syst = sys;
+
     total_atoms = system->show_n_atoms();
     start_time = start;
     end_time = end;
@@ -83,6 +84,14 @@ N_Fold_Order_Parameter::N_Fold_Order_Parameter(System * sys, float ord, string s
     string * sig_ARGS;
     sig_ARGS =new string [system->show_n_atomtypes()+1];
     ifstream file(sig_file.c_str());
+
+      values.resize(n_times);
+
+    for(int timeii=0;timeii<n_times;timeii++)
+    {
+        included[timeii].set(syst);
+        values[timeii].resize(system->show_n_trajectories());
+    }
 
     if (file.is_open())
     {
@@ -156,6 +165,144 @@ N_Fold_Order_Parameter::N_Fold_Order_Parameter(System * sys, float ord, string s
 
 
 }
+
+
+
+N_Fold_Order_Parameter::N_Fold_Order_Parameter(const N_Fold_Order_Parameter& other)
+: Value_List<float>(other),        // deep-copies Value_List state (values, included, time tables)
+  Analysis(other)                  // copies Analysis base
+{
+    // Shallow copies or trivially-copiable members
+    system           = other.system;
+    syst             = other.syst;
+    total_atoms      = other.total_atoms;
+    start_time       = other.start_time;
+    order            = other.order;
+    end_time         = other.end_time;
+    n_bins           = other.n_bins;
+    n_included       = other.n_included;
+    sig_cut          = other.sig_cut;
+    threshold        = other.threshold;
+    pdb_stem         = other.pdb_stem;
+    n_atomtypes      = other.n_atomtypes;
+    current_time     = other.current_time;
+    max_param        = other.max_param;
+    want_map         = other.want_map;
+    time_average_param = other.time_average_param;
+    max_sigma        = other.max_sigma;
+    neighborcount    = other.neighborcount;
+    param_jth        = other.param_jth;
+    param_total      = other.param_total;
+    atomcount_total  = other.atomcount_total;
+    atomcount        = other.atomcount;
+    distancefun      = other.distancefun;
+    timetable        = other.timetable;   // not owned here; mirror pointer
+
+    // Deep copy: distribution histogram
+    distribution = nullptr;
+    if (n_bins >= 0) {
+        distribution = new float[n_bins + 2];
+        for (int i = 0; i <= n_bins + 1; ++i) distribution[i] = other.distribution[i];
+    }
+
+    // Deep copy: per-time running totals
+    param_total_current = nullptr;
+    if (n_times > 0) {
+        param_total_current = new float[n_times];
+        for (int i = 0; i < n_times; ++i) param_total_current[i] = other.param_total_current[i];
+    }
+
+    // Deep copy: sigma matrix
+    sigmatrix = nullptr;
+    if (n_atomtypes > 0) {
+        sigmatrix = new float*[n_atomtypes];
+        for (int i = 0; i < n_atomtypes; ++i) {
+            sigmatrix[i] = new float[n_atomtypes];
+            for (int j = 0; j < n_atomtypes; ++j) sigmatrix[i][j] = other.sigmatrix[i][j];
+        }
+    }
+
+    // Deep copy: species names
+    species_name = nullptr;
+    if (n_atomtypes > 0) {
+        species_name = new std::string[n_atomtypes];
+        for (int i = 0; i < n_atomtypes; ++i) species_name[i] = other.species_name[i];
+    }
+
+    // This pointer is not allocated in the current implementation. Keep null.
+    n_fold_thresh = nullptr;
+}
+
+N_Fold_Order_Parameter& N_Fold_Order_Parameter::operator=(const N_Fold_Order_Parameter& other)
+{
+    if (this == &other) return *this; // self-assignment guard
+
+    // First, clean up any owned dynamic memory
+    if (distribution) { delete [] distribution; distribution = nullptr; }
+    if (param_total_current) { delete [] param_total_current; param_total_current = nullptr; }
+    if (sigmatrix) {
+        for (int i = 0; i < n_atomtypes; ++i) delete [] sigmatrix[i];
+        delete [] sigmatrix;
+        sigmatrix = nullptr;
+    }
+    if (species_name) { delete [] species_name; species_name = nullptr; }
+
+    // Assign base classes
+    Value_List<float>::operator=(other);
+    Analysis::operator=(other);
+
+    // Copy scalar members
+    system           = other.system;
+    syst             = other.syst;
+    total_atoms      = other.total_atoms;
+    start_time       = other.start_time;
+    order            = other.order;
+    end_time         = other.end_time;
+    n_bins           = other.n_bins;
+    n_included       = other.n_included;
+    sig_cut          = other.sig_cut;
+    threshold        = other.threshold;
+    pdb_stem         = other.pdb_stem;
+    n_atomtypes      = other.n_atomtypes;
+    current_time     = other.current_time;
+    max_param        = other.max_param;
+    want_map         = other.want_map;
+    time_average_param = other.time_average_param;
+    max_sigma        = other.max_sigma;
+    neighborcount    = other.neighborcount;
+    param_jth        = other.param_jth;
+    param_total      = other.param_total;
+    atomcount_total  = other.atomcount_total;
+    atomcount        = other.atomcount;
+    distancefun      = other.distancefun;
+    timetable        = other.timetable; // not owned
+
+    // Reallocate and copy dynamic arrays
+    if (n_bins >= 0) {
+        distribution = new float[n_bins + 2];
+        for (int i = 0; i <= n_bins + 1; ++i) distribution[i] = other.distribution[i];
+    }
+
+    if (n_times > 0) {
+        param_total_current = new float[n_times];
+        for (int i = 0; i < n_times; ++i) param_total_current[i] = other.param_total_current[i];
+    }
+
+    if (n_atomtypes > 0) {
+        sigmatrix = new float*[n_atomtypes];
+        for (int i = 0; i < n_atomtypes; ++i) {
+            sigmatrix[i] = new float[n_atomtypes];
+            for (int j = 0; j < n_atomtypes; ++j) sigmatrix[i][j] = other.sigmatrix[i][j];
+        }
+        species_name = new std::string[n_atomtypes];
+        for (int i = 0; i < n_atomtypes; ++i) species_name[i] = other.species_name[i];
+    }
+
+    n_fold_thresh = nullptr; // not managed here
+
+    return *this;
+}
+
 
 void N_Fold_Order_Parameter::set_time_conv()
 {
