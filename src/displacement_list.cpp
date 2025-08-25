@@ -191,7 +191,7 @@ void Displacement_List::write(string filename)const
 {
   int timeii;
 
-  cout << "\nWriting msd to file "<<filename<<".";
+  cout << "\nWriting displacement statistics to file "<<filename<<".";
 
   ofstream output(filename.c_str());
 
@@ -206,7 +206,7 @@ void Displacement_List::write(ofstream& output)const
 {
   int timeii;
 
-  cout << "\nWriting msd to file.";
+  cout << "\nWriting displacement statistics to file.";
 
   output << "Displacement data created by AMDAT v." << VERSION << "\n";
   output << "Timegap " << syst->displacement_times(timegap)<< "\n";

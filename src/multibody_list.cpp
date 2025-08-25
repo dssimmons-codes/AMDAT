@@ -368,6 +368,13 @@ void Multibody_List::check_n_bodies()
 {
     int timeii, multibodyii;
 
+    // If nothing has been pushed yet, report "not determined"
+    if (multibodies.empty() || multibodies[0].empty())
+      {
+        n_bodies = -2;
+        return;
+      }
+
     n_bodies = multibodies[0][0]->show_n_bodies();
 
 

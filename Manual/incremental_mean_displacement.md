@@ -2,4 +2,4 @@
 
 Computes, as a function of time, the mean displacement of particles. 
 
-_incremental\_mean\_displacement \<output filename\>
+`incremental_mean_displacement <output filename>`

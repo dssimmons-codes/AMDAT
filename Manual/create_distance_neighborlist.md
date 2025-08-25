@@ -2,7 +2,7 @@
 
 Create a neighbor list, for all particles, based on a distance cutoff scheme
 
-_create\distance\_neighborlist \<name of neighborlist to be created\> \<distance cutoff multiplier\> \<path to sigma matrix file\> \<optional: index of first timestep to build neighborlists\> <optional: index of last timestep to build neighborlists\>_
+`create_distance_neighborlist <name of neighborlist to be created> <distance cutoff multiplier> <path to sigma matrix file> <optional: index of first timestep to build neighborlists> <optional: index of last timestep to build neighborlists>`
 
 The sigma matrix file specifies a contact distance for each pair of particle types. The cutoff distance for neighborlist building is specific to each pair of particle types and is their contact distance times the cutoff distance multipler. The file should be tab demarcated in the following form.
 

@@ -2,6 +2,7 @@
 
 Calculates self-part of the Van Hove function.
 
-_vhs \<output file\> \<maximum range binned\> \<# of bins\>_
-
-_\<target\>_
+```
+vhs <output file> <maximum range binned> <# of bins>
+<target>
+```
