@@ -39,6 +39,7 @@ class Coordinate
     bool operator > (const Coordinate&)const;
     Coordinate integer()const;		//truncate decimals
     Coordinate coord_floor()const;			//floor command
+    Coordinate coord_ceil()const;    //ceil command
     Coordinate coord_round()const;		//round;
     float length() const;			//returns vector length
     float length_xy() const;
@@ -61,7 +62,7 @@ class Coordinate
     float operator () (int index)const;
     
     void smallest(const Coordinate *, int);		//from a list of coordinates, sets this coordinate to  the smallest values of x, y, and z in the list
-    bool within(const Coordinate& low, const Coordinate & high);	//returns true if this coordinate is within the rectangular prism with low and high as lower and upper corners; returns false otherwise
+    bool within(const Coordinate& low, const Coordinate & high) const;	//returns true if this coordinate is within the rectangular prism with low and high as lower and upper corners; returns false otherwise
     
     bool operator!=(const Coordinate&);
     bool operator==(const Coordinate&);

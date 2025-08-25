@@ -3,7 +3,6 @@
 /*Methods for class to hold a 3-D coordinate*/
 /*Written by David S. Simmons*/
 
-#include <math.h>
 #include "coordinate.h"
 #include <stdio.h>
 #include <iostream>
@@ -194,21 +193,32 @@ Coordinate Coordinate::coord_floor()const
 {
   Coordinate temp;
 
-  temp.x = floor(x);
-  temp.y = floor(y);
-  temp.z = floor(z);
+  temp.x = std::floor(x);
+  temp.y = std::floor(y);
+  temp.z = std::floor(z);
 
   return temp;
 }
 
 
+Coordinate Coordinate::coord_ceil()const
+{
+  Coordinate temp;
+
+  temp.x = std::ceil(x);
+  temp.y = std::ceil(y);
+  temp.z = std::ceil(z);
+
+  return temp;
+}
+
 Coordinate Coordinate::coord_round()const
 {
   Coordinate temp;
   
-  temp.x = round(x);
-  temp.y = round(y);
-  temp.z = round(z);
+  temp.x = std::round(x);
+  temp.y = std::round(y);
+  temp.z = std::round(z);
   
   return temp;
   
@@ -217,39 +227,27 @@ Coordinate Coordinate::coord_round()const
 /*Methods to calculate in-box vector length*/
 float Coordinate::length()const
 {
-	return powf((x*x+y*y+z*z),.5);
+	return sqrtf(x*x+y*y+z*z);
 }
 
 float Coordinate::length_xy()const
 {
-	float length;
-	//length = pow((pow(x,2)+pow(y,2)+pow(z,2)),.5);
-	length = pow((x*x+y*y),.5);
-	return length;
+	return sqrtf(x*x+y*y);
 }
 
 float Coordinate::length_xz()const
 {
-	float length;
-	//length = pow((pow(x,2)+pow(y,2)+pow(z,2)),.5);
-	length = pow((x*x+z*z),.5);
-	return length;
+	return sqrtf(x*x+z*z);
 }
 
 float Coordinate::length_yz()const
 {
-	float length;
-	//length = pow((pow(x,2)+pow(y,2)+pow(z,2)),.5);
-	length = pow((y*y+z*z),.5);
-	return length;
+	return sqrtf(y*y+z*z);
 }
-
 
 float Coordinate::length_sq()const
 {
-	float lengthsq;
-	lengthsq = x*x+y*y+z*z;
-	return lengthsq;
+	return x*x+y*y+z*z;
 }
 
 /*Methods to calculate shortest vector, considering box crossing*/
@@ -285,11 +283,11 @@ float Coordinate::length_unwrapped(const Coordinate& boxsize)const
 {
 	float length;
 	float minx, miny, minz;
-	minx = min(abs(x),boxsize.x-abs(x));
-	miny = min(abs(y),boxsize.y-abs(y));
-	minz = min(abs(z),boxsize.z-abs(z));
+	minx = min(std::abs(x),boxsize.x-std::abs(x));
+	miny = min(std::abs(y),boxsize.y-std::abs(y));
+	minz = min(std::abs(z),boxsize.z-std::abs(z));
 
-	length = powf((minx*minx+miny*miny+minz*minz),.5);
+	length = sqrtf(minx*minx+miny*miny+minz*minz);
 
 	return length;
 }
@@ -299,9 +297,9 @@ Coordinate Coordinate::closest_image(const Coordinate& other, const Coordinate& 
 {
   Coordinate imageflag(0,0,0);
   Coordinate diff=other-*this;
-  if(boxsize.x-abs(diff.x)<abs(diff.x))
+  if(boxsize.x-std::abs(diff.x)<std::abs(diff.x))
   {
-    if(abs(x-(other.x+boxsize.x))<abs(x-(other.x-boxsize.x)))
+    if(std::abs(x-(other.x+boxsize.x))<std::abs(x-(other.x-boxsize.x)))
     {
       imageflag.x=1;
     }
@@ -310,9 +308,9 @@ Coordinate Coordinate::closest_image(const Coordinate& other, const Coordinate& 
       imageflag.x=-1;
     }
   }
-  if(boxsize.y-abs(diff.y)<abs(diff.y))
+  if(boxsize.y-std::abs(diff.y)<std::abs(diff.y))
   {
-    if(abs(y-(other.y+boxsize.y))<abs(y-(other.y-boxsize.y)))
+    if(std::abs(y-(other.y+boxsize.y))<std::abs(y-(other.y-boxsize.y)))
     {
       imageflag.y=1;
     }
@@ -321,9 +319,9 @@ Coordinate Coordinate::closest_image(const Coordinate& other, const Coordinate& 
       imageflag.y=-1;
     }
   }
-  if(boxsize.z-abs(diff.z)<abs(diff.z))
+  if(boxsize.z-std::abs(diff.z)<std::abs(diff.z))
   {
-    if(abs(z-(other.z+boxsize.z))<abs(z-(other.z-boxsize.z)))
+    if(std::abs(z-(other.z+boxsize.z))<std::abs(z-(other.z-boxsize.z)))
     {
       imageflag.z=1;
     }
@@ -363,11 +361,11 @@ float Coordinate::min(float a,float b)const
 Coordinate Coordinate::unit_vector()const
 {
   Coordinate temp;
-  float l = length();
+  float invl = 1/length();
   
-  temp.x=x/l;
-  temp.y=y/l;
-  temp.z=z/l;
+  temp.x=x*invl;
+  temp.y=y*invl;
+  temp.z=z*invl;
   
   return temp;
 }
@@ -410,7 +408,7 @@ void Coordinate::smallest(const Coordinate * coordlist, int listsize)
 }
 
 
-bool Coordinate::within(const Coordinate& low, const Coordinate & high)
+bool Coordinate::within(const Coordinate& low, const Coordinate & high) const
 {
   if(x<=high.x&&y<=high.y&&z<=high.z&&x>=low.x&&y>=low.y&&z>=low.z)
   {
