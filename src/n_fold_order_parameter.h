@@ -51,6 +51,11 @@ class N_Fold_Order_Parameter : public Value_List<float>, public Analysis
     public:
     N_Fold_Order_Parameter(System * sys, float ord, string sig_file, string orientation = "xy", float cut = 1.25, string file_stem = "map_hop", int start=0, int end=-1);
 
+    // Copy constructor and equality operator
+   N_Fold_Order_Parameter(const N_Fold_Order_Parameter& other);
+    N_Fold_Order_Parameter& operator=(const N_Fold_Order_Parameter& other);
+
+
     Analysis_Type what_are_you(){Analysis_Type type = n_fold_order_parameter; return type;};		//virtual method to report the type of analysis
     
     void analyze(Trajectory_List * t_list);
