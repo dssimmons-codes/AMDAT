@@ -792,6 +792,9 @@ float Control::eval_terms(string oper, float a, float b)
         return pow(a,b);
     else if (oper == "%")
         return float(int(a) % int(b));
+    // warning thrown; should have a base-case return
+    // stop-gap, exit with non-zero code
+    else exit(1);
 }
 
 /*************************************************************************/
@@ -2091,6 +2094,7 @@ void Control::msd()
 
 
   filename = args[1];
+  pathcheck(filename);
 
 //  getline(input,runline);
   runline = read_line();
@@ -3123,6 +3127,7 @@ void Control::isfs()
   }
 
   filename = args[1];
+  pathcheck(filename);
   inner = atoi(args[2].c_str());
   outer = atoi(args[3].c_str());
   plane = args[4];
@@ -4744,6 +4749,7 @@ void Control::trajectory_list_decay()
     if (n_args==expected)
     {
         filename = args[1];
+        pathcheck(filename);
     }
 
   cout << "\nCalculating trajectory list decay" <<endl;
