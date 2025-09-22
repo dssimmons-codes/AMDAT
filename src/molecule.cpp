@@ -136,7 +136,7 @@ Atom_Trajectory Molecule::show_atom(int type, int index)
   }
   if(index>n_atoms[type])
   {
-    cout << "Atom index greater than number of atoms of this type!";
+    cout << "Atom index " << index << " greater than number of atoms " << n_atoms[type] << " of type " << type << endl;
     exit(1);
   }
   
@@ -154,7 +154,7 @@ void Molecule::set_coordinate(int type, int index, const Coordinate & coordinate
   }
   if(index>n_atoms[type])
   {
-    cout << "Atom index greater than number of atoms of this type!";
+    cout << "Atom index " << index << " greater than number of atoms " << n_atoms[type] << " of type " << type << endl;
     exit(1);
   }
   (atoms[type][index]).set(coordinate, timestep);
@@ -171,7 +171,7 @@ void Molecule::set_unwrapped(int type, int index, const Coordinate & coordinate,
   }
   if(index>n_atoms[type])
   {
-    cout << "Atom index greater than number of atoms of this type!";
+    cout << "Atom index " << index << " greater than number of atoms " << n_atoms[type] << " of type " << type << endl;
     exit(1);
   }
   (atoms[type][index]).set_unwrapped(coordinate, timestep);
@@ -188,7 +188,7 @@ void Molecule::set_velocity(int type, int index, const Coordinate & coordinate, 
   }
   if(index>n_atoms[type])
   {
-    cout << "Atom index greater than number of atoms of this type!";
+    cout << "Atom index " << index << " greater than number of atoms " << n_atoms[type] << " of type " << type << endl;
     exit(1);
   }
   (atoms[type][index]).set_velocity(coordinate, timestep);
