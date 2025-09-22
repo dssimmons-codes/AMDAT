@@ -43,6 +43,7 @@ class Neighbor_List: public Value_List<float>
     vector<Trajectory*> persistent_neighbors(int trajii, int time1, int time2)const;	//returns vector of trajectories in a particle's neighborlist at both of two times
     int n_persistent_neighbors(int trajii, int time1, int time2)const; //returns number of trajectories in a particle's neighborlist at both of two times
     
+    void read_bonds(string filename); //read a list of bonds in a custom LAMMPS format and make each bonded atom a neighbor of its bonded atoms (i.e. neighbors denote bonds)
     
     void neighborloop(Analysis* analysis, int timii, int trajii){};
     int show_n_neighbors(int timeii, int trajii)const{return neighbors[timeii][trajii].size();};	//returns the number of neighbors for a given trajectory

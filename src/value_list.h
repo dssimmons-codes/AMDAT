@@ -257,9 +257,11 @@ void Value_List<valType>::set(System * sys)
   n_times = syst->show_n_timesteps();
 
   included = new Boolean_List[n_times];
+  values.resize(n_times);
   for(int timeii=0;timeii<n_times;timeii++)
   {
     included[timeii].set(syst);
+    values[timeii].resize(syst->show_n_trajectories());
   }
 
   time_conversion = new int [syst->show_n_timesteps()];
@@ -286,9 +288,11 @@ void Value_List<valType>::set_static(System * sys)
   n_times = syst->show_n_timesteps();
 
   included = new Boolean_List[n_times];
+  values.resize(n_times);
   for(int timeii=0;timeii<n_times;timeii++)
   {
     included[timeii].set(syst);
+    values[timeii].resize(syst->show_n_trajectories());
   }
 
   time_conversion = new int [n_times];
@@ -299,7 +303,7 @@ void Value_List<valType>::set_static(System * sys)
     defined_times[timeii]=1;
   }
   
-  values.resize(n_times);
+
   
 }
 
@@ -947,10 +951,10 @@ string Value_List<valType>::write_pdb(int valtime, string file_name_stem, int ti
 //            cout<<"atomname = "<<atomnames[type]<<endl;cout.flush();
 //            cout<<"value = "<<values[trajii]<<endl;cout.flush();
 
-            fprintf(pdbfile, "HETATM %7i %4s MOL A   1    %10.4f %10.4f %10.4f  1.00 %6f          %2s  \n", speciesID, atomnames[type].c_str(), x_coord, y_coord, z_coord, values[timeii][trajii], atomnames[type].c_str());
+            fprintf(pdbfile, "HETATM%5i %4s MOL A   1    %8.4f%8.4f%8.4f  1.00 %6f          %2s  \n", speciesID, atomnames[type].c_str(), x_coord, y_coord, z_coord, values[timeii][trajii], atomnames[type].c_str());
 
 
-//fprintf(pdbfile, "HETATM %7i %4s MOL A   1    \n", speciesID, atomnames[type].c_str());
+//fprintf(pdbfile, "HETATM%5i %4s MOL A   1    \n", speciesID, atomnames[type].c_str());
         }
     }
     fclose(pdbfile);
@@ -1025,10 +1029,10 @@ string Value_List<valType>::write_pdb(int valtime, string file_name_stem, int ti
 
 	    if(type>17){cout << "Error: More atom types in use than names available";exit(1);}
 
-            fprintf(pdbfile, "HETATM %7i %4s MOL A   1    %10.4f %10.4f %10.4f  1.00 %6f          %2s  \n", speciesID, atomnames[type].c_str(), x_coord, y_coord, z_coord, values[timeii][trajii], atomnames[type].c_str());
+            fprintf(pdbfile, "HETATM%5i %4s MOL A   1    %8.4f%8.4f%8.4f  1.00 %6f          %2s  \n", speciesID, atomnames[type].c_str(), x_coord, y_coord, z_coord, values[timeii][trajii], atomnames[type].c_str());
 
 
-//fprintf(pdbfile, "HETATM %7i %4s MOL A   1    \n", speciesID, atomnames[type].c_str());
+//fprintf(pdbfile, "HETATM%5i %4s MOL A   1    \n", speciesID, atomnames[type].c_str());
         }
     }
     fclose(pdbfile);
@@ -1088,10 +1092,10 @@ string Value_List<valType>::write_pdb(int valtime, string file_name_stem, int ti
 //            cout<<"atomname = "<<atomname[type]<<endl;cout.flush();
 //            cout<<"value = "<<values[trajii]<<endl;cout.flush();
 
-            fprintf(pdbfile, "HETATM %7i %4s MOL A   1    %10.4f %10.4f %10.4f  1.00 %6f          %2s  \n", speciesID, atomnames[type].c_str(), x_coord, y_coord, z_coord, val, atomnames[type].c_str());
+            fprintf(pdbfile, "HETATM%5i %4s MOL A   1    %8.4f%8.4f%8.4f  1.00 %6f          %2s  \n", speciesID, atomnames[type].c_str(), x_coord, y_coord, z_coord, val, atomnames[type].c_str());
 
 
-//fprintf(pdbfile, "HETATM %7i %4s MOL A   1    \n", speciesID, atomnames[type].c_str());
+//fprintf(pdbfile, "HETATM%5i %4s MOL A   1    \n", speciesID, atomnames[type].c_str());
         }
     }
     fclose(pdbfile);
@@ -1169,10 +1173,10 @@ string Value_List<valType>::write_pdb(int valtime, string file_name_stem, int ti
 
 	    if(type>17){cout << "Error: More atom types in use than names available";exit(1);}
 
-            fprintf(pdbfile, "HETATM %7i %4s MOL A   1    %10.4f %10.4f %10.4f  1.00 %6f          %2s  \n", speciesID, atomnames[type].c_str(), x_coord, y_coord, z_coord, val, atomnames[type].c_str());
+            fprintf(pdbfile, "HETATM%5i %4s MOL A   1    %8.4f%8.4f%8.4f  1.00 %6f          %2s  \n", speciesID, atomnames[type].c_str(), x_coord, y_coord, z_coord, val, atomnames[type].c_str());
 
 
-//fprintf(pdbfile, "HETATM %7i %4s MOL A   1    \n", speciesID, atomnames[type].c_str());
+//fprintf(pdbfile, "HETATM%5i %4s MOL A   1    \n", speciesID, atomnames[type].c_str());
         }
     }
     fclose(pdbfile);
