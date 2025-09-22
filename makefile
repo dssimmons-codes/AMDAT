@@ -34,7 +34,24 @@ CPPFLAGS := -MMD -MP -I./src \
 CXXFLAGS := -std=$(STD) $(WARN)
 CFLAGS   ?= -O3 -DNDEBUG
 LDFLAGS  :=
-LDLIBS   := -lfftw3 -lvoro++ -L./src/voro++-0.4.6/src
+LDLIBS   := -lvoro++ -L./src/voro++-0.4.6/src
+FFTW_ROOT ?=
+
+# --- try pkg-config first ---
+PKGCONF  ?= pkg-config
+ifeq ($(shell which $(PKGCONF) >/dev/null 2>&1 && echo yes),yes)
+  ifeq ($(shell $(PKGCONF) --exists fftw3 && echo yes),yes)
+    CPPFLAGS += $(shell $(PKGCONF) --cflags fftw3)
+    LDLIBS   += $(shell $(PKGCONF) --libs   fftw3)
+  endif
+endif
+
+# --- fallback: user-specified prefix ---
+ifneq ($(FFTW_ROOT),)
+  CPPFLAGS += -I$(FFTW_ROOT)/include
+  LDFLAGS  += -L$(FFTW_ROOT)/lib
+  LDLIBS   += -lfftw3
+endif
 
 ifeq ($(OMP),1)
   CXXFLAGS += -fopenmp
