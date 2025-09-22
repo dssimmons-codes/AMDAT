@@ -212,6 +212,7 @@ class Control
     void raf();
     void neighbor_decorrelation_function();	//compute neighbor decorrelation function
     void find_between();		//find particle between pairs of particles in a second trajectory list
+    void read_bond_neighbors(); //read in a list of bonds at each time and store as a neighbor list relative to each atom
     
     void orientational_correlation();
     void region_multibody_list();	//creates new multibody list based on region

@@ -178,9 +178,11 @@ Trajectory* Trajectory_List::operator()(int timeii,int trajii)
 	Trajectory * nullp;
 	nullp=0;
 
-	if(convert_time(timeii)>=n_times) return nullp;
-	else if(trajii>=n_trajectories[convert_time(timeii)]) return nullp;
-	else return trajectories[convert_time(timeii)][trajii];
+  int ctime = convert_time(timeii);
+
+	if(ctime>=n_times) return nullp;
+	else if(trajii>=n_trajectories[ctime]) return nullp;
+	else return trajectories[ctime][trajii];
 }
 
 
