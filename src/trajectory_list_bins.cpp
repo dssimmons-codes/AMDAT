@@ -1123,7 +1123,8 @@ void Trajectory_List_Bins::assign_bins_distance_clusters(Trajectory_List * binne
     for(int trajii=0; trajii<binned_list->show_n_trajectories(timeii); trajii++)
     {
       length = system->size(timeii).max();
-      for(int traj2ii=0; traj2ii<cluster_list->show_n_trajectories(timeii); traj2ii++)
+      int n_traj2s = cluster_list->show_n_trajectories(timeii);
+      for(int traj2ii=0; traj2ii<n_traj2s; traj2ii++)
       {
         temp_length=
                 (
