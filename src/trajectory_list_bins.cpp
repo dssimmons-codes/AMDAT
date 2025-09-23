@@ -1102,6 +1102,12 @@ void Trajectory_List_Bins::assign_bins_distance_clusters(Trajectory_List * binne
 
   float length;
   float temp_length;
+
+  // TODO(Pierre): If the simulation box varies with time, `box_size` should be
+  // // computed per time step (e.g., `system->size(timeii)`) and hoisted only as far
+  // // as the `timeii` scope, not outside. Confirm time dependence before relying on
+  // // a single snapshot here.
+  Coordinate box_size = system->size();
   
   for(int xii=0; xii<n_xbins; xii++)
   {
@@ -1132,7 +1138,7 @@ void Trajectory_List_Bins::assign_bins_distance_clusters(Trajectory_List * binne
                   (
                     coordii -
                     (*cluster_list)(timeii,traj2ii)->show_coordinate(timeii)
-                  ).vector_unwrapped(system->size())
+                  ).vector_unwrapped(box_size)
                 ).length();
 
         length=min(length,temp_length);
