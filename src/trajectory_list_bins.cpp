@@ -1098,9 +1098,7 @@ void Trajectory_List_Bins::assign_bins_distance_clusters(Trajectory_List * binne
      * @author Mark Mackura and David Simmons
      * @date 3/1/2013
      */
-  int xii,yii,zii;
-  xii=0;
-  yii=0;
+  int zii;
 
   Coordinate dist;
   float length;
@@ -1135,7 +1133,7 @@ void Trajectory_List_Bins::assign_bins_distance_clusters(Trajectory_List * binne
       zii = int(length/bin_thickness);
       if (zii<n_zbins)
       {
-        trajcount[xii][yii][zii][timeii]++;
+        trajcount[0][0][zii][timeii]++;
         vectorstoragething[0][0][zii][timeii].push_back((*binned_list)(timeii,trajii)->show_trajectory_ID());
       }
     }
