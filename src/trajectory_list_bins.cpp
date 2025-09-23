@@ -1092,7 +1092,6 @@ void Trajectory_List_Bins::assign_bins()
 
 }
 
-
 void Trajectory_List_Bins::assign_bins_distance_clusters(Trajectory_List * binned_list,Trajectory_List * cluster_list,float bin_thickness)
 {
   /**bin based on distance to a second trajectory list (each bin has it's own Boolean_List)
@@ -1129,8 +1128,6 @@ void Trajectory_List_Bins::assign_bins_distance_clusters(Trajectory_List * binne
       length = system->size(timeii).max();
       for(int traj2ii=0; traj2ii<cluster_list->show_n_trajectories(timeii); traj2ii++)
       {
-//        temp_length=((binned_list(timeii,trajii)->show_coordinate(timeii)-cluster_list(timeii,traj2ii)->show_coordinate(timeii)).vector_unwrapped(system->size())).length();
-//  (*traj_list_bins)(xii,yii,zii)      
         temp_length=(((*binned_list)(timeii,trajii)->show_coordinate(timeii)-(*cluster_list)(timeii,traj2ii)->show_coordinate(timeii)).vector_unwrapped(system->size())).length();
 
         length=min(length,temp_length);
@@ -1152,7 +1149,7 @@ void Trajectory_List_Bins::assign_bins_distance_clusters(Trajectory_List * binne
       {
         for(int timeii=0; timeii<n_times; timeii++)
         {
-          /*allocate memory for include IDs at each x,y,z,t; then loop over included IDs in vectorstoragething[xii,yii,zii,timeii] and then copyt them to include[xii][yii][zii][timeii][ii]*/
+          /*allocate memory for include IDs at each x,y,z,t; then loop over included IDs in vectorstoragething[xii,yii,zii,timeii] and then copy them to include[xii][yii][zii][timeii][ii]*/
 	        include[xii][yii][zii][timeii] = new int [vectorstoragething[xii][yii][zii][timeii].size()];
 //          include[xii][yii][zii][timeii][tempcount[xii][yii][zii][timeii]]=trajii;
           for (int trajii=0; trajii < vectorstoragething[xii][yii][zii][timeii].size(); trajii++)
