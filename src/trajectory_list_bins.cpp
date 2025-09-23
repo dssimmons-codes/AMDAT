@@ -1100,7 +1100,6 @@ void Trajectory_List_Bins::assign_bins_distance_clusters(Trajectory_List * binne
      */
   int zii;
 
-  Coordinate dist;
   float length;
   float temp_length;
   
