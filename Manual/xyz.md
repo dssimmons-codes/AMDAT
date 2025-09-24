@@ -10,17 +10,19 @@ Since xyz files employ ‘wrapped’ coordinates, they generally face the challe
 
 This command consists of multiple lines. Syntax is as follows.
 
+```
 _xyz_  
-_<input\_file\_path> <optional: template\_file>_  
-_<first\_species\_name> <number\_of\_molecules> <second\_species\_name> <number\_of\_molecules>…_  
-_<first\_atom type> <second\_atom type> …_  
-_<# of first type in first species> <# of second type in first species> …_  
-_<# of first type in second species> <# of second type in second species>…_  
-_..._  
-_..._  
-_<# of first type in last species>…<# of last type in last species>_  
-_<Lx> <Ly> <Lz>_  
-_<xlo> <xhi> <ylo> <yhi> <zlo> <zhi>_  
+<input_file_path> <optional: template_file>
+<first_species_name> <number_of_molecules> <second_species_name> <number_of_molecules> ... <last_species_name> <number_of_molecules> 
+<first_atom_type>                     <second_atom_type>                      ...    <last_atom_type>
+<# of first type in first species>    <# of second type in first species>     ...    <# of last type in first species> 
+<# of first type in second species>   <# of second type in second species>    ...    <# of last type in second species>
+...
+...
+<# of first type in last species>     <# of second type in last species>      ...    <# of last type in last species>
+<Lx> <Ly> <Lz>
+<xlo> <xhi> <ylo> <yhi> <zlo> <zhi>_
+```
 
 Minimally, <filenames> for xyz must include the path to the xyz trajectory file. If this is the only file provided, AMDAT will assume that the trajectory is ordered such that all molecules of a given species are grouped together, with the species appearing in the xyz file in the order in which they are provided in the list of species above.
 
