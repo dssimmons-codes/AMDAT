@@ -17,10 +17,12 @@ AMDAT also understands velocities (vx, vy, and vz), and masses (m), although the
 
 <h2>syntax</h2>
 
+The syntax to be employed is as follows.
+
 ```
 custom
-<input_file_path> <optional: template_file> 
-<first_species_name> <number_of_molecules> <second_species_name> <number_of_molecules> ... <last_species_name> <number_of_molecules> 
+<input_file_path> <optional: template_file>
+<first_species_name> <number_of_molecules> <second_species_name> <number_of_molecules> ... <last_species_name> <number_of_molecules>
 <first_atom_type>                     <second_atom_type>                      ...    <last_atom_type>
 <# of first type in first species>    <# of second type in first species>     ...    <# of last type in first species> 
 <# of first type in second species>   <# of second type in second species>    ...    <# of last type in second species>
@@ -38,7 +40,7 @@ Alternatively, the user may include an optional ‘template’ file, which provi
 <species_j_name> <# of continuous molecules of species j>
 ...
 ```
- 
+
 Species in the template file may generally be repeated (ie, molecules of a given species need not be continuous). This permits more complex orderings of molecule types within the file.
 
 Since box size data is included in LAMMPS custom file output at each time step, time-dependent box dimensions are automatically read in from the custom file.
