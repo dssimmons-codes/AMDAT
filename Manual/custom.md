@@ -21,7 +21,7 @@ AMDAT also understands velocities (vx, vy, and vz), and masses (m), although the
 custom
 <input_file_path> <optional: template_file> 
 <first_species_name> <number_of_molecules> <second_species_name> <number_of_molecules> ... <last_species_name> <number_of_molecules> 
-<first_atom_type>                     <second_atom_type> ... <last_atom_type>
+<first_atom_type>                     <second_atom_type>                      ...    <last_atom_type>
 <# of first type in first species>    <# of second type in first species>     ...    <# of last type in first species> 
 <# of first type in second species>   <# of second type in second species>    ...    <# of last type in second species>
 ...
