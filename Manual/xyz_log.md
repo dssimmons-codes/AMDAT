@@ -6,14 +6,14 @@ xyz is a common trajectory file format produced by codes such as LAMMPS. It is a
 
 Since xyz files employ ‘wrapped’ coordinates, they generally face the challenge that they do not always facilitate unambiguous reconstruction of unwrapped particle trajectories. AMDAT will attempt to infer unwrapped trajectories by assuming that the shortest distance travelled by a given particle between two timesteps, considering all possible boundary crossings, is the correct one. If AMDAT encounters trajectories in which displacements approach half the box size in any dimension, it will output a warning indicating that unambiguous particle unwrapping is not possible. If you encounter this warning, it is strongly suggested that you not rely upon any dynamical analysis resulting from this trajectory. This problem can often be solved by employing more closely spaced frames or more generally employing a lammps custom trajectory with either unwrapped coordinates or image flags provided.
 
-This read-in style is the same as [xyz](xyz.md), but it attempts to employ a LAMMPS log file to determine the box size rather than requiring the user to input it. Accordingly, this requires paths to at least two files to be provided in the <filenames> line: the xyz trajectory file and a LAMMPs log file. A third path specifying template file may optionally be provided, with the same effect and formatting as for type xyz. 
+This read-in style is the same as [xyz](xyz.md), but it attempts to employ a LAMMPS log file to determine the box size rather than requiring the user to input it. Accordingly, this requires paths to at least two files to be provided in the <filenames> line: the xyz trajectory file and a LAMMPS log file. A third path specifying template file may optionally be provided, with the same effect and formatting as for type xyz. 
 
 <h2>syntax</h2>
 
 This command consists of multiple lines. Syntax is as follows.
 
 ```
-xyz
+xyz_log
 <input_file_path> <log_file_path> <optional: template_file>
 <first_species_name> <number_of_molecules> <second_species_name> <number_of_molecules> ... <last_species_name> <number_of_molecules> 
 <first_atom_type>                     <second_atom_type>                      ...    <last_atom_type>
@@ -33,7 +33,7 @@ Alternatively, the user may include an optional ‘template’ file, which provi
 <species_j_name> <# of continuous molecules of species j>
 ...
 ```
- 
-Species in the template file may generally be repeated (ie, molecules of a given species need not be continuous). This permits more complex orderings of molecule types within the file.
 
-In the last two input lines above, Li is the total length of the box in the i’th dimension; ilo is the position of the lower-valued boundary in the i’th direction, and ihi is the position of the upper-valued boundary in the i’th direction.
+Species in the template file may generally be repeated (i.e., molecules of a given species need not be continuous). This permits more complex orderings of molecule types within the file.
+
+In the last two input lines above, `Li` is the total length of the box in the `i`’th dimension; `ilo` is the position of the lower-valued boundary in the `i`’th direction, and `ihi` is the position of the upper-valued boundary in the `i`’th direction.
