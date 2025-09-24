@@ -29,7 +29,7 @@ custom
 <# of first type in last species>     <# of second type in last species>      ...    <# of last type in last species>
 ```
 
-Minimally, ``<filenames>`` must include the path to the custom trajectory file. If this is the only file provided, AMDAT will assume that the trajectory is ordered such that all molecules of a given species are grouped together, with the species appearing in the custom file in the order in which they are provided in the list of species above.
+Minimally, ``<filenames>`` must include the path to the custom trajectory file. If this is the only file provided, AMDAT will assume that the trajectory is ordered such that all molecules of a given species are grouped together, with the species appearing in the `custom` file in the order in which they are provided in the list of species above.
 
 Alternatively, the user may include an optional ‘template’ file, which provides the order of molecules by species type. The format is:
 
