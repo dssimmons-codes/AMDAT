@@ -11,7 +11,7 @@ Since xyz files employ ‘wrapped’ coordinates, they generally face the challe
 This command consists of multiple lines. Syntax is as follows.
 
 ```
-_xyz_  
+xyz
 <input_file_path> <optional: template_file>
 <first_species_name> <number_of_molecules> <second_species_name> <number_of_molecules> ... <last_species_name> <number_of_molecules> 
 <first_atom_type>                     <second_atom_type>                      ...    <last_atom_type>
@@ -21,17 +21,19 @@ _xyz_
 ...
 <# of first type in last species>     <# of second type in last species>      ...    <# of last type in last species>
 <Lx> <Ly> <Lz>
-<xlo> <xhi> <ylo> <yhi> <zlo> <zhi>_
+<xlo> <xhi> <ylo> <yhi> <zlo> <zhi>
 ```
 
-Minimally, <filenames> for xyz must include the path to the xyz trajectory file. If this is the only file provided, AMDAT will assume that the trajectory is ordered such that all molecules of a given species are grouped together, with the species appearing in the xyz file in the order in which they are provided in the list of species above.
+Minimally, `<filenames>` for `xyz` must include the path to the xyz trajectory file. If this is the only file provided, AMDAT will assume that the trajectory is ordered such that all molecules of a given species are grouped together, with the species appearing in the `xyz` file in the order in which they are provided in the list of species above.
 
 Alternatively, the user may include an optional ‘template’ file, which provides the order of molecules by species type. The format is:
 
+```
 <species_k_name> <# of continuous molecules of species k>
 <species_j_name> <# of continuous molecules of species j>
-…   
-Species in the template file may generally be repeated (ie, molecules of a given species need not be continuous). This permits more complex orderings of molecule types within the file.
+...
+```
 
-In the last two input lines above, Li is the total length of the box in the i’th dimension; ilo is the position of the lower-valued boundary in the i’th direction, and ihi is the position of the upper-valued boundary in the i’th direction.
+Species in the template file may generally be repeated (i.e., molecules of a given species need not be continuous). This permits more complex orderings of molecule types within the file.
 
+In the last two input lines above, `Li` is the total length of the box in the `i`’th dimension; `ilo` is the position of the lower-valued boundary in the `i`’th direction, and `ihi` is the position of the upper-valued boundary in the `i`’th direction.
