@@ -35,7 +35,12 @@ Radial_Distribution_Function::Radial_Distribution_Function(System*sys, int nbins
   system=sys;
   n_bins=nbins;
   minboxsize=(system->min_box_dimensions()).min();
-  
+
+  if(std::fabs(minboxsize - 1.0f) <= 1e-7f)
+  {
+    minboxsize=(system->min_box_dimensions()).min2D();
+  }
+
   if(maxdistance>0&&maxdistance<minboxsize/2)
   {
     max_distance=maxdistance;
@@ -43,7 +48,7 @@ Radial_Distribution_Function::Radial_Distribution_Function(System*sys, int nbins
   else
   {
     max_distance = minboxsize/2;
-    cout << "\nMax length scale binned selected by user for rdf is not between 0 and half the smallest box dimension. Defaulting to half smallest box dimension.\n";
+    cout << "\nMax length scale binned selected by user for rdf is not between 0 and half the smallest box dimension. Defaulting to half smallest box dimension. Max_distance: " << max_distance << "\n";
   }
   
   time_scheme = timescheme;
@@ -168,6 +173,11 @@ void Radial_Distribution_Function::set(System*sys, int nbins, int timescheme, fl
   n_bins=nbins;
   minboxsize=(system->min_box_dimensions()).min();
   
+  if(std::fabs(minboxsize - 1.0f) <= 1e-7f)
+  {
+    minboxsize=(system->min_box_dimensions()).min2D();
+  }
+
   if(maxdistance>0&&maxdistance<minboxsize/2)
   {
     max_distance=maxdistance;
