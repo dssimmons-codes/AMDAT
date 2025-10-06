@@ -1,5 +1,21 @@
-# Amorphous Molecular Dynamics Analysis Toolkit (AMDAT)
-Development Version Documentation
+# AMDAT — Amorphous Molecular Dynamics Analysis Toolkit
 
-For an overview of AMDAT, how to make it, and how to use it, go to the [AMDAT overview](Manual/overview.md).
+AMDAT is a C++ toolkit for analyzing molecular dynamics trajectories, with a focus on amorphous and glassy materials. It loads a trajectory into memory for very fast analysis. It reads LAMMPS formats and (optionally) GROMACS `.xtc`.
 
+## Quick start (Linux, Conda)
+
+### Build with conda environment (Recommended)
+```bash
+make conda-setup
+conda activate amdat
+make
+```
+
+## Run
+```bash
+./AMDAT -i path/to/input.in
+```
+
+## Documentation
+* [Overview](Manual/overview.md)
+* [Making AMDAT](Manual/making_amdat.md)
