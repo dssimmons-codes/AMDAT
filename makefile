@@ -31,7 +31,7 @@ CPPFLAGS := -MMD -MP -I./src \
             -DWV2D=\"$(WV2D)\" \
             -DWV1D=\"$(WV1D)\"
 
-CXXFLAGS := -std=$(STD) $(WARN) -fPIC
+CXXFLAGS := -std=$(STD) $(WARN)
 CFLAGS   ?= -O3 -DNDEBUG
 LDFLAGS  :=
 LDLIBS   := -lvoro++ -L./src/voro++-0.4.6/src
@@ -119,6 +119,10 @@ voro:
 	$(MAKE) -C src/voro++-0.4.6 \
 					CC="$(CC)" CXX="$(CXX)"
 
+.PHONY: clean_voro
+clean_voro:
+	$(MAKE) -C src/voro++-0.4.6 clean
+
 # Final link: include xdrfile objects as well
 $(APP): $(OBJS) $(XDR_OBJS) $(VORO_OBJS) | voro
 	@echo "  LINK    $@"
@@ -142,7 +146,7 @@ $(BUILD_DIR)/xdr/%.o: $(XDR_SRC_DIR)/%.c
 # Include auto-generated header dependencies (for C++ objects)
 -include $(DEPS)
 
-clean:
+clean: clean_voro
 	@echo "  CLEAN   objects"
 	@rm -rf $(BUILD_DIR)/*
 
