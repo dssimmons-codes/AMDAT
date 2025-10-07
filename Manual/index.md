@@ -17,6 +17,7 @@
 | [n\_fold](n_fold.md) | Calculates mean and time dependence of n-fold order parameter and writes maps to files. | trajectory\_list | Tab demarkated data file and a PDB file |
 | [ngp](ngp.md) | Calculates non-Gaussian parameter of the mean squared displacement. | trajectory\_list | Tab demarkated data file |
 | [rdf](rdf.md) | Computes the radial distribution function. | trajectory\_list | Tab demarkated data file |
+| [rnf](radial_count.md) | Computes the mean number of particles in shells around a set of central particles | Tab demarcated data file |
 | [rgtensor\_stats](rgtensor_stats.md) | Calculates statistics describing the radius of gyration tensor characterizing particle trajectories as a function of time. | trajectory\_list | Tab demarkated data file |
 | [stiffness\_dist](stiffness_dist.md) | Calculates distribution of inverse Debye-Waller factor values 1/u2. | trajectory\_list | Tab demarkated data file |
 | [strings](strings.md) | Analyzes 'stringlike' collective motion. Planned for deprecation in favor of string_multibodies. | trajectory\_list | Tab demarkated data file. |

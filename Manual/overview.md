@@ -2,7 +2,7 @@
 
 AMDAT is a toolkit of molecular dynamics analysis methods. It currently has a focus on analysis of non-crystalline materials, although it contains some analyses relevant to crystalline systems (and this focus may evolve moving forward). It is designed to be a high-memory fast-compute analysis package. This means it loads the entire trajectory into active memory for analysis. This makes it extremely fast, because it does not need to read hard drive storage during operation. However, it also means that in practice memory requirements are typically 2-3 times (or more, depending on the types of analyses performed) the trajectory file size. This may become prohibitive for analysis of extremely large trajectory files.
 
-AMDAT can read multiple file formats produced by the LAMMPS molecular dynamics simulation software, and it also can read .xtc format trajectory produced by Gromacs (although this functionality was last tested many version of GROMACS ago). The type of trajectory file employed affects the type of analyses that can be performed in AMDAT. The most versatile functionality is presently achievable with LAMMPS custom trajectory files. AMDAT enables [versatile selection of sets of particles](trajectory_lists.md) from within a simulation and contains methods of characterizing both the structure and dynamics of the particles. It enables user-definition of '[multibodies](multibodies.md)' consisting of multiple particles within a molecule and analysis of either the center of mass motion of these multibodies or of multibody correlations wotjom these multibodies. It allows for definition of [neighborlists](neighborlist.md) that track the neighbors of each particle. It allows read-in-from-trajectory-file or live calculation of [ancillary sets of values](value_list.md) on a per-particle-per-time basis and their analysis. AMDAT is currently in a beta testing phase, and functionality is being continuously improved or updated. That being said, AMDAT is written in an object oriented manner in C++, and it is designed to enable straightforward extension with new analysis techniques. We welcome submissions of new additions to this code. Some guidance on how to go about this will be provided in the developer section of this manual (to be added in the near future).
+AMDAT can read multiple file formats produced by the LAMMPS molecular dynamics simulation software, and it also can read .xtc format trajectory produced by GROMACS (although this functionality was last tested many version of GROMACS ago). The type of trajectory file employed affects the type of analyses that can be performed in AMDAT. The most versatile functionality is presently achievable with LAMMPS custom trajectory files. AMDAT enables [versatile selection of sets of particles](trajectory_lists.md) from within a simulation and contains methods of characterizing both the structure and dynamics of the particles. It enables user-definition of '[multibodies](multibodies.md)' consisting of multiple particles within a molecule and analysis of either the center of mass motion of these multibodies or of multibody correlations with these multibodies. It allows for definition of [neighborlists](neighborlist.md) that track the neighbors of each particle. It allows read-in-from-trajectory-file or live calculation of [ancillary sets of values](value_list.md) on a per-particle-per-time basis and their analysis. AMDAT is currently in a beta testing phase, and functionality is being continuously improved or updated. That being said, AMDAT is written in an object oriented manner in C++, and it is designed to enable straightforward extension with new analysis techniques. We welcome submissions of new additions to this code. Some guidance on how to go about this will be provided in the developer section of this manual (to be added in the near future).
 
 A central feature of AMDAT is its ability to read in and analyze blocked, exponentially-spaced trajectories. This is essential for analysis for dynamics over many orders of magnitude in time. The handling of this is currently documented in the [input_files](input_file.md) documentation. Both the documentation and the underlying functionality for this are expected to be expanded in the near future.
 
@@ -28,37 +28,37 @@ AMDAT is run from the command line (see section below on Running AMDAT). The use
 
 AMDAT is run from the command line, specifying the filename of a user [input file](input_file.md):
 
-_./AMDAT \<FLAGS\>_
+`</PATH/TO/AMDAT>/AMDAT <FLAGS>`
 
-\<FLAGS\> refers to a series of options built in to AMDAT. These flags can given in any combination in any order. Below is a list of flags and their respective syntax.
+`<FLAGS>` refers to a series of options built in to AMDAT. These flags can be given in any combination in any order. Below is a list of flags and their respective syntax.
 
-_-i \<INPUT FILE\>_
+`-i <INPUT FILE>`
 
-\<INPUTFILE\> is the path to a file directing AMDAT to a trajectory file for analysis, providing some metadata on the trajectory, and specifying the analysis to be performed. A more detailed description can be found in section 1. \<INPUTFILE\> is required to run the program.
+`<INPUTFILE>` is the path to a file directing AMDAT to a trajectory file for analysis, providing some metadata on the trajectory, and specifying the analysis to be performed. A more detailed description can be found in section 1. `<INPUTFILE>` is required to run the program.
 
-_-n \<# OF PROCESSORS\>_
+`-n <# OF PROCESSORS>`
 
-Presently, no analysis methods allow for multithreading, so this option does nothing. Eventually, this will permit AMDAT to run some analyses on \<# OF PROCESSORS\> processing cores. Defaults to 1 if not given..
+Presently, no analysis methods allow for multithreading, so this option does nothing. Eventually, this will permit AMDAT to run some analyses on `<# OF PROCESSORS>` processing cores. Defaults to 1 if not given..
 
-_-c \<CONSTANT NAME\> \<CONSTANT VALUE\>_
+`-c <CONSTANT NAME> <CONSTANT VALUE>`
 
-This flag passes to AMDAT the value of a constant (aka, variable) with name by \<CONSTANT NAME\> with an initial value of \<CONSTANT VALUE\>. AMDAT will replace any text in the input file with the format "${\<CONSTANT NAME\>}" with "\<CONSTANT VALUE\>" during execution. This flag is not required. Constants alternatively may be specified in the input file using the _constant_ command.
+This flag passes to AMDAT the value of a constant (aka, variable) with name by `<CONSTANT NAME>` with an initial value of `<CONSTANT VALUE>`. AMDAT will replace any text in the input file with the format `${<CONSTANT NAME>}` with `<CONSTANT VALUE>` during execution. This flag is not required. Constants alternatively may be specified in the input file using the `constant` command.
 
-_-h or –help_
+`-h or –help`
 
 This flag returns a help menu detailing the AMDAT verstion and date of release as well as the command line format detailed here.
 
--v
+`-v`
 
 This flag returns the AMDAT version and date of release.
 
--w \<TIME\>
+`-w <TIME>`
 
-This flag causes the program to wait for \<TIME\> seconds before beginning.
+This flag causes the program to wait for `<TIME>` seconds before beginning.
 
-\> \<LOGFILE\> 2\>&1
+`> <LOGFILE> 2>&1`
 
-This is the standard linux command to redirect screen output to \<LOGFILE\>. This command must be used after all other flags.
+This is the standard linux command to redirect screen output to `<LOGFILE>`. This command must be used after all other flags.
 
 
 <h2>Essential links</h2>
@@ -68,7 +68,7 @@ Look in the following links for information on how to:
 * Create and use [trajectory_lists](trajectory_lists.md) to select and analyze particle trajectories
 * Create and use [trajectory_bin_lists](trajectory_bin_list.md) to efficiently perform spatially-resolved analysis of trajectories.
 * Create and use [multibodies](multibodies.md) to create and analyze entities comprised of multiple particles
-* Create and use [neighbor_lists](neighborlist.md) to analyze particle adjacencies
 * Create and use [value_lists](value_list.md) to analyze additional per-particle quantities
+* Create and use [neighbor_lists](neighborlist.md) to analyze particle adjacencies
 
-Developer documentation is currently incomplete, but a stub can be found [here](developer_documentation.md).
+Developer documentation is currently incomplete, but a stub can be found [here](../developer_documentation.md).

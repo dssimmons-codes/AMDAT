@@ -3,7 +3,7 @@
 #include <math.h>
 #include <fstream>
 #include <sstream>
-#include <string.h>
+#include <string>
 
 using namespace std;
 

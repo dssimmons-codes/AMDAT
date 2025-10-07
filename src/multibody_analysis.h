@@ -5,7 +5,7 @@
 #ifndef MULTIBODY_ANALYSIS
 #define MULTIBODY_ANALYSIS
 
-#include <string.h>
+#include <string>
 #include <stdio.h>
 #include <iostream>
 
