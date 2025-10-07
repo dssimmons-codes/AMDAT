@@ -1,3 +1,5 @@
+// Copyright (C) 2010-2025 David S. Simmons
+
 /*Bin_Static_Analysis - performs analysis to binned trajectories
 Amorphous Molecular Dynamics Analysis Tookit (AMDAT)
 Written by Mark Mackura*/

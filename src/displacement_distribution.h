@@ -1,3 +1,5 @@
+// Copyright (C) 2010-2025 David S. Simmons
+
 /*Amorphous Molecular Dynamics Analysis Toolkit (AMDAT)*/
 /*Class to calculate distribution of particle displacements to user specified power*/
 /*Written by David S. Simmons*/

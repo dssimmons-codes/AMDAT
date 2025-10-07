@@ -1,3 +1,5 @@
+// Copyright (C) 2010-2025 David S. Simmons
+
 
 /*Multibody_List_Bins class - stores a list of multibodies according to bins
 Amorphous Molecular Dynamics Tookit (AMDAT)

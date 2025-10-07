@@ -1,3 +1,5 @@
+// Copyright (C) 2010-2025 David S. Simmons
+
 /*Methods for trajectories class - stores a list of trajectories*/
 /*Amorphous Molecular Dynamics Analysis Toolkit (AMDAT)*/
 /*Written by David S. Simmons*/

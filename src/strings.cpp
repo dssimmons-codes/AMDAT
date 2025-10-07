@@ -1,5 +1,7 @@
+// Copyright (C) 2010-2025 David S. Simmons
+
 /*Methods for String class - Identifies strings in fluid*/
-/*Molecular dynamics analysis toolkit (MDAT)*/
+/*Molecular dynamics analysis toolkit (AMDAT)*/
 /*Written by David S. Simmons*/
 
 #include <stdlib.h>

@@ -1,3 +1,5 @@
+// Copyright (C) 2010-2025 David S. Simmons
+
 /*Amorphous Molecular Dynamics Analysis Toolkit (AMDAT)*/
 /*Method for parent class for analysis of multibodies*/
 /*Written by David S. Simmons*/

@@ -1,3 +1,5 @@
+// Copyright (C) 2010-2025 David S. Simmons
+
 /*Amorphous Molecular Dynamics Analysis Toolkit (AMDAT)*/
 /*Vector_Map class*/
 /*Written to replace functionality in unordered_map to allow use compilation of AMDAT in currently common gcc compiler versions*/

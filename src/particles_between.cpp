@@ -1,3 +1,5 @@
+// Copyright (C) 2010-2025 David S. Simmons
+
 //Add standard methods up here. Contructors, equality operator, etc.
 #include <math.h>
 #include <iostream>

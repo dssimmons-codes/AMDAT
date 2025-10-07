@@ -1,5 +1,7 @@
+// Copyright (C) 2010-2025 David S. Simmons
 
-/*Molecular Dynamics Analysis Toolkit (MDAT)*/
+
+/*Molecular Dynamics Analysis Toolkit (AMDAT)*/
 /*Methods for class to hold a 3-D coordinate*/
 /*Written by David S. Simmons*/
 

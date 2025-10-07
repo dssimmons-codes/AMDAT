@@ -1,4 +1,6 @@
-/*Amorphous Molecular Dynamics Analysis Toolkit (MDAT)*/
+// Copyright (C) 2010-2025 David S. Simmons
+
+/*Amorphous Molecular Dynamics Analysis Toolkit (AMDAT)*/
 /*Class to calculate multibody mean gyration radius*/
 /*Written by David S. Simmons*/
 

@@ -1,5 +1,7 @@
+// Copyright (C) 2010-2025 David S. Simmons
+
 /*Methods for Slow_Particles class: identifies and stores list of slow particles at start of each exponential block*/
-/*Molecular dynamics analysis toolkit (MDAT)*/
+/*Molecular dynamics analysis toolkit (AMDAT)*/
 /*Written by David S. Simmons*/
 
 

@@ -1,3 +1,5 @@
+// Copyright (C) 2010-2025 David S. Simmons
+
 /*Amorphous Molecular Dynamics Analysis Toolkit (AMDAT)*/
 /*Methods for class to calculate radial_distribution_function from n^2 method*/
 /*Written by David S. Simmons*/

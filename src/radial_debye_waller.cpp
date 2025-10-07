@@ -1,3 +1,5 @@
+// Copyright (C) 2010-2025 David S. Simmons
+
 /*Amorphous Molecular Dynamics Analysis Toolkit (AMDAT)*/
 /*Methods for Radial Debye Waller class*/
 /*Written by David S. Simmons*/

@@ -1,4 +1,6 @@
-/*Molecular Dynamics Analysis Toolkit (MDAT)*/
+// Copyright (C) 2010-2025 David S. Simmons
+
+/*Molecular Dynamics Analysis Toolkit (AMDAT)*/
 /*Methods for Vector_Autocorrelation*/
 /*Written by David S. Simmons*/
 

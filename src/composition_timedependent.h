@@ -1,3 +1,5 @@
+// Copyright (C) 2010-2025 David S. Simmons
+
 /*Amorphous Molecular Dynamics Analysis Toolkit (AMDAT)*/
 /*Class outputting information about system composition as a function of time*/
 /*Is exactly the same as parent class Composition, but changes standard output to include timedependence*/

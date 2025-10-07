@@ -1,4 +1,6 @@
-/*Molecular Dynamics Analysis Toolkit (MDAT)*/
+// Copyright (C) 2010-2025 David S. Simmons
+
+/*Molecular Dynamics Analysis Toolkit (AMDAT)*/
 /*Declaration of function to display percentage-progress on a task.*/
 /*Written by David S. Simmons*/
 

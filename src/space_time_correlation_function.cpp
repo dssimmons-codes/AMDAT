@@ -1,4 +1,6 @@
-/*Molecular Dynamics Analysis Toolkit (MDAT)*/
+// Copyright (C) 2010-2025 David S. Simmons
+
+/*Molecular Dynamics Analysis Toolkit (AMDAT)*/
 /*Methods for Space_Time_Correlation_Function class: a general class to hold a time correlation function*/
 /*Also calculates and stores inverse-space */
 /*Written by David S. Simmons*/

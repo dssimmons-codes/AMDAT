@@ -1,3 +1,5 @@
+// Copyright (C) 2010-2025 David S. Simmons
+
 /*Amorphous Molecular Dynamics Analysis Toolkit (AMDAT)*/
 /*Provisional_Multibodies class methods - provides parent class for any analysis method that needs to create multibodies*/
 /*Written by David S. Simmons*/

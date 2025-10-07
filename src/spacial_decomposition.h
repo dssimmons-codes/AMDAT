@@ -1,4 +1,6 @@
-/*Molecular Dynamics Analysis Toolkit (MDAT)*/
+// Copyright (C) 2010-2025 David S. Simmons
+
+/*Molecular Dynamics Analysis Toolkit (AMDAT)*/
 /*Spacial Decomposition class declaration: class to box atoms into spacial cells by position over a range of time*/
 /*Written by David S. Simmons*/
 

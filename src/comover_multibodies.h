@@ -1,3 +1,5 @@
+// Copyright (C) 2010-2025 David S. Simmons
+
 /*Comover_Multibodies class - Identifies particles remaining in spacial promity to one anotherand converts them to multibodies*/
 /*Amorphous Molecular dynamics analysis toolkit (AMDAT)*/
 /*Written by David S. Simmons*/

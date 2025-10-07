@@ -1,3 +1,5 @@
+// Copyright (C) 2010-2025 David S. Simmons
+
 /*Amorphous Molecular Dynamics Analysis Toolkit (AMDAT)*/
 /*Trajectory_RgTensor class: calculates time-dependent Rg Tensor for a trajectory*/
 /*Written by David S. Simmons*/

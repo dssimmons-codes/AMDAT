@@ -1,3 +1,5 @@
+// Copyright (C) 2010-2025 David S. Simmons
+
 /*Amorphous Molecular Dynamics Analysis Toolkit (AMDAT)*/
 /*A software package for analysis of molecular dynamics trajectories*/
 /*Written by David S. Simmons*/

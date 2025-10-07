@@ -1,3 +1,5 @@
+// Copyright (C) 2010-2025 David S. Simmons
+
 /*Value_List class - stores a value for each trajectory in the system*/
 /*Amorphous Molecular Dynamics Analysis Toolkit (aMDAT)*/
 /*Written by David S. Simmons*/

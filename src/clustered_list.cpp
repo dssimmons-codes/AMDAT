@@ -1,3 +1,5 @@
+// Copyright (C) 2010-2025 David S. Simmons
+
 #include "clustered_list.h"
 #include "tokenize.h"
 #include <sstream>

@@ -1,3 +1,5 @@
+// Copyright (C) 2010-2025 David S. Simmons
+
 /*Particles_Between class - stores a list of trajectories of particles that are geometrically between pairs of particles in a second trajectory list*/
 /*Amorphous Molecular Dynamics Analysis Toolkit (AMDAT)*/
 /*Written by David S. Simmons and Pierre Kawak*/

@@ -1,3 +1,5 @@
+// Copyright (C) 2010-2025 David S. Simmons
+
 /*Function to take a line and convert it into substrings broken up by spaces and tabs*/
 /*Written by David S. Simmons*/
 

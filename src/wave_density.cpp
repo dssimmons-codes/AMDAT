@@ -1,3 +1,5 @@
+// Copyright (C) 2010-2025 David S. Simmons
+
 /*Density_Fourier Class methods.  This class calculates and stores the spacial fourier transform of the number density for each wavevector passed from a Wave_Vectors object.*/
 /*Written by David S. Simmons*/
 

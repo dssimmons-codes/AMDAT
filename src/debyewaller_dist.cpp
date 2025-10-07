@@ -1,3 +1,5 @@
+// Copyright (C) 2010-2025 David S. Simmons
+
 
 #include "debyewaller_dist.h"
 #include <fstream>

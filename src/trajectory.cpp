@@ -1,4 +1,6 @@
-/*Amorphous Molecular Dynamics Analysis Toolkit (MDAT)*/
+// Copyright (C) 2010-2025 David S. Simmons
+
+/*Amorphous Molecular Dynamics Analysis Toolkit (AMDAT)*/
 /*Methods for Class Trajectory: Parent class for classes that store trajectory information, such as atoms and molecules*/
 /*Written by David S. Simmons*/
 

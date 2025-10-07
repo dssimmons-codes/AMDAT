@@ -1,5 +1,7 @@
+// Copyright (C) 2010-2025 David S. Simmons
+
 /*Exptime_Trajectory_List class - stores a list of trajectories that is the same for all times*/
-/*Amorphous Molecular Dynamics Analysis Toolkit (MDAT)*/
+/*Amorphous Molecular Dynamics Analysis Toolkit (AMDAT)*/
 /*Written by David S. Simmons*/
 
 /**/

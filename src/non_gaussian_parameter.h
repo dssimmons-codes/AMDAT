@@ -1,3 +1,5 @@
+// Copyright (C) 2010-2025 David S. Simmons
+
 /*Molecular Dynamics Analysis Toolkit*/
 /*Class to calculate non-gaussian parameter*/
 /*Written by David S. Simmons*/

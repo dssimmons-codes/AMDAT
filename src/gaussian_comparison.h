@@ -1,4 +1,6 @@
-/*Molecular Dynamics Analysis Toolkit (MDAT)*/
+// Copyright (C) 2010-2025 David S. Simmons
+
+/*Molecular Dynamics Analysis Toolkit (AMDAT)*/
 /*Class to compare self Van Hove function to the so-called Gaussian approximation for the Van Hove, establishing boundaries and fractions for slow and fast particle categories*/
 /*Written by David S. Simmons*/
 

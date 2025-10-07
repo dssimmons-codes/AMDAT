@@ -1,3 +1,5 @@
+// Copyright (C) 2010-2025 David S. Simmons
+
 /*Amorphous Molecular Dynamics Analysis Toolkit (AMDAT)*/
 /*Methods for Neighbor_List class - stores a time-dependent neighbor list for a set of trajectories*/
 /*Written by David S. Simmons*/

@@ -1,3 +1,5 @@
+// Copyright (C) 2010-2025 David S. Simmons
+
 #ifndef CLUSTERED_LIST_H
 #define CLUSTERED_LIST_H
 

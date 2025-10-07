@@ -1,3 +1,5 @@
+// Copyright (C) 2010-2025 David S. Simmons
+
 /*Amorphous Molecular Dynamics Analysis Toolkit (aMDAT)*/
 /*Van_Hove_Distinct: a class for calculation of the distinct part of the Van Hove correlation function.*/
 /*Written by David S. Simmons*/

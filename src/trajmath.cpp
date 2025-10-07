@@ -1,3 +1,5 @@
+// Copyright (C) 2010-2025 David S. Simmons
+
 //Some mathematical tools for arrays of coordinates
 
 #include "trajmath.h"

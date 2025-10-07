@@ -1,3 +1,5 @@
+// Copyright (C) 2010-2025 David S. Simmons
+
 /*Amorphous Molecular Dynamics Analysis Toolkit (AMDAT)*/
 /*Header for class Coordinate, which holds 3-D spacial coordinate.*/
 /*Written by David S. Simmons*/

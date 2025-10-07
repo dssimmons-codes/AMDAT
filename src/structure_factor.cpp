@@ -1,3 +1,5 @@
+// Copyright (C) 2010-2025 David S. Simmons
+
 /*Methods fo Structure_Factor class - calculates structure factor*/
 /*Amorphous Molecular Dynamics Analysis Toolkit (AMDAT)*/
 /*Written by David S. Simmons*/

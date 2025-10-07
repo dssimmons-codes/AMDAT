@@ -1,3 +1,5 @@
+// Copyright (C) 2010-2025 David S. Simmons
+
 /*Count_Atoms class: counts number of atoms in set*/
 /*not used in AMDAT - obsolete*/
 /*Written by David S. Simmons*/

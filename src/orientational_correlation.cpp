@@ -1,3 +1,5 @@
+// Copyright (C) 2010-2025 David S. Simmons
+
 /*Molecular Dynamics Analysis Toolkit (AMDAT)*/
 /*Methods for class to calculate orientational correlation */
 /*Written by David S. Simmons*/

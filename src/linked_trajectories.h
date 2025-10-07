@@ -1,3 +1,5 @@
+// Copyright (C) 2010-2025 David S. Simmons
+
 #ifndef LINKED_TRAJECTORIES
 #define LINKED_TRAJECTORIES
 

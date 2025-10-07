@@ -1,3 +1,5 @@
+// Copyright (C) 2010-2025 David S. Simmons
+
 /*Trajectoy_List_Bins class - stores a list of trajectories according to bins
 Amorphous Molecular Dynamics Tookit (AMDAT)
 Written by Mark Mackura*/

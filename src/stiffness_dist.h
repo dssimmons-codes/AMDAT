@@ -1,3 +1,5 @@
+// Copyright (C) 2010-2025 David S. Simmons
+
 
 #ifndef STIFFNESS_DIST
 #define STIFFNESS_DIST

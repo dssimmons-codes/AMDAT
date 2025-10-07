@@ -1,3 +1,5 @@
+// Copyright (C) 2010-2025 David S. Simmons
+
 /*Amorphous Molecular Dynamics Analysis Toolkit (AMDAT)*/
 /*Class Size_Statistics: computes size distributions and statistics for multibodies*/
 /*Written by David S. Simmons*/

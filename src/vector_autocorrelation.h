@@ -1,4 +1,6 @@
-/*Molecular Dynamics Analysis Toolkit (MDAT)*/
+// Copyright (C) 2010-2025 David S. Simmons
+
+/*Molecular Dynamics Analysis Toolkit (AMDAT)*/
 /*Class Vector_Self_Correlation: calculates the time autocorrelation function of vectors connecting user-specified atoms within the same molecule */
 /*Written by David S. Simmons*/
 

@@ -1,3 +1,5 @@
+// Copyright (C) 2010-2025 David S. Simmons
+
 /*AMDAT: Amorphous Molecular Dynamics Analysis Toolkit*/
 /*Methods for Dynamic_Cluster_Multibodies class: builds multibodies based on any pairwise dynamic criterion*/
 /*David S Simmons*/

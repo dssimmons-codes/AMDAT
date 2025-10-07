@@ -1,3 +1,5 @@
+// Copyright (C) 2010-2025 David S. Simmons
+
 /*Amorphous Molecular Dynamics Analysis Toolkit (AMDAT)*/
 /*Methods for RgTensor_Stats class: calculates time-dependent Rg Tensor statistics for a set of trajectories*/
 /*Written by David S. Simmons*/

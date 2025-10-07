@@ -1,3 +1,5 @@
+// Copyright (C) 2010-2025 David S. Simmons
+
 /*Amorphous Molecular Dynamics Analysis Toolkit (AMDAT)*/
 /*Header for Multibody_Set class - Class to store sets of user-defined multibodies*/
 /*Written by David S. Simmons*/

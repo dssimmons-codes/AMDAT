@@ -1,3 +1,5 @@
+// Copyright (C) 2010-2025 David S. Simmons
+
 /*Written by David S. Simmons*/
 
 #include <math.h>

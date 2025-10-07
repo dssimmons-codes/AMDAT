@@ -1,4 +1,6 @@
-/*Molecular Dynamics Analysis Toolkit (MDAT)*/
+// Copyright (C) 2010-2025 David S. Simmons
+
+/*Molecular Dynamics Analysis Toolkit (AMDAT)*/
 /*Class to hold table of atom trajectories in a given molecule.  Right now there is not clearly a reason to have this, but it exists because it is the correct scope at which to implement a method to calculate the movement of the center of mass of a molecule, for example.  This may be desirable later.  It also permits a heirarchal storage of sysyem data in which the form of the hierarchy specifies the nature of the system.*/
 /*Written by David S. Simmons*/
 

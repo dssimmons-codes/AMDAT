@@ -1,4 +1,6 @@
-/*Molecular Dynamics Analysis Toolkit (MDAT)*/
+// Copyright (C) 2010-2025 David S. Simmons
+
+/*Molecular Dynamics Analysis Toolkit (AMDAT)*/
 /*Methods for Van_Hove_Self: a class for self part of Van Hove correlation function.*/
 /*Written by David S. Simmons*/
 

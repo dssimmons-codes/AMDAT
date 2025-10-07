@@ -1,4 +1,6 @@
-/*Molecular Dynamics Analysis Toolkit (MDAT)*/
+// Copyright (C) 2010-2025 David S. Simmons
+
+/*Molecular Dynamics Analysis Toolkit (AMDAT)*/
 /*Van_Hove_Distinct: a class for distinct part of Van Hove correlation function.*/
 /*Written by David S. Simmons*/
 

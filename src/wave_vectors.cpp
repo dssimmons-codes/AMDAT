@@ -1,3 +1,5 @@
+// Copyright (C) 2010-2025 David S. Simmons
+
 /*_Wave_Vectors class methods.  This class bins a grind of wave vectors into spherical shells of wavenumber.*/
 /*Written by David S. Simmons*/
 

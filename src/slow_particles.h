@@ -1,3 +1,5 @@
+// Copyright (C) 2010-2025 David S. Simmons
+
 /*Slow_Particles class: identifies and stores list of slow trajectories at start of each exponential block*/
 /*Amorphous Molecular dynamics analysis toolkit (AMDAT)*/
 /*Written by David S. Simmons*/

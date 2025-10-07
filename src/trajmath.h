@@ -1,3 +1,5 @@
+// Copyright (C) 2010-2025 David S. Simmons
+
 //Header file for a number of mathematical tools for arrays of coordinates
 
 //problem seems to be that function declarations in .h and .cpp files are somehow being treated as distinct

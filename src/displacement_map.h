@@ -1,3 +1,5 @@
+// Copyright (C) 2010-2025 David S. Simmons
+
 #ifndef DISPLACEMENT_MAP
 #define DISPLACEMENT_MAP
 

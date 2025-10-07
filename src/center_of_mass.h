@@ -1,3 +1,5 @@
+// Copyright (C) 2010-2025 David S. Simmons
+
 /*Calculates center of mass of a set of coordinates*/
 
 #include "coordinate.h"

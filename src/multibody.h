@@ -1,3 +1,5 @@
+// Copyright (C) 2010-2025 David S. Simmons
+
 /*Amorphous Molecular Dynamics Analysis Toolkit (AMDAT)*/
 /*Class to allow definition of multi-trajectory bodies other than molecules*/
 /*Written by David S. Simmons*/
