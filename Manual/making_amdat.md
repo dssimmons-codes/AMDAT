@@ -9,9 +9,10 @@ These instructions build AMDAT with the same toolchain on any Linux system using
 
 ### For CIRCE Users
 
-You can load conda using the following commands.
+You can load and init conda using the following commands.
 ```bash
 module load apps/miniconda/4.7.12
+source /apps/miniconda3/4.7.12/etc/profile.d/conda.sh
 ```
  This is a bit of an ancient conda and you should ideally install your own.
 
