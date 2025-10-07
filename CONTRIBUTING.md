@@ -4,7 +4,7 @@ First off, thank you for considering contributing to AMDAT! Please take a moment
 
 Following these guidelines helps to communicate that you respect the time of the developers managing and developing this open source project. In return, they should reciprocate that respect in addressing your issue, assessing changes, and helping you finalize your pull requests.
 
-AMDAT is an open source project and we love to receive contributions from our community — you! There are many ways to contribute, from writing tutorials or blog posts, improving the documentation, submitting bug reports and feature requests or writing code which can be incorporated into Elasticsearch itself.
+AMDAT is an open source project and we love to receive contributions from our community — you! There are many ways to contribute, from writing tutorials or blog posts, improving the documentation, submitting bug reports and feature requests or writing code which can be incorporated into AMDAT itself.
 
 
 ## Pull requests
@@ -38,19 +38,18 @@ Feel free to ask for help.
 
 At this point, if your changes look good and tests are passing, you are ready to create a pull request.
 
-<!-- Github Actions will run our test suite against all supported Rails versions. It's possible that your changes pass tests in one Rails version but fail in another. In that case, you'll have to setup your development -->
-<!-- environment with the Gemfile for the problematic Rails version, and investigate what's going on. -->
+<!-- Github Actions will run our test suite against all supported AMDAT versions. It's possible that your changes pass tests in one AMDAT version but fail in another. In that case, you'll have to setup your development. -->
 
 ## Merging a PR (maintainers only)
 
-A PR can only be merged into master by a maintainer if: CI is passing, approved by another maintainer and is up to date with the default branch.
+A PR can only be merged into main by a maintainer if: CI is passing, approved by another maintainer and is up to date with the default branch.
 Any maintainer is allowed to merge a PR if all of these conditions ae met.
 
 ## Shipping a release (maintainers only)
 
 Maintainers need to do the following to push out a release:
 
-* Create a feature branch from master and make sure it's up to date.
+* Create a feature branch from main and make sure it's up to date.
 * Run standard test suite.
 * Review and merge the PR.
 * [Create a GitHub Release](https://github.com/dssimmons-codes/AMDAT/releases/new) by selecting the tag and generating the release notes.
