@@ -21,6 +21,6 @@ make
 * [Making AMDAT](Manual/making_amdat.md)
 
 ## License
-GNU GPLv3.0 (see [LICENSE](LICENSE)
+GNU GPLv3.0 (see [LICENSE](LICENSE))
 <!-- ## Contributing -->
 <!-- We welcome issues, discussions, and PRs. Please read [CONTRIBUTING.md](CONTRIBUTING.md) and the [Code of Conduct](COD first. -->
