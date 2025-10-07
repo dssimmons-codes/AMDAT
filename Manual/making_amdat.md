@@ -17,7 +17,9 @@ module load apps/miniconda/4.7.12
 
 ## 2) Create the build environment
 
+Navigate to the AMDAT root directory and create a tailored conda environment.
 ```bash
+cd /path/to/AMDAT/
 make conda-setup
 ```
 This creates a conda environment called amdat to consistently make AMDAT and all of its libraries. This task has to only be done once.
