@@ -1,6 +1,6 @@
 <h1>Making AMDAT</h1>
 
-Several steps are required to make AMDAT. First, you must open the makefile and edit lines 9-11 so that they point to the locations of the qvectors folders provided with AMDAT (see more on this in section IIIB below). Then ensure that the packages in section A below are properly configured. To make AMDAT, then cd to the main AMDAT directory and run _make_.
+First, ensure that the packages in section A below are properly configured. Then, move to `src/voro++-0.4.6/` and run `make` to compile the voronoi package. To make AMDAT, `cd` to the main AMDAT directory and run `make`. Additionally, you must edit lines 9-11 of the makefile so that they point to the locations of the qvectors folders provided with AMDAT (see more on this in section IIIB below).
 
 ## A. Required packages
 

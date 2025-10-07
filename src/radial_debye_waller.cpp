@@ -6,7 +6,7 @@
 #include "atom_trajectory.h"
 #include "molecule.h"
 #include <fstream>
-#include <string.h>
+#include <string>
 #include <stdlib.h>
 #include <iostream>
 #include <math.h>
@@ -101,7 +101,7 @@ int binii;
 
   ofstream output(filename.c_str());
 
-  output << "Radial Debye-Waller data created by MDAT v." << VERSION << "\n";
+  output << "Radial Debye-Waller data created by AMDAT v." << VERSION << "\n";
   output <<"time="<< system->show_time(time_index) <<"\n";
   output <<"radius\tn_atoms\tdensity\tmsd\n";
 
@@ -118,7 +118,7 @@ int binii;
 
   cout << "\nWriting radial debye waller data to file.";
 
-  output << "Radial Debye-Waller data created by MDAT v." << VERSION << "\n";
+  output << "Radial Debye-Waller data created by AMDAT v." << VERSION << "\n";
   output <<"time="<< system->show_time(time_index) <<"\n";
   output <<"radius\tn_atoms\tdensity\tmsd\n";
 

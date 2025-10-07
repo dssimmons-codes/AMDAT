@@ -262,7 +262,7 @@ void Space-Time_Correlation_Function::write(string filename)const
   
   ofstream output (filename.c_str());		//open correlation file
   
-  output << "Correlation data created by MDAT v." << VERSION << "\n"; 
+  output << "Correlation data created by AMDAT v." << VERSION << "\n"; 
   output << n_bins << " bins\n";
   output << n_times << " times\n\n";
   

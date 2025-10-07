@@ -5,7 +5,7 @@
 #ifndef VAN_HOVE_SELF
 #define VAN_HOVE_SELF
 
-#include "space-time_correlation_function.h"
+#include "space_time_correlation_function.h"
 
 namespace std{
 	

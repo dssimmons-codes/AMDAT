@@ -110,11 +110,7 @@ void Gyration_Radius::analyze(Multibody_List * mblist)
     multibody_list->listloop(this,0,timeii,0);
   }
   postprocess();
-  
-  
-  
-  
-  
+ 
 }
 
 

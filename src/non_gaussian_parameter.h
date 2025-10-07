@@ -6,7 +6,7 @@
 #define NON_GAUSSIAN_PARAMETER
 
 #include "system.h"
-#include <string.h>
+#include <string>
 #include "mean_square_displacement.h"
 
 namespace std{

@@ -16,6 +16,7 @@ namespace std{
 
 class Composition: public Analysis_Onetime
 {
+    protected:
 //    System * system;
     int n_atomtypes;
     int n_molecules;
@@ -24,6 +25,7 @@ class Composition: public Analysis_Onetime
     int current_total_atoms;
     int total_atoms;
     float volume;
+
     float * current_density;
     float average_density;
     float * time_average_comp;
