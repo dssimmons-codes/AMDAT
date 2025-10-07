@@ -75,7 +75,20 @@
 
 using namespace std;
 
-
+#ifndef __has_include
+  static_assert(false, "__has_include not supported");
+#else
+#  if __cplusplus >= 201703L && __has_include(<filesystem>)
+#    include <filesystem>
+     namespace fs = std::filesystem;
+#  elif __has_include(<experimental/filesystem>)
+#    include <experimental/filesystem>
+     namespace fs = std::experimental::filesystem;
+#  elif __has_include(<boost/filesystem.hpp>)
+#    include <boost/filesystem.hpp>
+     namespace fs = boost::filesystem;
+#  endif
+#endif
 
 //TODO: Convert all argcheck() calls to bool_argcheck() for error handling
 //      Convert all errors to use Error class
@@ -167,7 +180,9 @@ int Control::read_input_file(char * filename_input)
   {
     cout << inputFileVector[i] << endl;
   }*/
-  cout << "Running with " << omp_get_max_threads() << " threads.\n" << endl;
+  int thread_count = omp_get_max_threads();
+
+  cout << "Running with " << thread_count << " thread" << ((thread_count == 1) ? "" : "s") << ".\n" << endl;
   return numLines;
 }
 
@@ -790,6 +805,9 @@ float Control::eval_terms(string oper, float a, float b)
         return pow(a,b);
     else if (oper == "%")
         return float(int(a) % int(b));
+    // warning thrown; should have a base-case return
+    // stop-gap, exit with non-zero code
+    else exit(1);
 }
 
 /*************************************************************************/
@@ -1111,6 +1129,27 @@ void Control::get_user_input(bool show_tips)
 
  }
 
+
+/*Gives error if path won't work*/
+ void Control::pathcheck(string path_to_check)
+ {
+  if (__cplusplus >= 201703L)
+	{
+	  fs::path filepath = string (path_to_check);
+	  bool filepathExists = fs::is_directory (filepath.parent_path ());
+	  if (!filepathExists)
+		{
+      stringstream ss;
+		  ss << "Cannot write to filename.";
+		  Error (ss.str (), -6);
+		}
+	}
+  else
+	{
+	  cout << "\nWarning: no path check. Path out may be invalid.\n";
+	  cout.flush ();
+	}
+}
 
 /*Gives error if number of arguments does not match that expected*/
  void Control::argcheck(int expected)
@@ -2136,6 +2175,7 @@ void Control::msd()
 
 
   filename = args[1];
+  pathcheck(filename);
 
 //  getline(input,runline);
   runline = read_line();
@@ -2621,9 +2661,10 @@ void Control::structure_factor()
 
   argcheck(4,6);
 
-
-
   filename = args[1];			//name of file to which to save calculated data
+
+  pathcheck(filename);
+
   symmetry = args[2];			//determine if atom sets are the same or different
   plane = args[3];
   //fullblock = bool(atoi(args[5].c_str()));
@@ -3167,6 +3208,7 @@ void Control::isfs()
   }
 
   filename = args[1];
+  pathcheck(filename);
   inner = atoi(args[2].c_str());
   outer = atoi(args[3].c_str());
   plane = args[4];
@@ -4876,6 +4918,7 @@ void Control::trajectory_list_decay()
     if (n_args==expected)
     {
         filename = args[1];
+        pathcheck(filename);
     }
 
   cout << "\nCalculating trajectory list decay" <<endl;
