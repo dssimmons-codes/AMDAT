@@ -7,6 +7,13 @@ These instructions build AMDAT with the same toolchain on any Linux system using
 - **Conda / Miniconda**
 - **Linux** (for other OSes, use a container or adapt the toolchain)
 
+### For CIRCE Users
+
+You can load conda using the following commands
+```bash
+module load apps/miniconda/4.7.12
+```
+
 ## 2) Create the build environment
 
 ```bash
