@@ -7,9 +7,10 @@
 #include <iostream>
 #include <stdlib.h>
 #include "version.h"
-#ifndef TACC
 #include <fftw3.h>
-#endif
+//#ifndef TACC
+//#include <fftw3.h>
+//#endif
 
 using namespace std;
 
@@ -113,7 +114,8 @@ void Velocity_Autocorrelation::calculate()
   vac[n_times-1]=(2*msd->show(n_times-1)-5*msd->show(n_times-2)+4*msd->show(n_times-3)-msd->show(n_times-4))/(time_unit*time_unit);
   
 }
-#ifndef TACC
+
+//#ifndef TACC
 void Velocity_Autocorrelation::fourier_transform()
 {
 
@@ -140,7 +142,8 @@ void Velocity_Autocorrelation::fourier_transform()
   }
   
 }
-#endif
+//#endif
+
 void Velocity_Autocorrelation::write(string filename)const
 {
   int timeii;
@@ -148,7 +151,7 @@ void Velocity_Autocorrelation::write(string filename)const
   cout << "\nWriting velocity autocorrelation function to file.";
   ofstream output(filename.c_str());
   
-  output << "Velocity autocorrelation function data created by MDAT v." << VERSION << "\n"; 
+  output << "Velocity autocorrelation function data created by AMDAT v." << VERSION << "\n"; 
   output << "\nThis algorithm assumes linearly spaced timesteps with spacing given by timestep in input file.\n Exponential or block time spacing schemes will yield incorrect results; be careful.\n";
   for(timeii=0;timeii<n_times;timeii++)
   {
@@ -163,7 +166,7 @@ void Velocity_Autocorrelation::write(ofstream& output)const
   
   cout << "\nWriting velocity autocorrelation function to file.";
  
-  output << "Velocity autocorrelation function data created by MDAT v." << VERSION << "\n"; 
+  output << "Velocity autocorrelation function data created by AMDAT v." << VERSION << "\n"; 
   output << "\nThis algorithm assumes linearly spaced timesteps with spacing given by timestep in input file.\n Exponential or block time spacing schemes will yield incorrect results; be careful.\n";
   for(timeii=0;timeii<n_times;timeii++)
   {
@@ -180,7 +183,7 @@ int tii;
   cout << "\nWriting fourier transform velocity autocorrelation function to file.";
   ofstream output(filename.c_str());
   
-  output << "Fourier transform of velocity autocorrelation function data created by MDAT v." << VERSION << "\n"; 
+  output << "Fourier transform of velocity autocorrelation function data created by AMDAT v." << VERSION << "\n"; 
   output << "\nThis algorithm assumes linearly spaced timesteps with spacing given by timestep in input file.\n Exponential or block time spacing schemes will yield incorrect results; be careful.\n";
   for(tii=0;tii<fouriersize;tii++)
   {

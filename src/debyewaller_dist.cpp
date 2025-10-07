@@ -100,7 +100,7 @@ void DebyeWaller_Dist::write(string filename)const
   ofstream output (filename.c_str());		//open correlation file
   cout << "\nWriting distribution of mean-square dispalcements to file " <<filename<<"." ;
 
-  output << "MSD distribution created by MDAT v." << VERSION << "\n";
+  output << "MSD distribution created by AMDAT v." << VERSION << "\n";
   output << "MSD time = " << time << "\n";
   output << "Mean_stiffness\t" << mean <<"\n";
   output << "Variance\t" << variance<<"\n\n";
@@ -123,7 +123,7 @@ void DebyeWaller_Dist::write(ofstream& output)const
 
   cout << "\nWriting distribution of mean-square dispalcements to file.";
 
-  output << "MSD distribution created by MDAT v." << VERSION << "\n";
+  output << "MSD distribution created by AMDAT v." << VERSION << "\n";
   output << "MSD time = " << time << "\n";
   output << "Mean_stiffness\t" << mean <<"\n";
   output << "Variance\t" << variance<<"\n\n";

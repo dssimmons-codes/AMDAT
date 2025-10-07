@@ -91,11 +91,11 @@ class Control
 
     /*Arrays to store analysis results with a name given by the user, for later recall and use in other analysis techniques*/
     //To be added
-    //Space-Time_Correlation_Function * space-time_correlations [LISTSIZE];
-    //string space-time_correlationnames [LISTSIZE];
-    //int n_space-time_correlations;
-    //int find_space-time_correlations();
-    //void add_space-time_correlations();
+    //Space_Time_Correlation_Function * space_time_correlations [LISTSIZE];
+    //string space_time_correlationnames [LISTSIZE];
+    //int n_space_time_correlations;
+    //int find_space_time_correlations();
+    //void add_space_time_correlations();
 
     /*Members to store, access, and use analysis objects*/
     Vector_Map <string, Analysis*> analyses;			//object to hold list of saved analyses
@@ -193,6 +193,7 @@ class Control
     void rgtensor_stats();	//calculate rg tensor statistics
     void nfold();		//calculate n-fold orientational order parameter
     void composition();     	//writes a file detailing the compostion of the system
+    void composition_vs_time(); //writes a file detailing the compostion of the system, as a function of time
     void clustered_list();	//generates a list clustered from a trajectoory list
     void invert_list();     //inverts a trajectory_list
     void displacement_map();
@@ -212,9 +213,11 @@ class Control
     void raf();
     void neighbor_decorrelation_function();	//compute neighbor decorrelation function
     void find_between();		//find particle between pairs of particles in a second trajectory list
+    void read_bond_neighbors(); //read in a list of bonds at each time and store as a neighbor list relative to each atom
     
     void orientational_correlation();
     void region_multibody_list();	//creates new multibody list based on region
+    void region_bead_multibody_list();
     void threshold_multibody_list();	//create nuew multibody list based on size thresholding of existing list
     void flatten_multibodies();		//creates new trajectory list by taking all of the trajectories containing in multibodies at each time of a specified multibody list
     void multibody_size_statistics();

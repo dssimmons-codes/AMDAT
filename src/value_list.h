@@ -257,9 +257,11 @@ void Value_List<valType>::set(System * sys)
   n_times = syst->show_n_timesteps();
 
   included = new Boolean_List[n_times];
+  values.resize(n_times);
   for(int timeii=0;timeii<n_times;timeii++)
   {
     included[timeii].set(syst);
+    values[timeii].resize(syst->show_n_trajectories());
   }
 
   time_conversion = new int [syst->show_n_timesteps()];
@@ -286,9 +288,11 @@ void Value_List<valType>::set_static(System * sys)
   n_times = syst->show_n_timesteps();
 
   included = new Boolean_List[n_times];
+  values.resize(n_times);
   for(int timeii=0;timeii<n_times;timeii++)
   {
     included[timeii].set(syst);
+    values[timeii].resize(syst->show_n_trajectories());
   }
 
   time_conversion = new int [n_times];
@@ -299,7 +303,7 @@ void Value_List<valType>::set_static(System * sys)
     defined_times[timeii]=1;
   }
   
-  values.resize(n_times);
+
   
 }
 

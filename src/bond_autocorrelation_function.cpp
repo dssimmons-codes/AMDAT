@@ -364,7 +364,7 @@ void Bond_Autocorrelation_Function::write(string filename)const
 
   ofstream output(filename.c_str());
 
-  output << "Bond autocorrelation function data created bys AMDAT v." << VERSION << "\n";
+  output << "Bond autocorrelation function data created by AMDAT v." << VERSION << "\n";
   for(timeii=0;timeii<n_times;timeii++)
   {
     output << timetable[timeii]<<"\t"<<baf[timeii]<<"\n";
@@ -377,7 +377,7 @@ void Bond_Autocorrelation_Function::write(ofstream& output)const
 
   cout << "\nWriting baf to file.";
 
-  output << "Bond autocorrelation function data created bys AMDAT v." << VERSION << "\n";
+  output << "Bond autocorrelation function data created by AMDAT v." << VERSION << "\n";
   for(timeii=0;timeii<n_times;timeii++)
   {
     output << timetable[timeii]<<"\t"<<baf[timeii]<<"\n";

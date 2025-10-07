@@ -1,13 +1,50 @@
 <h1>structure_factor</h1>
+<h2>function</h2>
 
-Calculates structure factor.
+Calculates the structure factor of the system via the Fourier transform of the density, as per the following equations.
 
-_structure\_factor \<output file\> \<symmetry\> \<geometry\> \<max\_length\_scale\> \<(optional) fullblock\>_
+$$ S\left( {\vec{k}} \right) = \left\langle \frac{\tilde{\rho}^{I} \left( \vec{k} \right) \tilde{\rho}^{II} \left( -\vec{k} \right)}{N}  \right\rangle $$
 
-_\<target\>_
+$$ {\tilde{\rho}}^{I} \left( \vec{k} \right) = \sum_{i=1}^{{{N}^{I}}} \exp \left( -i \vec{k}_{j} \cdot \vec{r}\_{i} \right)$$
 
-_\<target 2(optional, if symmetry = asymmetric only)_
+(For scientific background and discussion, see Chapter 4 of Hansen and McDonald’s “Theory of Simple Liquids). Here $\tilde{\rho}$ is the Fourier transform of the density, $\vec{k}$ is a wavevector, $i$ is the imaginary number, and $\vec{r}\_{i}$ is the position of particle $i$. Here the superscripts I and II denote the set of particles under consideration. When I and II refer to the same set of particles, this is the symmetric structure factor. When they are different sets of particles, this is an asymmetric structure factor reporting on the cross-correlations between distinct sets of particles.
 
-Options for _\<geometry\>_ are _xyz, xy, xz, yz, x, y,_ and _z_. This chooses which dimensions in k-space to include in the calculation of the intermediate scattering function. _xyz_ computes the full radial three dimensional isf, _xy, yz, and xz_ calculate two-dimensional in-plane radial isf's, and _x, y, and z_ compute one-dimensional isf's. _\<symmetry\>_ is either _symmetric_ or _asymmetric_. If _symmetric_, the analysis calculates the structure factor between the set of particles specified in target and itself. If _asymmetric_, then a second target must be specified, and the partial structure factor describing correlations of _\<target 1\>_ with only _\<target 2\>_ is calculated. _\<first frame\>_ and _\<last frame\>_ are the indices of the limits on time spacings to be calculated.
+Mechanically, AMDAT first computes the Fourier transform of the density for each required wavevector as follows.
 
-_\<max\_length\_scale\>_ determines the longest distance which will be decomposed into inverse space, if a distance of 0 is given, the full box size is used_. \<(optional) fullblock\>_is 0 if structure factor should only be calculated at the start of each block, 1 if it should be calculated at all times
+$$ \tilde{\rho} \left( \vec{k}\_j, t \right) = \sum_{i=1}^{N} \cos \left( \vec{k}\_{j} \cdot \vec{r}\_{i} \left( t \right) \right) + i \sum_{i=1}^{N} \sin \left( \vec{k}\_j \cdot \vec{r}\_i \left( t \right) \right) $$
+<!-- ORIGINAL EQUATION: $$ \[\tilde{\rho} \left( {{{\vec{k}}}_{j}},t \right)=\sum\limits_{i=1}^{N}{\cos \left( {{{\vec{k}}}_{j}}\cdot {{{\vec{r}}}_{i}}\left( t \right) \right)}+i\sum\limits_{i=1}^{N}{\sin \left( {{{\vec{k}}}_{j}}\cdot {{{\vec{r}}}_{i}}\left( t \right) \right)}\] $$ -->
+
+If the computation being performed is a symmetric structure factor, this calculation is performed once. If it is an asymmetric structure factor, it is performed distinctly for each set of particles. These calculations are separately performed at each timestep being analyzed.
+
+AMDAT ultimately outputs the structure factor as a function of scalar wavenumber rather an as a function of wavevector. To do so, it averages over many wavevectors with approximately equivalent wavenumber (more on this below). It also averages over many times. AMDAT thus computes the structure factor at a wavenumber k as follows.
+
+$$ S\left( k \right) = \frac{1}{SH} \sum \limits_{l=1}^{S}{\sum\limits\_{j=1}^{H}{\left[ \tilde{\rho}\_{\mathrm{real}}^{I}\left( {{{\vec{k}}}\_{j}},{{t}\_{l}} \right)\tilde{\rho}\_{\mathrm{real}}^{II}\left( {{{\vec{k}}}\_{j}},{{t}\_{l}} \right)+\tilde{\rho}\_{\mathrm{imag}}^{I}\left( {{{\vec{k}}}\_{j}},{{t}\_{l}} \right)\tilde{\rho}\_{\mathrm{imag}}^{II}\left( {{{\vec{k}}}\_{j}},{{t}\_{l}} \right) \right]}} $$
+<!-- $$ S\left( k \right)=\frac{1}{SH}\sum\limits_{l=1}^{S}{\sum\limits_{j=1}^{H}{\left[ \tilde{\rho} _{real}^{I}\left( {{{\vec{k}}}_{j}},{{t}_{l}} \right)\tilde{\rho} _{real}^{II}\left( {{{\vec{k}}}_{j}},{{t}_{l}} \right)+\tilde{\rho} _{imag}^{I}\left( {{{\vec{k}}}_{j}},{{t}_{l}} \right)\tilde{\rho} _{imag}^{II}\left( {{{\vec{k}}}_{j}},{{t}_{l}} \right) \right]}} $$
+ -->
+
+where $S$ is the number of times over which $S$ is averaged and $H$ is the number of wavevectors corresponding to the wavenumber $k$.
+
+
+This list of wavevectors employed for a given wavenumber is determined in the following manner. A three-dimensional cubic grid is defined in inverse space, with grid spacing equal to $\frac{2\pi}{L}$. 
+
+$L$ is equal to the length of a side of the box. Crucially, the current implementation of this method only is valid for cubic boxes of fixed size. For noncubic boxes,L is set equal to the smallest dimension of the box, but this will lead to errors in the calculation of S at low k. 
+
+These wavevectors are then binned into bins corresponding to distinct wavenumbers, which correspond to spherical shells in three dimensional inverse space. In 3-d space, this allows calculation of wavenumbers spaced more closely than $\frac{2\pi}{L}$, which would not be possible in a one-dimensional Fourier transform.  AMDAT employs a spacing of $\frac{\pi}{L}$ for this binning, corresponding to bin thicknesses half the spacing of the underlying grid in inverse space. Wavenumber bins are thus centered at positions of $q_m=\frac{\pi}{2L}+\frac{m\pi}{L}$, where $m$ is the index of the wavenumber. It is this index $m$ that is employed in the wavenumber index fields below. The wavenumber reported in the output file generated by this analysis reports this nominal wavenumber at the center of the bin of wavevectors (as opposed to an actual average location of the magnitude of the wavevectors employed). Except at very low wavenumber indices, the difference between these quantities is generally quite small, but this may be updated in a future version of AMDAT.
+
+In averaging over wavevectors for a given wavenumber, a maximum number of wavevectors of 300 is employed for computational efficiency. This means that all wavevectors are employed for wavenumber indices up to 16; for higher indices a subset of 300 are employed. These 300 are randomly chosen from the set of all wavevectors. These wavevector lists are hard-coded into AMDAT for computational efficiency and are therefore the same each time AMDAT is run. This list of wavevectors employed can be found in the qvectors subdirectory of the AMDAT distribution.
+
+<h2>Syntax</h2>
+
+```
+structure_factor <output file> <symmetry> <geometry> <max_length_scale> <(optional) timescheme>
+
+<target>
+
+<target 2> (if symmetry = asymmetric only)
+```
+
+Options for `<geometry>` are $xyz$, $xy$, $xz$, $yz$, $x$, $y$, and $z$. This chooses which dimensions in k-space to include in the calculation of the intermediate scattering function. $xyz$ computes the full radial three dimensional `isf`, $xy$, $yz$, and $xz$ calculate two-dimensional in-plane radial `isf`'s, and $x$, $y$, and $z$ compute one-dimensional `isf`'s. `<symmetry>` is either `symmetric` or `asymmetric`. If `symmetric`, the analysis calculates the structure factor between the set of particles specified in target and itself. If `asymmetric`, then a second target must be specified, and the partial structure factor describing correlations of `<target 1>` with only `<target 2>` is calculated. `<first frame>` and `<last frame>` are the indices of the limits on time spacings to be calculated.
+
+`<max_length_scale>` determines the longest distance which will be decomposed into inverse space, if a distance of 0 is given, the full box size is used. Any deviation from '0' will in general produce incorrect results for the structure factor, especially at low k.
+
+`<(optional) timescheme>` determines what times to loop over. If `timescheme` is -1, loop over all times. If `timescheme` is zero or positive, only use one time per block, with the value setting the time index offset from the beginning of the block. In most cases this should be set to either 0 or -1, with -1 giving improved statistical strength at the cost of much longer compute times. The level of improvement in statistical strength will depend on the timescale for structural decorrelation in comparison to the length of a trajectory block.

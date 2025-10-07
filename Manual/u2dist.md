@@ -2,8 +2,10 @@
 
 Calculates distribution of square displacements at a specified time.
 
-_u2dist \<output file\> \<# of bins\> \<max u2 binned\> \<displacement time index\>_
+```
+u2dist <output file> <# of bins> <max u2 binned> <displacement time index>
 
-_\<target\>_
+<target>
+```
 
-_\<displacement time index\> is the time spacing at which the Debye-Waller factor is to be defined._
+<displacement time index> is the time spacing at which the Debye-Waller factor is to be defined.
