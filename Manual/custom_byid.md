@@ -1,0 +1,1 @@
+This read in method in principle allows read in of custom files using atom IDs included in the trajectory file. This method has not been tested in many years and needs to be retested for functionality with recent code changes. Use is currently not recommended.

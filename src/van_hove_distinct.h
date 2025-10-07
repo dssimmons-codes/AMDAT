@@ -5,7 +5,7 @@
 #ifndef VAN_HOVE_DISTINCT
 #define VAN_HOVE_DISTINCT
 
-#include "space-time_correlation_function.h"
+#include "space_time_correlation_function.h"
 #include "trajectory_list_bins.h"
 
 namespace std{

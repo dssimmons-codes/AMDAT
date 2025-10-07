@@ -35,6 +35,7 @@
 #include "rgtensor_stats.h"
 #include "displacement_map.h"
 #include "composition.h"
+#include "composition_timedependent.h"
 #include "n_fold_order_parameter.h"
 #include "structure_factor.h"
 #include "clustered_list.h"
@@ -68,6 +69,7 @@
 #include "radial_count.h"
 #include "mean_closest_distance.h"
 #include "particles_between.h"
+#include "multibody_bead_region.h"
 
 //#include "msd_listprint.h"
 
@@ -268,6 +270,10 @@ int Control::execute_commands(int iIndex, int fIndex)
     {
       region_multibody_list();
     }
+    else if (command == "region_bead_multibody_list")
+    {
+      region_bead_multibody_list();
+    }
     else if (command == "threshold_multibody_list")
     {
       threshold_multibody_list();
@@ -284,9 +290,13 @@ int Control::execute_commands(int iIndex, int fIndex)
     {
 	create_distance_neighborlist();
     }
-        else if(command == "create_voronoi_neighborlist")
+    else if(command == "create_voronoi_neighborlist")
     {
 	create_voronoi_neighborlist();
+    }
+    else if (command == "read_bond_neighbors")
+    {
+      read_bond_neighbors();
     }
     else if(command == "delete_neighborlist")
     {
@@ -430,6 +440,8 @@ int Control::execute_commands(int iIndex, int fIndex)
     {process_value_list();}
     else if (command == "composition")
     {composition();}
+    else if (command == "composition_vs_time")
+    {composition_vs_time();}
     else if (command == "nfold")
     {nfold();}
     else if (command == "vector_autocorrelation_function")
@@ -486,7 +498,8 @@ int Control::execute_commands(int iIndex, int fIndex)
     else if (command == "if")
     { int error = do_if_statement();
         if (error != 1)
-            return error; }
+            return error;
+    }
     else if (command == "end" || command == "else")
     {}
     else if (command == "eval" || command == "evaluate")
@@ -501,8 +514,8 @@ int Control::execute_commands(int iIndex, int fIndex)
     {get_user_input(true);}
     else if (command == "processors")
     {change_processors();}
-	else if (command == "shell")
-	{shell_command();}
+    else if (command == "shell")
+    {shell_command();}
     else if (command == "none")
     {}
     else
@@ -1528,6 +1541,32 @@ void Control::create_voronoi_neighborlist()
 }
 
 
+
+/*--------------------------------------------------------------------------------*/
+
+
+void Control::read_bond_neighbors()
+{
+  Neighbor_List * nlist_pointer;
+  nlist_pointer = new Neighbor_List;
+  string input_filename;
+  string nlist_name;
+
+  nlist_name=args[1];
+  input_filename=args[2];
+
+  Neighbor_List nlist(analyte);
+
+  nlist.read_bonds(input_filename);
+  cout << "Constructed neighbor list from file of bonds."<<endl;
+
+  (*nlist_pointer)=nlist;
+  add_neighborlist(nlist_pointer,nlist_name);
+  analyte->add_value_list(nlist_pointer,nlist_name);
+}
+
+
+
 /*--------------------------------------------------------------------------------*/
 
 
@@ -1915,6 +1954,48 @@ void Control::region_multibody_list()
   
 }
 
+
+/*--------------------------------------------------------------------------------*/
+
+
+
+void Control::region_bead_multibody_list()
+{
+  string new_multibody_list_name, target_multibody_list_name, statistics_file;
+  float xlo,ylo,zlo,xhi,yhi,zhi;
+  int expected = 11;
+  int thresh;
+  argcheck(expected);
+
+  Multibody_Bead_Region * mbr;
+  mbr = new Multibody_Bead_Region;
+  Multibody_List * target_multibodylist;
+  Coordinate lo, hi;
+
+  new_multibody_list_name = args[1];
+  target_multibody_list_name = args[2];
+  xlo = atof(args[3].c_str());
+  ylo = atof(args[4].c_str());
+  zlo = atof(args[5].c_str());
+  xhi = atof(args[6].c_str());
+  yhi = atof(args[7].c_str());
+  zhi = atof(args[8].c_str());
+  lo.set(xlo,ylo,zlo);
+  hi.set(xhi,yhi,zhi);
+
+  statistics_file=args[9];
+  thresh = atoi(args[10].c_str());
+
+  target_multibodylist = find_multibody_list(target_multibody_list_name);
+  (*mbr)=Multibody_Bead_Region(analyte,lo,hi,thresh);
+  mbr->analyze(target_multibodylist);
+  add_multibody_list((Multibody_List*)mbr, new_multibody_list_name);
+
+  mbr->write(statistics_file);
+
+
+}
+
 /*--------------------------------------------------------------------------------*/
 
 
@@ -2203,7 +2284,7 @@ void Control::displacement_list()
   timegap_index = atoi(args[3].c_str());
 
   runline = read_line();
-  cout << "\n" << runline;
+  cout << "\n" << runline << "\n";
 
   Displacement_List*dlist_pointer;
   dlist_pointer = new Displacement_List();
@@ -4088,66 +4169,58 @@ void Control::nfold()
   string sigma_file;
   string f_stem;
   string orient;
-  int ord;
+  int order;
   int s_time;
   int e_time;
   float cutoff;
   int expected=10;
   string nfold_listname="n_fold";
   if (n_args==expected)
-{
-  filename = args[1];
-  ord = atof(args[2].c_str());
-  sigma_file = args[3];
-  orient = args[4];
-  cutoff = atof(args[5].c_str());
-  nfold_listname = args[6];
-  f_stem = args[7];
-  s_time = atoi(args[8].c_str());
-  e_time = atoi(args[9].c_str());
-}
-else if (n_args == 7)
-{
+  {
     filename = args[1];
-    ord = atof(args[2].c_str());
+    order = atof(args[2].c_str());
     sigma_file = args[3];
     orient = args[4];
     cutoff = atof(args[5].c_str());
     nfold_listname = args[6];
-    s_time = 0;
-    e_time = -1;
-}
-else
-{
-    argcheck(expected);
-}
-//  getline(input,runline);
+    f_stem = args[7];
+    s_time = atoi(args[8].c_str());
+    e_time = atoi(args[9].c_str());
+  }
+  else if (n_args == 7)
+  {
+      filename = args[1];
+      order = atof(args[2].c_str());
+      sigma_file = args[3];
+      orient = args[4];
+      cutoff = atof(args[5].c_str());
+      nfold_listname = args[6];
+      s_time = 0;
+      e_time = -1;
+  }
+  else
+  {
+      argcheck(expected);
+  }
+  //getline(input,runline);
   runline = read_line();
   //analyte->unwrap();	//should already be unwrapped
 
   N_Fold_Order_Parameter* nfold;
 
-  nfold = new N_Fold_Order_Parameter(analyte, ord, sigma_file, orient, cutoff, f_stem, s_time, e_time);
-
-
+  nfold = new N_Fold_Order_Parameter(analyte, order, sigma_file, orient, cutoff, f_stem, s_time, e_time);
 
   cout << "\nCalculating n_fold order parameter.\n";
   start = time(NULL);
   run_analysis(nfold, runline);
   analyte->add_value_list(nfold,nfold_listname);
 
-
-
   finish = time(NULL);
-
-
 
   cout << "\nCalculated n_fold order parameter in " << finish-start<<" seconds.";
   nfold->write(filename);
 
 }
-
-
 
 void Control::process_value_list()
 {
@@ -4413,6 +4486,102 @@ void Control::composition()
 
      cout << "\nCalculated composition in " << finish-start<<" seconds.";
 }
+
+
+void Control::composition_vs_time()
+{
+    /** returns the average and time dependent composition
+  * @date 10/31/2024
+  **/
+    string runline;
+  string filename;
+  int timescheme;
+
+  argcheck(2,3);
+  dynamic=0;
+  filename=args[1];
+
+  if(n_args==3)
+  {
+    timescheme=atoi(args[2].c_str());
+  }
+  else
+  {
+    timescheme=-1;
+  }
+
+  int num_xbins, num_ybins, num_zbins;
+  float lx, ly, lz;
+
+  string setargs[ARGMAX];		//array of arguments in runline
+  int n_setargs;			//number of arguments in runline
+  string command;			//command specifying type of set to loop over
+//  int bin_expected;
+  string listname;
+
+  string bin_listname;
+  int bin_listnum;
+
+//  getline(input,runline);
+  runline = read_line();
+  n_setargs = tokenize(runline, setargs);
+   if ( n_setargs==0 )
+     {
+	  cout << "Error: No atom set command found.";
+	  exit(1);
+     }
+   else
+     {
+	  command = setargs[0];
+     }
+
+  cout << endl << command << endl; cout.flush();
+  if ( command=="bin_list")
+  {
+
+     if(n_setargs<3)
+	  {
+	    cout << "Error: Insufficient number of arguments in bin_list target line.\n";
+	    exit(0);
+	  }
+    //bin_expected = 3; // <command> <bin_list_ID> <list_ID>
+     //setargcheck(bin_expected, n_setargs, command);
+     bin_listname = setargs[1];
+     bin_listnum = find_trajectorylist_bins(bin_listname);
+     if(bin_listnum!=-1)
+      {
+	num_xbins = binned_trajectories[bin_listnum]->show_n_xbins();
+	num_ybins = binned_trajectories[bin_listnum]->show_n_ybins();
+	num_zbins = binned_trajectories[bin_listnum]->show_n_zbins();
+	lx = binned_trajectories[bin_listnum]->show_lx();
+	ly = binned_trajectories[bin_listnum]->show_ly();
+	lz = binned_trajectories[bin_listnum]->show_lz();
+      }
+      else
+      {
+	  cout << "\nBinned Trajectory list '"<<bin_listname<<"' not found.";
+	  exit(1);
+      }
+  }
+  else
+  {
+     num_xbins = 1;
+     num_ybins = 1;
+     num_zbins = 1;
+     lx = (analyte->size()).show_x();
+     ly = (analyte->size()).show_y();
+     lz = (analyte->size()).show_z();
+  }
+     Composition_TimeDependent comp(analyte,num_xbins,num_ybins,num_zbins,lx,ly,lz,timescheme);
+     cout << "\nCalculating composition.\n"; cout.flush();
+     start = time(NULL);
+     run_analysis <Composition_TimeDependent> (comp, runline, filename);
+
+     finish = time(NULL);
+
+     cout << "\nCalculated composition in " << finish-start<<" seconds.";
+}
+
 
 
 void Control::find_edge()
