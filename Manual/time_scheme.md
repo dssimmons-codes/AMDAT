@@ -60,7 +60,9 @@ _exponential_ $< I >$ $< K >$ $< b >$ \<frt\> $< a_0 >$ $< \Delta t >$
 
 In normal language, this can be read as follows.
 
-_exponential \<# of exponential blocks\> \<size of block\> \<exp base\> \<frt\> \<first exponential index\> \<time step\>_
+```
+exponential <# of exponential blocks> <size of block> <exp base> <frt> <first exponential index> <time step>
+```
 
 The manner in which these parameter choices generate frame times and time gaps is described below.
 
