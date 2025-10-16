@@ -8,9 +8,11 @@ In addition to inferring different values for the times read in, linear and bloc
 
 In AMDAT, the time scheme is specified in the input file header section via the _\<time scheme\>_ line, which is formatted as follows
 
-_\<type\> \<arguments\>_
+```
+<type> <arguments>
+```
 
-Here _\<type\>_ is _linear_ or _exponential_. The sections for each of these time schemes below describe the required arguments. 
+Here ``<type>`` is _linear_ or _exponential_. The sections for each of these time schemes below describe the required arguments. 
 
 All trajectory read-in methods begin reading in at the start of the file. There is currently no native way of 'skipping' some number of timesteps at the beginning of the file.
 
@@ -18,7 +20,9 @@ All trajectory read-in methods begin reading in at the start of the file. There 
 
 _snapshot_ reads in a single initial frame of a trajectory. The syntax is as follows.
 
-_Snapshot_ 
+```
+snapshot
+```
 
 No arguments are required or allowed.
 
@@ -28,9 +32,11 @@ No arguments are required or allowed.
 
 The time scheme line syntax for linear time schemes is formatted as follows.
 
-_linear \<number of timesteps\>_ $<\Delta t>$
+```
+linear <number of timesteps> <Delta t>
+```
 
-Here _\<number of timesteps\>_ is the number of frames in the trajectory and $<\Delta t>$ is the time separating sequential frames.
+Here ``<number of timesteps>`` is the number of frames in the trajectory and $<\Delta t>$ is the time separating sequential frames.
 
 <h3>Frame times</h3>
 
