@@ -177,6 +177,14 @@ Coordinate Coordinate::closest_image(const Coordinate& other, const Coordinate& 
   return imageflag;
 }
 
+float Coordinate::min2D()const
+{
+	float minimum = x;
+	if(y<minimum) minimum = y;
+
+	return minimum;
+}
+
 float Coordinate::min()const
 {
 	float minimum = x;
