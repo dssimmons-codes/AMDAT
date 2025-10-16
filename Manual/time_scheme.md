@@ -36,12 +36,12 @@ The time scheme line syntax for linear time schemes is formatted as follows.
 linear <number of timesteps> <Delta t>
 ```
 
-Here ``<number of timesteps>`` is the number of frames in the trajectory and $<\Delta t>$ is the time separating sequential frames.
+Here ``<number of timesteps>`` is the number of frames in the trajectory and ``<Delta t>`` is the time separating sequential frames.
 
 <h3>Frame times</h3>
 
-In linear time spacing, every pair of sequential snapshots is separated by the same $\Delta \tau$. Formally, snapshots are written out at times following the equation
-$$t=k\Delta \tau$$
+In linear time spacing, every pair of sequential snapshots is separated by the same $\Delta t$. Formally, snapshots are written out at times following the equation
+$$t=k\Delta t$$
 where $k=0,1,2,...T-1$, and were $T$ is the total number of frames.
 
 <h3>Time spacings used in dynamical analysis</h3>
