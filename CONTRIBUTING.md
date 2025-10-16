@@ -40,10 +40,10 @@ At this point, if your changes look good and tests are passing, you are ready to
 
 <!-- Github Actions will run our test suite against all supported AMDAT versions. It's possible that your changes pass tests in one AMDAT version but fail in another. In that case, you'll have to setup your development. -->
 
-## Merging a PR (maintainers only)
+## Merging a Pull Request (maintainers only)
 
-A PR can only be merged into main by a maintainer if: CI is passing, approved by another maintainer and is up to date with the default branch.
-Any maintainer is allowed to merge a PR if all of these conditions ae met.
+A pull request can only be merged into main by a maintainer if standard tests are passing, approved by another maintainer and is up to date with the default branch.
+Any maintainer is allowed to merge a pull request if all of these conditions are met.
 
 ## Shipping a release (maintainers only)
 
