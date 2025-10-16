@@ -33,10 +33,10 @@ No arguments are required or allowed.
 The time scheme line syntax for linear time schemes is formatted as follows.
 
 ```
-linear <number of timesteps> <Delta tau>
+linear <number of timesteps> <Δ𝜏>
 ```
 
-Here ``<number of timesteps>`` is the number of frames in the trajectory and ``<Delta tau>`` is the time separating sequential frames.
+Here ``<number of timesteps>`` is the number of frames in the trajectory and ``<Δ𝜏>`` is the time separating sequential frames.
 
 <h3>Frame times</h3>
 
