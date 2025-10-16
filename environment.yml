@@ -1,0 +1,16 @@
+name: amdat
+channels:
+  - conda-forge
+dependencies:
+  # toolchain
+  - gcc_linux-64=11.2.0
+  - gxx_linux-64=11.2.0
+  - kernel-headers_linux-64=3.10.0
+  - sysroot_linux-64=2.17
+  # build tools
+  - make
+  - pkg-config
+  # libs
+  - fftw=3.3.10
+  # optional
+  - gdb
