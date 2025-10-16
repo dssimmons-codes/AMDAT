@@ -10,8 +10,9 @@ where S is the number of start times employed, N is the number of particles, $\b
 
 <h2>Syntax</h2>
 
-_msd \<output file\> \<plane:"xy","yz","xz"\>_
-
-_\<target\>_
+```
+msd <output file> <plane:"xy","yz","xz">
+<target>
+```
 
 Here the choice of plane specifies which plane is employed for $AB$ in the equation above.

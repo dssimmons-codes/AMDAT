@@ -179,3 +179,61 @@ help:
 	@echo "Examples:"
 	@echo "  make MODE=debug"
 	@echo "  make MODE=release OMP=0"
+
+# --- Conda helpers (do not require 'conda activate') -------------------------
+CONDA       ?= conda
+ENV_NAME    ?= amdat
+# Prefer an exact lock if present, else fall back to environment.yml
+ENV_SPEC    ?= $(if $(wildcard conda-linux-64.txt),conda-linux-64.txt,environment.yml)
+ENV_STAMP   := .env/conda.ready
+
+# Create/update the Conda environment
+.PHONY: conda-setup
+conda-setup: $(ENV_STAMP)
+
+$(ENV_STAMP):
+	@echo ">> Creating conda env '$(ENV_NAME)' from $(ENV_SPEC)"
+	@mkdir -p .env
+	@if [ "$(ENV_SPEC)" = "conda-linux-64.txt" ]; then \
+	  $(CONDA) create -y -n $(ENV_NAME) --file $(ENV_SPEC); \
+	else \
+	  $(CONDA) env create -n $(ENV_NAME) -f $(ENV_SPEC) || $(CONDA) env update -n $(ENV_NAME) -f $(ENV_SPEC); \
+	fi
+	@touch $@
+
+# Build *inside* the Conda env, ensuring:
+#  - we use conda-forge compilers if present
+#  - pkg-config sees FFTW from the env
+#  - parallel build matches CPU count on the node
+.PHONY: conda
+conda: $(ENV_STAMP)
+	@$(CONDA) run -n $(ENV_NAME) bash -lc '\
+	  set -euo pipefail; \
+	  : "$${CONDA_PREFIX:?conda run did not set CONDA_PREFIX}"; \
+	  export PKG_CONFIG_PATH="$$CONDA_PREFIX/lib/pkgconfig:$${PKG_CONFIG_PATH:-}"; \
+	  # Prefer conda-forge triplet compilers if available; otherwise keep Makefile defaults \
+	  if command -v x86_64-conda-linux-gnu-g++ >/dev/null 2>&1; then \
+	    MAKE_CXX="CXX=x86_64-conda-linux-gnu-g++"; \
+	    MAKE_CC="CC=x86_64-conda-linux-gnu-gcc"; \
+	  else \
+	    MAKE_CXX=""; MAKE_CC=""; \
+	  fi; \
+	  echo ">> Using $$MAKE_CC $$MAKE_CXX"; \
+	  $(MAKE) $$MAKE_CC $$MAKE_CXX MODE=$(MODE) OMP=$(OMP) \
+	'
+
+# Optional: interactive shell in the env (handy for debugging)
+.PHONY: conda-shell
+conda-shell: $(ENV_STAMP)
+	@$(CONDA) run -n $(ENV_NAME) bash
+
+# Clean just your build outputs (keeps the env)
+.PHONY: conda-clean
+conda-clean:
+	@$(RM) -rf $(BUILD_DIR)/*
+
+# Nukes the env stamp (does NOT delete the conda env itself)
+.PHONY: conda-unstamp
+conda-unstamp:
+	@$(RM) -f $(ENV_STAMP)
+

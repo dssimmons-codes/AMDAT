@@ -32,3 +32,4 @@ src/voro++-0.4.6/src/voro++
 *.xyz
 
 build
+.env
