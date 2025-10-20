@@ -36,6 +36,10 @@ Or to compile with 10 cores
 ```bash
 make -j10
 ```
+For developers, to build AMDAT with debugging flags (for use with a debugging software like GDB or Valgrind)
+```bash
+make MODE=debug
+```
 
 This produces the AMDAT executable in the repo root.
 
