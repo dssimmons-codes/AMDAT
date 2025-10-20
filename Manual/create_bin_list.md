@@ -1,4 +1,4 @@
-Creates a list of all trajectories based on a binning scheme (specific subsets are called in analysis tools by taking the intersection of this list with a trajectory list defined with the create_list command).
+Creates a list of all trajectories based on a binning scheme (specific subsets are called in analysis tools by taking the intersection of this list with a trajectory list defined with the ``create_list`` command).
 
 ```
 create_bin_list <listname>
