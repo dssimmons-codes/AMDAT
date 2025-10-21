@@ -24,9 +24,9 @@ WV1D ?= $(CURDIR)/src/qvectors/qvectors1d/qvector
 
 # --- Flags -------------------------------------------------------------------
 CPPFLAGS := -MMD -MP -I./src \
-						-I./src/voro++-0.4.6/src \
-						-L./src/voro++-0.4.6/src \
-						-I./xdrfile-1.1b/src \
+						-I./third_party/voro++-0.4.6/src \
+						-L./third_party/voro++-0.4.6/src \
+						-I./third_party/xdrfile-1.1b/src \
             -DWV3D=\"$(WV3D)\" \
             -DWV2D=\"$(WV2D)\" \
             -DWV1D=\"$(WV1D)\"
@@ -34,7 +34,7 @@ CPPFLAGS := -MMD -MP -I./src \
 CXXFLAGS := -std=$(STD) $(WARN)
 CFLAGS   ?= -O3 -DNDEBUG
 LDFLAGS  :=
-LDLIBS   := -lvoro++ -L./src/voro++-0.4.6/src
+LDLIBS   := -lvoro++ -L./third_party/voro++-0.4.6/src
 FFTW_ROOT ?=
 
 # --- try pkg-config first ---
@@ -73,8 +73,8 @@ ifneq ($(shell command -v ccache 2>/dev/null),)
 endif
 
 # --- xdrfile (GROMACS XTC/TRR) integration ----------------------------------
-# The bundled C library lives at ./xdrfile-1.1b
-XDR_DIR      ?= xdrfile-1.1b
+# The bundled C library lives at ./third_party/xdrfile-1.1b
+XDR_DIR      ?= third_party/xdrfile-1.1b
 XDR_INC       = $(XDR_DIR)/include
 XDR_SRC_DIR   = $(XDR_DIR)/src
 
@@ -116,12 +116,12 @@ all: $(APP)
 
 .PHONY: voro
 voro:
-	$(MAKE) -C src/voro++-0.4.6 \
+	$(MAKE) -C third_party/voro++-0.4.6 \
 					CC="$(CC)" CXX="$(CXX)"
 
 .PHONY: clean_voro
 clean_voro:
-	$(MAKE) -C src/voro++-0.4.6 clean
+	$(MAKE) -C third_party/voro++-0.4.6 clean
 
 # Final link: include xdrfile objects as well
 $(APP): $(OBJS) $(XDR_OBJS) $(VORO_OBJS) | voro
@@ -133,12 +133,12 @@ $(BUILD_DIR)/%.o: $(SRC_DIR)/%.cpp
 	@echo "  CXX     $<"
 	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -c $< -o $@
 
-# Compile C from xdrfile: xdrfile-1.1b/src/*.c → build/xdr/*.o
+# Compile C from xdrfile: third_party/xdrfile-1.1b/src/*.c → build/xdr/*.o
 $(BUILD_DIR)/xdr/%.o: $(XDR_SRC_DIR)/%.c
 	@echo "  CC      $<"
 	$(CC) $(XDR_CFLAGS) -c $< -o $@
 
-## Compile voro++: src/voro++-0.4.6/src/*.cc → build/voro/*.o (isolated includes)
+## Compile voro++: third_party/voro++-0.4.6/src/*.cc → build/voro/*.o (isolated includes)
 #$(BUILD_DIR)/voro/%.o: $(VORO_DIR)/%.cc
 #	@echo "  CXX     $< (voro++)"
 #	$(CXX) $(VORO_CPPFLAGS) $(CXXFLAGS) -c $< -o $@
