@@ -12,7 +12,6 @@ include config.mk
 # Build all of the executable files
 all:
 	$(MAKE) -C src
-	$(MAKE) -C examples
 
 # Build the help files (with Doxygen)
 help:
@@ -21,7 +20,6 @@ help:
 # Clean up the executable files
 clean:
 	$(MAKE) -C src clean
-	$(MAKE) -C examples clean
 
 # Install the executable, man page, and shared library
 install:
