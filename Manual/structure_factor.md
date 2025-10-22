@@ -5,7 +5,7 @@ Calculates the structure factor of the system via the Fourier transform of the d
 
 $$ S\left( {\vec{k}} \right) = \left\langle \frac{\tilde{\rho}^{I} \left( \vec{k} \right) \tilde{\rho}^{II} \left( -\vec{k} \right)}{N}  \right\rangle $$
 
-$$ {\tilde{\rho}}^{I} \left( \vec{k} \right) = \sum_{i=1}^{{{N}^{I}}} \exp \left( -i \vec{k}_{j} \cdot \vec{r}\_{i} \right)$$
+$$ {\tilde{\rho}}^{I} \left( \vec{k} \right) = \sum_{i=1}^{N^{I}} \exp \left( -i \vec{k}_{j} \cdot \vec{r}\_{i} \right)$$
 
 (For scientific background and discussion, see Chapter 4 of Hansen and McDonald’s “Theory of Simple Liquids). Here $\tilde{\rho}$ is the Fourier transform of the density, $\vec{k}$ is a wavevector, $i$ is the imaginary number, and $\vec{r}\_{i}$ is the position of particle $i$. Here the superscripts I and II denote the set of particles under consideration. When I and II refer to the same set of particles, this is the symmetric structure factor. When they are different sets of particles, this is an asymmetric structure factor reporting on the cross-correlations between distinct sets of particles.
 
