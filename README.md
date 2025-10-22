@@ -21,6 +21,11 @@ make
 * [Making AMDAT](Manual/making_amdat.md)
 
 ## License
-GNU GPLv3.0 (see [LICENSE](LICENSE))
-<!-- ## Contributing -->
-<!-- We welcome issues, discussions, and PRs. Please read [CONTRIBUTING.md](CONTRIBUTING.md) and the [Code of Conduct](COD first. -->
+GNU GPLv3.0 (see [LICENSE](LICENSE)).
+It bundles:
+* Voro++ (see [Voro++ LICENSE](third_party/voro++-0.4.6/LICENSE))
+* xdrfile (LGPL-3.0, see [xdrfile LICENSE](third_party/xdrfile-1.1b/COPYING))
+
+## Contributing
+We welcome issues, discussions, and PRs.
+Please skim [CONTRIBUTING.md](CONTRIBUTING.md) first.
