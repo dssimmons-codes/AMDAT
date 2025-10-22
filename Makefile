@@ -22,6 +22,9 @@ WV3D ?= $(CURDIR)/src/qvectors/qvectors3d/qvector
 WV2D ?= $(CURDIR)/src/qvectors/qvectors2d/qvector
 WV1D ?= $(CURDIR)/src/qvectors/qvectors1d/qvector
 
+# Wavevector bootstrap
+WV_STAMP := $(SRC_DIR)/qvectors/.ready
+
 # --- Flags -------------------------------------------------------------------
 CPPFLAGS := -MMD -MP -I./src \
 						-I./third_party/voro++-0.4.6/src \
@@ -123,8 +126,19 @@ voro:
 clean_voro:
 	$(MAKE) -C third_party/voro++-0.4.6 clean
 
+.PHONY: clean_qvectors
+clean_qvectors:
+	@$(RM) -rf $(SRC_DIR)/qvectors/.ready
+	@$(MAKE) -C $(SRC_DIR)/qvectors distclean
+
+.PHONY: qvectors
+qvectors: $(WV_STAMP)
+
+$(WV_STAMP):
+	@$(MAKE) -C $(SRC_DIR)/qvectors
+
 # Final link: include xdrfile objects as well
-$(APP): $(OBJS) $(XDR_OBJS) $(VORO_OBJS) | voro
+$(APP): $(OBJS) $(XDR_OBJS) $(VORO_OBJS) | qvectors voro
 	@echo "  LINK    $@"
 	$(CXX) $(LDFLAGS) -o $@ $^ $(LDLIBS)
 
@@ -150,7 +164,7 @@ clean: clean_voro
 	@echo "  CLEAN   objects"
 	@rm -rf $(BUILD_DIR)/*
 
-distclean: clean
+distclean: clean clean_qvectors
 	@echo "  CLEAN   binary"
 	@rm -f $(APP)
 

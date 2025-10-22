@@ -1,0 +1,8 @@
+.ready
+# Ignore everything the zip expands, but keep the zip and Makefile
+*
+!Makefile
+!qvectors.zip
+!.gitignore
+!*.cpp
+!*.m
