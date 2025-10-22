@@ -12,14 +12,14 @@ $$ {\tilde{\rho}}^{I} \left( \vec{k} \right) = \sum_{i=1}^{N^{I}} \exp \left( -i
 Mechanically, AMDAT first computes the Fourier transform of the density for each required wavevector as follows.
 
 $$ \tilde{\rho} \left( \vec{k}\_j, t \right) = \sum_{i=1}^{N} \cos \left( \vec{k}\_{j} \cdot \vec{r}\_{i} \left( t \right) \right) + i \sum_{i=1}^{N} \sin \left( \vec{k}\_j \cdot \vec{r}\_i \left( t \right) \right) $$
-<!-- ORIGINAL EQUATION: $$ \[\tilde{\rho} \left( {{{\vec{k}}}_{j}},t \right)=\sum\limits_{i=1}^{N}{\cos \left( {{{\vec{k}}}_{j}}\cdot {{{\vec{r}}}_{i}}\left( t \right) \right)}+i\sum\limits_{i=1}^{N}{\sin \left( {{{\vec{k}}}_{j}}\cdot {{{\vec{r}}}_{i}}\left( t \right) \right)}\] $$ -->
+<!-- ORIGINAL EQUATION: $$ \[\tilde{\rho} \left( \vec{k}_{j},t \right)=\sum\limits_{i=1}^{N}{\cos \left( \vec{k}_{j}\cdot \vec{r}_{i}\left( t \right) \right)}+i\sum\limits_{i=1}^{N}{\sin \left( \vec{k}_{j}\cdot \vec{r}_{i}\left( t \right) \right)}\] $$ -->
 
 If the computation being performed is a symmetric structure factor, this calculation is performed once. If it is an asymmetric structure factor, it is performed distinctly for each set of particles. These calculations are separately performed at each timestep being analyzed.
 
 AMDAT ultimately outputs the structure factor as a function of scalar wavenumber rather an as a function of wavevector. To do so, it averages over many wavevectors with approximately equivalent wavenumber (more on this below). It also averages over many times. AMDAT thus computes the structure factor at a wavenumber k as follows.
 
-$$ S\left( k \right) = \frac{1}{SH} \sum \limits_{l=1}^{S}{\sum\limits\_{j=1}^{H}{\left[ \tilde{\rho}\_{\mathrm{real}}^{I}\left( {{{\vec{k}}}\_{j}},{{t}\_{l}} \right)\tilde{\rho}\_{\mathrm{real}}^{II}\left( {{{\vec{k}}}\_{j}},{{t}\_{l}} \right)+\tilde{\rho}\_{\mathrm{imag}}^{I}\left( {{{\vec{k}}}\_{j}},{{t}\_{l}} \right)\tilde{\rho}\_{\mathrm{imag}}^{II}\left( {{{\vec{k}}}\_{j}},{{t}\_{l}} \right) \right]}} $$
-<!-- $$ S\left( k \right)=\frac{1}{SH}\sum\limits_{l=1}^{S}{\sum\limits_{j=1}^{H}{\left[ \tilde{\rho} _{real}^{I}\left( {{{\vec{k}}}_{j}},{{t}_{l}} \right)\tilde{\rho} _{real}^{II}\left( {{{\vec{k}}}_{j}},{{t}_{l}} \right)+\tilde{\rho} _{imag}^{I}\left( {{{\vec{k}}}_{j}},{{t}_{l}} \right)\tilde{\rho} _{imag}^{II}\left( {{{\vec{k}}}_{j}},{{t}_{l}} \right) \right]}} $$
+$$ S\left( k \right) = \frac{1}{SH} \sum \limits_{l=1}^{S}{\sum\limits\_{j=1}^{H}{\left[ \tilde{\rho}\_{\mathrm{real}}^{I}\left( \vec{k}\_{j},{t}\_{l} \right)\tilde{\rho}\_{\mathrm{real}}^{II}\left( \vec{k}\_{j},{t}\_{l} \right)+\tilde{\rho}\_{\mathrm{imag}}^{I}\left( \vec{k}\_{j},{t}\_{l} \right)\tilde{\rho}\_{\mathrm{imag}}^{II}\left( \vec{k}\_{j},{t}\_{l} \right) \right]}} $$
+<!-- $$ S\left( k \right)=\frac{1}{SH}\sum\limits_{l=1}^{S}{\sum\limits_{j=1}^{H}{\left[ \tilde{\rho} _{real}^{I}\left( \vec{k}_{j},t_{l}} \right)\tilde{\rho} _{real}^{II}\left( \vec{k}_{j},t_{l} \right)+\tilde{\rho} _{imag}^{I}\left( \vec{k}_{j},t_{l} \right)\tilde{\rho} _{imag}^{II}\left( \vec{k}_{j},t_{l} \right) \right]}} $$
  -->
 
 where $S$ is the number of times over which $S$ is averaged and $H$ is the number of wavevectors corresponding to the wavenumber $k$.
