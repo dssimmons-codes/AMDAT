@@ -1,11 +1,19 @@
 cff-version: 1.2.0
 message: "If you use this software, please cite it as below."
-title: "Amorphous Molecular Dynamics Analysis Toolkit (AMDAT)"
 authors:
-  - family-names: Simmons
-    given-names: David
-    orcid: https://orcid.org/0000-0002-1436-9269
-  - name: "Chemical, Biological, and Materials Engineering Department, University of South Florida"
-version: 0.0.0
-date-released: "2025-08-30"
-repository-code: "https://github.com/dssimmons-codes/AMDAT"
+- family-names: "Simmons"
+  given-names: "David"
+  orcid: "https://orcid.org/0000-0002-1436-9269"
+- family-names: "Kawak"
+  given-names: "Pierre"
+  orcid: "https://orcid.org/0000-0002-5912-7589"
+- family-names: "Drayer"
+  given-names: "William"
+  orcid: "https://orcid.org/0000-0003-4419-6597"
+- family-names: "Mackura"
+  given-names: "Mark"
+title: "Amorphous Molecular Dynamics Analysis Toolkit (AMDAT)"
+version: 1.0.0
+doi: 10.5281/zenodo.17417167
+date-released: 2025-10-22
+url: "https://github.com/dssimmons-codes/AMDAT"
