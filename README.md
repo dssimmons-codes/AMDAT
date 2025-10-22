@@ -52,8 +52,9 @@ If you use AMDAT, please cite:
 *Also see [CITATION.cff](CITATION.cff).*
 
 ## Authors & Maintainers
-* David S. Simmons (Lead) · Pierre Kawak · William Drayer
-* Past contributors include Michael Marvin, Mark Mackura, Daniel Hunsicker.
+* Lead: [David S. Simmons](https://github.com/dssimmons)
+* Maintainers: [Pierre Kawak](https://github.com/pkawak) · [William Drayer](https://github.com/drayer587)
+* Contributors: [Michael Marvin](https://github.com/magico13) · Mark Mackura · Daniel Hunsicker
 
 ## License
 GNU GPLv3.0 (see [LICENSE](LICENSE)).
