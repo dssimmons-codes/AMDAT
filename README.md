@@ -55,9 +55,9 @@ make
     </td>
     <td align="center" width="25%">
       <a href="Manual/displacement_list.md">
-        <img src="Manual/assets/highlights/displacements_2d.png" alt="Particle displacements in 2D LJ" width="100%">
+        <img src="Manual/assets/highlights/displacements_2d.png" alt="Particle displacements in binary 2D LJ" width="100%">
       </a><br/>
-      <sub>Particle displacements (2D LJ)<br/>(image: Pierre Kawak)</sub>
+      <sub>Particle displacements (binary 2D LJ)<br/>(image: Pierre Kawak)</sub>
     </td>
     <td align="center" width="25%">
       <a href="Manual/create_bin_list.md">
@@ -67,9 +67,9 @@ make
     </td>
     <td align="center" width="25%">
       <a href="Manual/n_fold.md">
-        <img src="Manual/assets/highlights/2d_hexatic.png" alt="6-fold orientational order parameter in 2D LJ" width="100%">
+        <img src="Manual/assets/highlights/2d_hexatic.png" alt="6-fold orientational order parameter in binary 2D LJ" width="100%">
       </a><br/>
-      <sub>6-fold orientational order parameter (2D LJ)<br/>(image: Daniel Hunsicker)</sub>
+      <sub>6-fold orientational order parameter (binary 2D LJ)<br/>(image: Daniel Hunsicker)</sub>
     </td>
   </tr>
 </table>
@@ -120,7 +120,7 @@ make
         <img src="Manual/assets/highlights/string_rdf.jpeg" alt="Radial distribution functions for (a) bead−spring polymer; (b) OTP; (c,f,i) binary LJ glass former; (d,g,j) Cu4Ag6; (e,h,k) SiO2. Reproduced from Jui Hsiang Hung, David S Simmons, Do String-like Cooperative Motions Predict Relaxation Times in Glass-Forming Liquids?, Journal of Physical Chemistry B, 124, 1 (2020) 266-276. doi:10.1021/acs.jpcb.9b09468." width="100%">
       </a><br/>
       <sub>
-        Radial distribution functions for bead-spring polymer (top left), OTP (top right), binary Lennard-Jones glass former (left column), Cu4Ag6 (middle column), and SiO2 (right column).<br/>
+        Radial distribution functions for bead-spring polymer (top left), OTP (top right), binary LJ glass former (left column), Cu4Ag6 (middle column), and SiO2 (right column)<br/>
         doi: <a href="https://doi.org/10.1021/acs.jpcb.9b09468">10.1021/acs.jpcb.9b09468</a>
       </sub>
     </td>
@@ -134,7 +134,7 @@ make
         <img src="Manual/assets/highlights/struct.png" alt="Clockwise from top left, structure factors for Bead-spring polymer, binary Lennard Jones glass-former, binary copper-silver alloy, OTP (atomistic structure factor in red and ring-center-of mass structure factor in blue, see inset), and SiO2. Computed for simulations reported in Jui Hsiang Hung, David S Simmons, Do String-like Cooperative Motions Predict Relaxation Times in Glass-Forming Liquids?, Journal of Physical Chemistry B, 124, 1 (2020) 266-276. doi:10.1021/acs.jpcb.9b09468." width="100%">
       </a><br/>
       <sub>
-        Structure factors for (clockwise from top left) bead-spring polymer, binary Lennard-Jones glass former, binary copper-silver allow, OTP, and SiO2<br/>
+        Structure factors for (clockwise from top left) bead-spring polymer, binary LJ glass former, binary copper-silver allow, OTP, and SiO2<br/>
         doi: <a href="https://doi.org/10.1021/acs.jpcb.9b09468">10.1021/acs.jpcb.9b09468</a>
       </sub>
     </td>
