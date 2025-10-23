@@ -99,6 +99,48 @@ make
   </tr>
 </table>
 
+<table>
+  <tr>
+    <td align="center" width="100%">
+      <a href="Manual/overview.md">
+        <img src="Manual/assets/highlights/cg_map.png" alt="AMDAT-based post-simulation mapping of atomistic polystyrene repeat units to segmental center of mass calculations (left), and identificiation of string-like cooperative rearrangements (a la doi.org/10.1103/PhysRevLett.80.2338) (middle two), visualized across two timesteps (red and blue in right image).  Images by Sean Hung. Computed for simulations reported in Jui Hsiang Hung, David S Simmons, Do String-like Cooperative Motions Predict Relaxation Times in Glass-Forming Liquids?, Journal of Physical Chemistry B, 124, 1 (2020) 266-276. doi: 10.1021/acs.jpcb.9b09468." width="100%">
+      </a><br/>
+      <sub>
+        Coarse-graining of atomistic polystyrene and identification of string-like cooperative rearrangements<br/>
+        doi: <a href="https://doi.org/10.1021/acs.jpcb.9b09468">10.1021/acs.jpcb.9b09468</a>
+      </sub>
+    </td>
+  </tr>
+</table>
+
+<table>
+  <tr>
+    <td align="center" width="100%">
+      <a href="Manual/overview.md">
+        <img src="Manual/assets/highlights/rdf.png" alt="Radial distribution functions for (a) bead−spring polymer; (b) OTP; (c,f,i) binary LJ glass former; (d,g,j) Cu4Ag6; (e,h,k) SiO2. Reproduced from Jui Hsiang Hung, David S Simmons, Do String-like Cooperative Motions Predict Relaxation Times in Glass-Forming Liquids?, Journal of Physical Chemistry B, 124, 1 (2020) 266-276. doi:10.1021/acs.jpcb.9b09468." width="100%">
+      </a><br/>
+      <sub>
+        Radial distribution functions for bead-spring polymer (top left), OTP (top right), binary Lennard-Jones glass former (left column), Cu4Ag6 (middle column), and SiO2 (right column).<br/>
+        doi: <a href="https://doi.org/10.1021/acs.jpcb.9b09468">10.1021/acs.jpcb.9b09468</a>
+      </sub>
+    </td>
+  </tr>
+</table>
+
+<table>
+  <tr>
+    <td align="center" width="100%">
+      <a href="Manual/overview.md">
+        <img src="Manual/assets/highlights/struct.png" alt="Clockwise from top left, structure factors for Bead-spring polymer, binary Lennard Jones glass-former, binary copper-silver alloy, OTP (atomistic structure factor in red and ring-center-of mass structure factor in blue, see inset), and SiO2. Computed for simulations reported in Jui Hsiang Hung, David S Simmons, Do String-like Cooperative Motions Predict Relaxation Times in Glass-Forming Liquids?, Journal of Physical Chemistry B, 124, 1 (2020) 266-276. doi:10.1021/acs.jpcb.9b09468." width="100%">
+      </a><br/>
+      <sub>
+        Structure factors for (clockwise from top left) bead-spring polymer, binary Lennard-Jones glass former, binary copper-silver allow, OTP, and SiO2<br/>
+        doi: <a href="https://doi.org/10.1021/acs.jpcb.9b09468">10.1021/acs.jpcb.9b09468</a>
+      </sub>
+    </td>
+  </tr>
+</table>
+
 ## Citation
 
 If you use AMDAT, please cite:
