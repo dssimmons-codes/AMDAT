@@ -43,6 +43,37 @@ make
 
 *More details in [Build/Install](Manual/making_amdat.md).*
 
+## Highlights
+
+<table>
+  <tr>
+    <td align="center" width="25%">
+      <a href="Manual/displacement_list.md">
+        <img src="Manual/assets/highlights/mobile_particles.png" alt="Identification of highly mobile particles" width="100%">
+      </a><br/>
+      <sub>Identification of highly mobile particles<br/>(image: Pierre Kawak)</sub>
+    </td>
+    <td align="center" width="25%">
+      <a href="Manual/displacement_list.md">
+        <img src="Manual/assets/highlights/displacements_2d.png" alt="Particle displacements in 2D LJ" width="100%">
+      </a><br/>
+      <sub>Particle displacements (2D LJ)<br/>(image: Pierre Kawak)</sub>
+    </td>
+    <td align="center" width="25%">
+      <a href="Manual/create_bin_list.md">
+        <img src="Manual/assets/highlights/color_by_distance.png" alt="Sorting by distance from nanoparticle/interface" width="100%">
+      </a><br/>
+      <sub>Sorting by distance from a nanoparticle/interface<br/>(image: Pierre Kawak)</sub>
+    </td>
+    <td align="center" width="25%">
+      <a href="Manual/n_fold.md">
+        <img src="Manual/assets/highlights/2d_hexatic.png" alt="6-fold orientational order parameter in 2D LJ" width="100%">
+      </a><br/>
+      <sub>6-fold orientational order parameter (2D LJ)<br/>(image: Daniel Hunsicker)</sub>
+    </td>
+  </tr>
+</table>
+
 ## Citation
 
 If you use AMDAT, please cite:
