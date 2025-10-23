@@ -117,7 +117,7 @@ make
   <tr>
     <td align="center" width="100%">
       <a href="Manual/overview.md">
-        <img src="Manual/assets/highlights/string_rdf.png" alt="Radial distribution functions for (a) bead−spring polymer; (b) OTP; (c,f,i) binary LJ glass former; (d,g,j) Cu4Ag6; (e,h,k) SiO2. Reproduced from Jui Hsiang Hung, David S Simmons, Do String-like Cooperative Motions Predict Relaxation Times in Glass-Forming Liquids?, Journal of Physical Chemistry B, 124, 1 (2020) 266-276. doi:10.1021/acs.jpcb.9b09468." width="100%">
+        <img src="Manual/assets/highlights/string_rdf.jpeg" alt="Radial distribution functions for (a) bead−spring polymer; (b) OTP; (c,f,i) binary LJ glass former; (d,g,j) Cu4Ag6; (e,h,k) SiO2. Reproduced from Jui Hsiang Hung, David S Simmons, Do String-like Cooperative Motions Predict Relaxation Times in Glass-Forming Liquids?, Journal of Physical Chemistry B, 124, 1 (2020) 266-276. doi:10.1021/acs.jpcb.9b09468." width="100%">
       </a><br/>
       <sub>
         Radial distribution functions for bead-spring polymer (top left), OTP (top right), binary Lennard-Jones glass former (left column), Cu4Ag6 (middle column), and SiO2 (right column).<br/>
