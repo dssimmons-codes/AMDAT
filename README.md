@@ -80,13 +80,13 @@ make
       <a href="Manual/msd.md">
         <img src="Manual/assets/highlights/msd.jpg" alt="Mean-squre displacments for a bead-spring polymer (image by Sean Hung, adapted from  Hung, Patra, Meenakshisundaram, Mangalara, Simmons, Soft Matter, 15 (2019) 1223-1242. doi: 10.1039/C8SM02051E." width="100%">
       </a><br/>
-      <sub>MSD for bead-spring polymer<br/>(image: Sean Hung)</sub>
+      <sub>Mean-square displacement for bead-spring polymer<br/>(image: Sean Hung)</sub>
     </td>
     <td align="center" width="50%">
       <a href="Manual/isfs.md">
         <img src="Manual/assets/highlights/isfs.gif" alt="Intermediate scattering functions for a bead-spring polymer (image by Sean Hung, adapted from  Hung, Patra, Meenakshisundaram, Mangalara, Simmons, Soft Matter, 15 (2019) 1223-1242. doi: 10.1039/C8SM02051E." width="100%">
       </a><br/>
-      <sub>ISFS for bead-spring polymer<br/>(image: Sean Hung)</sub>
+      <sub>Time-resolved structure factor peak for bead-spring polymer<br/>(image: Sean Hung)</sub>
     </td>
   </tr>
 </table>
