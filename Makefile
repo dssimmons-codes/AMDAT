@@ -25,6 +25,63 @@ WV1D ?= $(CURDIR)/src/qvectors/qvectors1d/qvector
 # Wavevector bootstrap
 WV_STAMP := $(SRC_DIR)/qvectors/.ready
 
+# Add version.h for automated version info at build time
+VERSION_H := src/generated/version.hpp
+
+# Try to get a friendly describe string; ignore errors if not a repo
+GIT_DESCRIBE := $(shell git describe --tags --dirty --always 2>/dev/null)
+GIT_COMMIT   := $(shell git rev-parse --short HEAD 2>/dev/null)
+GIT_BRANCH   := $(shell git rev-parse --abbrev-ref HEAD 2>/dev/null)
+
+# Extract SemVer from tag if present (v1.2.3 → 1.2.3)
+# Fallback: read VERSION, else default
+ifeq ($(strip $(GIT_DESCRIBE)),)
+  AMDAT_SEMVER := $(strip $(shell [ -f VERSION ] && cat VERSION))
+  ifeq ($(strip $(AMDAT_SEMVER)),)
+    AMDAT_SEMVER := 0.0.0+archive
+  endif
+else
+  # pull the first thing that looks like vX.Y.Z or X.Y.Z
+  AMDAT_SEMVER := $(shell echo "$(GIT_DESCRIBE)" | sed -E 's/.*(v?[0-9]+\.[0-9]+\.[0-9]+).*/\1/' | sed 's/^v//')
+endif
+
+# Allow packagers to override from environment: AMDAT_SEMVER=1.0.0+pkg make
+ifneq ($(origin AMDAT_SEMVER),file)
+  AMDAT_SEMVER := $(AMDAT_SEMVER)
+endif
+
+BUILD_DATE   := $(shell date -u +%Y-%m-%dT%H:%M:%SZ)
+
+$(VERSION_H):
+	@mkdir -p $(dir $@)
+	@{ \
+    echo '#pragma once'; \
+    echo 'namespace amdat::build {'; \
+    echo 'inline constexpr const char* NAME="AMDAT";'; \
+    echo 'inline constexpr const char* SEMVER="$(AMDAT_SEMVER)";'; \
+    echo 'inline constexpr const char* GIT_DESCRIBE="$(GIT_DESCRIBE)";'; \
+    echo 'inline constexpr const char* GIT_COMMIT="$(GIT_COMMIT)";'; \
+    echo 'inline constexpr const char* GIT_BRANCH="$(GIT_BRANCH)";'; \
+    echo 'inline constexpr const char* BUILD_DATE="$(BUILD_DATE)";'; \
+    echo 'inline constexpr const char* COMPILER='; \
+    echo '#if defined(__clang__)'; \
+    echo '  "clang " __clang_version__;'; \
+    echo '#elif defined(__GNUC__)'; \
+    echo '  "gcc " __VERSION__;'; \
+    echo '#elif defined(_MSC_VER)'; \
+    echo '  "MSVC";'; \
+    echo '#else'; \
+    echo '  "unknown";'; \
+    echo '#endif'; \
+    echo 'inline constexpr bool OPENMP='; \
+    echo '#ifdef _OPENMP'; \
+    echo 'true;'; \
+    echo '#else'; \
+    echo 'false;'; \
+    echo '#endif'; \
+    echo '}'; \
+  } > $@
+
 # --- Flags -------------------------------------------------------------------
 CPPFLAGS := -MMD -MP -I./src \
 						-I./third_party/voro++-0.4.6/src \
@@ -138,7 +195,7 @@ $(WV_STAMP):
 	@$(MAKE) -C $(SRC_DIR)/qvectors
 
 # Final link: include xdrfile objects as well
-$(APP): $(OBJS) $(XDR_OBJS) $(VORO_OBJS) | qvectors voro
+$(APP): $(OBJS) $(XDR_OBJS) $(VORO_OBJS) | $(VERSION_H) qvectors voro
 	@echo "  LINK    $@"
 	$(CXX) $(LDFLAGS) -o $@ $^ $(LDLIBS)
 
@@ -250,4 +307,3 @@ conda-clean:
 .PHONY: conda-unstamp
 conda-unstamp:
 	@$(RM) -f $(ENV_STAMP)
-
