@@ -18,21 +18,21 @@ STD           ?= c++17
 WARN          := -Wall -Wextra -Wshadow -Wconversion -Wpedantic
 
 # Wavevector paths
-QV3D ?= $(CURDIR)/src/qvectors/qvectors3d/qvector
-QV2D ?= $(CURDIR)/src/qvectors/qvectors2d/qvector
-QV1D ?= $(CURDIR)/src/qvectors/qvectors1d/qvector
+WV3D ?= $(CURDIR)/src/qvectors/qvectors3d/qvector
+WV2D ?= $(CURDIR)/src/qvectors/qvectors2d/qvector
+WV1D ?= $(CURDIR)/src/qvectors/qvectors1d/qvector
 
 # Wavevector bootstrap
-QV_STAMP := $(SRC_DIR)/qvectors/.ready
+WV_STAMP := $(SRC_DIR)/qvectors/.ready
 
 # --- Flags -------------------------------------------------------------------
 CPPFLAGS := -MMD -MP -I./src \
 						-I./third_party/voro++-0.4.6/src \
 						-L./third_party/voro++-0.4.6/src \
 						-I./third_party/xdrfile-1.1b/src \
-            -DQV3D=\"$(QV3D)\" \
-            -DQV2D=\"$(QV2D)\" \
-            -DQV1D=\"$(QV1D)\"
+            -DWV3D=\"$(WV3D)\" \
+            -DWV2D=\"$(WV2D)\" \
+            -DWV1D=\"$(WV1D)\"
 
 CXXFLAGS := -std=$(STD) $(WARN)
 CFLAGS   ?= -O3 -DNDEBUG
@@ -132,9 +132,9 @@ clean_qvectors:
 	@$(MAKE) -C $(SRC_DIR)/qvectors distclean
 
 .PHONY: qvectors
-qvectors: $(QV_STAMP)
+qvectors: $(WV_STAMP)
 
-$(QV_STAMP):
+$(WV_STAMP):
 	@$(MAKE) -C $(SRC_DIR)/qvectors
 
 # Final link: include xdrfile objects as well
