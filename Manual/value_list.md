@@ -19,7 +19,7 @@ To be compiled. For now, see the page on [`trajectory_list`](trajectory_lists.md
 | [`autocorrelate_value_list`](autocorrelate_value_list.md) | Calculates the time autocorrelation of a `value_list`. | Tab-demarcated data file|
 | [`crosscorrelate_value_lists`](crosscorrelate_value_lists.md) | Determines the mean time cross-correlation of two `value_list`s. | Tab-demarcated data file|
 | [`value_list`](value_list_command.md) (keyword `threshold_value`) | Constructs a new `trajectory_list`, by selecting only those particles with values in the selected `value_list` that are in a specified value range. | a new `trajectory_list` |
-| [`value_list`](`value_list`_command.md) (keyword `threshold_percentile`) | Constructs a new `trajectory_list`, by selecting only those particles whose values in the selected `value_list` are in a specified percentile range. | a new `trajectory_list` |
+| [`value_list`](value_list_command.md) (keyword `threshold_percentile`) | Constructs a new `trajectory_list`, by selecting only those particles whose values in the selected `value_list` are in a specified percentile range. | a new `trajectory_list` |
 | [`value_list`](value_list_command.md) (keyword `write_pdb`) | Writes out a .pdb file in which the value in the beta column is drawn from a `value_list`.  | PDB file |
 | [`value_statistics`](value_statistics.md) | Outputs distribution statistics on a `value_list` | Tab-demarcated data file |
 | [`value_statistics_pertime`](value_statistics_pertime.md) | Outputs `value_list` statistics in a time-resolved manner |Tab-demarcated data file|
