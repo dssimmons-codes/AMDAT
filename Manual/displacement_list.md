@@ -2,5 +2,8 @@
 
 Creates value list of particle displacements at a specified timegap. Syntax is as follows.
 
-``value_list <output file> <name of valuelist to create> <index of timegap at which to perform analysis>.``
+```
+displacement_list <output file> <name of valuelist to create> <index of timegap at which to perform analysis>
+list <target>
+```
 
