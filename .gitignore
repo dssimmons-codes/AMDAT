@@ -2,6 +2,9 @@ AMDAT
 *.o
 .env/
 
+# ignore generated version file
+src/generated
+
 # voro binary files
 third_party/voro++-0.4.6/src/libvoro++.a
 third_party/voro++-0.4.6/src/voro++

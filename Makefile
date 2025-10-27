@@ -26,7 +26,7 @@ WV1D ?= $(CURDIR)/src/qvectors/qvectors1d/qvector
 WV_STAMP := $(SRC_DIR)/qvectors/.ready
 
 # Add version.h for automated version info at build time
-VERSION_H := src/generated/version.hpp
+VERSION_H := src/generated/version.h
 
 # Try to get a friendly describe string; ignore errors if not a repo
 GIT_DESCRIBE := $(shell git describe --tags --dirty --always 2>/dev/null)
@@ -52,38 +52,9 @@ endif
 
 BUILD_DATE   := $(shell date -u +%Y-%m-%dT%H:%M:%SZ)
 
-$(VERSION_H):
-	@mkdir -p $(dir $@)
-	@{ \
-    echo '#pragma once'; \
-    echo 'namespace amdat::build {'; \
-    echo 'inline constexpr const char* NAME="AMDAT";'; \
-    echo 'inline constexpr const char* SEMVER="$(AMDAT_SEMVER)";'; \
-    echo 'inline constexpr const char* GIT_DESCRIBE="$(GIT_DESCRIBE)";'; \
-    echo 'inline constexpr const char* GIT_COMMIT="$(GIT_COMMIT)";'; \
-    echo 'inline constexpr const char* GIT_BRANCH="$(GIT_BRANCH)";'; \
-    echo 'inline constexpr const char* BUILD_DATE="$(BUILD_DATE)";'; \
-    echo 'inline constexpr const char* COMPILER='; \
-    echo '#if defined(__clang__)'; \
-    echo '  "clang " __clang_version__;'; \
-    echo '#elif defined(__GNUC__)'; \
-    echo '  "gcc " __VERSION__;'; \
-    echo '#elif defined(_MSC_VER)'; \
-    echo '  "MSVC";'; \
-    echo '#else'; \
-    echo '  "unknown";'; \
-    echo '#endif'; \
-    echo 'inline constexpr bool OPENMP='; \
-    echo '#ifdef _OPENMP'; \
-    echo 'true;'; \
-    echo '#else'; \
-    echo 'false;'; \
-    echo '#endif'; \
-    echo '}'; \
-  } > $@
-
 # --- Flags -------------------------------------------------------------------
 CPPFLAGS := -MMD -MP -I./src \
+						-I./src/generated \
 						-I./third_party/voro++-0.4.6/src \
 						-L./third_party/voro++-0.4.6/src \
 						-I./third_party/xdrfile-1.1b/src \
@@ -174,6 +145,37 @@ $(shell mkdir -p $(BUILD_DIR))
 .PHONY: all clean distclean rebuild format lint help
 all: $(APP)
 
+$(VERSION_H):
+	@mkdir -p $(dir $@)
+	@{ \
+    echo '#pragma once'; \
+    echo 'namespace amdat::build {'; \
+    echo 'inline constexpr const char* NAME="AMDAT";'; \
+    echo 'inline constexpr const char* SEMVER="$(AMDAT_SEMVER)";'; \
+    echo 'inline constexpr const char* GIT_DESCRIBE="$(GIT_DESCRIBE)";'; \
+    echo 'inline constexpr const char* GIT_COMMIT="$(GIT_COMMIT)";'; \
+    echo 'inline constexpr const char* GIT_BRANCH="$(GIT_BRANCH)";'; \
+    echo 'inline constexpr const char* BUILD_DATE="$(BUILD_DATE)";'; \
+    echo 'inline constexpr const char* COMPILER='; \
+    echo '#if defined(__clang__)'; \
+    echo '  "clang " __clang_version__;'; \
+    echo '#elif defined(__GNUC__)'; \
+    echo '  "gcc " __VERSION__;'; \
+    echo '#elif defined(_MSC_VER)'; \
+    echo '  "MSVC";'; \
+    echo '#else'; \
+    echo '  "unknown";'; \
+    echo '#endif'; \
+    echo 'inline constexpr bool OPENMP='; \
+    echo '#ifdef _OPENMP'; \
+    echo 'true;'; \
+    echo '#else'; \
+    echo 'false;'; \
+    echo '#endif'; \
+    echo '}'; \
+  } > $@
+
+
 .PHONY: voro
 voro:
 	$(MAKE) -C third_party/voro++-0.4.6 \
@@ -195,12 +197,12 @@ $(WV_STAMP):
 	@$(MAKE) -C $(SRC_DIR)/qvectors
 
 # Final link: include xdrfile objects as well
-$(APP): $(OBJS) $(XDR_OBJS) $(VORO_OBJS) | $(VERSION_H) qvectors voro
+$(APP): $(OBJS) $(XDR_OBJS) $(VORO_OBJS) | qvectors voro
 	@echo "  LINK    $@"
 	$(CXX) $(LDFLAGS) -o $@ $^ $(LDLIBS)
 
 # Compile C++: strictly src/<file>.cpp → build/<file>.o
-$(BUILD_DIR)/%.o: $(SRC_DIR)/%.cpp
+$(BUILD_DIR)/%.o: $(SRC_DIR)/%.cpp | $(VERSION_H)
 	@echo "  CXX     $<"
 	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -c $< -o $@
 
