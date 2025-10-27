@@ -292,7 +292,12 @@ conda: $(ENV_STAMP)
 	    MAKE_CXX=""; MAKE_CC=""; \
 	  fi; \
 	  echo ">> Using $$MAKE_CC $$MAKE_CXX"; \
-	  $(MAKE) $$MAKE_CC $$MAKE_CXX MODE=$(MODE) OMP=$(OMP) \
+	  export CPATH="$$CONDA_PREFIX/include:$${CPATH:-}"; \
+	  export LIBRARY_PATH="$$CONDA_PREFIX/lib:$${LIBRARY_PATH:-}"; \
+		echo ">> pkg-config: $(which pkg-config || true)" \
+		echo ">> fftw cflags: $$(pkg-config --cflags fftw3 || true)" \
+		echo ">> fftw libs:   $$(pkg-config --libs   fftw3 || true)" \
+	  $(MAKE) $$MAKE_CC $$MAKE_CXX MODE=$(MODE) OMP=$(OMP) FFTW_ROOT="$$CONDA_PREFIX" \
 	'
 
 # Optional: interactive shell in the env (handy for debugging)
