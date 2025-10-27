@@ -47,7 +47,7 @@ jobs:
         shell: bash -l {0}
         run: |
           # You can pass MODE/OMP here if desired
-          make conda MODE=release OMP=1
+          make CONDA=conda conda MODE=release OMP=1
 
       # Quick smoke test: run the binary in the env
       - name: Smoke test
