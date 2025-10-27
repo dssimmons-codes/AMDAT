@@ -1,0 +1,64 @@
+# .github/workflows/check-version.yml
+name: Check VERSION vs latest tag
+
+on:
+  pull_request:
+  push:
+    branches: [ main ]
+
+jobs:
+  check-version:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout with full history and tags
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0   # full history
+          fetch-tags: true # ensure tags are present
+
+      - name: Determine latest tag
+        id: get_tag
+        shell: bash
+        run: |
+          set -euo pipefail
+          if ! git tag --list | grep -q .; then
+            echo "No tags found; skipping check."
+            echo "skip=true" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          tag="$(git describe --tags --abbrev=0)"
+          echo "Latest tag: $tag"
+          echo "tag=$tag" >> "$GITHUB_OUTPUT"
+
+      - name: Compare VERSION to latest tag
+        if: steps.get_tag.outputs.skip != 'true'
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          if [ ! -f VERSION ]; then
+            echo "ERROR: VERSION file is missing."
+            exit 1
+          fi
+
+          got="$(sed -E 's/^[[:space:]]+|[[:space:]]+$//g' VERSION)"
+
+          # If using export-subst placeholder, skip (Option 1 workflow).
+          if echo "$got" | grep -q '^\$Format:'; then
+            echo "VERSION contains export-subst placeholder; skipping check."
+            exit 0
+          fi
+
+          want="${{ steps.get_tag.outputs.tag }}"
+          want_no_v="${want#v}"
+
+          if [ "$got" != "$want_no_v" ]; then
+            echo "VERSION mismatch:"
+            echo "  expected: $want_no_v   (from latest tag: $want)"
+            echo "  found:    $got         (in VERSION)"
+            exit 1
+          fi
+
+          echo "VERSION matches latest tag ($want). ✅"

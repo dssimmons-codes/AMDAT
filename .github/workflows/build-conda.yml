@@ -1,0 +1,64 @@
+# .github/workflows/build-conda.yml
+name: Build (Conda + Make)
+
+on:
+  pull_request:
+  push:
+    branches: [ main ]
+
+jobs:
+  build-linux:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      # Install a modern conda with mamba for speed; cache pkg downloads
+      - name: Set up Miniforge (mamba)
+        uses: conda-incubator/setup-miniconda@v3
+        with:
+          miniforge-version: latest
+          use-mamba: true
+          auto-update-conda: true
+          auto-activate-base: true
+          python-version: "3.11"
+          activate-environment: ""         # we'll manage env creation via Makefile
+          condarc-file: ""                  # optional, can omit
+          cache-downloads: true
+
+      - name: Show conda/mamba
+        shell: bash -l {0}
+        run: |
+          conda --version
+          mamba --version || true
+
+      # Your Makefile already knows how to build the env (conda-setup)
+      - name: Create/update AMDAT env via Makefile
+        shell: bash -l {0}
+        run: |
+          make conda-setup
+
+      # Build inside the env via the Makefile's 'conda' target (no manual activate needed)
+      - name: Build AMDAT inside env
+        shell: bash -l {0}
+        run: |
+          # You can pass MODE/OMP here if desired
+          make conda MODE=release OMP=1
+
+      # Quick smoke test: run the binary in the env
+      - name: Smoke test
+        shell: bash -l {0}
+        run: |
+          conda run -n amdat ./AMDAT -v
+          conda run -n amdat ./AMDAT -j || true
+
+      - name: Upload artifact (release, OMP=1)
+        uses: actions/upload-artifact@v4
+        with:
+          name: AMDAT-linux-conda
+          path: |
+            AMDAT
