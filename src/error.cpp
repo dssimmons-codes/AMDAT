@@ -129,8 +129,18 @@ void Error::throw_minor(string msg, int code, bool internal)
 
 void Error::print_msg_line(string msg, bool internal)
 {
+    int line_number = Control::get_line_number()-1;
+    std::string raw_line = Control::get_raw_line(line_number);
+    // if raw_line begins with "list", 
+    // that is, the last line is a "target" line,
+    // add the line before to get command name.
+    // Do this for an arbitrary # of target lines.
+    while (raw_line.rfind("list", 0) == 0) {
+      line_number -= 1;
+      raw_line = Control::get_raw_line(line_number) + " \\n " + raw_line;
+    }
     if (!internal)
-        cerr << "\"" << msg << "\" at command \"" << Control::get_raw_line(Control::get_line_number()-1) << "\"" << endl;
+        cerr << "\"" << msg << "\" at command \"" << raw_line << "\"" << endl;
     else
         cerr << "\"" << msg << "\"" << endl;
 }
