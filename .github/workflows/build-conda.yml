@@ -25,8 +25,9 @@ jobs:
           use-mamba: true
           auto-update-conda: true
           auto-activate-base: true
-          activate-environment: "true"      # we'll manage env creation via Makefile
-          environment-name: "amdat"      # we'll manage env creation via Makefile
+          activate-environment: amdat      # we'll manage env creation via Makefile
+          environment-file: environment.yml
+          channel-priority: strict
           condarc-file: ""                  # optional, can omit
           cache-downloads: true
 
