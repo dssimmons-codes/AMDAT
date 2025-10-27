@@ -8,7 +8,7 @@
 #include <math.h>
 #include <iostream>
 #include <stdlib.h>
-#include "version.h"
+#include "generated/version.h"
 #include "multibody_list.h"
 #include <omp.h>
 #include "system.h"
@@ -158,7 +158,7 @@ void Orientational_Correlation::write(string filename)const
 
   ofstream output(filename.c_str());
 
-  output << "Orientation correlation function data created by AMDAT v." << VERSION << "\n";
+  output << "Orientation correlation function data created by AMDAT v." << amdat::build::SEMVER << "\n";
   output << "Mean correlation with vector " << correlated_vector.show_x() << " " <<correlated_vector.show_y() << correlated_vector.show_z()<<"\n";
 
     output << "overall\t"<<overall_correlation<<"\n";
@@ -176,7 +176,7 @@ void Orientational_Correlation::write(ofstream& output)const
 
   cout << "\nWriting orientational_correlation to file.";
 
-  output << "Orientation correlation function data created by AMDAT v." << VERSION << "\n";
+  output << "Orientation correlation function data created by AMDAT v." << amdat::build::SEMVER << "\n";
   output << "Mean correlation with vector " << correlated_vector.show_x() << " " <<correlated_vector.show_y() << correlated_vector.show_z()<<"\n";
 
     output << "overall\t"<<overall_correlation<<"\n";

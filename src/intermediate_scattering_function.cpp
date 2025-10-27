@@ -6,7 +6,7 @@
 #include <iostream>
 #include <stdlib.h>
 #include <fstream>
-#include "version.h"
+#include "generated/version.h"
 
 using namespace std;
 

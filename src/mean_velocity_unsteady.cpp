@@ -8,7 +8,7 @@
 #include <math.h>
 #include <iostream>
 #include <stdlib.h>
-#include "version.h"
+#include "generated/version.h"
 #include "static_trajectory_list.h"
 #include <omp.h>
 using namespace std;
@@ -169,7 +169,7 @@ void Mean_Velocity_Unsteady::write(string filename)
 
   ofstream output(filename.c_str());
 
-  output << "Mean velocity data created by AMDAT v." << VERSION << "\n";
+  output << "Mean velocity data created by AMDAT v." << amdat::build::SEMVER << "\n";
   for(timeii=0;timeii<n_times;timeii++)
   {
     output << system->show_time(timeii)<<"\t"<<mean_velocity[timeii].show_x()<<"\t"<<mean_velocity[timeii].show_y()<<"\t"<<mean_velocity[timeii].show_z()<<"\n";
@@ -183,7 +183,7 @@ void Mean_Velocity_Unsteady::write(ofstream& output)const
 
   cout << "\nWriting mean velocity to file.";
 
-  output << "Mean velocity data created by AMDAT v." << VERSION << "\n";
+  output << "Mean velocity data created by AMDAT v." << amdat::build::SEMVER << "\n";
   for(timeii=0;timeii<n_times;timeii++)
   {
     output << system->show_time(timeii)<<"\t"<<mean_velocity[timeii].show_x()<<"\t"<<mean_velocity[timeii].show_y()<<"\t"<<mean_velocity[timeii].show_z()<<"\n";

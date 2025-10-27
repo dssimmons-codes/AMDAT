@@ -10,7 +10,7 @@
 #include "system.h"
 #include <stdlib.h>
 #include "trajectory_list.h"
-#include "version.h"
+#include "generated/version.h"
 #include "progress.h"
 
 
@@ -178,7 +178,7 @@ void Trajectory_List_Decay::write(string filename)
     cout << "\nWriting trajectory list decay to file " << filename << "." << endl;
     ofstream output(filename.c_str());
 
-    output << "Trajectory List Decay data created by AMDAT v." << VERSION << endl << endl;
+    output << "Trajectory List Decay data created by AMDAT v." << amdat::build::SEMVER << endl << endl;
 
     for (int stepii=0;stepii<blocksize;stepii++)
     {

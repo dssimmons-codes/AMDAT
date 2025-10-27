@@ -5,7 +5,7 @@
 /*Written by David S. Simmons*/
 
 #include "static_trajectory_list.h"
-#include "version.h"
+#include "generated/version.h"
 using namespace std;
 
 

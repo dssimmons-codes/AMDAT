@@ -8,7 +8,7 @@
 #include <math.h>
 #include <iostream>
 #include <stdlib.h>
-#include "version.h"
+#include "generated/version.h"
 #include "static_trajectory_list.h"
 #include <omp.h>
 using namespace std;
@@ -197,7 +197,7 @@ void Displacement_List::write(string filename)const
 
   ofstream output(filename.c_str());
 
-  output << "Displacement data created by AMDAT v." << VERSION << "\n";
+  output << "Displacement data created by AMDAT v." << amdat::build::SEMVER << "\n";
   output << "Timegap " << syst->displacement_times(timegap)<< "\n";
   output << "Mean_displacement " << mean() << "\n";
   output << "Mean_square_displacement " << power_mean(2) << "\n";
@@ -210,7 +210,7 @@ void Displacement_List::write(ofstream& output)const
 
   cout << "\nWriting displacement statistics to file.";
 
-  output << "Displacement data created by AMDAT v." << VERSION << "\n";
+  output << "Displacement data created by AMDAT v." << amdat::build::SEMVER << "\n";
   output << "Timegap " << syst->displacement_times(timegap)<< "\n";
   output << "Mean_displacement " << mean() << "\n";
   output << "Mean_square_displacement " << power_mean(2) << "\n";

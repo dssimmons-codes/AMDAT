@@ -10,7 +10,7 @@
 #include "mean_square_displacement.h"
 #include <iostream>
 #include <stdlib.h>
-#include "version.h"
+#include "generated/version.h"
 
 #define PI 3.14159265
 
@@ -284,7 +284,7 @@ void Gaussian_Comparison::write(string filename)const
   ofstream output(filename.c_str());
   if(errorstate){output << "Warning: program cannot identify two crossing points between self Van Hove and Gaussian approximation self Van Hove.  Fractions of slow and fast particles will be incorrect.\n";}
   
-  output << "Gaussian comparison data created by AMDAT v." << VERSION << "\n"; 
+  output << "Gaussian comparison data created by AMDAT v." << amdat::build::SEMVER << "\n"; 
   output << "t*\n" << system->displacement_times()[time_index] << "\n";
   output << "Slow_Cutoff: " << pow(slowboundary,0.5) << "\n";
   output << "Fast_Cutoff: " << pow(fastboundary,0.5) << "\n";
@@ -312,7 +312,7 @@ void Gaussian_Comparison::write(ofstream& output)const
   
   if(errorstate){output << "Warning: program cannot identify two crossing points between self Van Hove and Gaussian approximation self Van Hove.  Fractions of slow and fast particles will be incorrect.\n";}
   
-  output << "Gaussian comparison data created by AMDAT v." << VERSION << "\n"; 
+  output << "Gaussian comparison data created by AMDAT v." << amdat::build::SEMVER << "\n"; 
   output << "t*\n" << system->displacement_times()[time_index] << "\n";
   output << "Slow_Cutoff: " << pow(slowboundary,0.5) << "\n";
   output << "Fast_Cutoff: " << pow(fastboundary,0.5) << "\n";

@@ -6,7 +6,7 @@
 
 #include <math.h>
 #include "radial_count.h"
-#include "version.h"
+#include "generated/version.h"
 
 #define PI 3.1459265
 
@@ -331,7 +331,7 @@ void Radial_Count::bin(int timestep, float distance)
   cout << "\nWriting to file " <<filename<<".";cout.flush();
 
   /*Write first row - list of bin numbers*/
-  output << "Non-normalized radial distribution function data created by AMDAT v." << VERSION << "\n";
+  output << "Non-normalized radial distribution function data created by AMDAT v." << amdat::build::SEMVER << "\n";
   for(binii=0;binii<n_bins;binii++)
   {
     output << float(binii)*bin_size+bin_size/2 << "\t";
@@ -356,7 +356,7 @@ void Radial_Count::bin(int timestep, float distance)
   cout << "\nWriting radial count to file.";
 
   /*Write first row - list of bin numbers*/
-  output << "Non-normalized radial distribution function data created by AMDAT v." << VERSION << "\n";
+  output << "Non-normalized radial distribution function data created by AMDAT v." << amdat::build::SEMVER << "\n";
   for(binii=0;binii<n_bins;binii++)
   {
     output << float(binii)*bin_size+bin_size/2 << "\t";

@@ -6,7 +6,7 @@
 #include "system.h"
 #include <math.h>
 #include <iostream>
-#include "version.h"
+#include "generated/version.h"
 
 using namespace std;
 
@@ -106,7 +106,7 @@ void Stiffness_Dist::write(string filename)const
 	ofstream output (filename.c_str());		//open correlation file
 	cout << "\nWriting distribution of molecular stiffnesses to file " <<filename<<"." ;
   
-	output << "Stiffness distribution data created by AMDAT v." << VERSION << "\n"; 
+	output << "Stiffness distribution data created by AMDAT v." << amdat::build::SEMVER << "\n"; 
 	output << "MSD time = " << time << "\n";
 	output << "Mean_stiffness\t" << mean <<"\n";
 	output << "Variance\t" << variance<<"\n\n";
@@ -130,7 +130,7 @@ void Stiffness_Dist::write(ofstream& output)const
   
 	cout << "\nWriting distribution of molecular stiffnesses to file." ;
   
-	output << "Stiffness distribution data created by AMDAT v." << VERSION << "\n"; 
+	output << "Stiffness distribution data created by AMDAT v." << amdat::build::SEMVER << "\n"; 
 	output << "MSD time = " << time << "\n";
 	output << "Mean_stiffness\t" << mean <<"\n";
 	output << "Variance\t" << variance<<"\n\n";

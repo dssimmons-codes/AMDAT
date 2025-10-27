@@ -10,7 +10,7 @@
 #include <fstream>
 #include <math.h>
 #include <stdio.h>
-#include "version.h"
+#include "generated/version.h"
 #include "structure_factor.h"
 #include <omp.h>
 
@@ -330,7 +330,7 @@ void Structure_Factor::write(string filename)const
   cout << "\nWriting to file " <<filename<<".";cout.flush();
 
   /*Write first row - list of bin numbers*/
-  output << "Structure factor data created by AMDAT v." << VERSION << "\n";
+  output << "Structure factor data created by AMDAT v." << amdat::build::SEMVER << "\n";
   output << "Nominal_q\tMean_q\tStddev_q\tMean_qx\tMean_qy\tMean_qz\tS(q)\n";
   for(binii=0;binii<n_wavenumbers;binii++)
   {
@@ -352,7 +352,7 @@ void Structure_Factor::write(ofstream& output)const
   cout << "\nWriting to file.";
 
   /*Write first row - list of bin numbers*/
-  output << "Structure factor data created by AMDAT v." << VERSION << "\n";
+  output << "Structure factor data created by AMDAT v." << amdat::build::SEMVER << "\n";
   output << "Nominal_q\tMean_q\tStddev_q\tMean_qx\tMean_qy\tMean_qz\tS(q)\n";
   for(binii=0;binii<n_wavenumbers;binii++)
   {

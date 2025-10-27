@@ -6,7 +6,7 @@
 
 
 #include "neighbor_list.h"
-#include "version.h"
+#include "generated/version.h"
 #include "tokenize.h"
 
 using namespace std;
@@ -179,7 +179,7 @@ void Neighbor_List::write_statistics(string filename, int n_moments)const
   
   cout << "\nWriting value dist and statistics to file.";
   ofstream output(filename.c_str());
-  output << "Value list statistics created by AMDAT v." << VERSION << "\n";
+  output << "Value list statistics created by AMDAT v." << amdat::build::SEMVER << "\n";
    
   vector<int> dist;
   

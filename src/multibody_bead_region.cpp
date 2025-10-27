@@ -8,7 +8,7 @@
 #include "multibody_bead_region.h"
 #include <iostream>
 #include <stdlib.h>
-#include "version.h"
+#include "generated/version.h"
 #include "system.h"
 
 using namespace std;
@@ -173,7 +173,7 @@ void Multibody_Bead_Region::write(string filename)const
 	}
 
 	ofstream output(filename.c_str());
-	output << "Multibody list statistics created by AMDAT v." << VERSION << "\n";
+	output << "Multibody list statistics created by AMDAT v." << amdat::build::SEMVER << "\n";
 	output << "Average_multibodies in list:\t"<< avg_multibodies<<"\n";
 	output << "Count_List\n";
 	for(timeii=0;timeii<n_times;timeii++)

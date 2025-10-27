@@ -11,7 +11,7 @@
 #include <iostream>
 #include "progress.h"
 #include <stdlib.h>
-#include "version.h"
+#include "generated/version.h"
 
 using namespace std;
 

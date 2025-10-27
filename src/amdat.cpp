@@ -15,7 +15,6 @@
 #include <fstream>
 #include <unistd.h>
 #include "control.h"
-#include "version.h"
 #include "banner.h"
 #include "generated/version.h"
 
@@ -134,7 +133,7 @@ int main(int argc, char *argv[])
   if(!procs_given)
     omp_set_num_threads(1);
 
-//  cout<<"Amorphous Molecular Dynamics Analysis Toolkit (AMDAT) v."<<VERSION<<endl;
+//  cout<<"Amorphous Molecular Dynamics Analysis Toolkit (AMDAT) v."<<amdat::build::SEMVER<<endl;
   if (!quiet_flag && !env_no_banner())
     print_one_line_banner(V);
 

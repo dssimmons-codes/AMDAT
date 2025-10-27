@@ -6,7 +6,7 @@
 
 #include <math.h>
 #include "radial_distribution_function.h"
-#include "version.h"
+#include "generated/version.h"
 
 #define PI 3.1459265
 
@@ -332,7 +332,7 @@ void Radial_Distribution_Function::bin(int timestep, float distance)
   cout << "\nWriting to file " <<filename<<".";cout.flush();
 
   /*Write first row - list of bin numbers*/
-  output << "Radial distribution function data created by AMDAT v." << VERSION << "\n";
+  output << "Radial distribution function data created by AMDAT v." << amdat::build::SEMVER << "\n";
   for(binii=0;binii<n_bins;binii++)
   {
     output << float(binii)*bin_size+bin_size/2 << "\t";
@@ -357,7 +357,7 @@ void Radial_Distribution_Function::bin(int timestep, float distance)
   cout << "\nWriting rdf to file.";
 
   /*Write first row - list of bin numbers*/
-  output << "Radial distribution function data created by AMDAT v." << VERSION << "\n";
+  output << "Radial distribution function data created by AMDAT v." << amdat::build::SEMVER << "\n";
   for(binii=0;binii<n_bins;binii++)
   {
     output << float(binii)*bin_size+bin_size/2 << "\t";
@@ -415,7 +415,7 @@ void Radial_Distribution_Function::bin(int timestep, float distance)
    cout << "\nWriting structure factor to file " <<filename<<".";cout.flush();
 
   /*Write first row - list of bin numbers*/
-  output << "Structure factor data calculated from g(r) created by AMDAT v." << VERSION << "\n";
+  output << "Structure factor data calculated from g(r) created by AMDAT v." << amdat::build::SEMVER << "\n";
   for(kii=0;kii<n_ks;kii++)
   {
     output << klist[kii] << "\t";

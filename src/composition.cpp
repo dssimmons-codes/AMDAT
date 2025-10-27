@@ -7,7 +7,7 @@
 
 #include <stdlib.h>
 #include "composition.h"
-#include "version.h"
+#include "generated/version.h"
 #include <omp.h>
 
 using namespace std;
@@ -231,7 +231,7 @@ void Composition::write(string filename)
 
     ofstream output(filename.c_str());
 
-    output << "Composition data created by AMDAT v." << VERSION << endl << endl;
+    output << "Composition data created by AMDAT v." << amdat::build::SEMVER << endl << endl;
 
     for (int typeii=0; typeii<n_atomtypes;typeii++)
     {
@@ -269,7 +269,7 @@ void Composition::write(ofstream& output)
 
     cout << "\nWriting composition to file."<< endl;
 
-    output << "Composition data created by AMDAT v." << VERSION << endl << endl;
+    output << "Composition data created by AMDAT v." << amdat::build::SEMVER << endl << endl;
 
     for (int typeii=0; typeii<n_atomtypes;typeii++)
     {

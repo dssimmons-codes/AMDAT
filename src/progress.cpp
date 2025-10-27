@@ -7,7 +7,7 @@
 
 #include <iostream>
 #include <stdio.h>
-//#include "version.h"
+//#include "generated/version.h"
 
 using namespace std;
 #ifdef NO

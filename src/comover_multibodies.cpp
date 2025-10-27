@@ -10,7 +10,7 @@
 #include <math.h>
 #include <sstream>
 #include "multibody.h"
-#include "version.h"
+#include "generated/version.h"
 #include "comover_multibodies.h"
 #include "system.h"
 

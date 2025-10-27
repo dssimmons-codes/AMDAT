@@ -9,7 +9,7 @@
 
 #include "incoherent_scattering_function.h"
 #include "system.h"
-#include "version.h"
+#include "generated/version.h"
 
 using namespace std;
 

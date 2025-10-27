@@ -8,7 +8,7 @@
 #include <stdlib.h>
 #include "n_fold_order_parameter.h"
 #include <math.h>
-#include "version.h"
+#include "generated/version.h"
 #include "trajectory_list.h"
 #include "coordinate.h"
 #include "value_list.h"
@@ -489,7 +489,7 @@ void N_Fold_Order_Parameter::write(string filename)
 
     ofstream output(filename.c_str());
 
-    output << "Hexatic order parameter data created by AMDAT v." << VERSION << endl << endl;
+    output << "Hexatic order parameter data created by AMDAT v." << amdat::build::SEMVER << endl << endl;
 
     output << "The time average n_fold order parameter for the system is " << time_average_param << endl << endl;
 
@@ -543,7 +543,7 @@ void N_Fold_Order_Parameter::write(ofstream& output)const
     string map_thresh_file;
     cout << "\nWriting hop to file." << endl;
 
-    output << "Hexatic order parameter data created by AMDAT v." << VERSION << endl << endl;
+    output << "Hexatic order parameter data created by AMDAT v." << amdat::build::SEMVER << endl << endl;
 
     output << "The time average n_fold order parameter for the system is " << time_average_param << endl << endl;
 

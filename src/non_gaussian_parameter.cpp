@@ -8,7 +8,7 @@
 #include <math.h>
 #include <iostream>
 #include <stdlib.h>
-#include "version.h"
+#include "generated/version.h"
 
 using namespace std;
 
@@ -150,7 +150,7 @@ void Non_Gaussian_Parameter::write(string filename)const
 
   ofstream output(filename.c_str());
 
-  output << "Non-Gaussian parameter data created by AMDAT v." << VERSION << "\n";
+  output << "Non-Gaussian parameter data created by AMDAT v." << amdat::build::SEMVER << "\n";
   for(timeii=0;timeii<n_times;timeii++)
   {
     output << timetable[timeii]<<"\t"<<ngp[timeii]<<"\n";
@@ -163,7 +163,7 @@ void Non_Gaussian_Parameter::write(ofstream& output)const
 
   cout << "\nWriting non-Gaussian parameter to file.";
 
-  output << "Non-Gaussian parameter data created by AMDAT v." << VERSION << "\n";
+  output << "Non-Gaussian parameter data created by AMDAT v." << amdat::build::SEMVER << "\n";
   for(timeii=0;timeii<n_times;timeii++)
   {
     output << timetable[timeii]<<"\t"<<ngp[timeii]<<"\n";

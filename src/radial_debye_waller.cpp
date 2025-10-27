@@ -12,7 +12,7 @@
 #include <stdlib.h>
 #include <iostream>
 #include <math.h>
-#include "version.h"
+#include "generated/version.h"
 
 #define PI 3.14159265
 
@@ -103,7 +103,7 @@ int binii;
 
   ofstream output(filename.c_str());
 
-  output << "Radial Debye-Waller data created by AMDAT v." << VERSION << "\n";
+  output << "Radial Debye-Waller data created by AMDAT v." << amdat::build::SEMVER << "\n";
   output <<"time="<< system->show_time(time_index) <<"\n";
   output <<"radius\tn_atoms\tdensity\tmsd\n";
 
@@ -120,7 +120,7 @@ int binii;
 
   cout << "\nWriting radial debye waller data to file.";
 
-  output << "Radial Debye-Waller data created by AMDAT v." << VERSION << "\n";
+  output << "Radial Debye-Waller data created by AMDAT v." << amdat::build::SEMVER << "\n";
   output <<"time="<< system->show_time(time_index) <<"\n";
   output <<"radius\tn_atoms\tdensity\tmsd\n";
 

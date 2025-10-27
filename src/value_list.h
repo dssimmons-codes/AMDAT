@@ -14,7 +14,7 @@
 
 #include "boolean_list.h"
 #include "trajectory_list.h"
-#include "version.h"
+#include "generated/version.h"
 #include "system.h"
 
 #ifndef VALUE_LIST
@@ -1514,7 +1514,7 @@ void Value_List<valType>::write_statistics(string filename, int n_moments)const
   
   cout << "\nWriting value dist and statistics to file.";
   ofstream output(filename.c_str());
-  output << "Value list statistics created by AMDAT v." << VERSION << "\n";
+  output << "Value list statistics created by AMDAT v." << amdat::build::SEMVER << "\n";
    
   vector<int> dist;
   
@@ -1596,7 +1596,7 @@ void Value_List<valType>::write_statistics(string filename, Trajectory_List* tra
   
   cout << "\nWriting value dist and statistics to file.";
   ofstream output(filename.c_str());
-  output << "Value list statistics created by AMDAT v." << VERSION << "\n";
+  output << "Value list statistics created by AMDAT v." << amdat::build::SEMVER << "\n";
    
   vector<int> dist;
   
@@ -1673,7 +1673,7 @@ void Value_List<valType>::write_statistics_pertime(string filename, int n_moment
   
   cout << "\nWriting value dist and statistics to file.";
   ofstream output(filename.c_str());
-  output << "Value list statistics created by AMDAT v." << VERSION << "\n";
+  output << "Value list statistics created by AMDAT v." << amdat::build::SEMVER << "\n";
   output << "Time Count Mean StdDev\n";
   
   for(timeii=0;timeii<n_times;timeii++)
@@ -1717,7 +1717,7 @@ void Value_List<valType>::write_statistics_pertime(string filename, Trajectory_L
   
   cout << "\nWriting value dist and statistics to file.";
   ofstream output(filename.c_str());
-  output << "Value list statistics created by AMDAT v." << VERSION << "\n";
+  output << "Value list statistics created by AMDAT v." << amdat::build::SEMVER << "\n";
   output << "Time Count Mean StdDev\n";
   
   for(timeii=0;timeii<n_times;timeii++)

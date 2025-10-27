@@ -26,7 +26,7 @@
 #include "system.h"
 #include "progress.h"
 #include "error.h"
-#include "version.h"
+#include "generated/version.h"
 #include "control.h"
 #include "multibody_set.h"
 #include "value_list.h"

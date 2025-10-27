@@ -13,7 +13,7 @@
 #include "math.h"
 #include "tntjama/jama_eig.h"
 #include <stdlib.h>
-#include "version.h"
+#include "generated/version.h"
 #include "system.h"
 
 using namespace std;
@@ -135,7 +135,7 @@ void RgTensor::write(string filename)
   float * times;
   
   ofstream output(filename.c_str());
-  output << "Single particle gyration tensor data created by AMDAT v." << VERSION << "\n"; 
+  output << "Single particle gyration tensor data created by AMDAT v." << amdat::build::SEMVER << "\n"; 
   
   times = system->displacement_times();
   
@@ -152,7 +152,7 @@ void RgTensor::write(ofstream& output)const
   int timeii;
   float * times;
   
-  output << "Single particle gyration tensor data created by AMDAT v." << VERSION << "\n"; 
+  output << "Single particle gyration tensor data created by AMDAT v." << amdat::build::SEMVER << "\n"; 
   
   times = system->displacement_times();
   

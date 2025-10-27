@@ -8,7 +8,7 @@
 #include <math.h>
 #include <iostream>
 #include <stdlib.h>
-#include "version.h"
+#include "generated/version.h"
 #include "static_trajectory_list.h"
 #include <omp.h>
 using namespace std;
@@ -171,7 +171,7 @@ void Mean_Unsteady_Displacement::write(string filename)
 
   ofstream output(filename.c_str());
 
-  output << "Mean incremental displacement data created by AMDAT v." << VERSION << "\n";
+  output << "Mean incremental displacement data created by AMDAT v." << amdat::build::SEMVER << "\n";
   for(timeii=0;timeii<n_times;timeii++)
   {
     output << system->show_time(timeii)<<"\t"<<md[timeii].show_x()<<"\t"<<md[timeii].show_y()<<"\t"<<md[timeii].show_z()<<"\n";
@@ -185,7 +185,7 @@ void Mean_Unsteady_Displacement::write(ofstream& output)const
 
   cout << "\nWriting mean incremental displacement to file.";
 
-  output << "Mean incremental displacement data created by AMDAT v." << VERSION << "\n";
+  output << "Mean incremental displacement data created by AMDAT v." << amdat::build::SEMVER << "\n";
   for(timeii=0;timeii<n_times;timeii++)
   {
     output << system->show_time(timeii)<<"\t"<<md[timeii].show_x()<<"\t"<<md[timeii].show_y()<<"\t"<<md[timeii].show_z()<<"\n";

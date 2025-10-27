@@ -8,7 +8,7 @@
 #include <stdlib.h>
 #include <omp.h>
 #include "edge_detector_timedependent.h"
-#include "version.h"
+#include "generated/version.h"
 
 
 using namespace std;
@@ -106,7 +106,7 @@ void Edge_Detector_Timedependent::write(string filename)
 
     ofstream output(filename.c_str());
 
-    output << "Edge data created by AMDAT v." << VERSION << "\n";
+    output << "Edge data created by AMDAT v." << amdat::build::SEMVER << "\n";
     output << "Unit vector is " <<  unit_vector.show_x() << "\t" <<unit_vector.show_y() << "\t" << unit_vector.show_z() << "\n";
     output << "time\tx\ty\tz\n";
     for (int timeii=0; timeii<n_times;timeii++)
@@ -120,7 +120,7 @@ void Edge_Detector_Timedependent::write(ofstream& output)const
 
     cout << "\nWriting edge to file." << endl;
 
-    output << "Edge data created by AMDAT v." << VERSION << "\n";
+    output << "Edge data created by AMDAT v." << amdat::build::SEMVER << "\n";
     output << "Unit vector is " <<  unit_vector.show_x() << "\t" <<unit_vector.show_y() << "\t" << unit_vector.show_z() << "\n";
     output << "time\tx\ty\tz\n";
     for (int timeii=0; timeii<n_times;timeii++)

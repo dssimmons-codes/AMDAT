@@ -9,7 +9,7 @@
 #include <fstream>
 #include <sstream>
 
-#include "version.h"
+#include "generated/version.h"
 #include "vector_autocorrelation.h"
 #include "tokenize.h"
 
@@ -345,7 +345,7 @@ void Vector_Autocorrelation::write(string filename)
 
   ofstream output(filename.c_str());
 
-  output << "Vector time-autocorrelation data created by AMDAT v." << VERSION << "\n";
+  output << "Vector time-autocorrelation data created by AMDAT v." << amdat::build::SEMVER << "\n";
 
   output << "\ntime\ttotal_correlation\torientational_correlation\n";
 
@@ -374,7 +374,7 @@ void Vector_Autocorrelation::write(ofstream& output)const
 
   cout << "\nWriting vector time-autocorrelation function to file.\n";
   
-  output << "Vector time-autocorrelation data created by AMDAT v." << VERSION << "\n";
+  output << "Vector time-autocorrelation data created by AMDAT v." << amdat::build::SEMVER << "\n";
 
   output << "\ntime\ttotal_correlation\torientational_correlation\n";
 

@@ -10,7 +10,7 @@
 #include <stdlib.h>
 #include <iostream>
 #include <math.h>
-#include "version.h"
+#include "generated/version.h"
 
 using namespace std;
 
@@ -244,7 +244,7 @@ void Space_Time_Correlation_Function::write(string filename)const
   
   ofstream output (filename.c_str());		//open correlation file
   
-  output << "Correlation data created by AMDAT v." << VERSION << "\n"; 
+  output << "Correlation data created by AMDAT v." << amdat::build::SEMVER << "\n"; 
   output << n_bins << " bins\n";
   output << n_times << " times\n\n";
   
@@ -276,7 +276,7 @@ void Space_Time_Correlation_Function::write(ofstream& output)const
   int timeii;
   int binii;
   
-  output << "Correlation data created by AMDAT v." << VERSION << "\n"; 
+  output << "Correlation data created by AMDAT v." << amdat::build::SEMVER << "\n"; 
   output << n_bins << " bins\n";
   output << n_times << " times\n\n";
   
@@ -314,7 +314,7 @@ void Space_Time_Correlation_Function::write_spatial_inverse(string filename)cons
   
   ofstream output (filename.c_str());		//open correlation file
   
-  output << "Inverse-space correlation function data created by AMDAT v." << VERSION << "\n"; 
+  output << "Inverse-space correlation function data created by AMDAT v." << amdat::build::SEMVER << "\n"; 
   output << n_wavenumbers << " wavenumbers\n";
   output << n_times << " times\n\n";
   

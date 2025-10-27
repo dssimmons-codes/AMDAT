@@ -7,7 +7,7 @@
 #include "van_hove_self.h"
 #include <stdlib.h>
 #include <iostream>
-#include "version.h"
+#include "generated/version.h"
 
 using namespace std;
 

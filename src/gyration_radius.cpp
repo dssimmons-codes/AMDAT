@@ -10,7 +10,7 @@
 #include <math.h>
 
 #include "gyration_radius.h"
-#include "version.h"
+#include "generated/version.h"
 #include "system.h"
 
 using namespace std;
@@ -157,7 +157,7 @@ void Gyration_Radius::write(string filename)
 
   ofstream output(filename.c_str());
 
-  output << "Gyration radius calculated by AMDAT v." << VERSION << "\n";
+  output << "Gyration radius calculated by AMDAT v." << amdat::build::SEMVER << "\n";
   
   output << "bodies";
   
@@ -189,7 +189,7 @@ void Gyration_Radius::write(ofstream& output)const
 {
   cout << "\nWriting gyration radius to file.";
 
-  output << "Gyration radius calculated by AMDAT v." << VERSION << "\n";
+  output << "Gyration radius calculated by AMDAT v." << amdat::build::SEMVER << "\n";
   
   output << gyration_radius;
 }

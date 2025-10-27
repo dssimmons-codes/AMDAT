@@ -8,7 +8,7 @@
 #include <math.h>
 #include <iostream>
 #include <stdlib.h>
-#include "version.h"
+#include "generated/version.h"
 
 using namespace std;
 
@@ -178,7 +178,7 @@ void Mean_Square_Displacement_2D::write(string filename)
 
   ofstream output(filename.c_str());
 
-  output << "2-D mean square displacement data for "<< plane <<" plane created by AMDAT v." << VERSION << "\n";
+  output << "2-D mean square displacement data for "<< plane <<" plane created by AMDAT v." << amdat::build::SEMVER << "\n";
   for(timeii=0;timeii<n_times;timeii++)
   {
     output << timetable[timeii]<<"\t"<<msd[timeii]<<"\n";
@@ -191,7 +191,7 @@ void Mean_Square_Displacement_2D::write(ofstream& output)const
 
   cout << "\nWriting 2D msd to file.";
 
-  output << "2-D mean square displacement data for "<< plane <<" plane created by AMDAT v." << VERSION << "\n";
+  output << "2-D mean square displacement data for "<< plane <<" plane created by AMDAT v." << amdat::build::SEMVER << "\n";
   for(timeii=0;timeii<n_times;timeii++)
   {
     output << timetable[timeii]<<"\t"<<msd[timeii]<<"\n";

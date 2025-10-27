@@ -10,7 +10,7 @@
 #include <math.h>
 #include <sstream>
 #include "strings.h"
-#include "version.h"
+#include "generated/version.h"
 
 using namespace std;
 
@@ -530,7 +530,7 @@ void Strings::write(string filename)const
 
 	cout << "\nWriting string data to file " << filename <<".";
 	ofstream output(filename.c_str());
-	output << "String data created by AMDAT v." << VERSION << "\n";
+	output << "String data created by AMDAT v." << amdat::build::SEMVER << "\n";
 
 	output << "time\tmean_strings\tmean_length\tmean_length(counting1)\torder_parameter";
 	for(lengthii=0;lengthii<=maxstringatoms;lengthii++)
@@ -557,7 +557,7 @@ void Strings::write(ofstream& output)const
 	int lengthii;
 
 	cout << "\nWriting string data to file.";
-	output << "String data created by AMDAT v." << VERSION << "\n";
+	output << "String data created by AMDAT v." << amdat::build::SEMVER << "\n";
 
 	output << "time\tmean_strings\tmean_length\tmean_length(counting1)\torder_parameter";
 	for(lengthii=0;lengthii<=maxstringatoms;lengthii++)

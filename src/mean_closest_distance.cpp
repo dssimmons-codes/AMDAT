@@ -6,7 +6,7 @@
 
 #include <math.h>
 #include "mean_closest_distance.h"
-#include "version.h"
+#include "generated/version.h"
 
 #define PI 3.1459265
 
@@ -185,7 +185,7 @@ void Mean_Closest_Distance::listkernel2(Trajectory* traj1, Trajectory* traj2,int
 
   cout << "\nWriting mcd to file " <<filename<<".";cout.flush();
 
-  output << "Mean closest distance data created by AMDAT v." << VERSION << "\n";
+  output << "Mean closest distance data created by AMDAT v." << amdat::build::SEMVER << "\n";
  
   output << mean_mcd;
 
@@ -199,7 +199,7 @@ void Mean_Closest_Distance::listkernel2(Trajectory* traj1, Trajectory* traj2,int
 
   cout << "\nWriting mcd to file.";
 
-  output << "Mean closest distance data created by AMDAT v." << VERSION << "\n";
+  output << "Mean closest distance data created by AMDAT v." << amdat::build::SEMVER << "\n";
  
   output << mean_mcd;
 

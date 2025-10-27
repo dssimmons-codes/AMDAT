@@ -4,7 +4,7 @@
 #include <math.h>
 #include <iostream>
 #include <stdlib.h>
-#include "version.h"
+#include "generated/version.h"
 
 #include "find_between.h"
 

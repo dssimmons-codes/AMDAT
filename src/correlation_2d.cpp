@@ -5,7 +5,7 @@
 #include <stdlib.h>
 #include <iostream>
 #include "correlation_2d.h"
-#include "version.h"
+#include "generated/version.h"
 
 using namespace std;
 
@@ -481,7 +481,7 @@ void Correlation_2D::write(string filename)const
   cout << "\nWriting to file " <<filename<<"."<<endl;cout.flush();
 
   /*Write first row - list of bin numbers*/
-  output << "Correlation data created by AMDAT v." << VERSION << "\n";
+  output << "Correlation data created by AMDAT v." << amdat::build::SEMVER << "\n";
   output << "\t";
   for(binii=first_bin_index;binii<=last_bin_index;binii++)
   {
@@ -510,7 +510,7 @@ void Correlation_2D::write(ofstream& output)const
   cout << "\nWriting to file."<<endl;
 
   /*Write first row - list of bin numbers*/
-  output << "Correlation data created by AMDAT v." << VERSION << "\n";
+  output << "Correlation data created by AMDAT v." << amdat::build::SEMVER << "\n";
   output << "\t";
   for(binii=first_bin_index;binii<=last_bin_index;binii++)
   {

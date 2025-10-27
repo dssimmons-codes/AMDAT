@@ -8,7 +8,7 @@
 #include <stdlib.h>
 #include "composition.h"
 #include "composition_timedependent.h"
-#include "version.h"
+#include "generated/version.h"
 #include <omp.h>
 
 using namespace std;
@@ -22,7 +22,7 @@ void Composition_TimeDependent::write(string filename)
 
     ofstream output(filename.c_str());
 
-    output << "Composition data created by AMDAT v." << VERSION << endl;
+    output << "Composition data created by AMDAT v." << amdat::build::SEMVER << endl;
 
     output << "time\t" << "number_density\t" << "number";
 
@@ -56,7 +56,7 @@ void Composition_TimeDependent::write(string filename)
 
 void Composition_TimeDependent::write(ofstream& output)
 {
-    output << "Composition data created by AMDAT v." << VERSION << endl;
+    output << "Composition data created by AMDAT v." << amdat::build::SEMVER << endl;
 
     output << "time\t" << "number_density";
 

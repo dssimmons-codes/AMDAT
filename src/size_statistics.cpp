@@ -8,7 +8,7 @@
 #include <math.h>
 #include <iostream>
 #include <stdlib.h>
-#include "version.h"
+#include "generated/version.h"
 #include "system.h"
 
 using namespace std;
@@ -152,7 +152,7 @@ void Size_Statistics::write(string filename)const
   
   cout << "\nWriting multibody size statistics to file.";
   ofstream output(filename.c_str());
-  output << "Size statistics data created by AMDAT v." << VERSION << "\n";
+  output << "Size statistics data created by AMDAT v." << amdat::build::SEMVER << "\n";
   
   output << "Size\t";
   
@@ -195,7 +195,7 @@ void Size_Statistics::write(ofstream& output)const
   
   cout << "\nWriting multibody size statistics to file.";
 
-  output << "Size statistics data created by AMDAT v." << VERSION << "\n";
+  output << "Size statistics data created by AMDAT v." << amdat::build::SEMVER << "\n";
   
   output << "Size\t";
   

@@ -10,7 +10,7 @@
 #include <stdlib.h>
 
 #include "wave_density.h"
-#include "version.h"
+#include "generated/version.h"
 
 using namespace std;
 

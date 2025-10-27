@@ -49,7 +49,7 @@
 #include "gyration_radius.h"
 #include "multibody_list.h"
 #include "multibody_analysis.h"
-#include "version.h"
+#include "generated/version.h"
 #include "tokenize.h"
 #include "error.h"
 #include "mean_velocity_unsteady.h"
@@ -4842,14 +4842,14 @@ void Control::crosscorrelate_value_lists()
   {
     correlation = vlist1->static_crosscorrelation(*vlist2);
     output.open(filename.c_str());
-    output << "Correlation between value lists "<< listname1<<" and "<< listname2<<" calculated by AMDAT v." << VERSION << "\n";
+    output << "Correlation between value lists "<< listname1<<" and "<< listname2<<" calculated by AMDAT v." << amdat::build::SEMVER << "\n";
     output << "Relative correlation (<AB>/<A><B>) is " << correlation;
     output.close();
   }
   else if(correlation_type=="dynamic")
   {
     output.open(filename.c_str());
-    output << "Dynamic cross-correlation between value lists "<< listname1<<" and "<< listname2<<" calculated by AMDAT v." << VERSION << "\n";
+    output << "Dynamic cross-correlation between value lists "<< listname1<<" and "<< listname2<<" calculated by AMDAT v." << amdat::build::SEMVER << "\n";
     output.close();
     vlist1->dynamic_crosscorrelation_function(filename,*vlist2);
   }
@@ -4880,7 +4880,7 @@ void Control::autocorrelate_value_list()
   vlist = analyte->find_value_list(listname);
 
   ofstream output(filename.c_str());
-  output << "Dynamic auto-correlation of value list "<< listname<<" calculated by AMDAT v." << VERSION << "\n";
+  output << "Dynamic auto-correlation of value list "<< listname<<" calculated by AMDAT v." << amdat::build::SEMVER << "\n";
   output.close();
   vlist->dynamic_autocorrelation_function(filename);
 }

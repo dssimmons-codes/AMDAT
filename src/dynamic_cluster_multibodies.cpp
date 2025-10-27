@@ -11,7 +11,7 @@
 #include <math.h>
 #include <sstream>
 #include "multibody.h"
-#include "version.h"
+#include "generated/version.h"
 #include "dynamic_cluster_multibodies.h"
 #include "system.h"
 

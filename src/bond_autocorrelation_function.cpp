@@ -8,7 +8,7 @@
 #include <math.h>
 #include <iostream>
 #include <stdlib.h>
-#include "version.h"
+#include "generated/version.h"
 #include "multibody_list.h"
 #include <omp.h>
 #include "system.h"
@@ -366,7 +366,7 @@ void Bond_Autocorrelation_Function::write(string filename)const
 
   ofstream output(filename.c_str());
 
-  output << "Bond autocorrelation function data created by AMDAT v." << VERSION << "\n";
+  output << "Bond autocorrelation function data created by AMDAT v." << amdat::build::SEMVER << "\n";
   for(timeii=0;timeii<n_times;timeii++)
   {
     output << timetable[timeii]<<"\t"<<baf[timeii]<<"\n";
@@ -379,7 +379,7 @@ void Bond_Autocorrelation_Function::write(ofstream& output)const
 
   cout << "\nWriting baf to file.";
 
-  output << "Bond autocorrelation function data created by AMDAT v." << VERSION << "\n";
+  output << "Bond autocorrelation function data created by AMDAT v." << amdat::build::SEMVER << "\n";
   for(timeii=0;timeii<n_times;timeii++)
   {
     output << timetable[timeii]<<"\t"<<baf[timeii]<<"\n";
