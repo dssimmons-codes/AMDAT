@@ -294,9 +294,9 @@ conda: $(ENV_STAMP)
 	  echo ">> Using $$MAKE_CC $$MAKE_CXX"; \
 	  export CPATH="$$CONDA_PREFIX/include:$${CPATH:-}"; \
 	  export LIBRARY_PATH="$$CONDA_PREFIX/lib:$${LIBRARY_PATH:-}"; \
-		echo ">> pkg-config: $(which pkg-config || true)" \
-		echo ">> fftw cflags: $$(pkg-config --cflags fftw3 || true)" \
-		echo ">> fftw libs:   $$(pkg-config --libs   fftw3 || true)" \
+		echo ">> pkg-config: $(which pkg-config || true)"; \
+		echo ">> fftw cflags: $$(pkg-config --cflags fftw3 || true)"; \
+		echo ">> fftw libs:   $$(pkg-config --libs   fftw3 || true)"; \
 	  $(MAKE) $$MAKE_CC $$MAKE_CXX MODE=$(MODE) OMP=$(OMP) FFTW_ROOT="$$CONDA_PREFIX" \
 	'
 
