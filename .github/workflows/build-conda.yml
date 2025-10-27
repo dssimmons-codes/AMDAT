@@ -40,7 +40,7 @@ jobs:
       - name: Create/update AMDAT env via Makefile
         shell: bash -l {0}
         run: |
-          make conda-setup
+          make CONDA=conda conda-setup
 
       # Build inside the env via the Makefile's 'conda' target (no manual activate needed)
       - name: Build AMDAT inside env
