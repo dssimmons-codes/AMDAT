@@ -29,6 +29,17 @@ It provides a wide variety of high-performance analyses integral to molecular mo
 
 ## Quick start (Linux, Conda)
 
+### Clone the repo from GitHub
+
+Prereqs:
+* Conda
+* Set up GitHub ssh keys on your machine
+
+```bash
+git clone git@github.com:dssimmons-codes/AMDAT.git
+cd AMDAT/
+```
+
 ### Build with conda environment (Recommended)
 ```bash
 make conda-setup
