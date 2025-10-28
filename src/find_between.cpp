@@ -77,7 +77,7 @@ Find_Between::Find_Between(System * syst, float d_cutoff, float t_cutoff, bool o
   }
   only_diff_molecule=only_diff;
   dist_cutoff=d_cutoff;
-  theta_cutoff=t_cutoff;
+  costheta_cutoff=t_cutoff;
 }
 
 
@@ -87,7 +87,7 @@ Find_Between::Find_Between(const Find_Between & copy):Trajectory_List(copy), Ana
 //  Analysis::Analysis(copy);
   only_diff_molecule=copy.only_diff_molecule;
   dist_cutoff=copy.dist_cutoff;
-  theta_cutoff=copy.theta_cutoff;
+  costheta_cutoff=copy.costheta_cutoff;
 
 }
 
@@ -129,7 +129,7 @@ void Find_Between::set(System * syst, float d_cutoff, float t_cutoff, bool only_
   }
   only_diff_molecule=only_diff;
   dist_cutoff=d_cutoff;
-  theta_cutoff=t_cutoff;
+  costheta_cutoff=t_cutoff;
 
 //    for(int timeii=0;timeii<n_times;timeii++)
 //    {
@@ -154,7 +154,7 @@ Find_Between Find_Between::operator = (const Find_Between & copy)
 
   only_diff_molecule=copy.only_diff_molecule;
   dist_cutoff=copy.dist_cutoff;
-  theta_cutoff=copy.theta_cutoff;
+  costheta_cutoff=copy.costheta_cutoff;
 
 }
 
@@ -211,9 +211,9 @@ void Find_Between::listkernel2(Trajectory* traj1, Trajectory* traj2, int timegap
     if (dist > dist_cutoff)
       continue;
 
-    // check theta_cutoff criteria
+    // check costheta_cutoff criteria
     float cos_theta = dist_vector_1&dist_vector_2/dist_1/dist_2;
-    if (cos_theta > theta_cutoff)
+    if (cos_theta > costheta_cutoff)
       continue;
 
     addtrajectory(thisii,traj1); //this line will add the trajectory to the trajectory list

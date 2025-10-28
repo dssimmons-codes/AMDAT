@@ -22,7 +22,7 @@ class Find_Between: public Trajectory_List, public Analysis_Onetime//, public Va
 {
 //  float maxdistance;    //I'm guessing we need some variable like this to store the max total distance between the two secondary particles
   float dist_cutoff;         //I'm guessing we need a second variable for that lateral distance.
-  float theta_cutoff;
+  float costheta_cutoff;
   bool only_diff_molecule;
 
   public:

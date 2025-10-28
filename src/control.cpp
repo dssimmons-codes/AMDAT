@@ -2762,7 +2762,7 @@ void Control::structure_factor()
 void Control::find_between()
 {
   string runline1, runline2, listname1, listname2, analysisname;
-  float dist_cutoff, theta_cutoff;
+  float dist_cutoff, costheta_cutoff;
   string newlistname;
   bool only_diff_molecule=0;
 
@@ -2779,14 +2779,14 @@ void Control::find_between()
 
   newlistname=args[1];
   dist_cutoff = stof(args[2]);
-  theta_cutoff = stof(args[3]);
+  costheta_cutoff = stof(args[3]);
   if(n_args == 5)
     only_diff_molecule=atoi(args[4].c_str());
 //  cout << "ONLY_DIFF_MOLECULE" << only_diff_molecule << "\n";
 
   find_between = new Find_Between;
 	  
-  find_between->set(analyte,dist_cutoff,theta_cutoff,only_diff_molecule);
+  find_between->set(analyte,dist_cutoff,costheta_cutoff,only_diff_molecule);
 	
   //the following lines set up to store this as a trajectory list.	
   Trajectory_List * trajpointer;
