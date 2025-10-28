@@ -6,12 +6,12 @@
 #include <stdlib.h>
 #include "version.h"
 
-#include "particles_between.h"
+#include "find_between.h"
 
 using namespace std;
 
 /*Default constructor*/
-Particles_Between::Particles_Between()
+Find_Between::Find_Between()
 {
   int timeii;
 
@@ -31,7 +31,7 @@ Particles_Between::Particles_Between()
 
 }
 
-Particles_Between::Particles_Between(System * syst)
+Find_Between::Find_Between(System * syst)
 {
   int timeii;
 
@@ -54,7 +54,7 @@ Particles_Between::Particles_Between(System * syst)
   }
 }
 
-Particles_Between::Particles_Between(System * syst, float d_cutoff, float t_cutoff, bool only_diff)
+Find_Between::Find_Between(System * syst, float d_cutoff, float t_cutoff, bool only_diff)
 {
   int timeii;
 
@@ -81,7 +81,7 @@ Particles_Between::Particles_Between(System * syst, float d_cutoff, float t_cuto
 }
 
 
-Particles_Between::Particles_Between(const Particles_Between & copy):Trajectory_List(copy), Analysis_Onetime(copy)
+Find_Between::Find_Between(const Find_Between & copy):Trajectory_List(copy), Analysis_Onetime(copy)
 {
 //  Trajectory_List::Trajectory_List(copy);
 //  Analysis::Analysis(copy);
@@ -91,13 +91,13 @@ Particles_Between::Particles_Between(const Particles_Between & copy):Trajectory_
 
 }
 
-Particles_Between::~Particles_Between()
+Find_Between::~Find_Between()
 {
 ////  Trajectory_List::~Trajectory_List();
 ////  Analysis::~Analysis();
 }
 
-void Particles_Between::set(System * syst, float d_cutoff, float t_cutoff, bool only_diff)
+void Find_Between::set(System * syst, float d_cutoff, float t_cutoff, bool only_diff)
 {
   int timeii;
   
@@ -138,7 +138,7 @@ void Particles_Between::set(System * syst, float d_cutoff, float t_cutoff, bool 
 
 }
 
-Particles_Between Particles_Between::operator = (const Particles_Between & copy)
+Find_Between Find_Between::operator = (const Find_Between & copy)
 {
   sys=copy.system;
   system = const_cast<System*>(sys);
@@ -158,19 +158,19 @@ Particles_Between Particles_Between::operator = (const Particles_Between & copy)
 
 }
 
-void Particles_Between::timekernel2(int timeii)
+void Find_Between::timekernel2(int timeii)
 {
    trajectory_list->listloop(this,0, timeii, 0);
 }
 
 
-void Particles_Between::listkernel(Trajectory* current_trajectory, int timegapii, int thisii, int nextii)
+void Find_Between::listkernel(Trajectory* current_trajectory, int timegapii, int thisii, int nextii)
 {
   trajectory_list2->listloop2(this, current_trajectory, 0, thisii, 0);
 }
 
 
-void Particles_Between::listkernel2(Trajectory* traj1, Trajectory* traj2, int timegapii, int thisii, int nextii) //need to check back on which of these time indices is the right one.
+void Find_Between::listkernel2(Trajectory* traj1, Trajectory* traj2, int timegapii, int thisii, int nextii) //need to check back on which of these time indices is the right one.
 {
   if (is_included(thisii, traj1->show_trajectory_ID())) //skip if traj1 is already included
     return;
@@ -228,19 +228,19 @@ void Particles_Between::listkernel2(Trajectory* traj1, Trajectory* traj2, int ti
   }
 }
 
-void Particles_Between::preprocess()
+void Find_Between::preprocess()
 {
 }
 
-void Particles_Between::preprocess2()
+void Find_Between::preprocess2()
 {
 }
 
-void Particles_Between::bin_hook(Trajectory_List *,int,int,int)
+void Find_Between::bin_hook(Trajectory_List *,int,int,int)
 {
 }
 
-void Particles_Between::postprocess_bins()
+void Find_Between::postprocess_bins()
 {
   //I don't think any postprocessing is needed in this case
 }
