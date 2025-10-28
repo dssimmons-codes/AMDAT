@@ -79,7 +79,7 @@ A large number of analysis tools target `trajectory_list` objects.
 | [`write_single_particle`](write_single_particle.md) | Writes an xyz file from a single particle, in which its locations at distinct times are written out at a single time. | xyz trajectory file |
 | `find_fast` | Deprecated; does not work properly. In principle find particles that are 'fast' based on the above comparison between the self Van Hove and Gaussian approximation.| - |
 | `find_fast_fixedthreshold` | Finds fast particles based on displacements higher than some value. Likely to become deprecated in favor of valuelist approach. | new `trajectory_list` |
-| `find_between` | Finds particles with displacements in some value range. Likely to become deprecated in favor of valuelist approach. | new `trajectory_list` |
+| [`find_between`](find_between.md) | Finds particles with displacements in some value range. Likely to become deprecated in favor of valuelist approach. | new `trajectory_list` |
 | `gyration_radius` | Deprecated; to be removed. | - |
 | `isf` | Deprecated; to be removed. | - |
 | `radial_debye_waller` | Computes dwf as a function of distance from (0,0,0). Planned for deprecation.|
