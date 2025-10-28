@@ -77,6 +77,7 @@ Find_Between::Find_Between(System * syst, float d_cutoff, float t_cutoff, bool o
   }
   only_diff_molecule=only_diff;
   dist_cutoff=d_cutoff;
+  dist_cutoffx2=d_cutoff*2;
   costheta_cutoff=t_cutoff;
 }
 
@@ -87,6 +88,7 @@ Find_Between::Find_Between(const Find_Between & copy):Trajectory_List(copy), Ana
 //  Analysis::Analysis(copy);
   only_diff_molecule=copy.only_diff_molecule;
   dist_cutoff=copy.dist_cutoff;
+  dist_cutoffx2=copy.dist_cutoff*2;
   costheta_cutoff=copy.costheta_cutoff;
 
 }
@@ -129,6 +131,7 @@ void Find_Between::set(System * syst, float d_cutoff, float t_cutoff, bool only_
   }
   only_diff_molecule=only_diff;
   dist_cutoff=d_cutoff;
+  dist_cutoffx2=d_cutoff*2;
   costheta_cutoff=t_cutoff;
 
 //    for(int timeii=0;timeii<n_times;timeii++)
@@ -154,6 +157,7 @@ Find_Between Find_Between::operator = (const Find_Between & copy)
 
   only_diff_molecule=copy.only_diff_molecule;
   dist_cutoff=copy.dist_cutoff;
+  dist_cutoffx2=copy.dist_cutoff*2;
   costheta_cutoff=copy.costheta_cutoff;
 
 }
@@ -178,7 +182,7 @@ void Find_Between::listkernel2(Trajectory* traj1, Trajectory* traj2, int timegap
   //check if distance between traj1 and traj2 is under dist_cutoff before proceeding over tertiary loop
   Coordinate dist_vector_1 = (traj2->show_coordinate(thisii)-(traj1->show_coordinate(thisii))).vector_unwrapped(system->size(thisii)); //calculate shortest distance between two coordinates, taking into account periodic boundaries
   float dist_1 = dist_vector_1.length();
-  if (dist_1/2.0 > dist_cutoff)
+  if (dist_1 > dist_cutoffx2)
     return;
 
   int n_trajs=trajectory_list2->show_n_trajectories(thisii);  //record how many particles are in the second trajectory list at this time
@@ -199,16 +203,17 @@ void Find_Between::listkernel2(Trajectory* traj1, Trajectory* traj2, int timegap
     //if only_diff_molecule==1, check that traj2 and traj3 are part of a different cluster
     if (only_diff_molecule && atom_traj2->show_moleculeID() == atom_traj3->show_moleculeID())
       continue;
+    // TODO: we may want to also code in a version that only computes for intra-molecular/intra-cluster
 
     //check if distance between traj1 and traj3 is under dist_cutoff
     Coordinate dist_vector_2 = (traj3->show_coordinate(thisii)-(traj1->show_coordinate(thisii))).vector_unwrapped(system->size(thisii));
     float dist_2 = dist_vector_2.length();
-    if (dist_2/2.0 > dist_cutoff)
+    if (dist_2 > dist_cutoffx2)
       continue;
 
     // check dist_cutoff criteria
-    float dist = (dist_1+dist_2)/2.0;
-    if (dist > dist_cutoff)
+    float distx2 = dist_1+dist_2;
+    if (distx2 > dist_cutoffx2)
       continue;
 
     // check costheta_cutoff criteria

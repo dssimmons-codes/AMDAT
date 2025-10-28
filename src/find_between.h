@@ -20,8 +20,8 @@ namespace std{
 
 class Find_Between: public Trajectory_List, public Analysis_Onetime//, public Value_List <int>
 {
-//  float maxdistance;    //I'm guessing we need some variable like this to store the max total distance between the two secondary particles
-  float dist_cutoff;         //I'm guessing we need a second variable for that lateral distance.
+  float dist_cutoff;
+  float dist_cutoffx2;
   float costheta_cutoff;
   bool only_diff_molecule;
 
