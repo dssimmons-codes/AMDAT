@@ -70,7 +70,7 @@
 #include "neighbor_decorrelation_function.h"
 #include "radial_count.h"
 #include "mean_closest_distance.h"
-#include "particles_between.h"
+#include "find_between.h"
 #include "multibody_bead_region.h"
 
 //#include "msd_listprint.h"
@@ -2762,12 +2762,12 @@ void Control::structure_factor()
 void Control::find_between()
 {
   string runline1, runline2, listname1, listname2, analysisname;
-  float dist_cutoff, theta_cutoff;
+  float dist_cutoff, costheta_cutoff;
   string newlistname;
   bool only_diff_molecule=0;
 
-  Particles_Between * particles_between;
-  Particles_Between * pbetween;
+  Find_Between * find_between;
+  Find_Between * pbetween;
   Trajectory_List* trajlist1;
   Trajectory_List* trajlist2;
 
@@ -2779,18 +2779,18 @@ void Control::find_between()
 
   newlistname=args[1];
   dist_cutoff = stof(args[2]);
-  theta_cutoff = stof(args[3]);
+  costheta_cutoff = stof(args[3]);
   if(n_args == 5)
     only_diff_molecule=atoi(args[4].c_str());
 //  cout << "ONLY_DIFF_MOLECULE" << only_diff_molecule << "\n";
 
-  particles_between = new Particles_Between;
+  find_between = new Find_Between;
 	  
-  particles_between->set(analyte,dist_cutoff,theta_cutoff,only_diff_molecule);
+  find_between->set(analyte,dist_cutoff,costheta_cutoff,only_diff_molecule);
 	
   //the following lines set up to store this as a trajectory list.	
   Trajectory_List * trajpointer;
-  trajpointer=(Trajectory_List*)(particles_between);
+  trajpointer=(Trajectory_List*)(find_between);
 	
   runline1 = read_line();
   cout <<"\n"<< runline1;
@@ -2807,14 +2807,14 @@ void Control::find_between()
   cout << "\nFinding particles in list 1 that are between particles in list 2.\n";cout.flush();
   start = time(NULL);
   //calls bins
-  particles_between->analyze(trajlist1,trajlist2);
+  find_between->analyze(trajlist1,trajlist2);
   finish = time(NULL);
   cout << "\nFound particles between in " << finish-start<<" seconds.\n";
   
   if(store)
   {
-    pbetween = new Particles_Between;
-    pbetween = particles_between;
+    pbetween = new Find_Between;
+    pbetween = find_between;
     if(analyses.insert(analysisname,(Analysis*)(pbetween)))
     {
       cout << "Saving analysis of in between particles to analysis name " << analysisname << ".\n";

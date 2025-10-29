@@ -6,12 +6,12 @@
 #include <stdlib.h>
 #include "version.h"
 
-#include "particles_between.h"
+#include "find_between.h"
 
 using namespace std;
 
 /*Default constructor*/
-Particles_Between::Particles_Between()
+Find_Between::Find_Between()
 {
   int timeii;
 
@@ -31,7 +31,7 @@ Particles_Between::Particles_Between()
 
 }
 
-Particles_Between::Particles_Between(System * syst)
+Find_Between::Find_Between(System * syst)
 {
   int timeii;
 
@@ -54,7 +54,7 @@ Particles_Between::Particles_Between(System * syst)
   }
 }
 
-Particles_Between::Particles_Between(System * syst, float d_cutoff, float t_cutoff, bool only_diff)
+Find_Between::Find_Between(System * syst, float d_cutoff, float t_cutoff, bool only_diff)
 {
   int timeii;
 
@@ -77,27 +77,29 @@ Particles_Between::Particles_Between(System * syst, float d_cutoff, float t_cuto
   }
   only_diff_molecule=only_diff;
   dist_cutoff=d_cutoff;
-  theta_cutoff=t_cutoff;
+  dist_cutoffx2=d_cutoff*2;
+  costheta_cutoff=t_cutoff;
 }
 
 
-Particles_Between::Particles_Between(const Particles_Between & copy):Trajectory_List(copy), Analysis_Onetime(copy)
+Find_Between::Find_Between(const Find_Between & copy):Trajectory_List(copy), Analysis_Onetime(copy)
 {
 //  Trajectory_List::Trajectory_List(copy);
 //  Analysis::Analysis(copy);
   only_diff_molecule=copy.only_diff_molecule;
   dist_cutoff=copy.dist_cutoff;
-  theta_cutoff=copy.theta_cutoff;
+  dist_cutoffx2=copy.dist_cutoff*2;
+  costheta_cutoff=copy.costheta_cutoff;
 
 }
 
-Particles_Between::~Particles_Between()
+Find_Between::~Find_Between()
 {
 ////  Trajectory_List::~Trajectory_List();
 ////  Analysis::~Analysis();
 }
 
-void Particles_Between::set(System * syst, float d_cutoff, float t_cutoff, bool only_diff)
+void Find_Between::set(System * syst, float d_cutoff, float t_cutoff, bool only_diff)
 {
   int timeii;
   
@@ -129,7 +131,8 @@ void Particles_Between::set(System * syst, float d_cutoff, float t_cutoff, bool 
   }
   only_diff_molecule=only_diff;
   dist_cutoff=d_cutoff;
-  theta_cutoff=t_cutoff;
+  dist_cutoffx2=d_cutoff*2;
+  costheta_cutoff=t_cutoff;
 
 //    for(int timeii=0;timeii<n_times;timeii++)
 //    {
@@ -138,7 +141,7 @@ void Particles_Between::set(System * syst, float d_cutoff, float t_cutoff, bool 
 
 }
 
-Particles_Between Particles_Between::operator = (const Particles_Between & copy)
+Find_Between Find_Between::operator = (const Find_Between & copy)
 {
   sys=copy.system;
   system = const_cast<System*>(sys);
@@ -154,23 +157,24 @@ Particles_Between Particles_Between::operator = (const Particles_Between & copy)
 
   only_diff_molecule=copy.only_diff_molecule;
   dist_cutoff=copy.dist_cutoff;
-  theta_cutoff=copy.theta_cutoff;
+  dist_cutoffx2=copy.dist_cutoff*2;
+  costheta_cutoff=copy.costheta_cutoff;
 
 }
 
-void Particles_Between::timekernel2(int timeii)
+void Find_Between::timekernel2(int timeii)
 {
    trajectory_list->listloop(this,0, timeii, 0);
 }
 
 
-void Particles_Between::listkernel(Trajectory* current_trajectory, int timegapii, int thisii, int nextii)
+void Find_Between::listkernel(Trajectory* current_trajectory, int timegapii, int thisii, int nextii)
 {
   trajectory_list2->listloop2(this, current_trajectory, 0, thisii, 0);
 }
 
 
-void Particles_Between::listkernel2(Trajectory* traj1, Trajectory* traj2, int timegapii, int thisii, int nextii) //need to check back on which of these time indices is the right one.
+void Find_Between::listkernel2(Trajectory* traj1, Trajectory* traj2, int timegapii, int thisii, int nextii) //need to check back on which of these time indices is the right one.
 {
   if (is_included(thisii, traj1->show_trajectory_ID())) //skip if traj1 is already included
     return;
@@ -178,7 +182,7 @@ void Particles_Between::listkernel2(Trajectory* traj1, Trajectory* traj2, int ti
   //check if distance between traj1 and traj2 is under dist_cutoff before proceeding over tertiary loop
   Coordinate dist_vector_1 = (traj2->show_coordinate(thisii)-(traj1->show_coordinate(thisii))).vector_unwrapped(system->size(thisii)); //calculate shortest distance between two coordinates, taking into account periodic boundaries
   float dist_1 = dist_vector_1.length();
-  if (dist_1/2.0 > dist_cutoff)
+  if (dist_1 > dist_cutoffx2)
     return;
 
   int n_trajs=trajectory_list2->show_n_trajectories(thisii);  //record how many particles are in the second trajectory list at this time
@@ -199,21 +203,22 @@ void Particles_Between::listkernel2(Trajectory* traj1, Trajectory* traj2, int ti
     //if only_diff_molecule==1, check that traj2 and traj3 are part of a different cluster
     if (only_diff_molecule && atom_traj2->show_moleculeID() == atom_traj3->show_moleculeID())
       continue;
+    // TODO: we may want to also code in a version that only computes for intra-molecular/intra-cluster
 
     //check if distance between traj1 and traj3 is under dist_cutoff
     Coordinate dist_vector_2 = (traj3->show_coordinate(thisii)-(traj1->show_coordinate(thisii))).vector_unwrapped(system->size(thisii));
     float dist_2 = dist_vector_2.length();
-    if (dist_2/2.0 > dist_cutoff)
+    if (dist_2 > dist_cutoffx2)
       continue;
 
     // check dist_cutoff criteria
-    float dist = (dist_1+dist_2)/2.0;
-    if (dist > dist_cutoff)
+    float distx2 = dist_1+dist_2;
+    if (distx2 > dist_cutoffx2)
       continue;
 
-    // check theta_cutoff criteria
+    // check costheta_cutoff criteria
     float cos_theta = dist_vector_1&dist_vector_2/dist_1/dist_2;
-    if (cos_theta > theta_cutoff)
+    if (cos_theta > costheta_cutoff)
       continue;
 
     addtrajectory(thisii,traj1); //this line will add the trajectory to the trajectory list
@@ -228,19 +233,19 @@ void Particles_Between::listkernel2(Trajectory* traj1, Trajectory* traj2, int ti
   }
 }
 
-void Particles_Between::preprocess()
+void Find_Between::preprocess()
 {
 }
 
-void Particles_Between::preprocess2()
+void Find_Between::preprocess2()
 {
 }
 
-void Particles_Between::bin_hook(Trajectory_List *,int,int,int)
+void Find_Between::bin_hook(Trajectory_List *,int,int,int)
 {
 }
 
-void Particles_Between::postprocess_bins()
+void Find_Between::postprocess_bins()
 {
   //I don't think any postprocessing is needed in this case
 }
