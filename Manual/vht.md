@@ -2,4 +2,6 @@
 
 If a self-Van Hove and distinct Van Hove have previously been calculated, this adds them together to obtain the total van hove.
 
-_vht \<output file\>_
+```
+vht <output file>
+```
