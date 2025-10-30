@@ -15,4 +15,4 @@ vhd <output file> <min cell size> <maximum range binned> <# of bins>
 <target>
 ```
 
-This algorithm uses a spatial decomposition of the box into cells, with cells guaranteed to be of size ``<min cell size>`` or larger (the algorithm will select the minimum cell size that is an integer divisor of the box size and is larger than ``<min cell size>``.
+This algorithm uses a spatial decomposition of the box into cells, with cells guaranteed to be of size ``<min cell size>`` or larger (the algorithm will select the minimum cell size that is an integer divisor of the box size and is larger than ``<min cell size>``).
