@@ -8,7 +8,7 @@ It provides a wide variety of high-performance analyses integral to molecular mo
 
 [![GitHub](https://img.shields.io/badge/GitHub-AMDAT-181717?logo=github&logoColor=white)](https://github.com/dssimmons-codes/AMDAT)
 [![Docs](https://img.shields.io/badge/docs-website-blue)](https://dssimmons-codes.github.io/AMDAT/)
-[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.17417167.svg)](https://doi.org/10.5281/zenodo.17417167)
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.17417166.svg)](https://doi.org/10.5281/zenodo.17417166)
 [![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](LICENSE)
 [![Group website](https://img.shields.io/badge/Group%20website-Simmons%20Research%20Group-4285F4?logo=google&logoColor=white)](https://sites.google.com/view/simmonsresearchgroup/software)
 
