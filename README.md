@@ -156,7 +156,7 @@ make
 
 If you use AMDAT, please cite:
 > AMDAT — Amorphous Molecular Dynamics Analysis Toolkit
-> DOI: 10.5281/zenodo.17417167
+> DOI: [10.5281/zenodo.17417166](https://doi.org/10.5281/zenodo.17417166)
 
 *Also see [CITATION.cff](CITATION.cff).*
 
