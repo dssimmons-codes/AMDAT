@@ -1,3 +1,8 @@
+---
+layout: default
+title: AMDAT
+---
+
 # AMDAT — Amorphous Molecular Dynamics Analysis Toolkit
 
 > High-performance analysis of molecular dynamics (MD) trajectories for amorphous, glass-forming, and polymer systems.
