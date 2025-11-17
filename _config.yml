@@ -2,3 +2,5 @@ title: AMDAT
 description: Amorphous Molecular Dynamics Analysis Toolkit
 theme: jekyll-theme-primer
 google_site_verification: MeCYRvJyg7cd6VjXtbeIVAiX4viraOEazMccs_cjvlw
+plugins:
+  - jekyll-sitemap
