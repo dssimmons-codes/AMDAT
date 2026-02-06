@@ -155,8 +155,8 @@ make
 ## Citation
 
 If you use AMDAT, please cite:
-> AMDAT — Amorphous Molecular Dynamics Analysis Toolkit
-> DOI: [10.5281/zenodo.17417166](https://doi.org/10.5281/zenodo.17417166)
+> AMDAT — Amorphous Molecular Dynamics Analysis Toolkit on Zenodo; DOI: [10.5281/zenodo.17417166](https://doi.org/10.5281/zenodo.17417166)
+> Kawak, Drayer, Simmons. AMDAT: An Open-Source Molecular Dynamics Analysis Toolkit for Supercooled Liquids, Glass-Forming Materials, and Complex Fluids. arXiv 2026; DOI: [10.48550/arXiv.2602.05865](https://doi.org/10.48550/arXiv.2602.05865)
 
 *Also see [CITATION.cff](CITATION.cff).*
 
