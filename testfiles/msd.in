@@ -1,0 +1,13 @@
+system
+xyz_log
+./testfiles/traj.xyz ./testfiles/log.lammps
+exponential 50 77 1.05 0 0 .01
+polymer 50
+1
+32
+
+create_list all
+all
+
+msd ./testfiles/msd_test.dat
+list all
