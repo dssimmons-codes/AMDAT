@@ -291,7 +291,7 @@ Analysis_type Control::run_analysis(Analysis_type analyzer, string setline, stri
      Tokenize runtokenize(setline);
      n_setargs = runtokenize.count();
      //n_setargs = tokenize(setline, setargs);
-     //high_start = clock::now();
+     high_start = clock::now();
      if ( n_setargs==0 )
      {
 	  cout << "Error: No atom set command found.";
@@ -386,9 +386,9 @@ Analysis_type Control::run_analysis(Analysis_type analyzer, string setline, stri
      //analyzer.analyze(setline);
      //analyzer.write(filename);
      }
-  //high_finish = clock::now();
-  //duration = time_count(high_start, high_finish);
-  //benchmark << duration;
+  high_finish = clock::now();
+  duration = time_count(high_start, high_finish);
+  benchmark << duration;
 return analyzer;
 
 }
