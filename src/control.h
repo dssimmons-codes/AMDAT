@@ -12,6 +12,7 @@
 #include <vector>
 //#include <unordered_map>
 #include <time.h>
+#include <chrono>
 #include <fstream>
 #include <string>
 #include <stdlib.h>
@@ -87,8 +88,21 @@ class Control
     Space_Time_Correlation_Function vht;
     Gaussian_Comparison * gaussian_comparison;		//array of Gaussian comparison objects
     int n_gaussian_comparisons;
-    time_t start;			//timer start
-    time_t finish;			//timer stop
+    //Timer
+    time_t start, finish;
+
+    //High-resolution timer (For algorithm benchmarking)
+    using clock = std::chrono::steady_clock;
+    using timepoint = clock::time_point;
+    timepoint high_start;                       //timer start
+    timepoint high_finish;                      //timer stop
+    float duration;
+    float time_count(timepoint start, timepoint finish){
+      return std::chrono::duration<float>(finish - start).count();
+    }
+
+    //Patching data to benchmark
+    ofstream benchmark{"benchmark/benchmark.csv", ios::app};
 
 
     /*Arrays to store analysis results with a name given by the user, for later recall and use in other analysis techniques*/

@@ -4105,7 +4105,7 @@ void System::displacement_list(Analysis* analysis, bool fullblock)const
 	#endif
 	{
 		{
-			#pragma omp parallel for schedule(status) if(analysis->isThreadSafe()) // TODO: Test if we can use the old loop
+			#pragma omp parallel for schedule(static) if(analysis->isThreadSafe()) // TODO: Test if we can use the old loop
 			for(int timegapii=0;timegapii<n_exponential_steps;timegapii++)  //loop over exponential time step spacings within each block
 			{
 				int displacement_count=0;
