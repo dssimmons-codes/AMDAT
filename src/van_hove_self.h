@@ -26,7 +26,7 @@ class Van_Hove_Self: public Space_Time_Correlation_Function
     void analyze(Trajectory_List * t_list);
     void list_displacementkernel(int,int,int);
     void listkernel (Trajectory* current_trajectory, int timegapii, int thisii, int nextii);
-
+    bool isThreadSafe(){return true;}
 };
 
 }

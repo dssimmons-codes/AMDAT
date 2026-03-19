@@ -122,9 +122,6 @@ XDR_OBJS  := $(patsubst $(XDR_SRC_DIR)/%.c,$(BUILD_DIR)/xdr/%.o,$(XDR_CSRCS))
 # Some distros require -lm for math symbols used by xdrfile
 LDLIBS += -lm
 
-# Ensure dir exists
-$(shell mkdir -p $(BUILD_DIR)/xdr)
-
 # --- Source discovery (flat, only src/*.cpp) ---------------------------------
 SRCS := $(wildcard $(SRC_DIR)/*.cpp)
 
@@ -137,9 +134,6 @@ SRCS := $(filter-out $(EXCLUDE_SRCS),$(SRCS))
 # Map to objects in build/
 OBJS := $(patsubst $(SRC_DIR)/%.cpp,$(BUILD_DIR)/%.o,$(SRCS))
 DEPS := $(OBJS:.o=.d)
-
-# Ensure build dirs exist
-$(shell mkdir -p $(BUILD_DIR))
 
 # --- Targets -----------------------------------------------------------------
 .PHONY: all clean distclean rebuild format lint help
@@ -204,11 +198,13 @@ $(APP): $(OBJS) $(XDR_OBJS) $(VORO_OBJS) | qvectors voro
 # Compile C++: strictly src/<file>.cpp → build/<file>.o
 $(BUILD_DIR)/%.o: $(SRC_DIR)/%.cpp | $(VERSION_H)
 	@echo "  CXX     $<"
+	@mkdir -p $(dir $@)
 	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -c $< -o $@
 
 # Compile C from xdrfile: third_party/xdrfile-1.1b/src/*.c → build/xdr/*.o
 $(BUILD_DIR)/xdr/%.o: $(XDR_SRC_DIR)/%.c
 	@echo "  CC      $<"
+	@mkdir -p $(dir $@)
 	$(CC) $(XDR_CFLAGS) -c $< -o $@
 
 ## Compile voro++: third_party/voro++-0.4.6/src/*.cc → build/voro/*.o (isolated includes)

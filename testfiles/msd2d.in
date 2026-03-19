@@ -1,7 +1,7 @@
 system
 xyz_log
 ./testfiles/traj.xyz ./testfiles/log.lammps
-exponential 100 77 1.05 0 0 .01
+exponential 200 77 1.05 0 0 .01
 polymer 50
 1
 32
@@ -14,5 +14,5 @@ all 2 1 1
 
 traj_list_from_bin_list onebin bins 1 0 0
 
-msd ./testfiles/msd.dat
+msd_2d ./testfiles/msd2d.dat xy
 list onebin

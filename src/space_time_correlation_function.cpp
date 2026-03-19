@@ -36,6 +36,7 @@ void Space_Time_Correlation_Function::clear_memory()
  for(ii=0;ii<n_times;ii++)
  {
    delete [] correlation[ii];
+   delete [] weighting[ii];
  }
  delete [] correlation;
  delete [] weighting;
@@ -82,15 +83,16 @@ Space_Time_Correlation_Function Space_Time_Correlation_Function::operator+ (cons
 
   temp.system = system;		//naively copy system point from present object; the user must simply be smart about what this means and when it is appropriate.  In general, it is acceptable if systems have the same timestep properties and merely have different trajectories.  Could put a warning in here triggered if time properties are different.
   temp.correlation = new float*[n_times];
-  temp.weighting = new int[n_times];
+  temp.weighting = new int*[n_times];
   temp.timetable = new float[n_times];
   for(timeii=0;timeii<n_times;timeii++)
   {
     temp.correlation[timeii]=new float[n_bins];
-    temp.weighting[timeii]=weighting[timeii]+increment.weighting[timeii];
+    temp.weighting[timeii] = new int[16];
+    temp.weighting[timeii][0]=weighting[timeii][0]+increment.weighting[timeii][0];
     for(binii=0;binii<n_bins;binii++)
     {
-      temp.correlation[timeii][binii] = (correlation[timeii][binii]*float(weighting[timeii]) + increment.correlation[timeii][binii]*float(increment.weighting[timeii]))/float(temp.weighting[timeii]);
+      temp.correlation[timeii][binii] = (correlation[timeii][binii]*float(weighting[timeii][0]) + increment.correlation[timeii][binii]*float(increment.weighting[timeii][0]))/float(temp.weighting[timeii][0]);
     }
     if(timetable[timeii]==increment.timetable[timeii])
     {
@@ -353,7 +355,7 @@ void Space_Time_Correlation_Function::postprocess_list()
     shellvolume = (4.0/3.0)*PI*(pow(rshell+bin_size,3.0)-pow(rshell,3.0));		//calculate volume of bin
     for (timeii=0;timeii<n_times;timeii++)
     {
-      correlation[timeii][binii]/=(float(weighting[timeii])*shellvolume);
+      correlation[timeii][binii]/=(float(weighting[timeii][0])*shellvolume);
     }
   }
   

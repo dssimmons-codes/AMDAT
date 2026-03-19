@@ -36,7 +36,7 @@ class Van_Hove_Distinct: public Space_Time_Correlation_Function
     void list_displacementkernel(int,int,int);
     void listkernel(Trajectory*, int, int, int);
     void listkernel2(Trajectory*, Trajectory*, int, int, int);
-    
+    bool isThreadSafe(){return true;}
 };
 
 }

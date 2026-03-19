@@ -149,20 +149,22 @@ void Mean_Displacement::analyze(Trajectory_List * t_list)
 void Mean_Displacement::list_displacementkernel(int timegapii,int thisii, int nextii)
 {
 
-  currenttime=thisii;
-  nexttime=nextii;
-  currenttimegap=timegapii;
+  int currenttimegap=timegapii;
+  int currenttime=thisii;
+  int nexttime=nextii;
 
   weighting[timegapii]+=trajectory_list->show_n_trajectories(currenttime);
   //weighting[timegapii]+=(trajectory_list[0]).show_n_trajectories(currenttime);
-  (trajectory_list[0]).listloop(this,currenttime);
+  (trajectory_list[0]).listloop(this,currenttimegap,currenttime,nexttime);
 }
 
 
 
-void Mean_Displacement::listkernel(Trajectory* current_trajectory)
+void Mean_Displacement::listkernel(Trajectory* current_trajectory, int currenttimegap, int currenttime, int nexttime)
 {
-  md[currenttimegap]+=current_trajectory->show_unwrapped(nexttime)-current_trajectory->show_unwrapped(currenttime);
+  Coordinate c_next = current_trajectory->show_unwrapped(nexttime);
+  Coordinate c_this = current_trajectory->show_unwrapped(currenttime);
+  md[currenttimegap]+=c_next-c_this;
 }
 
 

@@ -1,7 +1,7 @@
 system
 xyz_log
 ./testfiles/traj.xyz ./testfiles/log.lammps
-exponential 10 77 1.05 0 0 .01
+exponential 200 77 1.05 0 0 .01
 polymer 50
 1
 32
@@ -9,5 +9,5 @@ polymer 50
 create_list all
 all
 
-isfs ./testfiles/isfs.dat 24 24 xyz 0 0
+vhs ./testfiles/vhs.dat 2 100
 list all
