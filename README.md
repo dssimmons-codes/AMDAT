@@ -15,7 +15,7 @@ It provides a wide variety of high-performance analyses integral to molecular mo
 ## Why AMDAT (at a glance)
 
 * Fast, in-memory engine – load once, analyze many time delays without re-reading files.
-* Blocked exponential time spacing – efficient long-timescale dynamics across orders of magnitude.
+* Blocked [exponential time spacing](/Manual/time_scheme.md) – efficient long-timescale dynamics across orders of magnitude.
 * Modular data abstractions – trajectory / neighbor / multibody / value lists compose into rich workflows.
 * Validated analyses –
   * static and time-resolved structure factors,
