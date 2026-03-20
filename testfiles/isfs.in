@@ -9,5 +9,10 @@ polymer 50
 create_list all
 all
 
-isfs ./testfiles/isfs.dat 24 24 xyz 0 0
-list all
+create_bin_list bins
+all 2 1 1
+
+traj_list_from_bin_list onebin bins 1 0 0
+
+isfs ./testfiles/isfs.dat 10 24 xyz 0 0
+list onebin

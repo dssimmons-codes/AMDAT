@@ -1,7 +1,7 @@
 system
 xyz_log
 ./testfiles/traj.xyz ./testfiles/log.lammps
-exponential 200 77 1.05 0 0 .01
+exponential 150 77 1.05 0 0 .01
 polymer 50
 1
 32
