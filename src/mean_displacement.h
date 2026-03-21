@@ -16,8 +16,9 @@ namespace std{
 class Mean_Displacement: public Analysis
 {
     int n_times;
-    Coordinate * md;
-    int * weighting;
+    Coordinate ** md;
+    int ** weighting;
+    int * weighting_temp;
     float * timetable;
     void initialize(System*);                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  
     int atomcount;
@@ -50,7 +51,7 @@ class Mean_Displacement: public Analysis
     void bin_hook(Trajectory_List*,int,int,int);
     void postprocess_bins();
     
-    Coordinate show(int t)const{return md[t];};			//method to return one timestep of msd array
+    Coordinate show(int t)const{return md[t][0];};			//method to return one timestep of msd array
     bool isThreadSafe(){return true;}
 };
 }
