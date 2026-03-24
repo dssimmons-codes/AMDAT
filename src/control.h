@@ -398,7 +398,7 @@ Analysis_type Control::run_analysis(Analysis_type analyzer, string setline, stri
      }
   high_finish = clock::now();
   duration = time_count(high_start, high_finish);
-  cerr << duration;
+  //cerr << duration;
 return analyzer;
 
 }

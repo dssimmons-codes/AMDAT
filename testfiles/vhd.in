@@ -9,5 +9,5 @@ polymer 50
 create_list all
 all
 
-vhd ./testfiles/vhd.dat 2 100
+vhd ./testfiles/vhd.dat 1 2 100
 list all
