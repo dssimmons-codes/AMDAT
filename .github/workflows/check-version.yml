@@ -63,3 +63,9 @@ jobs:
           fi
 
           echo "VERSION matches latest tag ($want). ✅"
+  skip-on-pr:
+    runs-on: ubuntu-latest
+    if: github.event_name == 'pull_request'
+    steps:
+      - name: Skip message
+        run: echo "VERSION check skipped for pull requests. ✅"
