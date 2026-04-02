@@ -36,7 +36,7 @@ jobs:
             exit 0
           fi
 
-          tag="$(git describe --tags --abbrev=0)"
+          tag="$(git tag --list --sort=-version:refname --merged HEAD | head -n 1)"
           echo "Latest tag: $tag"
           echo "tag=$tag" >> "$GITHUB_OUTPUT"
 

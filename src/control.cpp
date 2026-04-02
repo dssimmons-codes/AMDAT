@@ -2546,7 +2546,7 @@ void Control::calc_vhs()
   vhs_defined=1;
   vhs.write(filename);
   high_finish = clock::now();
-  duration = time_count(high_start, high_finish);
+  //duration = time_count(high_start, high_finish);
   //cerr << duration;
   finish = time(NULL);
 
@@ -2588,7 +2588,7 @@ void Control::calc_vhd()
   finish = time(NULL);
   high_finish = clock::now();
   duration = time_count(high_start, high_finish);
-  cerr << duration;
+  //cerr << duration;
   cout << "\nCalculated distinct Van Hove in " << finish-start<<" seconds.\n";
   cout << "Writing distinct Van Hove to file. ";
   vhd.write(filename);
