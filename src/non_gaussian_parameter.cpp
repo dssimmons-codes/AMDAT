@@ -12,20 +12,24 @@
 
 using namespace std;
 
-
 Non_Gaussian_Parameter::Non_Gaussian_Parameter()
 {
   system = 0;
   n_times = 0;
   msd = 0;
   
-  ngp = new float [n_times];
-  weighting = new long int [n_times];
+  ngp = new float* [n_times];
+  weighting = new long int * [n_times];
+  for(int timeii=0;timeii<n_times;timeii++)
+  {
+    ngp[timeii]= new float [16];
+    weighting[timeii]= new long int [8];
+  }
   timetable = 0;
   for(int timeii=0;timeii<n_times;timeii++)
   {
-    ngp[timeii]=0;
-    weighting[timeii]=0;
+    ngp[timeii][0]=0;
+    weighting[timeii][0]=0;
   }
   atomcount = 0;
 }
@@ -38,13 +42,18 @@ Non_Gaussian_Parameter::Non_Gaussian_Parameter(const Non_Gaussian_Parameter & co
   n_times = copy.n_times;
   msd = copy.msd;
   
-  ngp = new float [n_times];
-  weighting = new long int [n_times];
+  ngp = new float * [n_times];
+  weighting = new long int * [n_times];
+  for(int timeii=0;timeii<n_times;timeii++)
+  {
+    ngp[timeii]= new float [16];
+    weighting[timeii]= new long int [8];
+  }
   timetable = system -> displacement_times();
   for(int timeii=0;timeii<n_times;timeii++)
   {
-    ngp[timeii]=copy.ngp[timeii];
-    weighting[timeii]=copy.weighting[timeii];
+    ngp[timeii][0]=copy.ngp[timeii][0];
+    weighting[timeii][0]=copy.weighting[timeii][0];
   }
   atomcount = copy.atomcount;
 }
@@ -58,13 +67,18 @@ Non_Gaussian_Parameter Non_Gaussian_Parameter::operator =(const Non_Gaussian_Par
   n_times = copy.n_times;
   msd = copy.msd;
   
-  ngp = new float [n_times];
-  weighting = new long int [n_times];
+  ngp = new float * [n_times];
+  weighting = new long int * [n_times];
+  for(int timeii=0;timeii<n_times;timeii++)
+  {
+    ngp[timeii]= new float [16];
+    weighting[timeii]= new long int [8];
+  }
   timetable = system -> displacement_times();
   for(int timeii=0;timeii<n_times;timeii++)
   {
-    ngp[timeii]=copy.ngp[timeii];
-    weighting[timeii]=0;;
+    ngp[timeii][0]=copy.ngp[timeii][0];
+    weighting[timeii][0]=0;;
   }
   atomcount = copy.atomcount;
  }
@@ -81,13 +95,18 @@ Non_Gaussian_Parameter::Non_Gaussian_Parameter(System* sys, const Mean_Square_Di
   msd = m;
 
   //allocate memory for ngp data and msd data
-  ngp = new float [n_times];
-  weighting = new long int [n_times];
+  ngp = new float * [n_times];
+  weighting = new long int * [n_times];
+  for(int timeii=0;timeii<n_times;timeii++)
+  {
+    ngp[timeii]= new float [16];
+    weighting[timeii]= new long int [8];
+  }
   timetable = system -> displacement_times();
   for(timeii=0;timeii<n_times;timeii++)
   {
-    ngp[timeii]=0;
-    weighting[timeii]=0;;
+    ngp[timeii][0]=0;
+    weighting[timeii][0]=0;;
   }
   atomcount = 0;
 }
@@ -105,11 +124,10 @@ void Non_Gaussian_Parameter::analyze(Trajectory_List * t_list)
 
 void Non_Gaussian_Parameter::list_displacementkernel(int timegapii,int thisii, int nextii)
 {
-	currenttime=thisii;
-	nexttime=nextii;
-	currenttimegap=timegapii;
-	#pragma omp atomic
-	weighting[timegapii]+=trajectory_list->show_n_trajectories(thisii);
+	int currenttime=thisii;
+	int nexttime=nextii;
+	int currenttimegap=timegapii;
+	weighting[timegapii][0]+=trajectory_list->show_n_trajectories(thisii);
 	(trajectory_list[0]).listloop(this,timegapii,thisii,nextii);
 }
 
@@ -124,8 +142,8 @@ void Non_Gaussian_Parameter::listkernel(Trajectory* current_trajectory)
 
 void Non_Gaussian_Parameter::listkernel(Trajectory* current_trajectory, int timegapii,int thisii, int nextii)
 {
-	#pragma omp atomic
-	ngp[timegapii]+=pow(current_trajectory->distance(thisii,nextii),4);
+  double dist = current_trajectory->distance(thisii,nextii);
+	ngp[timegapii][0]+=dist*dist*dist*dist;
 }
 
 
@@ -135,8 +153,9 @@ void Non_Gaussian_Parameter::postprocess_list()
 
 	for(timeii=0;timeii<n_times;timeii++)
 	{
-		ngp[timeii] *= (3.0/(float(weighting[timeii])))/(5*pow((msd->show(timeii)),2.0));
-		ngp[timeii] -= 1.0;
+    double timestepmsd = msd->show(timeii);
+		ngp[timeii][0] *= (3.0/(float(weighting[timeii][0])))/(5*timestepmsd*timestepmsd);
+		ngp[timeii][0] -= 1.0;
 	}
 }
 
@@ -153,7 +172,7 @@ void Non_Gaussian_Parameter::write(string filename)const
   output << "Non-Gaussian parameter data created by AMDAT v." << amdat::build::SEMVER << "\n";
   for(timeii=0;timeii<n_times;timeii++)
   {
-    output << timetable[timeii]<<"\t"<<ngp[timeii]<<"\n";
+    output << timetable[timeii]<<"\t"<<ngp[timeii][0]<<"\n";
   }
 }
 
@@ -166,7 +185,7 @@ void Non_Gaussian_Parameter::write(ofstream& output)const
   output << "Non-Gaussian parameter data created by AMDAT v." << amdat::build::SEMVER << "\n";
   for(timeii=0;timeii<n_times;timeii++)
   {
-    output << timetable[timeii]<<"\t"<<ngp[timeii]<<"\n";
+    output << timetable[timeii]<<"\t"<<ngp[timeii][0]<<"\n";
   }
 }
 
@@ -179,9 +198,9 @@ int Non_Gaussian_Parameter::max()const
 
   for(timeii=1;timeii<n_times;timeii++)
   {
-    if(ngp[timeii]>maxvalue)
+    if(ngp[timeii][0]>maxvalue)
     {
-      maxvalue = ngp[timeii];
+      maxvalue = ngp[timeii][0];
       maxtime = timeii;
     }
   }

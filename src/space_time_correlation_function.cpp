@@ -148,7 +148,7 @@ void Space_Time_Correlation_Function::spherical_fourier()
 {
   //float ** fourier;				//define pointer to array of fourier transformed data
   
-  float * wavenumber;				//array of wavenumbers
+  float ** wavenumber;				//array of wavenumbers
   int kii;					//index over wavenumbers
   int rii;					//index over radius
   float r;					//mean radius of present shell
@@ -166,7 +166,10 @@ void Space_Time_Correlation_Function::spherical_fourier()
   }
   delete [] spatial_inverse;
   
-  wavenumber = new float [n_wavenumbers];
+  wavenumber = new float * [n_wavenumbers];
+  for(int i = 0; i < n_wavenumbers; i++){
+    wavenumber[i] = new float [16];
+  }
   spatial_inverse = new float* [n_times];		
   for(timeii=0;timeii<n_times;timeii++)
   {
@@ -176,7 +179,7 @@ void Space_Time_Correlation_Function::spherical_fourier()
   /*Calculate wavenumbers*/
   for(kii=0;kii<n_wavenumbers;kii++)
   {
-    wavenumber[kii] = 2.*PI*float(kii+1)/max_value;		//calculate wavenumber corresponding to this index over wavenumbers
+    wavenumber[kii][0] = 2.*PI*float(kii+1)/max_value;		//calculate wavenumber corresponding to this index over wavenumbers
    // wavenumber[kii] = PI/max_value*(2.*float(kii)+.5);		//calculate wavenumber corresponding to this index over wavenumbers
   }
   
@@ -190,10 +193,10 @@ void Space_Time_Correlation_Function::spherical_fourier()
       for(rii=0;rii<n_bins;rii++)		//sum over radius
       {
         r = (rii+0.5)*bin_size;	//calculate mean radius of current shell
-        spatial_inverse[timeii][kii] += r * correlation[timeii][rii]* sin(wavenumber[kii] * r);
+        spatial_inverse[timeii][kii] += r * correlation[timeii][rii]* sin(wavenumber[kii][0] * r);
 	//fourier[timeii][kii] += r * sin(wavenumber[kii] * r) * (normal[timeii][rii]/rho-1.0) * bin_size;	
       }
-      spatial_inverse[timeii][kii] *= 4*PI*rho/wavenumber[kii];
+      spatial_inverse[timeii][kii] *= 4*PI*rho/wavenumber[kii][0];
     }
   }
   
@@ -352,7 +355,9 @@ void Space_Time_Correlation_Function::postprocess_list()
   for(binii=0;binii<n_bins;binii++)
   {
     rshell = binii*bin_size;						//determine inner radius of bin
-    shellvolume = (4.0/3.0)*PI*(pow(rshell+bin_size,3.0)-pow(rshell,3.0));		//calculate volume of bin
+    double a = rshell + bin_size;
+    double b = rshell;
+    shellvolume = (4.0/3.0) * PI * (a - b) * (a*a + a*b + b*b);
     for (timeii=0;timeii<n_times;timeii++)
     {
       correlation[timeii][binii]/=(float(weighting[timeii][0])*shellvolume);
