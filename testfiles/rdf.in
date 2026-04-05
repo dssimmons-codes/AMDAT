@@ -9,5 +9,5 @@ polymer 50
 create_list all
 all
 
-vhd ./testfiles/vhd.dat 1 2 100
+rdf ./testfiles/rdf.dat asymmetric 100 -1 2
 list all

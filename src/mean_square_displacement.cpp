@@ -180,9 +180,9 @@ void Mean_Square_Displacement::analyze(Trajectory_List * t_list)
 void Mean_Square_Displacement::list_displacementkernel(int timegapii,int thisii, int nextii)
 {
 
-  currenttime=thisii;
-  nexttime=nextii;
-  currenttimegap=timegapii;
+  int currenttime=thisii;
+  int nexttime=nextii;
+  int currenttimegap=timegapii;
 
 //  weighting[timegapii]+=trajectory_list->show_n_trajectories(currenttime);
 //  //weighting[timegapii]+=(trajectory_list[0]).show_n_trajectories(currenttime);
