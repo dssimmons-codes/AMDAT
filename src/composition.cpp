@@ -31,12 +31,13 @@ Composition::Composition()
     }
 
     current_comp = new float* [n_times];
-    current_density = new float [n_times];
+    current_density = new float * [n_times];
 
     for (int timeii=0; timeii<n_times;timeii++)
     {
         current_comp[timeii] = new float [n_atomtypes];
-	current_density[timeii]=0;
+	    current_density[timeii] = new float [16];
+        current_density[timeii][0]=0;
         for (int typeii=0; typeii<n_atomtypes;typeii++)
         {
         current_comp[timeii][typeii]=0;
@@ -65,7 +66,8 @@ Composition::Composition(System * sys, int n_xbins, int n_ybins, int n_zbins,flo
     average_density=0;
 
     time_average_comp = new float [n_atomtypes];
-    current_density = new float [n_times];
+    current_density = new float * [n_times];
+
 
     for (int typeii=0; typeii<n_atomtypes;typeii++)
     {
@@ -77,8 +79,8 @@ Composition::Composition(System * sys, int n_xbins, int n_ybins, int n_zbins,flo
     for (int timeii=0; timeii<n_times;timeii++)
     {
         current_comp[timeii] = new float [n_atomtypes];
-	current_density[timeii]=0;
-
+	    current_density[timeii] = new float [16];
+        current_density[timeii][0]=0;
         for (int typeii=0; typeii<n_atomtypes;typeii++)
         {
         current_comp[timeii][typeii]=0;
@@ -109,12 +111,13 @@ Composition::Composition(const Composition & copy)
     }
 
     current_comp = new float* [n_times];
-    current_density = new float [n_times];
+    current_density = new float * [n_times];
 
     for (int timeii=0; timeii<n_times; timeii++)
     {
         current_comp[timeii] = new float [n_atomtypes];
-	current_density[timeii] = copy.current_density[timeii];
+	    current_density[timeii] = new float [16];
+        current_density[timeii][0] = copy.current_density[timeii][0];
 
         for (int typeii=0; typeii<n_atomtypes;typeii++)
         {
@@ -133,6 +136,7 @@ Composition Composition::operator=(const Composition & copy)
     for(int timeii=0; timeii<n_times;timeii++)
     {
         delete [] current_comp[timeii];
+        delete [] current_density[timeii];
     }
     delete [] current_comp;
     delete [] current_density;
@@ -155,16 +159,17 @@ Composition Composition::operator=(const Composition & copy)
     }
 
     current_comp = new float* [n_times];
-    current_density = new float [n_times];
+    current_density = new float * [n_times];
 
     for (int timeii=0; timeii<n_times;timeii++)
     {
         current_comp[timeii] = new float [n_atomtypes];
+        current_density[timeii] = new float [16];
 
         for (int typeii=0; typeii<n_atomtypes;typeii++)
         {
-        current_comp[timeii][typeii]=copy.current_comp[timeii][typeii];
-	current_density[timeii] = copy.current_density[timeii];
+            current_comp[timeii][typeii]=copy.current_comp[timeii][typeii];
+	        current_density[timeii][0] = copy.current_density[timeii][0];
         }
     }
   }
@@ -178,6 +183,7 @@ Composition::~Composition()
   for (int timeii=0; timeii<n_times;timeii++)
     {
         delete [] current_comp[timeii];
+        delete [] current_density[timeii];
     }
     delete [] current_comp;
     delete [] current_density;
@@ -186,17 +192,20 @@ Composition::~Composition()
 
 void Composition::timekernel(int timeii)
 {
-  current_total_atoms=trajectory_list->show_n_trajectories(timeii);
-  current_time = timeii;
-  current_density[current_time] = current_total_atoms/volume;
+  int current_total_atoms=trajectory_list->show_n_trajectories(timeii);
+  int current_time = timeii;
+  current_density[current_time][0] = current_total_atoms/volume;
 
-  trajectory_list->listloop(this,current_time);
+  trajectory_list->listloop(this,0,current_time,0);
 
+  #pragma omp atomic
   total_atoms += current_total_atoms;
-  average_density+=current_density[current_time];
+  #pragma omp atomic
+  average_density+=current_density[current_time][0];
 
   for (int typeii=0;typeii<n_atomtypes;typeii++)
   {
+    #pragma omp atomic
     time_average_comp[typeii]+=current_comp[current_time][typeii];
 
     current_comp[current_time][typeii]/=float(current_total_atoms);
@@ -214,12 +223,11 @@ void Composition::postprocess_list()
     }
 }
 
-void Composition::listkernel(Trajectory* traj)
+void Composition::listkernel(Trajectory* traj, int dummy1, int current_time, int dummy2)
 {
     int traj_type;
 
     traj_type = traj->show_type()-1;
-    #pragma omp atomic
     current_comp[current_time][traj_type]++;
 }
 

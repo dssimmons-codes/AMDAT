@@ -43,8 +43,8 @@ void Composition_TimeDependent::write(string filename)
     for (int timeii=0; timeii<n_times; timeii++)
     {
         output << system->show_time(timeii);
-        output << "\t" << current_density[timeii];
-        output << "\t" << current_density[timeii]*volume;
+        output << "\t" << current_density[timeii][0];
+        output << "\t" << current_density[timeii][0]*volume;
         for(int typeii=0;typeii<n_atomtypes;typeii++)
         {
             output << "\t" << time_average_comp[typeii];
@@ -77,7 +77,7 @@ void Composition_TimeDependent::write(ofstream& output)
     for(int timeii=0; timeii<n_times; timeii++)
     {
         output << system->show_time(timeii);
-        output << "\t" << current_density[timeii];
+        output << "\t" << current_density[timeii][0];
         for (int typeii=0;typeii<n_atomtypes;typeii++)
         {
             output << "\t" << current_comp[timeii][typeii];
