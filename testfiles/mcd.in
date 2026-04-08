@@ -1,7 +1,7 @@
 system
 xyz_log
 ./testfiles/traj.xyz ./testfiles/log.lammps
-exponential 20 77 1.05 0 0 .01
+exponential 8 77 1.05 0 0 .01
 polymer 50
 1
 32
@@ -9,5 +9,5 @@ polymer 50
 create_list all
 all
 
-rdf ./testfiles/rdf.dat asymmetric 100 -1 2
+mean_closest_distance ./testfiles/mcd.dat -1
 list all

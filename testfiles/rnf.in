@@ -9,5 +9,5 @@ polymer 50
 create_list all
 all
 
-rdf ./testfiles/rdf.dat asymmetric 100 -1 2
+rnf ./testfiles/rnf.dat asymmetric 100 -1 2
 list all

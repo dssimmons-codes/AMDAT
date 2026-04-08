@@ -3038,8 +3038,12 @@ void Control::rnf()
     {
       cout << "\nCalculating non-normalized radial distribution function.\n";cout.flush();
       start = time(NULL);
+      high_start = clock::now();
       rad_dis_fun.analyze(trajlist1);
       finish = time(NULL);
+      high_finish = clock::now();
+      duration = time_count(high_start, high_finish);
+      cerr << duration;
       cout << "\nCalculated non-normalized radial distribution function in " << finish-start<<" seconds.\n";
     }
     else if(symmetry=="asymmetric")
@@ -3051,9 +3055,13 @@ void Control::rnf()
       trajlist2=find_trajectorylist(listname2);
       cout << "\nCalculating non-normalized radial distribution function.\n";cout.flush();
       start = time(NULL);
+      high_start = clock::now();
       //calls bins
       rad_dis_fun.analyze(trajlist1,trajlist2);
       finish = time(NULL);
+      high_finish = clock::now();
+      duration = time_count(high_start, high_finish);
+      cerr << duration;
       cout << "\nCalculated non-normalized radial distribution function in " << finish-start<<" seconds.\n";
     }
     else
