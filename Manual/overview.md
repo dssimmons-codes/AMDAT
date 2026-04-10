@@ -38,7 +38,7 @@ AMDAT is run from the command line, specifying the filename of a user [input fil
 
 `-n <# OF PROCESSORS>`
 
-This sets AMDAT to run certain analyses (those for which multithreading is enabled) on `<# OF PROCESSORS>` processing cores. Defaults to 1 if not given..
+This sets AMDAT to run certain analyses (those for which multithreading is enabled) on `<# OF PROCESSORS>` processing cores. Defaults to 1 if not given. Analysis tools with multithreading capabilities are identified by this flag in their documentation page: [![multi](https://img.shields.io/badge/Multithreaded-blue)](multithreading.md). Additional information and a full list of analysis tools with multithreading capabilities can be found at [multithreading](multithreading.md).
 
 `-c <CONSTANT NAME> <CONSTANT VALUE>`
 
