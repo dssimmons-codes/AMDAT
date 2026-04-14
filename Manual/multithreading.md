@@ -42,7 +42,7 @@ $$N_{\text{threads}} = \min\left(N_{\text{iterations}},\;N_{\text{CPUs}} \right)
 
 where:
 - $$\ N_{\text{iterations}} \$$ is the number of independent time-based iterations.
-- $$\ N_{\text{CPU}} \$$ is the maximum number of hardware threads (logical CPUs) available on the node.
+- $$\ N_{\text{CPUs}} \$$ is the maximum number of hardware threads (logical CPUs) available on the node.
 
 ## Usage
 
