@@ -1,5 +1,7 @@
 <h1>vhd</h1>
 
+[![multi](https://img.shields.io/badge/Multithreaded-blue)](multithreading.md)
+
 <h2>Function</h2>
 
 Calculates distinct part of the Van Hove function. The distinct van Hove is by construction asymmetric, computed between two distinct sets of atoms $a$ and $b$ ($a$ and $b$ may be the same). When asymmetric, $a$ is the central particle in the $G(r,\Delta t)$ calculation and $b$ is the set of particles for which densities around the central particles are computed.
