@@ -6,7 +6,7 @@ HPC workflow in general takes a lot of time, and Molecular Dynamic Simulation is
 ---
 | Analysis | Description | Maximum Speedup Tested (Compared to Serial) |
 |----------|-------------|------------------------|
-| [`md`](md.md) | Calculate Mean Displacement | 7x |
+| [`md`](mean_displacement.md) | Calculate Mean Displacement | 7x |
 | [`msd`](msd.md) | Calculate Mean Square Displacement | 10x |
 | [`msd_2d`](msd_2d.md) | Calculate Mean Square Displacement for two dimensional analysis | 9x |
 | [`isfs`](isfs.md) | Calculate Incoherent Scattering Function | 20x |
