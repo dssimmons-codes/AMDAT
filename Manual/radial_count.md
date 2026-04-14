@@ -1,5 +1,8 @@
 <h1>radial_count</h1>
 
+[![multi](https://img.shields.io/badge/Multithreaded-blue)](multithreading.md)
+
+---
 Computes a non-normalized radial distribution function - essentially the mean number of particles in shells a distance $r$ to $r+\Delta r$ from a central particle. 
 
 Syntax is as follows.
