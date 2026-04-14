@@ -6,17 +6,17 @@ HPC workflow in general takes a lot of time, and Molecular Dynamic Simulation is
 ---
 | Analysis | Description | Maximum Speedup Tested (Compared to Serial) |
 |----------|-------------|------------------------|
-| `md` | Calculate Mean Displacement | 7x |
-| `msd` | Calculate Mean Square Displacement | 10x |
-| `msd_2d` | Calculate Mean Square Displacement for two dimensional analysis | 9x |
-| `isfs` | Calculate Incoherent Scattering Function | 20x |
-| `vhs` | Calculate Van Hove Self | 12x |
-| `vhd` | Calculate Van Hove Distinct | 20x |
+| [`md`](md.md) | Calculate Mean Displacement | 7x |
+| [`msd`](msd.md) | Calculate Mean Square Displacement | 10x |
+| [`msd_2d`](msd_2d.md) | Calculate Mean Square Displacement for two dimensional analysis | 9x |
+| [`isfs`](isfs.md) | Calculate Incoherent Scattering Function | 20x |
+| [`vhs`](vhs.md) | Calculate Van Hove Self | 12x |
+| [`vhd`](vhd.md) | Calculate Van Hove Distinct | 20x |
 | `baf` | Calculate Bond Autocorrelatoion Function | 15x |
-| `ngp` | Calculate Non Gaussian Parameter | 30x |
-| `composition` | Calculate Composition | 7x |
-| `rdf` | Calculate Radial Distribution Function | 21x |
-| `rnf` | Calculate Radial Count | 23x |
+| [`ngp`](ngp.md) | Calculate Non Gaussian Parameter | 30x |
+| [`composition`](composition.md) | Calculate Composition | 7x |
+| [`rdf`](rdf.md) | Calculate Radial Distribution Function | 21x |
+| [`rnf`](rnf.md) | Calculate Radial Count | 23x |
 
 
 ## Inconsistency in performance between analysis
@@ -38,7 +38,7 @@ Parallelism is introduced to reduce the runtime of time-based loops.
 To avoid oversubscription and ensure efficient resource utilization, 
 the optimal number of threads is allocated can be given by:
 
-$$N_{\text{threads}} = \min \left( N_{\text{iterations}},\; N_{\text{CPU}} \right).$$
+$$N_{\text{threads}} = \min\left(N_{\text{iterations}},\;N_{\text{CPUs}} \right).$$
 
 where:
 - $$\ N_{\text{iterations}} \$$ is the number of independent time-based iterations.
