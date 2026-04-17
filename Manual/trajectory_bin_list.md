@@ -17,7 +17,7 @@ Similarly to `trajectory_list`, these commands' syntax includes a "type" line, w
 
 Put another way, this takes the intersection of the `trajectory_list` and each bin of the `trajectory_bin_list`, and performs the calculation on each bin individually. The analysis will in general output a separate tab-demarcated file for each bin, which may produce a large number of files. An ending will be appended to the name of each output file with the bin indicies (e.g. `<output file>.2.1.2.bindata`)
 
-The optional argument `<persistence check>` is currently not operational. In general, for dynamical analysis, the algorithm analyzes only particles that are in the bin at start and end times of a given time gap.
+The optional argument `<persistence check>` specifies whether or not, for dynamic analyses, the algorithm retains only particles that are in the bin at start and end times of a given time gap. The default is zero, meaning this check is not performed.
 
 | Command | Effect | Output |
 |----------|----------|----------|
