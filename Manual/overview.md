@@ -6,7 +6,7 @@ AMDAT can read multiple file formats produced by the LAMMPS molecular dynamics s
 
 A central feature of AMDAT is its ability to read in and analyze blocked, exponentially-spaced trajectories. This is essential for analysis for dynamics over many orders of magnitude in time. The handling of this is currently documented in the [input_files](input_file.md) documentation. Both the documentation and the underlying functionality for this are expected to be expanded in the near future.
 
-AMDAT includes no built-in tools for visualization of either trajectories or properties of trajectories. All results are output in a text-based form and must be viewed in another software (exe python, julia, excel, matlab,...). AMDAT does not include the ability to aggregate statistics acquired based on multiple simulations; this requires use of post-analysis software, such as python, julia, matlab, igor, excel, or similar. AMDAT includes CPU multithreading for select analysis function; more information is provided below.
+AMDAT includes no built-in tools for visualization of either trajectories or properties of trajectories. All results are output in a text-based form and must be viewed in another software (exe python, julia, excel, matlab,...). AMDAT does not include the ability to aggregate statistics acquired based on multiple simulations; this requires use of post-analysis software, such as python, julia, matlab, igor, excel, or similar. AMDAT includes CPU multithreading for select analysis function; more information is provided below or at this link: [multithreading](multithreading.md).
 
 <h2>Making AMDAT</h2>
 
