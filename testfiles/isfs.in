@@ -12,7 +12,5 @@ all
 create_bin_list bins
 all 2 1 1
 
-traj_list_from_bin_list onebin bins 1 0 0
-
-composition ./testfiles/comp.dat
-list onebin
+isfs ./testfiles/binnedisfs/binnedisfs 24 24 xyz 0 0
+bin_list bins all

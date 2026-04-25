@@ -1,0 +1,16 @@
+system_nv
+xyz_log
+./testfiles/traj.xyz ./testfiles/log.lammps
+exponential 15 77 1.5 0 0 .01
+polymer 50
+1
+32
+
+create_list all
+all
+
+create_bin_list bins
+all 2 1 1
+
+msd ./testfiles/binnedmsd/binnedmsd
+bin_list bins all

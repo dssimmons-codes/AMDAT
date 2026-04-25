@@ -19,8 +19,8 @@ Neighbor_Decorrelation_Function::Neighbor_Decorrelation_Function()
   n_times = 0;
 
    //allocate memory for mean square displacement data
-  ndf = new float [n_times];
-  weighting = new float [n_times];
+  ndf = new float * [n_times];
+  weighting = new float * [n_times];
 
   atomcount = 0;
   
@@ -38,15 +38,17 @@ Neighbor_Decorrelation_Function::Neighbor_Decorrelation_Function(const Neighbor_
   n_times = copy.n_times;
   atomcount = copy.atomcount;
 
-  ndf = new float [n_times];
-  weighting = new float [n_times];
+  ndf = new float * [n_times];
+  weighting = new float * [n_times];
 
   timetable = system->displacement_times();
 
   for(timeii=0;timeii<n_times;timeii++)
   {
-    ndf[timeii]=copy.ndf[timeii];
-    weighting[timeii]=copy.weighting[timeii];
+    ndf[timeii] = new float [16];
+    weighting[timeii] = new float [16];
+    ndf[timeii][0]=copy.ndf[timeii][0];
+    weighting[timeii][0]=copy.weighting[timeii][0];
   }
   
   n_list=copy.n_list;
@@ -63,14 +65,16 @@ Neighbor_Decorrelation_Function::Neighbor_Decorrelation_Function(System*sys, Nei
   n_times = system->show_n_timegaps();
 
    //allocate memory for mean square displacement data
-  ndf = new float [n_times];
-  weighting = new float [n_times];
+  ndf = new float * [n_times];
+  weighting = new float * [n_times];
 
   timetable = system->displacement_times();
   for(timeii=0;timeii<n_times;timeii++)
   {
-    ndf[timeii]=0;
-    weighting[timeii]=0;
+    ndf[timeii] = new float [16];
+    weighting[timeii] = new float [16];
+    ndf[timeii][0]=0;
+    weighting[timeii][0]=0;
   }
   atomcount = 0;
   
@@ -97,15 +101,17 @@ Neighbor_Decorrelation_Function Neighbor_Decorrelation_Function::operator = (con
   delete [] ndf;
   delete [] weighting;
 
-  ndf = new float [n_times];
-  weighting = new float [n_times];
+  ndf = new float * [n_times];
+  weighting = new float * [n_times];
 
   timetable = system->displacement_times();
 
   for(timeii=0;timeii<n_times;timeii++)
   {
-    ndf[timeii]=copy.ndf[timeii];
-    weighting[timeii]=copy.weighting[timeii];
+    ndf[timeii] = new float [16];
+    weighting[timeii] = new float [16];
+    ndf[timeii][0]=copy.ndf[timeii][0];
+    weighting[timeii][0]=copy.weighting[timeii][0];
   }
   
   n_list=copy.n_list;
@@ -129,14 +135,16 @@ void Neighbor_Decorrelation_Function::initialize(System* sys, Neighbor_List* nli
   delete [] ndf;
   delete [] weighting;
 
-  ndf = new float [n_times];
-  weighting = new float [n_times];
+  ndf = new float * [n_times];
+  weighting = new float * [n_times];
 
   timetable = system->displacement_times();
   for(timeii=0;timeii<n_times;timeii++)
   {
-    ndf[timeii]=0;
-    weighting[timeii]=0;
+    ndf[timeii] = new float [16];
+    weighting[timeii] = new float [16];
+    ndf[timeii][0]=0;
+    weighting[timeii][0]=0;
   }
   atomcount = 0;
   
@@ -157,7 +165,7 @@ void Neighbor_Decorrelation_Function::analyze(Trajectory_List * t_list)
 
 void Neighbor_Decorrelation_Function::list_displacementkernel(int timegapii,int thisii, int nextii)
 {
-  weighting[timegapii]+=trajectory_list->show_n_trajectories(thisii);
+  weighting[timegapii][0]+=trajectory_list->show_n_trajectories(thisii);
   (trajectory_list[0]).listloop(this,timegapii, thisii, nextii);
 }
 
@@ -169,7 +177,7 @@ void Neighbor_Decorrelation_Function::listkernel(Trajectory* current_trajectory,
   
   trajID=current_trajectory->show_trajectory_ID();
   
-  ndf[timegapii]+=n_list->n_persistent_neighbors(trajID,thisii,nextii);
+  ndf[timegapii][0]+=n_list->n_persistent_neighbors(trajID,thisii,nextii);
 }
 
 
@@ -179,7 +187,7 @@ void Neighbor_Decorrelation_Function::postprocess_list()
    for(int timeii=0;timeii<n_times;timeii++)
   {
 
-        ndf[timeii] /= float(weighting[timeii]);
+        ndf[timeii][0] /= float(weighting[timeii][0]);
 
   }
 }
@@ -199,7 +207,7 @@ void Neighbor_Decorrelation_Function::write(string filename)const
   output << "Neighbor decorrelation function data created by AMDAT v." << amdat::build::SEMVER << "\n";
   for(timeii=0;timeii<n_times;timeii++)
   {
-    output << timetable[timeii]<<"\t"<<ndf[timeii]<<"\n";
+    output << timetable[timeii]<<"\t"<<ndf[timeii][0]<<"\n";
   }
 }
 
@@ -213,7 +221,7 @@ void Neighbor_Decorrelation_Function::write(ofstream& output)const
   output << "Neighbor decorrelation function data created by AMDAT v." << amdat::build::SEMVER << "\n";
   for(timeii=0;timeii<n_times;timeii++)
   {
-    output << timetable[timeii]<<"\t"<<ndf[timeii]<<"\n";
+    output << timetable[timeii]<<"\t"<<ndf[timeii][0]<<"\n";
   }
 }
 

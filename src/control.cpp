@@ -2379,7 +2379,6 @@ void Control::neighbor_decorrelation_function()
   cout << "\nCalculating neighbor decorrelation function.\n";cout.flush();
   start = time(NULL);
   ndf = run_analysis <Neighbor_Decorrelation_Function> (ndf,runline,filename); // pass run_analysis template the analysis type 'Neighbor_Decorrelation_Function'
-
   finish = time(NULL);
   cout << "\nCalculated neighbor_decorrelation_function in " << finish-start<<" seconds."<<endl;
 
@@ -5161,8 +5160,12 @@ void Control::orientational_correlation()
   Orientational_Correlation oc(analyte,vec);
   cout << "\nCalculating orientational correlation.\n";cout.flush();
   start = time(NULL);
+  high_start = clock::now();
   oc.analyze(multibodylist); // pass run_analysis template the analysis type 'Mean_Square_Displacement'
   finish = time(NULL);
+  high_finish = clock::now();
+  duration = time_count(high_start, high_finish);
+  cerr << duration;
   cout << "\nCalculated bond autocorrelation function in " << finish-start<<" seconds."<<endl;
   oc.write(filename);
 }

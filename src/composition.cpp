@@ -133,11 +133,6 @@ Composition Composition::operator=(const Composition & copy)
   {
 
     delete [] time_average_comp;
-    for(int timeii=0; timeii<n_times;timeii++)
-    {
-        delete [] current_comp[timeii];
-        delete [] current_density[timeii];
-    }
     delete [] current_comp;
     delete [] current_density;
 

@@ -4201,24 +4201,20 @@ void System::displacement_list(Multibody_Analysis* analysis, bool fullblock)cons
 
 	{
 		{
-			int thisii;
-			int nextii;
 			#pragma omp parallel for schedule(dynamic) if(analysis->isThreadSafe()) // TODO: Test if we can use the old loop
 			for(int timegapii=0;timegapii<n_exponential_steps;timegapii++)  //loop over exponential time step spacings within each block
 			{
 				int displacement_count=0;
-                bool abort = false;
+        bool abort = false;
 				for(int blockii=0;blockii<n_exponentials;blockii++)
 				{
 					if (!abort)
 					{
-						thisii = n_exponential_steps*blockii+int(frt);	//calculate starting index of this block
-						nextii = thisii+timegapii;		//calculate dispaced index
+						int thisii = n_exponential_steps*blockii+int(frt);	//calculate starting index of this block
+						int nextii = thisii+timegapii;		//calculate dispaced index
 						analysis->list_displacementkernel(timegapii,thisii,nextii);
-						#pragma omp atomic
 						displacement_count++;
 						abort = (displacement_count == displacement_limit && displacement_limit != 0);
-						#pragma omp flush(abort)
 					}
 					//if(displacement_count == displacement_limit) break;
 		//			cout << thisii << "\t" << nextii << "\n";
@@ -4250,10 +4246,8 @@ void System::displacement_list(Multibody_Analysis* analysis, bool fullblock)cons
 								int thisii = n_exponential_steps*blockii+expii+int(frt);
 								int nextii = thisii + n_exponential_steps*block_timegapii;
 								analysis->list_displacementkernel(timegapii,thisii,nextii);
-								#pragma omp atomic
 								displacement_count++;
 								abort = (displacement_count == displacement_limit && displacement_limit != 0);
-								#pragma omp flush(abort)
 //								analysis->list_displacementkernel(timegapii,thisii,nextii);
 //								displacement_count++;
 //						//		if (displacement_count == displacement_limit) break;
