@@ -2540,13 +2540,9 @@ void Control::calc_vhs()
   vhs.set(analyte, n_bins, max_range);
   cout << "\nCalculating self part of Van Hove correlation function.";
   start = time(NULL);
-  high_start = clock::now();
   run_analysis(&vhs,runline);
   vhs_defined=1;
   vhs.write(filename);
-  high_finish = clock::now();
-  //duration = time_count(high_start, high_finish);
-  //cerr << duration;
   finish = time(NULL);
 
   cout << "\nCalculated self Van Hove in " << finish-start<<" seconds.";
@@ -2582,12 +2578,8 @@ void Control::calc_vhd()
   vhd.set(analyte, n_bins, max_range);
   cout << "\nCalculating distinct Van Hove correlation function.";
   start = time(NULL);
-  high_start = clock::now();
   run_analysis(&vhd, runline);
-  finish = time(NULL);
-  high_finish = clock::now();
-  duration = time_count(high_start, high_finish);
-  //cerr << duration;
+  finish = time(NULL);;
   cout << "\nCalculated distinct Van Hove in " << finish-start<<" seconds.\n";
   cout << "Writing distinct Van Hove to file. ";
   vhd.write(filename);
@@ -2879,12 +2871,8 @@ void Control::rdf()
     {
       cout << "\nCalculating radial distribution function.\n";cout.flush();
       start = time(NULL);
-      high_start = clock::now();
       rad_dis_fun.analyze(trajlist1);
       finish = time(NULL);
-      high_finish = clock::now();
-      duration = time_count(high_start, high_finish);
-      cerr << duration;
       cout << "\nCalculated radial distribution function in " << finish-start<<" seconds.\n";
     }
     else if(symmetry=="asymmetric")
@@ -2896,13 +2884,9 @@ void Control::rdf()
       trajlist2=find_trajectorylist(listname2);
       cout << "\nCalculating radial distribution function.\n";cout.flush();
       start = time(NULL);
-      high_start = clock::now();
       //calls bins
       rad_dis_fun.analyze(trajlist1,trajlist2);
       finish = time(NULL);
-      high_finish = clock::now();
-      duration = time_count(high_start, high_finish);
-      cerr << duration;
       cout << "\nCalculated radial distribution function in " << finish-start<<" seconds.\n";
     }
     else
@@ -3037,12 +3021,8 @@ void Control::rnf()
     {
       cout << "\nCalculating non-normalized radial distribution function.\n";cout.flush();
       start = time(NULL);
-      high_start = clock::now();
       rad_dis_fun.analyze(trajlist1);
       finish = time(NULL);
-      high_finish = clock::now();
-      duration = time_count(high_start, high_finish);
-      cerr << duration;
       cout << "\nCalculated non-normalized radial distribution function in " << finish-start<<" seconds.\n";
     }
     else if(symmetry=="asymmetric")
@@ -3054,13 +3034,9 @@ void Control::rnf()
       trajlist2=find_trajectorylist(listname2);
       cout << "\nCalculating non-normalized radial distribution function.\n";cout.flush();
       start = time(NULL);
-      high_start = clock::now();
       //calls bins
       rad_dis_fun.analyze(trajlist1,trajlist2);
       finish = time(NULL);
-      high_finish = clock::now();
-      duration = time_count(high_start, high_finish);
-      cerr << duration;
       cout << "\nCalculated non-normalized radial distribution function in " << finish-start<<" seconds.\n";
     }
     else
@@ -3381,7 +3357,6 @@ void Control::ngp()
   runline = read_line();
   cout <<"\n"<< runline;
 
-  //high_start = clock::now();
   //analyte->unwrap();		//should already be unwrapped
   Mean_Square_Displacement msd(analyte);
   run_analysis(&msd, runline);
@@ -3390,9 +3365,6 @@ void Control::ngp()
   ngpar=run_analysis <Non_Gaussian_Parameter> (ngpar,runline,filename); // pass run_analysis template the analysis type
   //ngpar.write(filename);
   cout << "\n Peak time index of non-Gaussian parameter is " << ngpar.max() << ".";
-  //high_finish = clock::now();
-  //duration = time_count(high_start, high_finish);
-  //cerr << duration;
 }
 
 
@@ -5048,12 +5020,8 @@ void Control::baf()
   Bond_Autocorrelation_Function bafun(analyte,dim);
   cout << "\nCalculating bond autocorrelation function.\n";cout.flush();
   start = time(NULL);
-  high_start = clock::now();
   bafun.analyze(multibodylist); // pass run_analysis template the analysis type 'Mean_Square_Displacement'
   finish = time(NULL);
-  high_finish = clock::now();
-  duration = time_count(high_start, high_finish);
-  cerr << duration;
   cout << "\nCalculated bond autocorrelation function in " << finish-start<<" seconds."<<endl;
   bafun.write(filename);
 
@@ -5160,11 +5128,8 @@ void Control::orientational_correlation()
   Orientational_Correlation oc(analyte,vec);
   cout << "\nCalculating orientational correlation.\n";cout.flush();
   start = time(NULL);
-  high_start = clock::now();
   oc.analyze(multibodylist); // pass run_analysis template the analysis type 'Mean_Square_Displacement'
   finish = time(NULL);
-  high_finish = clock::now();
-  duration = time_count(high_start, high_finish);
   cerr << duration;
   cout << "\nCalculated bond autocorrelation function in " << finish-start<<" seconds."<<endl;
   oc.write(filename);
