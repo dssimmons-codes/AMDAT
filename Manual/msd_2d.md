@@ -11,7 +11,7 @@ where S is the number of start times employed, N is the number of particles, $\b
 <h2>Syntax</h2>
 
 ```
-msd <output file> <plane:"xy","yz","xz">
+msd_2d <output file> <plane:"xy","yz","xz">
 <target>
 ```
 
