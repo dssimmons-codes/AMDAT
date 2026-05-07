@@ -24,12 +24,6 @@ jobs:
         run: |
           set -euo pipefail
 
-          if [ "${{ github.event_name }}" = "pull_request" ]; then
-            echo "VERSION check skipped for pull requests. ✅"
-            echo "skip=true" >> "$GITHUB_OUTPUT"
-            exit 0
-          fi
-
           if ! git tag --list | grep -q .; then
             echo "No tags found; skipping check."
             echo "skip=true" >> "$GITHUB_OUTPUT"
