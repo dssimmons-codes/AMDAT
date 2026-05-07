@@ -248,24 +248,32 @@ help:
 	@echo "  rebuild        Full clean + build"
 	@echo "  format         Run clang-format (if installed)"
 	@echo "  lint           Run clang-tidy (if installed)"
+	@echo "  conda-setup    Create/update env with conda or micromamba"
+	@echo "  mamba-setup    Create/update env with micromamba/mamba"
 	@echo
 	@echo "Examples:"
 	@echo "  make MODE=debug"
 	@echo "  make MODE=release OMP=0"
 
-# --- Conda helpers (do not require 'conda activate') -------------------------
-CONDA       ?= conda
+# --- Conda/micromamba helpers (do not require 'conda activate') --------------
+CONDA       ?= $(shell command -v conda 2>/dev/null || command -v micromamba 2>/dev/null || command -v mamba 2>/dev/null || printf conda)
+MAMBA       ?= $(shell command -v micromamba 2>/dev/null || command -v mamba 2>/dev/null || printf micromamba)
+CONDA_TOOL  := $(notdir $(CONDA))
 ENV_NAME    ?= amdat
 # Prefer an exact lock if present, else fall back to environment.yml
 ENV_SPEC    ?= $(if $(wildcard conda-linux-64.txt),conda-linux-64.txt,environment.yml)
 ENV_STAMP   := .env/conda.ready
 
-# Create/update the Conda environment
-.PHONY: conda-setup
+# Create/update the Conda-compatible environment
+.PHONY: conda-setup mamba-setup micromamba-setup
 conda-setup: $(ENV_STAMP)
 
+mamba-setup micromamba-setup: CONDA = $(MAMBA)
+mamba-setup micromamba-setup: CONDA_TOOL = $(notdir $(MAMBA))
+mamba-setup micromamba-setup: $(ENV_STAMP)
+
 $(ENV_STAMP):
-	@echo ">> Creating conda env '$(ENV_NAME)' from $(ENV_SPEC)"
+	@echo ">> Creating $(CONDA_TOOL) env '$(ENV_NAME)' from $(ENV_SPEC)"
 	@mkdir -p .env
 	@if [ "$(ENV_SPEC)" = "conda-linux-64.txt" ]; then \
 	  $(CONDA) create -y -n $(ENV_NAME) --file $(ENV_SPEC); \
@@ -282,7 +290,7 @@ $(ENV_STAMP):
 conda: $(ENV_STAMP)
 	@$(CONDA) run -n $(ENV_NAME) bash -lc '\
 	  set -euo pipefail; \
-	  : "$${CONDA_PREFIX:?conda run did not set CONDA_PREFIX}"; \
+	  : "$${CONDA_PREFIX:?environment run did not set CONDA_PREFIX}"; \
 	  export PKG_CONFIG_PATH="$$CONDA_PREFIX/lib/pkgconfig:$${PKG_CONFIG_PATH:-}"; \
 	  # Prefer conda-forge triplet compilers if available; otherwise keep Makefile defaults \
 	  if command -v x86_64-conda-linux-gnu-g++ >/dev/null 2>&1; then \
@@ -294,7 +302,7 @@ conda: $(ENV_STAMP)
 	  echo ">> Using $$MAKE_CC $$MAKE_CXX"; \
 	  export CPATH="$$CONDA_PREFIX/include:$${CPATH:-}"; \
 	  export LIBRARY_PATH="$$CONDA_PREFIX/lib:$${LIBRARY_PATH:-}"; \
-		echo ">> pkg-config: $(which pkg-config || true)"; \
+		echo ">> pkg-config: $$(command -v pkg-config || true)"; \
 		echo ">> fftw cflags: $$(pkg-config --cflags fftw3 || true)"; \
 		echo ">> fftw libs:   $$(pkg-config --libs   fftw3 || true)"; \
 	  $(MAKE) $$MAKE_CC $$MAKE_CXX MODE=$(MODE) OMP=$(OMP) FFTW_ROOT="$$CONDA_PREFIX" \
