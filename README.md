@@ -47,6 +47,8 @@ conda activate amdat
 make
 ```
 
+This also works with other environment managers like micromamba and mamba.
+
 ### Run
 ```bash
 ./AMDAT -i path/to/input.in
