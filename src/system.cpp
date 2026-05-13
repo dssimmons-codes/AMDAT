@@ -381,7 +381,7 @@ void System::xyz_prep(vector<string> file_in, string fileline)
     for(atomii=0; atomii<n_atomtypes; atomii++)
     {
       natoms[speciesii][atomii] = atoi(args[atomii].c_str());
-      atoms_per_species += natoms[speciesii][atomii];
+      atoms_per_species[speciesii] += natoms[speciesii][atomii];
     }
   }
 
@@ -527,7 +527,7 @@ void System::xyz_prep_withlog(vector<string> file_in, string fileline)
     for(atomii=0; atomii<n_atomtypes; atomii++)
     {
       natoms[speciesii][atomii] = atoi(args[atomii].c_str());
-      atoms_per_species += natoms[speciesii][atomii];
+      atoms_per_species[speciesii] += natoms[speciesii][atomii];
     }
   }
 
@@ -749,21 +749,21 @@ void System::read_xyz(string xyzfilename, string structure_filename)
 
 
   /*read in file containing information on trajectory file structure*/
-  while(!structurefile.eof())
+  while(getline(structurefile, line))
   {
-    getline(structurefile, line);
 //    line=Control::replace_constants(line);
+    args = tokenize(line);
+    if(tokenize.count()==0){continue;}
     n_moleculeblocks++;
   }
-  structurefile.seekg(0,ios::beg);	//go back to beginning of file
   structurefile.clear();
+  structurefile.seekg(0,ios::beg);	//go back to beginning of file
   moleculeblock_type = new int [n_moleculeblocks];
   moleculeblock_size = new int [n_moleculeblocks];
 
   moleculeblockii=0;
-  while(!structurefile.eof())
+  while(getline(structurefile, line))
   {
-    getline(structurefile, line);
 //    line=Control::replace_constants(line);
     args = tokenize(line);
     if(tokenize.count()==0){continue;}
@@ -800,7 +800,7 @@ void System::read_xyz(string xyzfilename, string structure_filename)
     for(moleculeii=0;moleculeii<moleculeblock_size[moleculeblockii];moleculeii++)
     {
       line = "";
-      for(argii=0;argii<ARGMAX;argii++){args[argii]="";}
+      args.clear();
       for(atomii=0;atomii<molecules[moleculeblock_type[moleculeblockii]][0].atomcount();atomii++)
       {
         getline(filexyz, line);
@@ -975,7 +975,7 @@ void System::custom_prep(vector<string> file_in, string fileline)
     for(atomii=0; atomii<n_atomtypes; atomii++)
     {
       natoms[speciesii][atomii] = atoi(args[atomii].c_str());
-      atoms_per_species += natoms[speciesii][atomii];
+      atoms_per_species[speciesii] += natoms[speciesii][atomii];
     }
   }
 
@@ -1459,7 +1459,7 @@ void System::custom_manual_prep(vector<string> file_in, string fileline)
     for(atomii=0; atomii<n_atomtypes; atomii++)
     {
       natoms[speciesii][atomii] = atoi(args[atomii].c_str());
-      atoms_per_species += natoms[speciesii][atomii];
+      atoms_per_species[speciesii] += natoms[speciesii][atomii];
     }
   }
 
@@ -1911,21 +1911,21 @@ void System::read_custom(string xyzfilename, string structure_filename)
   cout << "\nReading a " << n_timesteps <<" timestep trajectory of " << n_atoms << " atoms.\n";
 
   /*read in template file containing information on trajectory file structure*/
-  while(!structurefile.eof())
+  while(getline(structurefile, line))
   {
-    getline(structurefile, line);
 //    line=Control::replace_constants(line);
+    args = tokenize(line);
+    if(tokenize.count()==0){continue;}
     n_moleculeblocks++;
   }
-  structurefile.seekg(0,ios::beg);	//go back to beginning of file
   structurefile.clear();
+  structurefile.seekg(0,ios::beg);	//go back to beginning of file
   moleculeblock_type = new int [n_moleculeblocks];
   moleculeblock_size = new int [n_moleculeblocks];
 
   moleculeblockii=0;
-  while(!structurefile.eof())
+  while(getline(structurefile, line))
   {
-    getline(structurefile, line);
 //    line=Control::replace_constants(line);
     args = tokenize(line);
     if(tokenize.count()==0){continue;}
@@ -1983,7 +1983,7 @@ void System::read_custom(string xyzfilename, string structure_filename)
     for(moleculeii=0;moleculeii<moleculeblock_size[moleculeblockii];moleculeii++)
     {
       line = "";
-      for(argii=0;argii<ARGMAX;argii++){args[argii]="";}
+      args.clear();
       for(atomii=0;atomii<molecules[moleculeblock_type[moleculeblockii]][0].atomcount();atomii++)
       {
         getline(filexyz, line);
@@ -2197,7 +2197,7 @@ void System::read_custom(string xyzfilename, string structure_filename)
       {
         for(typeii=0;typeii<n_atomtypes;typeii++) {n_typeii[typeii]=0;}  //initiate type count array to zero at start of each molecule
         line = "";
-        for(argii=0;argii<ARGMAX;argii++){args[argii]="";}
+        args.clear();
 
         for(atomii=0;atomii<molecules[moleculeblock_type[moleculeblockii]][0].atomcount();atomii++)
         {
@@ -2419,7 +2419,7 @@ void System::custom_byid_prep(vector<string> file_in, string fileline)
     for(atomii=0; atomii<n_atomtypes; atomii++)
     {
       natoms[speciesii][atomii] = atoi(args[atomii].c_str());
-      atoms_per_species += natoms[speciesii][atomii];
+      atoms_per_species[speciesii] += natoms[speciesii][atomii];
     }
   }
   
@@ -5432,4 +5432,3 @@ void System::delete_value_list(string listname)
 
 
 }
-
