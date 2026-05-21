@@ -60,6 +60,7 @@ Composition::Composition(System * sys, int n_xbins, int n_ybins, int n_zbins,flo
 
     system = sys;
     volume = (x/float(xbins))*(y/float(ybins))*(z/float(zbins));
+    if(volume==0){volume=-1;}    //reset zero volumes to -1 to allow calculation of bin counts while making densities obviously incorrect
     n_atomtypes = system->show_n_atomtypes();
     n_times = determine_n_times();
     total_atoms=0;
