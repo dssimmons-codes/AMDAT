@@ -18,11 +18,6 @@ High-performance computing workflows can be computationally expensive, and molec
 | [`rdf`](rdf.md) | Calculate Radial Distribution Function | 21x |
 | [`rnf`](rnf.md) | Calculate Radial Count | 23x |
 
-
-## Inconsistency in performance between analysis
-
-AMDAT is currently implemented with a highly object-oriented design and an array-of-structures (AoS) memory layout. Hence, data are organized in adjacent memory blocks, making them more prone to Cache Coherency issue. In parallel system, this conflict results in false-sharing, meaning different threads try to have writing access to one common cache line, despite aiming at independent memory location. To fix performance bottleneck, AMDAT uses padding to separate each memory location further from each other, reducing Cache Coherency conflicts. This approach, however, trades spatial locality from serial implementation for mitigated memory conflict in parallel tasks, making perfect speed-up realistically unachievable. Therefore, speed-ups are inconsistent between analyses due to the differences in how we store the data.
-
 ## System Requirements
 
 To use multithreading effectively in AMDAT, make sure the following requirements are met:
