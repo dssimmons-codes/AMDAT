@@ -78,6 +78,7 @@ void Composition_TimeDependent::write(ofstream& output)
     {
         output << system->show_time(timeii);
         output << "\t" << current_density[timeii][0];
+        output << "\t" << current_density[timeii][0]*volume;
         for (int typeii=0;typeii<n_atomtypes;typeii++)
         {
             output << "\t" << current_comp[timeii][typeii];
