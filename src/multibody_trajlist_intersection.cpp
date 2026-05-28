@@ -1,11 +1,11 @@
 // Copyright (C) 2010-2025 David S. Simmons
 
 /*Amorphous Molecular Dynamics Analysis Toolkit (AMDAT)*/
-/*Multibody_Bead_Region class methods - stores list of multibody objects that are within a given region*/
+/*Multibody_TrajList_Intersection class methods - stores list of multibody objects that are within a given region*/
 /*Written by David S. Simmons*/
 
 
-#include "multibody_bead_region.h"
+#include "multibody_trajlist_intersection.h"
 #include <iostream>
 #include <stdlib.h>
 #include "generated/version.h"
@@ -13,7 +13,7 @@
 
 using namespace std;
 
-Multibody_Bead_Region::Multibody_Bead_Region()
+Multibody_TrajList_Intersection::Multibody_TrajList_Intersection()
 {
   int timeii;
 
@@ -27,10 +27,13 @@ Multibody_Bead_Region::Multibody_Bead_Region()
   {
     time_conversion[timeii]=timeii;
   }
+
+  trajectory_list=0;
+  threshold=0;
 }
 
 
- Multibody_Bead_Region::Multibody_Bead_Region(System* syst)
+ Multibody_TrajList_Intersection::Multibody_TrajList_Intersection(System* syst)
 {
   int timeii;
 
@@ -47,17 +50,20 @@ Multibody_Bead_Region::Multibody_Bead_Region()
     time_conversion[timeii]=timeii;
   }
   multibodies.resize(system->show_n_timesteps());
+
+  trajectory_list=0;
+  threshold=0;
 }
 
 
-Multibody_Bead_Region::Multibody_Bead_Region(System* syst, Coordinate low, Coordinate high, int thresh)
+Multibody_TrajList_Intersection::Multibody_TrajList_Intersection(System* syst, Trajectory_List * trajlist, int thresh)
 {
   int timeii;
 
   system = sys = syst;
-  lowerbound = low;
-  upperbound = high;
-  threshold = thresh;
+  trajectory_list = trajlist;
+  threshold=thresh;
+
   n_bodies=-2;
 
   n_times = system->show_n_timesteps();
@@ -71,14 +77,13 @@ Multibody_Bead_Region::Multibody_Bead_Region(System* syst, Coordinate low, Coord
   multibodies.resize(system->show_n_timesteps());
 }
 
-Multibody_Bead_Region::Multibody_Bead_Region(const Multibody_Bead_Region & copy)
+Multibody_TrajList_Intersection::Multibody_TrajList_Intersection(const Multibody_TrajList_Intersection & copy)
 {
 
     system=sys=copy.sys;
 
     n_times=copy.n_times;
     n_bodies=copy.n_bodies;
-    threshold=copy.threshold;
 
      time_conversion = new int[sys->show_n_timesteps()];
   for(int timeii=0;timeii<sys->show_n_timesteps();timeii++)
@@ -86,14 +91,14 @@ Multibody_Bead_Region::Multibody_Bead_Region(const Multibody_Bead_Region & copy)
       time_conversion[timeii]=copy.time_conversion[timeii];
     }
     multibodies=copy.multibodies;
-   upperbound=copy.upperbound;
-  lowerbound=copy.lowerbound;
+    trajectory_list = copy.trajectory_list;
+   threshold=copy.threshold;
 
 
 }
 
 
-Multibody_Bead_Region Multibody_Bead_Region::operator=(const Multibody_Bead_Region & copy)
+Multibody_TrajList_Intersection Multibody_TrajList_Intersection::operator=(const Multibody_TrajList_Intersection & copy)
 {
   if(this!=&copy)
   {
@@ -103,7 +108,6 @@ Multibody_Bead_Region Multibody_Bead_Region::operator=(const Multibody_Bead_Regi
 
     n_times=copy.n_times;
     n_bodies=copy.n_bodies;
-    threshold=copy.threshold;
 
      time_conversion = new int[sys->show_n_timesteps()];
   for(int timeii=0;timeii<sys->show_n_timesteps();timeii++)
@@ -111,8 +115,8 @@ Multibody_Bead_Region Multibody_Bead_Region::operator=(const Multibody_Bead_Regi
       time_conversion[timeii]=copy.time_conversion[timeii];
     }
     multibodies=copy.multibodies;
-   upperbound=copy.upperbound;
-  lowerbound=copy.lowerbound;
+    trajectory_list = copy.trajectory_list;
+    threshold=copy.threshold;
   }
 
   return *this;
@@ -120,7 +124,7 @@ Multibody_Bead_Region Multibody_Bead_Region::operator=(const Multibody_Bead_Regi
 
 
 
-void Multibody_Bead_Region::analyze(Multibody_List * m_list)
+void Multibody_TrajList_Intersection::analyze(Multibody_List * m_list)
 {
   int timeii;
 
@@ -136,7 +140,7 @@ void Multibody_Bead_Region::analyze(Multibody_List * m_list)
 }
 
 
-void Multibody_Bead_Region::listkernel(Multibody* current_multibody, int timegapii,int thisii, int nextii)
+void Multibody_TrajList_Intersection::listkernel(Multibody* current_multibody, int timegapii,int thisii, int nextii)
 {
   int n_bodies;
   int bodies_in=0;
@@ -145,7 +149,7 @@ void Multibody_Bead_Region::listkernel(Multibody* current_multibody, int timegap
 
   for(int bodyii=0;bodyii<n_bodies;bodyii++)
   {
-      bodies_in+=((*current_multibody)(bodyii)->show_coordinate(thisii)).within(lowerbound,upperbound);
+      bodies_in+=trajectory_list->is_included(thisii,(*current_multibody)(bodyii)->show_trajectory_ID());
   }
 
   if(bodies_in>=threshold)
@@ -154,13 +158,13 @@ void Multibody_Bead_Region::listkernel(Multibody* current_multibody, int timegap
   }
 }
 
-void Multibody_Bead_Region::postprocess_list()
+void Multibody_TrajList_Intersection::postprocess_list()
 {
   check_n_bodies();
 }
 
 
-void Multibody_Bead_Region::write(string filename)const
+void Multibody_TrajList_Intersection::write(string filename)const
 {
   	float avg_multibodies=0;
 	int timeii;

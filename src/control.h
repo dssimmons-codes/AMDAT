@@ -228,8 +228,9 @@ class Control
     void read_bond_neighbors(); //read in a list of bonds at each time and store as a neighbor list relative to each atom
     
     void orientational_correlation();
-    void region_multibody_list();	//creates new multibody list based on region
-    void region_bead_multibody_list();
+    void region_multibody_list();	//creates new multibody list based on region containing center of mass or centroid
+    void region_bead_multibody_list(); //creates new multibody list by selecting multibodies with at least n beads in target region
+    void multibody_trajlist_intersection();  //creates new multibody list by selecting multibodies with at least n beads in target trajlist
     void threshold_multibody_list();	//create nuew multibody list based on size thresholding of existing list
     void flatten_multibodies();		//creates new trajectory list by taking all of the trajectories containing in multibodies at each time of a specified multibody list
     void multibody_size_statistics();

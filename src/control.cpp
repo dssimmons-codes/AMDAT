@@ -72,6 +72,7 @@
 #include "mean_closest_distance.h"
 #include "find_between.h"
 #include "multibody_bead_region.h"
+#include "multibody_trajlist_intersection.h"
 
 //#include "msd_listprint.h"
 
@@ -275,6 +276,10 @@ int Control::execute_commands(int iIndex, int fIndex)
     else if (command == "region_bead_multibody_list")
     {
       region_bead_multibody_list();
+    }
+    else if(command == "multibody_trajlist_intersection")
+    {
+      multibody_trajlist_intersection();
     }
     else if (command == "threshold_multibody_list")
     {
@@ -1991,6 +1996,44 @@ void Control::region_bead_multibody_list()
   target_multibodylist = find_multibody_list(target_multibody_list_name);
   (*mbr)=Multibody_Bead_Region(analyte,lo,hi,thresh);
   mbr->analyze(target_multibodylist);
+  add_multibody_list((Multibody_List*)mbr, new_multibody_list_name);
+
+  mbr->write(statistics_file);
+
+
+}
+
+
+
+/*--------------------------------------------------------------------------------*/
+
+
+
+void Control::multibody_trajlist_intersection()
+{
+  string new_multibody_list_name, target_multibody_list_name, trajlist_name, statistics_file;
+  int expected = 6;
+  int thresh;
+  argcheck(expected);
+
+  Multibody_TrajList_Intersection* mbr;
+  mbr = new Multibody_TrajList_Intersection;
+  Multibody_List * target_multibodylist;
+  Trajectory_List * target_trajectorylist;
+
+  new_multibody_list_name = args[1];
+  target_multibody_list_name = args[2];
+  trajlist_name = args [3];
+
+  statistics_file=args[4];
+  thresh = atoi(args[5].c_str());
+
+  target_multibodylist = find_multibody_list(target_multibody_list_name);
+  target_trajectorylist = find_trajectorylist(trajlist_name);
+
+  (*mbr)=Multibody_TrajList_Intersection(analyte,target_trajectorylist,thresh);
+  mbr->analyze(target_multibodylist);
+
   add_multibody_list((Multibody_List*)mbr, new_multibody_list_name);
 
   mbr->write(statistics_file);
