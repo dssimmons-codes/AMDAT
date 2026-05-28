@@ -19,7 +19,7 @@ A multibody is an entity that consists of multiple particles (each with its own 
 | [`combine_multibody_lists`](combine_multibody_lists.md) | Creates a new `multibody_list` by merging a set of existing `multibody_list`s |
 | [`region_multibody_list`](region_multibody_list.md) | Creates a new  `multibody_list` by sorting an existing `multibody_list` into spatial bins based on their centroid or center of mass location |
 | [`region_bead_multibody_list`](region_bead_multibody_list.md) | Creates a new `multibody_list` by finding those multioodes within an existing `multibody_list` that contain at least n constituent beads lying within a specified region |
-| ['multibody_trajlist_intersection`](multibody_trajlist_intersection.md) | Creates a new `multibody_list` by finding those multioodes within an existing `multibody_list` that contain at least n constituent beads within a specified `trajectory_list`. |
+| [`multibody_trajlist_intersection`](multibody_trajlist_intersection.md) | Creates a new `multibody_list` by finding those multioodes within an existing `multibody_list` that contain at least n constituent beads within a specified `trajectory_list`. |
 | [`threshold_multibody_list`](threshold_multibody_list.md) | Creates a new `multibody_list` by downselecting a `multibody_list` based on the number of bodies in each multibody. |
 | [`delete_multibody_list`](delete_multibody_list.md) | Deletes an existing `multibody_list` and frees the associated memory. Does not delete the underlying multibodies themselves. |
 
