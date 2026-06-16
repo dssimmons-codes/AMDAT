@@ -12,7 +12,7 @@ High-performance computing workflows can be computationally expensive, and molec
 | [`isfs`](isfs.md) | Calculate Incoherent Scattering Function | 20x |
 | [`vhs`](vhs.md) | Calculate self part of Van Hove Function | 12x |
 | [`vhd`](vhd.md) | Calculate distinct part of Van Hove Function | 20x |
-| [`raf`](raf.md) | Calculate Bond Autocorrelation Function | 15x |
+| [`raf`](raf.md) | Calculate Reorientation Autocorrelation Function | 15x |
 | [`ngp`](ngp.md) | Calculate Non Gaussian Parameter | 30x |
 | [`composition`](composition.md) | Calculate Composition | 7x |
 | [`rdf`](rdf.md) | Calculate Radial Distribution Function | 21x |
