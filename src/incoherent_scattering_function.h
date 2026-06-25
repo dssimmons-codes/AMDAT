@@ -34,7 +34,7 @@ class Incoherent_Scattering_Function:public Correlation_2D
     
     void bin_hook(Trajectory_List * t_list, int timegapii, int thisii, int nextii);
     void postprocess_bins();
-    //bool isThreadSafe(){return true;};
+    bool isThreadSafe(){return true;};
 };
 
 }
