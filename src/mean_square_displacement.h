@@ -15,8 +15,8 @@ namespace std{
 class Mean_Square_Displacement: public Analysis
 {
     int n_times;
-    float * msd;
-    float * weighting;
+    float ** msd;
+    float ** weighting;
     float * timetable;
     void initialize(System*);                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  
     float atomcount;
@@ -47,8 +47,8 @@ class Mean_Square_Displacement: public Analysis
     void bin_hook(Trajectory_List*,int,int,int);
     void postprocess_bins();
     
-    float show(int t)const{return msd[t];};			//method to return one timestep of msd array
-//	bool isThreadSafe(){return true;};
+    float show(int t)const{return msd[t][0];};			//method to return one timestep of msd array
+  	bool isThreadSafe(){return true;};
 };
 }
 
