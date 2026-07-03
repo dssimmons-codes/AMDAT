@@ -22,8 +22,8 @@ Bond_Autocorrelation_Function::Bond_Autocorrelation_Function()
   n_times = 0;
 
    //allocate memory for mean square displacement data
-  baf = new float [n_times];
-  weighting = new int [n_times];
+  baf = new float * [n_times];
+  weighting = new int * [n_times];
 
   atomcount = 0;
   dimensions.set(1,1,1);
@@ -43,15 +43,20 @@ Bond_Autocorrelation_Function::Bond_Autocorrelation_Function(const Bond_Autocorr
   n_times = copy.n_times;
   atomcount = copy.atomcount;
 
-  baf = new float [n_times];
-  weighting = new int [n_times];
+  baf = new float * [n_times];
+  weighting = new int * [n_times];
+
+  for(int i = 0; i < n_times; i++){
+    baf[i] = new float[16];
+    weighting[i] = new int[16];
+  }
 
   timetable = system->displacement_times();
 
   for(timeii=0;timeii<n_times;timeii++)
   {
-    baf[timeii]=copy.baf[timeii];
-    weighting[timeii]=copy.weighting[timeii];
+    baf[timeii][0]=copy.baf[timeii][0];
+    weighting[timeii][0]=copy.weighting[timeii][0];
   }
   dimensions=copy.dimensions;
   
@@ -76,14 +81,14 @@ Bond_Autocorrelation_Function::Bond_Autocorrelation_Function(System*sys)
   n_times = system->show_n_timegaps();
 
    //allocate memory for mean square displacement data
-  baf = new float [n_times];
-  weighting = new int [n_times];
+  baf = new float * [n_times];
+  weighting = new int * [n_times];
 
   timetable = system->displacement_times();
   for(timeii=0;timeii<n_times;timeii++)
   {
-    baf[timeii]=0;
-    weighting[timeii]=0;
+    baf[timeii][0]=0;
+    weighting[timeii][0]=0;
   }
   atomcount = 0;
   dimensions.set(1,1,1);
@@ -101,14 +106,19 @@ Bond_Autocorrelation_Function::Bond_Autocorrelation_Function(System*sys,Coordina
   n_times = system->show_n_timegaps();
 
    //allocate memory for mean square displacement data
-  baf = new float [n_times];
-  weighting = new int [n_times];
+  baf = new float * [n_times];
+  weighting = new int * [n_times];
+
+  for(int i = 0; i < n_times; i++){
+    baf[i] = new float[16];
+    weighting[i] = new int[16];
+  }
 
   timetable = system->displacement_times();
   for(timeii=0;timeii<n_times;timeii++)
   {
-    baf[timeii]=0;
-    weighting[timeii]=0;
+    baf[timeii][0]=0;
+    weighting[timeii][0]=0;
   }
   atomcount = 0;
   dimensions=dim;
@@ -135,14 +145,19 @@ Bond_Autocorrelation_Function::Bond_Autocorrelation_Function(System*sys,int l_ty
   n_times = system->show_n_timegaps();
 
    //allocate memory for mean square displacement data
-  baf = new float [n_times];
-  weighting = new int [n_times];
+  baf = new float * [n_times];
+  weighting = new int * [n_times];
+
+  for(int i = 0; i < n_times; i++){
+    baf[i] = new float[16];
+    weighting[i] = new int[16];
+  }
 
   timetable = system->displacement_times();
   for(timeii=0;timeii<n_times;timeii++)
   {
-    baf[timeii]=0;
-    weighting[timeii]=0;
+    baf[timeii][0]=0;
+    weighting[timeii][0]=0;
   }
   atomcount = 0;
   dimensions=dim;
@@ -182,18 +197,28 @@ Bond_Autocorrelation_Function Bond_Autocorrelation_Function::operator = (const B
   n_times = copy.n_times;
   atomcount = copy.atomcount;
 
+  for(int i = 0; i < n_times; i++){
+    delete [] baf[i];
+    delete [] weighting[i];
+  }
+
   delete [] baf;
   delete [] weighting;
 
-  baf = new float [n_times];
-  weighting = new int [n_times];
+  baf = new float * [n_times];
+  weighting = new int * [n_times];
+
+  for(int i = 0; i < n_times; i++){
+    baf[i] = new float[16];
+    weighting[i] = new int[16];
+  }
 
   timetable = system->displacement_times();
 
   for(timeii=0;timeii<n_times;timeii++)
   {
-    baf[timeii]=copy.baf[timeii];
-    weighting[timeii]=copy.weighting[timeii];
+    baf[timeii][0]=copy.baf[timeii][0];
+    weighting[timeii][0]=copy.weighting[timeii][0];
   }
   dimensions=copy.dimensions;
   legendre_p=copy.legendre_p;
@@ -215,18 +240,28 @@ void Bond_Autocorrelation_Function::initialize(System* sys)
 
    //allocate memory for mean square displacement data
 
+  for(int i = 0; i < n_times; i++){
+    delete [] baf[i];
+    delete [] weighting[i];
+  }
+
   delete [] baf;
   delete [] weighting;
 
-  baf = new float [n_times];
-  weighting = new int [n_times];
+  baf = new float * [n_times];
+  weighting = new int * [n_times];
 
-  timetable = system->displacement_times();
+  for(int i = 0; i < n_times; i++){
+    baf[i] = new float[16];
+    weighting[i] = new int[16];
+  }
+
   for(timeii=0;timeii<n_times;timeii++)
   {
-    baf[timeii]=0;
-    weighting[timeii]=0;
+    baf[timeii][0]=0;
+    weighting[timeii][0]=0;
   }
+
   atomcount = 0;
   dimensions.set(1,1,1);
   legendre_p=&Bond_Autocorrelation_Function::legendre_2;
@@ -242,17 +277,26 @@ void Bond_Autocorrelation_Function::initialize(System* sys, Coordinate dim)
 
    //allocate memory for mean square displacement data
 
+  for(int i = 0; i < n_times; i++){
+    delete [] baf[i];
+    delete [] weighting[i];
+  }
+
   delete [] baf;
   delete [] weighting;
 
-  baf = new float [n_times];
-  weighting = new int [n_times];
+  baf = new float * [n_times];
+  weighting = new int * [n_times];
 
-  timetable = system->displacement_times();
+  for(int i = 0; i < n_times; i++){
+    baf[i] = new float[16];
+    weighting[i] = new int[16];
+  }
+
   for(timeii=0;timeii<n_times;timeii++)
   {
-    baf[timeii]=0;
-    weighting[timeii]=0;
+    baf[timeii][0]=0;
+    weighting[timeii][0]=0;
   }
   atomcount = 0;
   dimensions=dim;
@@ -281,17 +325,26 @@ void Bond_Autocorrelation_Function::initialize(System* sys, int l_type, Coordina
 
    //allocate memory for mean square displacement data
 
+  for(int i = 0; i < n_times; i++){
+    delete [] baf[i];
+    delete [] weighting[i];
+  }
+
   delete [] baf;
   delete [] weighting;
 
-  baf = new float [n_times];
-  weighting = new int [n_times];
+  baf = new float * [n_times];
+  weighting = new int * [n_times];
 
-  timetable = system->displacement_times();
+  for(int i = 0; i < n_times; i++){
+    baf[i] = new float[16];
+    weighting[i] = new int[16];
+  }
+
   for(timeii=0;timeii<n_times;timeii++)
   {
-    baf[timeii]=0;
-    weighting[timeii]=0;
+    baf[timeii][0]=0;
+    weighting[timeii][0]=0;
   }
   atomcount = 0;
   dimensions=dim;
@@ -328,7 +381,7 @@ void Bond_Autocorrelation_Function::analyze(Multibody_List * t_list)
 
 void Bond_Autocorrelation_Function::list_displacementkernel(int timegapii,int thisii, int nextii)
 {
-  weighting[timegapii]+=multibody_list->show_n_multibodies(thisii);
+  weighting[timegapii][0]+=multibody_list->show_n_multibodies(thisii);
   multibody_list->listloop(this,timegapii, thisii, nextii);
 }
 
@@ -339,7 +392,7 @@ void Bond_Autocorrelation_Function::listkernel(Multibody* current_multibody, int
   float dotproduct = (this->*vprep)((*current_multibody)(1)->show_unwrapped(thisii)-(*current_multibody)(0)->show_unwrapped(thisii))&(this->*vprep)((*current_multibody)(1)->show_unwrapped(nextii)-(*current_multibody)(0)->show_unwrapped(nextii));	//compute dot product between unit vectors at initial and later times
 
   
-  baf[timegapii]+=(this->*legendre_p)(dotproduct);//increment baf by chosen legendre polynomial of dot product above
+  baf[timegapii][0]+=(this->*legendre_p)(dotproduct);//increment baf by chosen legendre polynomial of dot product above
 }
 
 
@@ -349,7 +402,7 @@ void Bond_Autocorrelation_Function::postprocess_list()
    for(int timeii=0;timeii<n_times;timeii++)
   {
 
-        baf[timeii] /= float(weighting[timeii]);
+        baf[timeii][0] /= float(weighting[timeii][0]);
 
   }
 }
@@ -369,7 +422,7 @@ void Bond_Autocorrelation_Function::write(string filename)const
   output << "Bond autocorrelation function data created by AMDAT v." << amdat::build::SEMVER << "\n";
   for(timeii=0;timeii<n_times;timeii++)
   {
-    output << timetable[timeii]<<"\t"<<baf[timeii]<<"\n";
+    output << timetable[timeii]<<"\t"<<baf[timeii][0]<<"\n";
   }
 }
 
@@ -382,7 +435,7 @@ void Bond_Autocorrelation_Function::write(ofstream& output)const
   output << "Bond autocorrelation function data created by AMDAT v." << amdat::build::SEMVER << "\n";
   for(timeii=0;timeii<n_times;timeii++)
   {
-    output << timetable[timeii]<<"\t"<<baf[timeii]<<"\n";
+    output << timetable[timeii]<<"\t"<<baf[timeii][0]<<"\n";
   }
 }
 

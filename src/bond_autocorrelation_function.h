@@ -17,9 +17,10 @@ namespace std{
 
 class Bond_Autocorrelation_Function: public Multibody_Analysis
 {
+    int PAD = 16;
     int n_times;
-    float * baf;
-    int * weighting;
+    float ** baf;
+    int ** weighting;
     float * timetable;
     void initialize(System*);
     void initialize(System*, Coordinate dim);  
