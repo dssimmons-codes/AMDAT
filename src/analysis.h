@@ -88,6 +88,7 @@ class Analysis
     virtual void listkernel(Trajectory*, int, int, int){cout<<"Error: Trajectory list targets not fully implemented for this analysis method.\n";};	//added by Michael?
     virtual void listkernel2(Trajectory*, Trajectory*, int, int, int){cout<<"Error: Trajectory list targets not fully implemented for this analysis method.\n";};	//listkernel for use only when two (nested) trajectory loops are needed.
     virtual void listkernel(Trajectory*){cout<<"Error: Trajectory list targets not fully implemented for this analysis method.\n";};
+    virtual void listkernel(Trajectory*,int){cout<<"Error: Trajectory list targets not fully implemented for this analysis method.\n";};
     
     
     /*System loop methods*/

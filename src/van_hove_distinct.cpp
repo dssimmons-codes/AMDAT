@@ -26,7 +26,8 @@ Van_Hove_Distinct::Van_Hove_Distinct()
   bin_size = 0;
   timetable = 0;
   correlation = new float * [1];
-  weighting = new int [0];
+  weighting = new int * [1];
+  weighting[0] = new int[0];
   correlation[0]=new float [0];
 }
 
@@ -56,7 +57,7 @@ Van_Hove_Distinct::Van_Hove_Distinct(System*sys, Trajectory_List_Bins binnedtraj
 //  currentlists = new Trajectory_List [2];
   
   correlation = new float * [n_times];
-  weighting = new int [n_times];
+  weighting = new int * [n_times];
   for(timeii=0;timeii<n_times;timeii++)
   {
     weighting[timeii]=0;
@@ -91,7 +92,7 @@ Van_Hove_Distinct::Van_Hove_Distinct(System*sys, int bin_count, float value_max)
 //  currentlists = new Trajectory_List [2];
  
   correlation = new float * [n_times];
-  weighting = new int [n_times];
+  weighting = new int * [n_times];
   for(timeii=0;timeii<n_times;timeii++)
   {
     weighting[timeii]=0;
@@ -116,6 +117,7 @@ void Van_Hove_Distinct::set(System*sys, int bin_count, float value_max)
   for(timeii=0;timeii<n_times;timeii++)
   {
     delete [] correlation[timeii];
+    delete [] weighting[timeii];
   }
   
   delete [] correlation;
@@ -141,11 +143,12 @@ void Van_Hove_Distinct::set(System*sys, int bin_count, float value_max)
 //  currentlists = new Trajectory_List [2];
   
   correlation = new float * [n_times];
-  weighting = new int [n_times];
+  weighting = new int * [n_times];
   for(timeii=0;timeii<n_times;timeii++)
   {
     weighting[timeii]=0;
     correlation[timeii]=new float [n_bins];
+    weighting[timeii]=new int [16];
     for(binii=0;binii<n_bins;binii++)
     {
       correlation[timeii][binii]=0;
@@ -207,7 +210,7 @@ void Van_Hove_Distinct::listkernel2(Trajectory* traj1, Trajectory* traj2, int ti
   }
   else
   {
-    weighting[timegapii]--;
+    weighting[timegapii][0]--;
   }
 
 }

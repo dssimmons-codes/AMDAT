@@ -20,7 +20,7 @@ class Space_Time_Correlation_Function: public Analysis
     float bin_size;		//size of bins
     float max_value;		//maximum value included in bins
     
-    int * weighting;	//number of measurements contributing to correlation at each time
+    int ** weighting;	//number of measurements contributing to correlation at each time
     
     float * timetable;		//table of times corresponding to correlation data
     

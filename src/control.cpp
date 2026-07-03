@@ -2541,12 +2541,16 @@ void Control::calc_vhs()
   vhs.set(analyte, n_bins, max_range);
   cout << "\nCalculating self part of Van Hove correlation function.";
   start = time(NULL);
+  high_start = clock::now();
   run_analysis(&vhs,runline);
-  finish = time(NULL);
   vhs_defined=1;
+  vhs.write(filename);
+  high_finish = clock::now();
+  duration = time_count(high_start, high_finish);
+  cerr << duration;
+  finish = time(NULL);
 
   cout << "\nCalculated self Van Hove in " << finish-start<<" seconds.";
-  vhs.write(filename);
 
 }
 
@@ -5022,8 +5026,12 @@ void Control::baf()
   Bond_Autocorrelation_Function bafun(analyte,dim);
   cout << "\nCalculating bond autocorrelation function.\n";cout.flush();
   start = time(NULL);
+  high_start = clock::now();
   bafun.analyze(multibodylist); // pass run_analysis template the analysis type 'Mean_Square_Displacement'
   finish = time(NULL);
+  high_finish = clock::now();
+  duration = time_count(high_start, high_finish);
+  cerr << duration;
   cout << "\nCalculated bond autocorrelation function in " << finish-start<<" seconds."<<endl;
   bafun.write(filename);
 

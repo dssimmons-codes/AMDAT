@@ -70,7 +70,7 @@ class Bond_Autocorrelation_Function: public Multibody_Analysis
     //void bin_hook(Trajectory_List*,int,int,int);
     //void postprocess_bins();
 
-//	bool isThreadSafe(){return true;};
+  	bool isThreadSafe(){return true;};
 };
 }
 

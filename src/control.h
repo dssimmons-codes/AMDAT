@@ -101,10 +101,6 @@ class Control
       return std::chrono::duration<float>(finish - start).count();
     }
 
-    //Patching data to benchmark
-    ofstream benchmark{"benchmark/benchmark.csv", ios::app};
-
-
     /*Arrays to store analysis results with a name given by the user, for later recall and use in other analysis techniques*/
     //To be added
     //Space_Time_Correlation_Function * space_time_correlations [LISTSIZE];
@@ -402,7 +398,7 @@ Analysis_type Control::run_analysis(Analysis_type analyzer, string setline, stri
      }
   high_finish = clock::now();
   duration = time_count(high_start, high_finish);
-  benchmark << duration;
+  cerr << duration;
 return analyzer;
 
 }

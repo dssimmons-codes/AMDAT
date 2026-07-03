@@ -14,15 +14,13 @@ namespace std{
 class Mean_Square_Displacement_2D: public Analysis
 {
     int n_times, atomcount;
-    float * msd;
-    int * weighting;
+    float ** msd;
+    int ** weighting;
+    int * weighting_temp;
     float * timetable;
     string plane;
     typedef float (Trajectory::*length)(int,int)const;		
     length distancefun;
-       
-    /*calculation variables*/
-    int currenttime, nexttime, currenttimegap;
     
     void initialize(System*,string);
     
@@ -44,14 +42,15 @@ class Mean_Square_Displacement_2D: public Analysis
      void analyze(Trajectory_List *,Trajectory_List *){cout<<"Error: Trajectory list targets with two lists not implemented for this analysis method.\n";}; //analysis method for when two trajectory lists are needed
     void analyze(Trajectory_List * t_list);
     void list_displacementkernel(int,int,int);
-    void listkernel(Trajectory *);
+    void listkernel(Trajectory *,int,int,int);
     void postprocess_list();
     
     void bin_hook(Trajectory_List*,int,int,int);
     void postprocess_bins();   
     
-    float show(int t){return msd[t];};			//method to return one timestep of msd array
-};
+    float show(int t){return msd[t][0];};			//method to return one timestep of msd array
+    bool isThreadSafe(){return true;}
+  };
 }
 
 #endif

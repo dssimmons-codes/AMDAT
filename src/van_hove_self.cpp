@@ -11,7 +11,6 @@
 
 using namespace std;
 
-
 Van_Hove_Self::Van_Hove_Self(System* sys, int bin_count, float value_max)
 {
 	initialize(sys, bin_count, value_max);
@@ -29,7 +28,8 @@ Van_Hove_Self::Van_Hove_Self()
 	timetable=0;
 
 	correlation = new float * [1];
-	weighting = new int [0];
+	weighting = new int * [1];
+	weighting[0] = new int [0];
 	correlation[0]=new float [0];
 }
 
@@ -62,14 +62,15 @@ void Van_Hove_Self::initialize(System* sys, int bin_count, float value_max)
 
 	 //allocate memory for van hove self-correlation function and weighting and initialize to zero
 	correlation = new float * [n_times];
-	weighting = new int [n_times];
+	weighting = new int * [n_times];
 	for(timeii=0;timeii<n_times;timeii++)
 	{
 		correlation[timeii]=new float [n_bins];
-		weighting[timeii] = 0;
+		weighting[timeii]= new int [16];
 		for(binii=0;binii<n_bins;binii++)
 		{
 			correlation[timeii][binii]=0;
+			weighting[timeii][0]=0;
 		}
 	}
 }
@@ -97,11 +98,11 @@ void Van_Hove_Self::list_displacementkernel(int timegapii, int thisii, int nexti
 
 void Van_Hove_Self::listkernel(Trajectory* current_trajectory, int timegapii, int thisii, int nextii)
 {
-	float distance = (current_trajectory->show_unwrapped(nextii)-current_trajectory->show_unwrapped(thisii)).length();
+	Coordinate this_c = current_trajectory->show_unwrapped(nextii);
+	Coordinate next_c = current_trajectory->show_unwrapped(thisii);
+	float distance = (next_c - this_c).length();
 	bin(timegapii,distance);
-	weighting[timegapii]++;
-
-
+	weighting[timegapii][0]++;
 }
 
 
