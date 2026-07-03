@@ -2547,7 +2547,7 @@ void Control::calc_vhs()
   vhs.write(filename);
   high_finish = clock::now();
   duration = time_count(high_start, high_finish);
-  cerr << duration;
+  //cerr << duration;
   finish = time(NULL);
 
   cout << "\nCalculated self Van Hove in " << finish-start<<" seconds.";
