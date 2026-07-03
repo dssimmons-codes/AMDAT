@@ -22,7 +22,7 @@ class Mean_Square_Displacement: public Analysis
     float atomcount;
     
     /*internal calculation variables*/
-    int currenttime, nexttime, currenttimegap;
+    //int currenttime, nexttime, currenttimegap;
     
     
   public:

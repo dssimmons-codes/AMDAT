@@ -2880,8 +2880,12 @@ void Control::rdf()
     {
       cout << "\nCalculating radial distribution function.\n";cout.flush();
       start = time(NULL);
+      high_start = clock::now();
       rad_dis_fun.analyze(trajlist1);
       finish = time(NULL);
+      high_finish = clock::now();
+      duration = time_count(high_start, high_finish);
+      cerr << duration;
       cout << "\nCalculated radial distribution function in " << finish-start<<" seconds.\n";
     }
     else if(symmetry=="asymmetric")
@@ -2893,9 +2897,13 @@ void Control::rdf()
       trajlist2=find_trajectorylist(listname2);
       cout << "\nCalculating radial distribution function.\n";cout.flush();
       start = time(NULL);
+      high_start = clock::now();
       //calls bins
       rad_dis_fun.analyze(trajlist1,trajlist2);
       finish = time(NULL);
+      high_finish = clock::now();
+      duration = time_count(high_start, high_finish);
+      cerr << duration;
       cout << "\nCalculated radial distribution function in " << finish-start<<" seconds.\n";
     }
     else

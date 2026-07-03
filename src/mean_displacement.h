@@ -24,7 +24,7 @@ class Mean_Displacement: public Analysis
     int atomcount;
     
     /*internal calculation variables*/
-    int currenttime, nexttime, currenttimegap;
+    //int currenttime, nexttime, currenttimegap;
     
     
   public:

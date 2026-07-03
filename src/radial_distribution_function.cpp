@@ -22,8 +22,8 @@ Radial_Distribution_Function::Radial_Distribution_Function():Analysis_Onetime()
   
   time_rdf= new float * [n_times];
   mean_rdf= new float [n_bins];
-  n_atoms_i=new int [n_times];
-  n_atoms_j = new int [n_times];
+  n_atoms_i=new int * [n_times];
+  n_atoms_j = new int * [n_times];
   
 }
 
@@ -59,14 +59,19 @@ Radial_Distribution_Function::Radial_Distribution_Function(System*sys, int nbins
   
   time_rdf= new float * [n_times];
   mean_rdf= new float [n_bins];
-  n_atoms_i=new int [n_times];
-  n_atoms_j = new int [n_times];
+  n_atoms_i=new int * [n_times];
+  n_atoms_j = new int * [n_times];
   
+  for(timeii=0;timeii<n_times;timeii++){
+    n_atoms_i[timeii] = new int [16];
+    n_atoms_j[timeii] = new int [16];
+  }
+
   for(timeii=0;timeii<n_times;timeii++)
   {
     time_rdf[timeii]=new float [n_bins];
-    n_atoms_i[timeii]=0;
-    n_atoms_j[timeii]=0;
+    n_atoms_i[timeii][0]=0;
+    n_atoms_j[timeii][0]=0;
     for(binii=0;binii<n_bins;binii++)
     {
       time_rdf[timeii][binii]=0;
@@ -92,14 +97,19 @@ Radial_Distribution_Function::Radial_Distribution_Function(const Radial_Distribu
   
   time_rdf= new float * [n_times];
   mean_rdf= new float [n_bins];
-  n_atoms_i=new int [n_times];
-  n_atoms_j = new int [n_times];
+  n_atoms_i=new int * [n_times];
+  n_atoms_j = new int * [n_times];
   
+  for(timeii=0;timeii<n_times;timeii++){
+    n_atoms_i[timeii] = new int [16];
+    n_atoms_j[timeii] = new int [16];
+  }
+
   for(timeii=0;timeii<n_times;timeii++)
   {
     time_rdf[timeii]=new float [n_bins];
-    n_atoms_i[timeii]=copy.n_atoms_i[timeii];
-    n_atoms_j[timeii]=copy.n_atoms_j[timeii];
+    n_atoms_i[timeii][0]=copy.n_atoms_i[timeii][0];
+    n_atoms_j[timeii][0]=copy.n_atoms_j[timeii][0];
     for(binii=0;binii<n_bins;binii++)
     {
       time_rdf[timeii][binii]=copy.time_rdf[timeii][binii];
@@ -117,6 +127,12 @@ Radial_Distribution_Function Radial_Distribution_Function::operator=(const Radia
   
   if(this!=&copy)
   {
+
+  for(timeii=0;timeii<n_times;timeii++)
+  {
+    delete [] n_atoms_i[timeii];
+    delete [] n_atoms_j[timeii];
+  }
   
   delete [] n_atoms_i;
   delete [] n_atoms_j;
@@ -136,14 +152,19 @@ Radial_Distribution_Function Radial_Distribution_Function::operator=(const Radia
   
   time_rdf= new float * [n_times];
   mean_rdf= new float [n_bins];
-  n_atoms_i=new int [n_times];
-  n_atoms_j = new int [n_times];
+  n_atoms_i=new int * [n_times];
+  n_atoms_j = new int * [n_times];
   
+  for(timeii=0;timeii<n_times;timeii++){
+    n_atoms_i[timeii] = new int [16];
+    n_atoms_j[timeii] = new int [16];
+  }
+
   for(timeii=0;timeii<n_times;timeii++)
   {
     time_rdf[timeii]=new float [n_bins];
-    n_atoms_i[timeii]=copy.n_atoms_i[timeii];
-    n_atoms_j[timeii]=copy.n_atoms_j[timeii];
+    n_atoms_i[timeii][0]=copy.n_atoms_i[timeii][0];
+    n_atoms_j[timeii][0]=copy.n_atoms_j[timeii][0];
     for(binii=0;binii<n_bins;binii++)
     {
       time_rdf[timeii][binii]=copy.time_rdf[timeii][binii];
@@ -196,14 +217,19 @@ void Radial_Distribution_Function::set(System*sys, int nbins, int timescheme, fl
   
   time_rdf= new float * [n_times];
   mean_rdf= new float [n_bins];
-  n_atoms_i=new int [n_times];
-  n_atoms_j = new int [n_times];
+  n_atoms_i=new int * [n_times];
+  n_atoms_j = new int * [n_times];
   
+  for(timeii=0;timeii<n_times;timeii++){
+    n_atoms_i[timeii] = new int [16];
+    n_atoms_j[timeii] = new int [16];
+  }
+
   for(timeii=0;timeii<n_times;timeii++)
   {
     time_rdf[timeii]=new float [n_bins];
-    n_atoms_i[timeii]=0;
-    n_atoms_j[timeii]=0;
+    n_atoms_i[timeii][0]=0;
+    n_atoms_j[timeii][0]=0;
     for(binii=0;binii<n_bins;binii++)
     {
       time_rdf[timeii][binii]=0;
@@ -218,8 +244,8 @@ void Radial_Distribution_Function::set(System*sys, int nbins, int timescheme, fl
 
 void Radial_Distribution_Function::timekernel2(int timeii)
 {
-   n_atoms_i[timeii]=trajectory_list->show_n_trajectories(system_time(timeii));
-   n_atoms_j[timeii]=trajectory_list2->show_n_trajectories(system_time(timeii));
+   n_atoms_i[timeii][0]=trajectory_list->show_n_trajectories(system_time(timeii));
+   n_atoms_j[timeii][0]=trajectory_list2->show_n_trajectories(system_time(timeii));
    trajectory_list->listloop(this,0, timeii, 0);
 }
 
@@ -266,14 +292,17 @@ void Radial_Distribution_Function::bin(int timestep, float distance)
    {
      boxsize = system->size(system_time(timeii));
      boxvolume=boxsize.show_x()*boxsize.show_y()*boxsize.show_z();
-     rhoj=float(n_atoms_j[timeii])/boxvolume;
-     n_i_total+=n_atoms_i[timeii];
+     rhoj=float(n_atoms_j[timeii][0])/boxvolume;
+     n_i_total+=n_atoms_i[timeii][0];
      for(binii=0;binii<n_bins;binii++)
      {
        rshell = float(binii)*bin_size;						//determine inner radius of bin
-       shellvolume = (4.0/3.0)*PI*(pow(rshell+bin_size,3.0)-pow(rshell,3.0));		//calculate volume of bin
-       time_rdf[timeii][binii]/=(float(n_atoms_i[timeii])*rhoj*shellvolume);
-       mean_rdf[binii]+=time_rdf[timeii][binii]*float(n_atoms_i[timeii]);
+       double a = rshell + bin_size;
+       double b = rshell;
+       //To fix data type overflow, we use a^3 - b^3 = (a-b)(a*a+a*b+b*b)
+       shellvolume = (4.0/3.0)*PI*(a-b)*(a*a+a*b+b*b);		//calculate volume of bin
+       time_rdf[timeii][binii]/=(float(n_atoms_i[timeii][0])*rhoj*shellvolume);
+       mean_rdf[binii]+=time_rdf[timeii][binii]*float(n_atoms_i[timeii][0]);
      }
    }
    
@@ -390,7 +419,7 @@ void Radial_Distribution_Function::bin(int timestep, float distance)
    {
      boxsize = system->size(system_time(timeii));
      boxvolume=boxsize.show_x()*boxsize.show_y()*boxsize.show_z();
-     mean_rho+=float(n_atoms_j[timeii])/boxvolume/n_times;
+     mean_rho+=float(n_atoms_j[timeii][0])/boxvolume/n_times;
    }
    
    min_k = 2.*PI/max_distance;
