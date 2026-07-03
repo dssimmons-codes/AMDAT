@@ -74,11 +74,6 @@ Mean_Square_Displacement_2D Mean_Square_Displacement_2D::operator=(const Mean_Sq
   distancefun = copy.distancefun;
   trajectory_list = trajectory_list;
 
-  for(int i = 0; i < n_times; i++){
-    delete [] msd[i];
-    delete [] weighting[i];
-  }
-
   delete [] msd;
   delete [] weighting;
   delete [] timetable;

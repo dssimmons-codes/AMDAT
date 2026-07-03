@@ -99,12 +99,6 @@ Mean_Displacement Mean_Displacement::operator = (const Mean_Displacement & copy)
   n_times = copy.n_times;
   atomcount = copy.atomcount;
 
-  for(timeii=0;timeii<n_times;timeii++)
-  {
-    delete [] md[timeii];
-    delete [] weighting[timeii];
-  }
-
   delete [] md;
   delete [] weighting;
 

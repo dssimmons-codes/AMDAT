@@ -100,12 +100,6 @@ Mean_Square_Displacement Mean_Square_Displacement::operator = (const Mean_Square
   n_times = copy.n_times;
   atomcount = copy.atomcount;
 
-  for(int i = 0; i < n_times; i++){
-    delete [] msd[i];
-    delete [] weighting[i];
-  }
-
-
   delete [] msd;
   delete [] weighting;
 

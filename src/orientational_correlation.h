@@ -17,8 +17,8 @@ namespace std{
 
 class Orientational_Correlation: public Multibody_Analysis
 {
-    float * correlation;
-    float * weighting;
+    float ** correlation;
+    float ** weighting;
     float overall_correlation;
     int n_times;
     Coordinate correlated_vector;
@@ -38,7 +38,7 @@ public:
 
     void write(string) const;
     void write(ofstream&)const;
-
+    bool isThreadSafe(){return true;}
 };
 
 }
