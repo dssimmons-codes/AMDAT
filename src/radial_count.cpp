@@ -22,8 +22,8 @@ Radial_Count::Radial_Count():Analysis_Onetime()
   
   time_rdf= new float * [n_times];
   mean_rdf= new float [n_bins];
-  n_atoms_i=new int [n_times];
-  n_atoms_j = new int [n_times];
+  n_atoms_i=new int * [n_times];
+  n_atoms_j = new int * [n_times];
   
 }
 
@@ -59,14 +59,16 @@ Radial_Count::Radial_Count(System*sys, int nbins, int timescheme, float maxdista
   
   time_rdf= new float * [n_times];
   mean_rdf= new float [n_bins];
-  n_atoms_i=new int [n_times];
-  n_atoms_j = new int [n_times];
+  n_atoms_i=new int * [n_times];
+  n_atoms_j = new int * [n_times];
   
   for(timeii=0;timeii<n_times;timeii++)
   {
     time_rdf[timeii]=new float [n_bins];
-    n_atoms_i[timeii]=0;
-    n_atoms_j[timeii]=0;
+    n_atoms_i[timeii]= new int [16];
+    n_atoms_j[timeii]= new int [16];
+    n_atoms_i[timeii][0]=0;
+    n_atoms_j[timeii][0]=0;
     for(binii=0;binii<n_bins;binii++)
     {
       time_rdf[timeii][binii]=0;
@@ -92,14 +94,14 @@ Radial_Count::Radial_Count(const Radial_Count & copy):Analysis_Onetime(copy)
   
   time_rdf= new float * [n_times];
   mean_rdf= new float [n_bins];
-  n_atoms_i=new int [n_times];
-  n_atoms_j = new int [n_times];
+  n_atoms_i=new int * [n_times];
+  n_atoms_j = new int * [n_times];
   
   for(timeii=0;timeii<n_times;timeii++)
   {
     time_rdf[timeii]=new float [n_bins];
-    n_atoms_i[timeii]=copy.n_atoms_i[timeii];
-    n_atoms_j[timeii]=copy.n_atoms_j[timeii];
+    n_atoms_i[timeii][0]=copy.n_atoms_i[timeii][0];
+    n_atoms_j[timeii][0]=copy.n_atoms_j[timeii][0];
     for(binii=0;binii<n_bins;binii++)
     {
       time_rdf[timeii][binii]=copy.time_rdf[timeii][binii];
@@ -136,14 +138,14 @@ Radial_Count Radial_Count::operator=(const Radial_Count & copy)
   
   time_rdf= new float * [n_times];
   mean_rdf= new float [n_bins];
-  n_atoms_i=new int [n_times];
-  n_atoms_j = new int [n_times];
+  n_atoms_i=new int * [n_times];
+  n_atoms_j = new int * [n_times];
   
   for(timeii=0;timeii<n_times;timeii++)
   {
     time_rdf[timeii]=new float [n_bins];
-    n_atoms_i[timeii]=copy.n_atoms_i[timeii];
-    n_atoms_j[timeii]=copy.n_atoms_j[timeii];
+    n_atoms_i[timeii][0]=copy.n_atoms_i[timeii][0];
+    n_atoms_j[timeii][0]=copy.n_atoms_j[timeii][0];
     for(binii=0;binii<n_bins;binii++)
     {
       time_rdf[timeii][binii]=copy.time_rdf[timeii][binii];
@@ -196,14 +198,16 @@ void Radial_Count::set(System*sys, int nbins, int timescheme, float maxdistance)
   
   time_rdf= new float * [n_times];
   mean_rdf= new float [n_bins];
-  n_atoms_i=new int [n_times];
-  n_atoms_j = new int [n_times];
+  n_atoms_i=new int * [n_times];
+  n_atoms_j = new int * [n_times];
   
   for(timeii=0;timeii<n_times;timeii++)
   {
     time_rdf[timeii]=new float [n_bins];
-    n_atoms_i[timeii]=0;
-    n_atoms_j[timeii]=0;
+    n_atoms_i[timeii]= new int [16];
+    n_atoms_j[timeii]= new int [16];
+    n_atoms_i[timeii][0]=0;
+    n_atoms_j[timeii][0]=0;
     for(binii=0;binii<n_bins;binii++)
     {
       time_rdf[timeii][binii]=0;
@@ -218,8 +222,8 @@ void Radial_Count::set(System*sys, int nbins, int timescheme, float maxdistance)
 
 void Radial_Count::timekernel2(int timeii)
 {
-   n_atoms_i[timeii]=trajectory_list->show_n_trajectories(system_time(timeii));
-   n_atoms_j[timeii]=trajectory_list2->show_n_trajectories(system_time(timeii));
+   n_atoms_i[timeii][0]=trajectory_list->show_n_trajectories(system_time(timeii));
+   n_atoms_j[timeii][0]=trajectory_list2->show_n_trajectories(system_time(timeii));
    trajectory_list->listloop(this,0, timeii, 0);
 }
 
@@ -266,14 +270,16 @@ void Radial_Count::bin(int timestep, float distance)
    {
      boxsize = system->size(system_time(timeii));
      boxvolume=boxsize.show_x()*boxsize.show_y()*boxsize.show_z();
-     rhoj=float(n_atoms_j[timeii])/boxvolume;
-     n_i_total+=n_atoms_i[timeii];
+     rhoj=float(n_atoms_j[timeii][0])/boxvolume;
+     n_i_total+=n_atoms_i[timeii][0];
      for(binii=0;binii<n_bins;binii++)
      {
        rshell = float(binii)*bin_size;						//determine inner radius of bin
-       shellvolume = (4.0/3.0)*PI*(pow(rshell+bin_size,3.0)-pow(rshell,3.0));		//calculate volume of bin
-       time_rdf[timeii][binii]/=(float(n_atoms_i[timeii]));
-       mean_rdf[binii]+=time_rdf[timeii][binii]*float(n_atoms_i[timeii]);
+       double a = rshell+bin_size;
+       double b = rshell;
+       shellvolume = (4.0/3.0)*PI*((a-b)*(a*a+a*b+b*b));		//calculate volume of bin
+       time_rdf[timeii][binii]/=(float(n_atoms_i[timeii][0]));
+       mean_rdf[binii]+=time_rdf[timeii][binii]*float(n_atoms_i[timeii][0]);
      }
    }
    for(binii=0;binii<n_bins;binii++)
