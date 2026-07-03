@@ -2568,7 +2568,7 @@ void Control::calc_vhd()
   int n_bins;
   string filename;
 
-  int expected = 3;
+  int expected = 5;
   argcheck(expected);
 
   filename = args[1];
@@ -2583,8 +2583,12 @@ void Control::calc_vhd()
   vhd.set(analyte, n_bins, max_range);
   cout << "\nCalculating distinct Van Hove correlation function.";
   start = time(NULL);
+  high_start = clock::now();
   run_analysis(&vhd, runline);
   finish = time(NULL);
+  high_finish = clock::now();
+  duration = time_count(high_start, high_finish);
+  cerr << duration;
   cout << "\nCalculated distinct Van Hove in " << finish-start<<" seconds.\n";
   cout << "Writing distinct Van Hove to file. ";
   vhd.write(filename);
@@ -3362,6 +3366,7 @@ void Control::ngp()
   runline = read_line();
   cout <<"\n"<< runline;
 
+  //high_start = clock::now();
   //analyte->unwrap();		//should already be unwrapped
   Mean_Square_Displacement msd(analyte);
   run_analysis(&msd, runline);
@@ -3370,7 +3375,9 @@ void Control::ngp()
   ngpar=run_analysis <Non_Gaussian_Parameter> (ngpar,runline,filename); // pass run_analysis template the analysis type
   //ngpar.write(filename);
   cout << "\n Peak time index of non-Gaussian parameter is " << ngpar.max() << ".";
-
+  //high_finish = clock::now();
+  //duration = time_count(high_start, high_finish);
+  //cerr << duration;
 }
 
 

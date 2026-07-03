@@ -32,7 +32,7 @@ class Intermediate_Scattering_Function:public Correlation_2D
     //void displacementkernel(int timegapii, int thisii, int nextii, int species_index, int molecule_index, int atom_type, int atom_index);
 
     void displacementkernel(int timegapii, int thisii, int nextii, Trajectory * traj);
-
+    bool isThreadSafe(){return true;}
 };
 
 }
