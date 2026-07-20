@@ -33,24 +33,21 @@ GIT_DESCRIBE := $(shell git describe --tags --dirty --always 2>/dev/null)
 GIT_COMMIT   := $(shell git rev-parse --short HEAD 2>/dev/null)
 GIT_BRANCH   := $(shell git rev-parse --abbrev-ref HEAD 2>/dev/null)
 
-# Extract SemVer from tag if present (v1.2.3 → 1.2.3)
-# Fallback: read VERSION, else default
-ifeq ($(strip $(GIT_DESCRIBE)),)
-  AMDAT_SEMVER := $(strip $(shell [ -f VERSION ] && cat VERSION))
-  ifeq ($(strip $(AMDAT_SEMVER)),)
+# VERSION is authoritative for repository builds. Packagers may override it
+# with AMDAT_SEMVER=1.0.0+pkg make.
+AMDAT_SEMVER ?= $(strip $(shell [ -f VERSION ] && cat VERSION))
+ifeq ($(strip $(AMDAT_SEMVER)),)
+  ifeq ($(strip $(GIT_DESCRIBE)),)
     AMDAT_SEMVER := 0.0.0+archive
+  else
+    AMDAT_SEMVER := $(shell echo "$(GIT_DESCRIBE)" | sed -E 's/.*(v?[0-9]+\.[0-9]+\.[0-9]+).*/\1/' | sed 's/^v//')
   endif
-else
-  # pull the first thing that looks like vX.Y.Z or X.Y.Z
-  AMDAT_SEMVER := $(shell echo "$(GIT_DESCRIBE)" | sed -E 's/.*(v?[0-9]+\.[0-9]+\.[0-9]+).*/\1/' | sed 's/^v//')
-endif
-
-# Allow packagers to override from environment: AMDAT_SEMVER=1.0.0+pkg make
-ifneq ($(origin AMDAT_SEMVER),file)
-  AMDAT_SEMVER := $(AMDAT_SEMVER)
 endif
 
 BUILD_DATE   := $(shell date -u +%Y-%m-%dT%H:%M:%SZ)
+VERSION_KEY  := $(shell printf '%s\n' '$(AMDAT_SEMVER)|$(GIT_DESCRIBE)|$(GIT_COMMIT)|$(GIT_BRANCH)' | cksum | awk '{print $$1}')
+VERSION_STAMP := $(dir $(VERSION_H)).version-$(VERSION_KEY)
+VERSION_FILE := $(wildcard VERSION)
 
 # --- Flags -------------------------------------------------------------------
 CPPFLAGS := -MMD -MP -I./src \
@@ -136,10 +133,15 @@ OBJS := $(patsubst $(SRC_DIR)/%.cpp,$(BUILD_DIR)/%.o,$(SRCS))
 DEPS := $(OBJS:.o=.d)
 
 # --- Targets -----------------------------------------------------------------
-.PHONY: all clean distclean rebuild format lint help
+.PHONY: all clean distclean rebuild format lint test-version-metadata help
 all: $(APP)
 
-$(VERSION_H):
+$(VERSION_STAMP):
+	@mkdir -p $(dir $@)
+	@rm -f $(dir $@).version-*
+	@touch $@
+
+$(VERSION_H): Makefile $(VERSION_FILE) $(VERSION_STAMP)
 	@mkdir -p $(dir $@)
 	@{ \
     echo '#pragma once'; \
@@ -218,12 +220,16 @@ $(BUILD_DIR)/xdr/%.o: $(XDR_SRC_DIR)/%.c
 clean: clean_voro
 	@echo "  CLEAN   objects"
 	@rm -rf $(BUILD_DIR)/*
+	@rm -f $(VERSION_H) $(dir $(VERSION_H)).version-*
 
 distclean: clean clean_qvectors
 	@echo "  CLEAN   binary"
 	@rm -f $(APP)
 
 rebuild: distclean all
+
+test-version-metadata:
+	@tests/run_version_metadata_regression.sh
 
 # Code quality helpers (optional)
 format:
@@ -244,6 +250,7 @@ help:
 	@echo "  rebuild        Full clean + build"
 	@echo "  format         Run clang-format (if installed)"
 	@echo "  lint           Run clang-tidy (if installed)"
+	@echo "  test-version-metadata  Verify generated version metadata refreshes"
 	@echo "  conda-setup    Create/update env with conda or micromamba"
 	@echo "  mamba-setup    Create/update env with micromamba/mamba"
 	@echo
