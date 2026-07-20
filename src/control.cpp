@@ -5173,7 +5173,6 @@ void Control::orientational_correlation()
   start = time(NULL);
   oc.analyze(multibodylist); // pass run_analysis template the analysis type 'Mean_Square_Displacement'
   finish = time(NULL);
-  cerr << duration;
   cout << "\nCalculated bond autocorrelation function in " << finish-start<<" seconds."<<endl;
   oc.write(filename);
 }
