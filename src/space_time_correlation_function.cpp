@@ -10,6 +10,7 @@
 #include <stdlib.h>
 #include <iostream>
 #include <math.h>
+#include <vector>
 #include "generated/version.h"
 
 using namespace std;
@@ -23,9 +24,30 @@ using namespace std;
 
 
 
+Space_Time_Correlation_Function::Space_Time_Correlation_Function()
+{
+  n_bins = 0;
+  n_times = 0;
+  bin_size = 0;
+  max_value = 0;
+  weighting = nullptr;
+  timetable = nullptr;
+  correlation = nullptr;
+  spatial_inverse = nullptr;
+  spatial_inverse_calculated = false;
+  n_wavenumbers = 0;
+}
+
 Space_Time_Correlation_Function::~Space_Time_Correlation_Function()
 {
-  //clear_memory();
+  if(spatial_inverse != nullptr)
+  {
+    for(int timeii=0;timeii<n_times;timeii++)
+    {
+      delete [] spatial_inverse[timeii];
+    }
+    delete [] spatial_inverse;
+  }
 }
 
 
@@ -148,7 +170,7 @@ void Space_Time_Correlation_Function::spherical_fourier()
 {
   //float ** fourier;				//define pointer to array of fourier transformed data
   
-  float ** wavenumber;				//array of wavenumbers
+  vector<float> wavenumber(n_wavenumbers);		//array of wavenumbers
   int kii;					//index over wavenumbers
   int rii;					//index over radius
   float r;					//mean radius of present shell
@@ -157,19 +179,19 @@ void Space_Time_Correlation_Function::spherical_fourier()
   
   //n_wavenumbers = 100;				//number of wavenumbers; this may eventually be an input value
   
-  //rho = system->show_rho();
+  rho = system->show_rho();
   /*allocate memory for wavenumbers and array of fourier transformed data*/
   
-  for(timeii=0;timeii<n_times;timeii++)
+  if(spatial_inverse != nullptr)
   {
-    delete [] spatial_inverse[timeii];
+    for(timeii=0;timeii<n_times;timeii++)
+    {
+      delete [] spatial_inverse[timeii];
+    }
+    delete [] spatial_inverse;
+    spatial_inverse = nullptr;
   }
-  delete [] spatial_inverse;
-  
-  wavenumber = new float * [n_wavenumbers];
-  for(int i = 0; i < n_wavenumbers; i++){
-    wavenumber[i] = new float [16];
-  }
+
   spatial_inverse = new float* [n_times];		
   for(timeii=0;timeii<n_times;timeii++)
   {
@@ -179,7 +201,7 @@ void Space_Time_Correlation_Function::spherical_fourier()
   /*Calculate wavenumbers*/
   for(kii=0;kii<n_wavenumbers;kii++)
   {
-    wavenumber[kii][0] = 2.*PI*float(kii+1)/max_value;		//calculate wavenumber corresponding to this index over wavenumbers
+    wavenumber[kii] = 2.*PI*float(kii+1)/max_value;		//calculate wavenumber corresponding to this index over wavenumbers
    // wavenumber[kii] = PI/max_value*(2.*float(kii)+.5);		//calculate wavenumber corresponding to this index over wavenumbers
   }
   
@@ -193,10 +215,10 @@ void Space_Time_Correlation_Function::spherical_fourier()
       for(rii=0;rii<n_bins;rii++)		//sum over radius
       {
         r = (rii+0.5)*bin_size;	//calculate mean radius of current shell
-        spatial_inverse[timeii][kii] += r * correlation[timeii][rii]* sin(wavenumber[kii][0] * r);
+        spatial_inverse[timeii][kii] += r * correlation[timeii][rii]* sin(wavenumber[kii] * r);
 	//fourier[timeii][kii] += r * sin(wavenumber[kii] * r) * (normal[timeii][rii]/rho-1.0) * bin_size;	
       }
-      spatial_inverse[timeii][kii] *= 4*PI*rho/wavenumber[kii][0];
+      spatial_inverse[timeii][kii] *= 4*PI*rho/wavenumber[kii];
     }
   }
   
