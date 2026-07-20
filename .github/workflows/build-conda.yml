@@ -16,6 +16,7 @@ jobs:
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
+          lfs: true
 
       # Install a modern conda with mamba for speed; cache pkg downloads
       - name: Set up Miniforge (mamba)
