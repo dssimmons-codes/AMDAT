@@ -1,10 +1,13 @@
 # .github/workflows/check-version.yml
-name: Check VERSION vs latest tag
+name: Check VERSION and release tags
 
 on:
   pull_request:
   push:
     branches: [ main ]
+    tags:
+      - '*.*.*'
+      - 'v*.*.*'
 
 jobs:
   check-version:
@@ -15,52 +18,39 @@ jobs:
       - name: Checkout with full history and tags
         uses: actions/checkout@v4
         with:
-          fetch-depth: 0   # full history
-          fetch-tags: true # ensure tags are present
+          fetch-depth: 0
+          fetch-tags: true
 
-      - name: Determine latest tag
+      - name: Test version policy
+        run: python3 -m unittest tests/test_check_version.py
+
+      - name: Determine latest reachable release tag
         id: get_tag
         shell: bash
         run: |
           set -euo pipefail
+          latest="$(
+            git tag --list --sort=-version:refname --merged HEAD |
+              grep -E '^v?[0-9]+\.[0-9]+\.[0-9]+$' |
+              head -n 1 || true
+          )"
+          echo "Latest reachable release tag: ${latest:-none}"
+          echo "latest=$latest" >> "$GITHUB_OUTPUT"
 
-          if ! git tag --list | grep -q .; then
-            echo "No tags found; skipping check."
-            echo "skip=true" >> "$GITHUB_OUTPUT"
-            exit 0
-          fi
-
-          tag="$(git tag --list --sort=-version:refname --merged HEAD | head -n 1)"
-          echo "Latest tag: $tag"
-          echo "tag=$tag" >> "$GITHUB_OUTPUT"
-
-      - name: Compare VERSION to latest tag
-        if: steps.get_tag.outputs.skip != 'true'
+      - name: Validate VERSION policy
         shell: bash
+        env:
+          LATEST_TAG: ${{ steps.get_tag.outputs.latest }}
         run: |
           set -euo pipefail
+          args=(--version-file VERSION)
 
-          if [ ! -f VERSION ]; then
-            echo "ERROR: VERSION file is missing."
-            exit 1
+          if [ -n "$LATEST_TAG" ]; then
+            args+=(--latest-tag "$LATEST_TAG")
           fi
 
-          got="$(sed -E 's/^[[:space:]]+|[[:space:]]+$//g' VERSION)"
-
-          # If using export-subst placeholder, skip (Option 1 workflow).
-          if echo "$got" | grep -q '^\$Format:'; then
-            echo "VERSION contains export-subst placeholder; skipping check."
-            exit 0
+          if [ "$GITHUB_REF_TYPE" = "tag" ]; then
+            args+=(--release-tag "$GITHUB_REF_NAME")
           fi
 
-          want="${{ steps.get_tag.outputs.tag }}"
-          want_no_v="${want#v}"
-
-          if [ "$got" != "$want_no_v" ]; then
-            echo "VERSION mismatch:"
-            echo "  expected: $want_no_v   (from latest tag: $want)"
-            echo "  found:    $got         (in VERSION)"
-            exit 1
-          fi
-
-          echo "VERSION matches latest tag ($want). ✅"
+          python3 tools/check_version.py "${args[@]}"
