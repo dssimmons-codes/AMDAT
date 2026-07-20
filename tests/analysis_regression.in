@@ -1,0 +1,23 @@
+system
+xyz_log
+./testfiles/traj.xyz ./testfiles/log.lammps
+exponential 20 77 1.05 0 0 .01
+polymer 50
+1
+32
+
+create_list all
+all
+
+msd ${OUTPUT_DIR}/msd.dat
+list all
+
+mean_displacement ${OUTPUT_DIR}/md.dat
+list all
+
+msd_2d ${OUTPUT_DIR}/msd2d.dat xy
+list all
+
+create_multibodies bond1 bond centroid species_atomlist polymer 1 0 1 1
+
+baf ${OUTPUT_DIR}/baf.dat bond1

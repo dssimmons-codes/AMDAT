@@ -133,7 +133,8 @@ OBJS := $(patsubst $(SRC_DIR)/%.cpp,$(BUILD_DIR)/%.o,$(SRCS))
 DEPS := $(OBJS:.o=.d)
 
 # --- Targets -----------------------------------------------------------------
-.PHONY: all clean distclean rebuild format lint test-version-metadata help
+.PHONY: all clean distclean rebuild format lint test-version-metadata \
+        test-analysis-regression test-padded-analysis-lifecycle help
 all: $(APP)
 
 $(VERSION_STAMP):
@@ -231,6 +232,12 @@ rebuild: distclean all
 test-version-metadata:
 	@tests/run_version_metadata_regression.sh
 
+test-analysis-regression: $(APP)
+	@python3 tests/run_analysis_regression.py
+
+test-padded-analysis-lifecycle:
+	@tests/run_padded_analysis_lifecycle_asan.sh
+
 # Code quality helpers (optional)
 format:
 	@command -v clang-format >/dev/null || { echo "clang-format not found"; exit 1; }
@@ -251,6 +258,8 @@ help:
 	@echo "  format         Run clang-format (if installed)"
 	@echo "  lint           Run clang-tidy (if installed)"
 	@echo "  test-version-metadata  Verify generated version metadata refreshes"
+	@echo "  test-analysis-regression  Verify MSD, MD, MSD2D, and BAF numerics"
+	@echo "  test-padded-analysis-lifecycle  Check padded analysis memory safety"
 	@echo "  conda-setup    Create/update env with conda or micromamba"
 	@echo "  mamba-setup    Create/update env with micromamba/mamba"
 	@echo
