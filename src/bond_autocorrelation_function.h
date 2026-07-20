@@ -9,6 +9,8 @@
 
 #include <sstream>
 #include <string>
+#include <array>
+#include <vector>
 
 #include "multibody_analysis.h"
 #include "coordinate.h"
@@ -17,11 +19,11 @@ namespace std{
 
 class Bond_Autocorrelation_Function: public Multibody_Analysis
 {
-    int PAD = 16;
+    static constexpr int PAD = 16;
     int n_times;
-    float ** baf;
-    int ** weighting;
-    float * timetable;
+    vector<array<float, PAD>> baf;
+    vector<array<int, PAD>> weighting;
+    vector<float> timetable;
     void initialize(System*);
     void initialize(System*, Coordinate dim);  
     void initialize(System*, int l_type, Coordinate dim); 
@@ -47,7 +49,7 @@ class Bond_Autocorrelation_Function: public Multibody_Analysis
   public:
     Bond_Autocorrelation_Function();			//default constructor
     Bond_Autocorrelation_Function(const Bond_Autocorrelation_Function &);		//copy constructor
-    Bond_Autocorrelation_Function operator = (const Bond_Autocorrelation_Function &);	//assignment
+    Bond_Autocorrelation_Function& operator = (const Bond_Autocorrelation_Function &);	//assignment
     ~Bond_Autocorrelation_Function();
     
     Bond_Autocorrelation_Function(System*);

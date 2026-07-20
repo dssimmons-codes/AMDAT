@@ -12,163 +12,74 @@
 #include "static_trajectory_list.h"
 using namespace std;
 
-const int PAD = 16;
-
 Mean_Displacement::Mean_Displacement()
 {
   n_times = 0;
-
-   //allocate memory for mean square displacement data
-  md = new Coordinate * [n_times];
-  weighting = new int * [n_times];
-
   atomcount = 0;
 }
 
+Mean_Displacement::~Mean_Displacement() = default;
 
 Mean_Displacement::Mean_Displacement(const Mean_Displacement & copy)
 {
-  int timeii;
-
   system = copy.system;
   trajectory_list = copy.trajectory_list;
-
   n_times = copy.n_times;
   atomcount = copy.atomcount;
-
-  md = new Coordinate * [n_times];
-  weighting = new int * [n_times];
-
-  for(timeii=0;timeii<n_times;timeii++)
-  {
-    md[timeii] = new Coordinate[PAD];
-    weighting[timeii] = new int [PAD];
-  }
-
-  timetable = system->displacement_times();
-
-  for(timeii=0;timeii<n_times;timeii++)
-  {
-    md[timeii][0]=copy.md[timeii][0];
-    weighting[timeii][0]=copy.weighting[timeii][0];
-  }
+  md = copy.md;
+  weighting = copy.weighting;
+  timetable = copy.timetable;
 }
 
 
 
 /** **/
-Mean_Displacement::Mean_Displacement(System*sys)
+Mean_Displacement::Mean_Displacement(System*sys):Mean_Displacement()
 {
-  int timeii;
-
-  system = sys;
-  n_times = system->show_n_timegaps();
-
-   //allocate memory for mean square displacement data
-  md = new Coordinate * [n_times];
-  weighting = new int * [n_times];
-
-  for(timeii=0;timeii<n_times;timeii++)
-  {
-    md[timeii] = new Coordinate[PAD];
-    weighting[timeii] = new int [PAD];
-  }
-
-  timetable = system->displacement_times();
-  for(timeii=0;timeii<n_times;timeii++)
-  {
-    weighting[timeii][0]=0;
-  }
-  atomcount = 0;
-
+  initialize(sys);
 }
 
 
 
 
-Mean_Displacement Mean_Displacement::operator = (const Mean_Displacement & copy)
+Mean_Displacement& Mean_Displacement::operator = (const Mean_Displacement & copy)
 {
-  int timeii;
-
   if(this!=&copy)
   {
-
-  system = copy.system;
-  trajectory_list = copy.trajectory_list;
-
-  n_times = copy.n_times;
-  atomcount = copy.atomcount;
-
-  delete [] md;
-  delete [] weighting;
-
-  md = new Coordinate * [n_times];
-  weighting = new int * [n_times];
-
-  for(timeii=0;timeii<n_times;timeii++)
-  {
-    md[timeii] = new Coordinate[PAD];
-    weighting[timeii] = new int [PAD];
+    system = copy.system;
+    trajectory_list = copy.trajectory_list;
+    n_times = copy.n_times;
+    atomcount = copy.atomcount;
+    md = copy.md;
+    weighting = copy.weighting;
+    timetable = copy.timetable;
   }
-
-  timetable = system->displacement_times();
-
-  for(timeii=0;timeii<n_times;timeii++)
-  {
-    md[timeii][0]=copy.md[timeii][0];
-    weighting[timeii][0]=copy.weighting[timeii][0];
-  }
-
-  }
-
   return *this;
-
 }
 
 
 void Mean_Displacement::initialize(System* sys)
 {
-  int timeii;
-
   system = sys;
   n_times = system->show_n_timegaps();
+  md.assign(n_times, {});
+  weighting.assign(n_times, {});
 
-   //allocate memory for mean square displacement data
+  float * times = system->displacement_times();
+  timetable.assign(times, times+n_times);
+  delete [] times;
 
-  for(timeii=0;timeii<n_times;timeii++)
-  {
-    delete [] md[timeii];
-    delete [] weighting[timeii];
-  }
-
-  delete [] md;
-  delete [] weighting;
-
-  md = new Coordinate * [n_times];
-  weighting = new int * [n_times];
-
-  for(timeii=0;timeii<n_times;timeii++)
-  {
-    md[timeii] = new Coordinate[PAD];
-    weighting[timeii] = new int [PAD];
-  }
-
-  timetable = system->displacement_times();
-  for(timeii=0;timeii<n_times;timeii++)
-  {
-    weighting[timeii][0]=0;
-  }
   atomcount = 0;
 }
 
 void Mean_Displacement::preprocess()
 {
-  int timeii;
-  weighting_temp = system->timegap_weighting();
-  for(timeii=0;timeii<n_times;timeii++)
+  int * weighting_temp = system->timegap_weighting();
+  for(int timeii=0;timeii<n_times;timeii++)
   {
     weighting[timeii][0]=weighting_temp[timeii];
   }
+  delete [] weighting_temp;
 }
 
 

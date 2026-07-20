@@ -8,16 +8,18 @@
 #define MEAN_SQUARE_DISPLACEMENT_2D
 
 #include "system.h"
+#include <array>
 #include <sstream>
+#include <vector>
 namespace std{
 
 class Mean_Square_Displacement_2D: public Analysis
 {
     int n_times, atomcount;
-    float ** msd;
-    int ** weighting;
-    int * weighting_temp;
-    float * timetable;
+    static constexpr int PAD = 16;
+    vector<array<float, PAD>> msd;
+    vector<array<int, PAD>> weighting;
+    vector<float> timetable;
     string plane;
     typedef float (Trajectory::*length)(int,int)const;		
     length distancefun;
@@ -29,7 +31,7 @@ class Mean_Square_Displacement_2D: public Analysis
     ~Mean_Square_Displacement_2D();					// destructor
     Mean_Square_Displacement_2D(System*,string);
     Mean_Square_Displacement_2D(const Mean_Square_Displacement_2D &);	// copy constructor
-    Mean_Square_Displacement_2D operator = (const Mean_Square_Displacement_2D &);	// assignment operator
+    Mean_Square_Displacement_2D& operator = (const Mean_Square_Displacement_2D &);	// assignment operator
        
   
     Analysis_Type what_are_you(){Analysis_Type type = mean_square_displacement_2d; return type;};		//virtual method to report the type of analysis

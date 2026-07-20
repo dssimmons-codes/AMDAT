@@ -9,17 +9,19 @@
 
 #include "system.h"
 #include "coordinate.h"
+#include <array>
 #include <sstream>
+#include <vector>
 
 namespace std{
 
 class Mean_Displacement: public Analysis
 {
     int n_times;
-    Coordinate ** md;
-    int ** weighting;
-    int * weighting_temp;
-    float * timetable;
+    static constexpr int PAD = 16;
+    vector<array<Coordinate, PAD>> md;
+    vector<array<int, PAD>> weighting;
+    vector<float> timetable;
     void initialize(System*);                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  
     int atomcount;
     
@@ -29,9 +31,10 @@ class Mean_Displacement: public Analysis
     
   public:
     Mean_Displacement();			//default constructor
+    ~Mean_Displacement();
     Mean_Displacement(const Mean_Displacement &);		//copy constructor
     Mean_Displacement(System*);
-    Mean_Displacement operator = (const Mean_Displacement &);	//assignment
+    Mean_Displacement& operator = (const Mean_Displacement &);	//assignment
     
     Analysis_Type what_are_you(){Analysis_Type type = mean_displacement; return type;};		//virtual method to report the type of analysis
     

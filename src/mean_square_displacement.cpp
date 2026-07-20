@@ -13,150 +13,63 @@
 #include <omp.h>
 using namespace std;
 
-const int PAD = 16;
-
 Mean_Square_Displacement::Mean_Square_Displacement()
 {
   n_times = 0;
-
-   //allocate memory for mean square displacement data
-  msd = new float * [n_times];
-  weighting = new float * [n_times];
-
   atomcount = 0;
 }
 
+Mean_Square_Displacement::~Mean_Square_Displacement() = default;
 
 Mean_Square_Displacement::Mean_Square_Displacement(const Mean_Square_Displacement & copy)
 {
-  int timeii;
-
   system = copy.system;
   trajectory_list = copy.trajectory_list;
-
   n_times = copy.n_times;
   atomcount = copy.atomcount;
-
-  msd = new float * [n_times];
-  weighting = new float * [n_times];
-
-  for(int i = 0; i < n_times; i++){
-    msd[i] = new float[PAD];
-    weighting[i] = new float[PAD];
-  }
-
-  timetable = system->displacement_times();
-
-  for(timeii=0;timeii<n_times;timeii++)
-  {
-    msd[timeii][0]=copy.msd[timeii][0];
-    weighting[timeii][0]=copy.weighting[timeii][0];
-  }
+  msd = copy.msd;
+  weighting = copy.weighting;
+  timetable = copy.timetable;
 }
 
 
 
 /** **/
-Mean_Square_Displacement::Mean_Square_Displacement(System*sys)
+Mean_Square_Displacement::Mean_Square_Displacement(System*sys):Mean_Square_Displacement()
 {
-  int timeii;
-
-  system = sys;
-  n_times = system->show_n_timegaps();
-
-   //allocate memory for mean square displacement data
-  msd = new float * [n_times];
-  weighting = new float * [n_times];
-
-  for(int i = 0; i < n_times; i++){
-    msd[i] = new float[PAD];
-    weighting[i] = new float[PAD];
-  }
-
-
-  timetable = system->displacement_times();
-  for(timeii=0;timeii<n_times;timeii++)
-  {
-    msd[timeii][0]=0;
-    weighting[timeii][0]=0;
-  }
-  atomcount = 0;
-
+  initialize(sys);
 }
 
 
 
 
-Mean_Square_Displacement Mean_Square_Displacement::operator = (const Mean_Square_Displacement & copy)
+Mean_Square_Displacement& Mean_Square_Displacement::operator = (const Mean_Square_Displacement & copy)
 {
-  int timeii;
-
   if(this!=&copy)
   {
-
-  system = copy.system;
-  trajectory_list = copy.trajectory_list;
-
-  n_times = copy.n_times;
-  atomcount = copy.atomcount;
-
-  delete [] msd;
-  delete [] weighting;
-
-  msd = new float * [n_times];
-  weighting = new float * [n_times];
-
-  for(int i = 0; i < n_times; i++){
-    msd[i] = new float[PAD];
-    weighting[i] = new float[PAD];
+    system = copy.system;
+    trajectory_list = copy.trajectory_list;
+    n_times = copy.n_times;
+    atomcount = copy.atomcount;
+    msd = copy.msd;
+    weighting = copy.weighting;
+    timetable = copy.timetable;
   }
-
-
-  timetable = system->displacement_times();
-
-  for(timeii=0;timeii<n_times;timeii++)
-  {
-    msd[timeii][0]=copy.msd[timeii][0];
-    weighting[timeii][0]=copy.weighting[timeii][0];
-  }
-
-  }
-
   return *this;
-
 }
 
 
 void Mean_Square_Displacement::initialize(System* sys)
 {
-  int timeii;
-
   system = sys;
   n_times = system->show_n_timegaps();
+  msd.assign(n_times, {});
+  weighting.assign(n_times, {});
 
-   //allocate memory for mean square displacement data
-  for(int i = 0; i < n_times; i++){
-    delete [] msd[i];
-    delete [] weighting[i];
-  }
+  float * times = system->displacement_times();
+  timetable.assign(times, times+n_times);
+  delete [] times;
 
-  delete [] msd;
-  delete [] weighting;
-
-  msd = new float * [n_times];
-  weighting = new float * [n_times];
-
-  for(int i = 0; i < n_times; i++){
-    msd[i] = new float[PAD];
-    weighting[i] = new float[PAD];
-  }
-
-  timetable = system->displacement_times();
-  for(timeii=0;timeii<n_times;timeii++)
-  {
-    msd[timeii][0]=0;
-    weighting[timeii][0]=0;
-  }
   atomcount = 0;
 }
 

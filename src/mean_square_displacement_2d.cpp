@@ -12,8 +12,6 @@
 
 using namespace std;
 
-const int PAD = 16;
-
 Mean_Square_Displacement_2D::Mean_Square_Displacement_2D()
 {
   system=0;
@@ -21,20 +19,10 @@ Mean_Square_Displacement_2D::Mean_Square_Displacement_2D()
   n_times=0;
   atomcount=0;
 
-  msd = new float * [n_times];
-  weighting = new int * [n_times];
-  weighting_temp = new int [n_times];
-
-  timetable = new float [n_times];
   distancefun = &Trajectory::distance;
 }
 
-Mean_Square_Displacement_2D::~Mean_Square_Displacement_2D()
-{
-  delete [] msd;
-  delete [] weighting;
-  delete [] timetable;
-}
+Mean_Square_Displacement_2D::~Mean_Square_Displacement_2D() = default;
 
 Mean_Square_Displacement_2D::Mean_Square_Displacement_2D(const Mean_Square_Displacement_2D & copy)
 {
@@ -45,24 +33,12 @@ Mean_Square_Displacement_2D::Mean_Square_Displacement_2D(const Mean_Square_Displ
   distancefun = copy.distancefun;
   trajectory_list=copy.trajectory_list;
 
-  msd = new float * [n_times];
-  weighting = new int * [n_times];
-
-  for(int i = 0; i < n_times; i++){
-    msd[i] = new float[PAD];
-    weighting[i] = new int[PAD];
-  }
-
-  timetable = system->displacement_times();
-
-  for (int timeii=0;timeii<n_times;timeii++)
-  {
-    msd[timeii][0]=copy.msd[timeii][0];
-    weighting[timeii][0]=copy.weighting[timeii][0];
-  }
+  msd = copy.msd;
+  weighting = copy.weighting;
+  timetable = copy.timetable;
 }
 
-Mean_Square_Displacement_2D Mean_Square_Displacement_2D::operator=(const Mean_Square_Displacement_2D & copy)
+Mean_Square_Displacement_2D& Mean_Square_Displacement_2D::operator=(const Mean_Square_Displacement_2D & copy)
 {
   if(this!=&copy)
   {
@@ -72,33 +48,16 @@ Mean_Square_Displacement_2D Mean_Square_Displacement_2D::operator=(const Mean_Sq
   n_times = copy.n_times;
   atomcount = copy.atomcount;
   distancefun = copy.distancefun;
-  trajectory_list = trajectory_list;
-
-  delete [] msd;
-  delete [] weighting;
-  delete [] timetable;
-
-  msd = new float * [n_times];
-  weighting = new int * [n_times];
-  
-  for(int i = 0; i < n_times; i++){
-    msd[i] = new float[PAD];
-    weighting[i] = new int[PAD];
-  }
-
-  timetable = system->displacement_times();
-
-  for (int timeii=0;timeii<n_times;timeii++)
-  {
-    msd[timeii][0]=copy.msd[timeii][0];
-    weighting[timeii][0]=copy.weighting[timeii][0];
-  }
+  trajectory_list = copy.trajectory_list;
+  msd = copy.msd;
+  weighting = copy.weighting;
+  timetable = copy.timetable;
 
   }
   return *this;
 }
 
-Mean_Square_Displacement_2D::Mean_Square_Displacement_2D(System*sys,string orientation)
+Mean_Square_Displacement_2D::Mean_Square_Displacement_2D(System*sys,string orientation):Mean_Square_Displacement_2D()
 {
   initialize(sys,orientation);
 }
@@ -122,23 +81,20 @@ void Mean_Square_Displacement_2D::initialize(System* sys,string orientation)
 
   n_times = system->show_n_timegaps();
 
-   //allocate memory for mean square displacement data
-  msd = new float * [n_times];
-  weighting = new int * [n_times];
+  msd.assign(n_times, {});
+  weighting.assign(n_times, {});
 
-  for(int i = 0; i < n_times; i++){
-    msd[i] = new float[PAD];
-    weighting[i] = new int[PAD];
-  }
-
-  weighting_temp = system->timegap_weighting();
-  timetable = system->displacement_times();
+  int * weighting_temp = system->timegap_weighting();
+  float * times = system->displacement_times();
+  timetable.assign(times, times+n_times);
+  delete [] times;
   
   for(timeii=0;timeii<n_times;timeii++)
   {
     msd[timeii][0]=0;
     weighting[timeii][0] = weighting_temp[timeii];
   }
+  delete [] weighting_temp;
   atomcount = 0;
 }
 
