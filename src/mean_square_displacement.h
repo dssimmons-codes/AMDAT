@@ -8,28 +8,32 @@
 #define MEAN_SQUARE_DISPLACEMENT
 
 #include "system.h"
+#include <array>
 #include <sstream>
+#include <vector>
 
 namespace std{
 
 class Mean_Square_Displacement: public Analysis
 {
     int n_times;
-    float * msd;
-    float * weighting;
-    float * timetable;
+    static constexpr int PAD = 16;
+    vector<array<float, PAD>> msd;
+    vector<array<float, PAD>> weighting;
+    vector<float> timetable;
     void initialize(System*);                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  
     float atomcount;
     
     /*internal calculation variables*/
-    int currenttime, nexttime, currenttimegap;
+    //int currenttime, nexttime, currenttimegap;
     
     
   public:
     Mean_Square_Displacement();			//default constructor
+    ~Mean_Square_Displacement();
     Mean_Square_Displacement(const Mean_Square_Displacement &);		//copy constructor
     Mean_Square_Displacement(System*);
-    Mean_Square_Displacement operator = (const Mean_Square_Displacement &);	//assignment
+    Mean_Square_Displacement& operator = (const Mean_Square_Displacement &);	//assignment
     
     Analysis_Type what_are_you(){Analysis_Type type = mean_square_displacement; return type;};		//virtual method to report the type of analysis
     
@@ -47,8 +51,8 @@ class Mean_Square_Displacement: public Analysis
     void bin_hook(Trajectory_List*,int,int,int);
     void postprocess_bins();
     
-    float show(int t)const{return msd[t];};			//method to return one timestep of msd array
-//	bool isThreadSafe(){return true;};
+    float show(int t)const{return msd[t][0];};			//method to return one timestep of msd array
+  	bool isThreadSafe(){return true;};
 };
 }
 

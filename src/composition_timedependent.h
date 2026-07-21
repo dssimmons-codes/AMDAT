@@ -31,6 +31,8 @@ class Composition_TimeDependent:public Composition
 
     void write(string);
     void write(ofstream&);
+
+    bool isThreadSafe(){return true;}
 };
 }
 

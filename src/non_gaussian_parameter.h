@@ -16,15 +16,15 @@ namespace std{
 class Non_Gaussian_Parameter: public Analysis
 {
     int n_times;
-    float * ngp;
-    long int * weighting;
+    float ** ngp;
+    long int ** weighting;
     Mean_Square_Displacement const * msd;
     float * timetable;
     int atomcount;
     float * n_atoms;
 
     //calculation variables
-    int currenttime, nexttime, currenttimegap;
+    //int currenttime, nexttime, currenttimegap;
     
   public:
     Non_Gaussian_Parameter();
@@ -47,7 +47,7 @@ class Non_Gaussian_Parameter: public Analysis
     
     void bin_hook(Trajectory_List * t_list, int timegapii, int thisii, int nextii);
     void postprocess_bins();
-    //bool isThreadSafe(){return true;};
+    bool isThreadSafe(){return true;};
 };
 
 }

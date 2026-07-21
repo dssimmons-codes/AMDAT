@@ -6,7 +6,7 @@ AMDAT can read multiple file formats produced by the LAMMPS molecular dynamics s
 
 A central feature of AMDAT is its ability to read in and analyze blocked, exponentially-spaced trajectories. This is essential for analysis for dynamics over many orders of magnitude in time. The handling of this is currently documented in the [input_files](input_file.md) documentation. Both the documentation and the underlying functionality for this are expected to be expanded in the near future.
 
-AMDAT includes no built-in tools for visualization of either trajectories or properties of trajectories. All results are output in a text-based form and must be viewed in another software (exe python, julia, excel, matlab,...). AMDAT does not include the ability to aggregate statistics acquired based on multiple simulations; this requires use of post-analysis software, such as python, julia, matlab, igor, excel, or similar. AMDAT presently does not include multithreading, although this capability is planned for introduction in a future update.
+AMDAT includes no built-in tools for visualization of either trajectories or properties of trajectories. All results are output in a text-based form and must be viewed in another software (exe python, julia, excel, matlab,...). AMDAT does not include the ability to aggregate statistics acquired based on multiple simulations; this requires use of post-analysis software, such as python, julia, matlab, igor, excel, or similar. AMDAT includes CPU multithreading for select analysis function; more information is provided below or at this link: [multithreading](multithreading.md).
 
 <h2>Making AMDAT</h2>
 
@@ -38,7 +38,7 @@ AMDAT is run from the command line, specifying the filename of a user [input fil
 
 `-n <# OF PROCESSORS>`
 
-Presently, no analysis methods allow for multithreading, so this option does nothing. Eventually, this will permit AMDAT to run some analyses on `<# OF PROCESSORS>` processing cores. Defaults to 1 if not given..
+This sets AMDAT to run certain analyses (those for which multithreading is enabled) on `<# OF PROCESSORS>` processing cores. Defaults to 1 if not given. Analysis tools with multithreading capabilities are identified by this flag in their documentation page: [![multi](https://img.shields.io/badge/Multithreaded-blue)](multithreading.md). Additional information and a full list of analysis tools with multithreading capabilities can be found at [multithreading](multithreading.md).
 
 `-c <CONSTANT NAME> <CONSTANT VALUE>`
 

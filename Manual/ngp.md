@@ -1,5 +1,7 @@
 <h1>ngp</h1>
 
+[![multi](https://img.shields.io/badge/Multithreaded-blue)](multithreading.md)
+
 <h2>Function</h2>
 
 Calculates non-Gaussian parameter of the mean squared displacement.

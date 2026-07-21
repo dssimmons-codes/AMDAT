@@ -23,12 +23,12 @@ class Composition: public Analysis_Onetime
     int n_atomtypes;
     int n_molecules;
     int n_times;
-    int current_time;
-    int current_total_atoms;
+    //int current_time;
+    //int current_total_atoms;
     int total_atoms;
     float volume;
 
-    float * current_density;
+    float ** current_density;
     float average_density;
     float * time_average_comp;
     float** current_comp;
@@ -46,12 +46,13 @@ class Composition: public Analysis_Onetime
     
     Analysis_Type what_are_you(){Analysis_Type type = composition; return type;};
     
-    void listkernel(Trajectory *);
+    //void listkernel(Trajectory *);
+    void listkernel(Trajectory *,int,int,int);
     void timekernel(int);
     void postprocess_list();
     void write(string);
     void write(ofstream&);
-    bool isThreadSafe(){return false;};
+    bool isThreadSafe(){return true;};
     
     
     

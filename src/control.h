@@ -12,6 +12,7 @@
 #include <vector>
 //#include <unordered_map>
 #include <time.h>
+#include <chrono>
 #include <fstream>
 #include <string>
 #include <stdlib.h>
@@ -87,9 +88,18 @@ class Control
     Space_Time_Correlation_Function vht;
     Gaussian_Comparison * gaussian_comparison;		//array of Gaussian comparison objects
     int n_gaussian_comparisons;
-    time_t start;			//timer start
-    time_t finish;			//timer stop
+    //Timer
+    time_t start, finish;
 
+    //High-resolution timer (For algorithm benchmarking)
+    using clock = std::chrono::steady_clock;
+    using timepoint = clock::time_point;
+    timepoint high_start;                       //timer start
+    timepoint high_finish;                      //timer stop
+    float duration;
+    float time_count(timepoint start, timepoint finish){
+      return std::chrono::duration<float>(finish - start).count();
+    }
 
     /*Arrays to store analysis results with a name given by the user, for later recall and use in other analysis techniques*/
     //To be added
@@ -218,8 +228,9 @@ class Control
     void read_bond_neighbors(); //read in a list of bonds at each time and store as a neighbor list relative to each atom
     
     void orientational_correlation();
-    void region_multibody_list();	//creates new multibody list based on region
-    void region_bead_multibody_list();
+    void region_multibody_list();	//creates new multibody list based on region containing center of mass or centroid
+    void region_bead_multibody_list(); //creates new multibody list by selecting multibodies with at least n beads in target region
+    void multibody_trajlist_intersection();  //creates new multibody list by selecting multibodies with at least n beads in target trajlist
     void threshold_multibody_list();	//create nuew multibody list based on size thresholding of existing list
     void flatten_multibodies();		//creates new trajectory list by taking all of the trajectories containing in multibodies at each time of a specified multibody list
     void multibody_size_statistics();
@@ -291,6 +302,7 @@ Analysis_type Control::run_analysis(Analysis_type analyzer, string setline, stri
      Tokenize runtokenize(setline);
      n_setargs = runtokenize.count();
      //n_setargs = tokenize(setline, setargs);
+     //high_start = clock::now();
      if ( n_setargs==0 )
      {
 	  cout << "Error: No atom set command found.";
@@ -385,7 +397,9 @@ Analysis_type Control::run_analysis(Analysis_type analyzer, string setline, stri
      //analyzer.analyze(setline);
      //analyzer.write(filename);
      }
-
+  //high_finish = clock::now();
+  //duration = time_count(high_start, high_finish);
+  //cerr << duration;
 return analyzer;
 
 }

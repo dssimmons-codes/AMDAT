@@ -16,6 +16,7 @@ jobs:
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
+          lfs: true
 
       # Install a modern conda with mamba for speed; cache pkg downloads
       - name: Set up Miniforge (mamba)
@@ -43,6 +44,11 @@ jobs:
         run: |
           make CONDA=conda conda-setup
 
+      - name: Test generated version metadata
+        shell: bash -l {0}
+        run: |
+          conda run -n amdat make test-version-metadata
+
       # Build inside the env via the Makefile's 'conda' target (no manual activate needed)
       - name: Build AMDAT inside env
         shell: bash -l {0}
@@ -57,9 +63,43 @@ jobs:
           conda run -n amdat ./AMDAT -v
           conda run -n amdat ./AMDAT -j || true
 
+      - name: Test analysis numerics in serial and parallel
+        shell: bash -l {0}
+        run: |
+          conda run -n amdat make test-analysis-regression
+
       - name: Upload artifact (release, OMP=1)
         uses: actions/upload-artifact@v4
         with:
           name: AMDAT-linux-conda
           path: |
             AMDAT
+
+  padded-storage-sanitizers:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Miniforge (mamba)
+        uses: conda-incubator/setup-miniconda@v3
+        with:
+          miniforge-version: latest
+          use-mamba: true
+          auto-update-conda: true
+          auto-activate-base: true
+          activate-environment: amdat
+          environment-file: environment.yml
+          channel-priority: strict
+          condarc-file: ""
+          cache-downloads: true
+
+      - name: Test padded analysis storage lifecycles
+        shell: bash -l {0}
+        run: |
+          conda run -n amdat make test-padded-analysis-lifecycle

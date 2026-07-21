@@ -227,9 +227,9 @@ void Incoherent_Scattering_Function::analyze(Trajectory_List * t_list)
 
 void Incoherent_Scattering_Function::list_displacementkernel(int timegapii,int thisii, int nextii)
 {
-	currenttime=thisii;
-	nexttime=nextii;
-	timegap=timegapii;
+	int currenttime=thisii;
+	int nexttime=nextii;
+	int timegap=timegapii;
 //	//cout<<trajectory_list->show_n_trajectories(currenttime)<<"\t"<<timegap_weighting[timegap]<<"\t";
 //	//n_atoms[timegap]+=float(trajectory_list->show_n_trajectories(currenttime))/float(timegap_weighting[timegap]);
 //	//n_atoms[timegap]+=float(trajectory_list->show_n_trajectories(currenttime));
@@ -293,7 +293,6 @@ void Incoherent_Scattering_Function::listkernel(Trajectory* current_trajectory, 
 			coordinate2 = current_trajectory->show_unwrapped(nextii);
 			tempcorrelation += double(cos(vectorlist[wavevectorii]&(coordinate2-coordinate1))) / double(vectorcount);
 		}
-		#pragma omp atomic
 		correlation[timegapii][wavenumberii] += float(tempcorrelation);
 	}	
 }

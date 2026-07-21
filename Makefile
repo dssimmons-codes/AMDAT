@@ -33,24 +33,21 @@ GIT_DESCRIBE := $(shell git describe --tags --dirty --always 2>/dev/null)
 GIT_COMMIT   := $(shell git rev-parse --short HEAD 2>/dev/null)
 GIT_BRANCH   := $(shell git rev-parse --abbrev-ref HEAD 2>/dev/null)
 
-# Extract SemVer from tag if present (v1.2.3 → 1.2.3)
-# Fallback: read VERSION, else default
-ifeq ($(strip $(GIT_DESCRIBE)),)
-  AMDAT_SEMVER := $(strip $(shell [ -f VERSION ] && cat VERSION))
-  ifeq ($(strip $(AMDAT_SEMVER)),)
+# VERSION is authoritative for repository builds. Packagers may override it
+# with AMDAT_SEMVER=1.0.0+pkg make.
+AMDAT_SEMVER ?= $(strip $(shell [ -f VERSION ] && cat VERSION))
+ifeq ($(strip $(AMDAT_SEMVER)),)
+  ifeq ($(strip $(GIT_DESCRIBE)),)
     AMDAT_SEMVER := 0.0.0+archive
+  else
+    AMDAT_SEMVER := $(shell echo "$(GIT_DESCRIBE)" | sed -E 's/.*(v?[0-9]+\.[0-9]+\.[0-9]+).*/\1/' | sed 's/^v//')
   endif
-else
-  # pull the first thing that looks like vX.Y.Z or X.Y.Z
-  AMDAT_SEMVER := $(shell echo "$(GIT_DESCRIBE)" | sed -E 's/.*(v?[0-9]+\.[0-9]+\.[0-9]+).*/\1/' | sed 's/^v//')
-endif
-
-# Allow packagers to override from environment: AMDAT_SEMVER=1.0.0+pkg make
-ifneq ($(origin AMDAT_SEMVER),file)
-  AMDAT_SEMVER := $(AMDAT_SEMVER)
 endif
 
 BUILD_DATE   := $(shell date -u +%Y-%m-%dT%H:%M:%SZ)
+VERSION_KEY  := $(shell printf '%s\n' '$(AMDAT_SEMVER)|$(GIT_DESCRIBE)|$(GIT_COMMIT)|$(GIT_BRANCH)' | cksum | awk '{print $$1}')
+VERSION_STAMP := $(dir $(VERSION_H)).version-$(VERSION_KEY)
+VERSION_FILE := $(wildcard VERSION)
 
 # --- Flags -------------------------------------------------------------------
 CPPFLAGS := -MMD -MP -I./src \
@@ -122,9 +119,6 @@ XDR_OBJS  := $(patsubst $(XDR_SRC_DIR)/%.c,$(BUILD_DIR)/xdr/%.o,$(XDR_CSRCS))
 # Some distros require -lm for math symbols used by xdrfile
 LDLIBS += -lm
 
-# Ensure dir exists
-$(shell mkdir -p $(BUILD_DIR)/xdr)
-
 # --- Source discovery (flat, only src/*.cpp) ---------------------------------
 SRCS := $(wildcard $(SRC_DIR)/*.cpp)
 
@@ -138,14 +132,17 @@ SRCS := $(filter-out $(EXCLUDE_SRCS),$(SRCS))
 OBJS := $(patsubst $(SRC_DIR)/%.cpp,$(BUILD_DIR)/%.o,$(SRCS))
 DEPS := $(OBJS:.o=.d)
 
-# Ensure build dirs exist
-$(shell mkdir -p $(BUILD_DIR))
-
 # --- Targets -----------------------------------------------------------------
-.PHONY: all clean distclean rebuild format lint help
+.PHONY: all clean distclean rebuild format lint test-version-metadata \
+        test-analysis-regression test-padded-analysis-lifecycle help
 all: $(APP)
 
-$(VERSION_H):
+$(VERSION_STAMP):
+	@mkdir -p $(dir $@)
+	@rm -f $(dir $@).version-*
+	@touch $@
+
+$(VERSION_H): Makefile $(VERSION_FILE) $(VERSION_STAMP)
 	@mkdir -p $(dir $@)
 	@{ \
     echo '#pragma once'; \
@@ -204,11 +201,13 @@ $(APP): $(OBJS) $(XDR_OBJS) $(VORO_OBJS) | qvectors voro
 # Compile C++: strictly src/<file>.cpp → build/<file>.o
 $(BUILD_DIR)/%.o: $(SRC_DIR)/%.cpp | $(VERSION_H)
 	@echo "  CXX     $<"
+	@mkdir -p $(dir $@)
 	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -c $< -o $@
 
 # Compile C from xdrfile: third_party/xdrfile-1.1b/src/*.c → build/xdr/*.o
 $(BUILD_DIR)/xdr/%.o: $(XDR_SRC_DIR)/%.c
 	@echo "  CC      $<"
+	@mkdir -p $(dir $@)
 	$(CC) $(XDR_CFLAGS) -c $< -o $@
 
 ## Compile voro++: third_party/voro++-0.4.6/src/*.cc → build/voro/*.o (isolated includes)
@@ -222,12 +221,22 @@ $(BUILD_DIR)/xdr/%.o: $(XDR_SRC_DIR)/%.c
 clean: clean_voro
 	@echo "  CLEAN   objects"
 	@rm -rf $(BUILD_DIR)/*
+	@rm -f $(VERSION_H) $(dir $(VERSION_H)).version-*
 
 distclean: clean clean_qvectors
 	@echo "  CLEAN   binary"
 	@rm -f $(APP)
 
 rebuild: distclean all
+
+test-version-metadata:
+	@tests/run_version_metadata_regression.sh
+
+test-analysis-regression: $(APP)
+	@python3 tests/run_analysis_regression.py
+
+test-padded-analysis-lifecycle:
+	@tests/run_padded_analysis_lifecycle_asan.sh
 
 # Code quality helpers (optional)
 format:
@@ -248,6 +257,9 @@ help:
 	@echo "  rebuild        Full clean + build"
 	@echo "  format         Run clang-format (if installed)"
 	@echo "  lint           Run clang-tidy (if installed)"
+	@echo "  test-version-metadata  Verify generated version metadata refreshes"
+	@echo "  test-analysis-regression  Verify MSD, MD, MSD2D, and BAF numerics"
+	@echo "  test-padded-analysis-lifecycle  Check padded analysis memory safety"
 	@echo "  conda-setup    Create/update env with conda or micromamba"
 	@echo "  mamba-setup    Create/update env with micromamba/mamba"
 	@echo

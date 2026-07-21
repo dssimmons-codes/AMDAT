@@ -1,4 +1,7 @@
 <h1>msd</h1>
+
+[![multi](https://img.shields.io/badge/Multithreaded-blue)](multithreading.md)
+
 <h2>Function</h2>
 
 Calculates mean square displacement, as follows.
@@ -12,5 +15,7 @@ where S is the number of start times employed, N is the number of particles, $\v
 _msd \<output file\>_
 
 _\<target\>_
+
+
 
 

@@ -169,7 +169,7 @@ void Multibody_Bead_Region::write(string filename)const
 	/*calculate average number of atoms*/
 	for(timeii=0;timeii<n_times;timeii++)
 	{
-		avg_multibodies += (multibodies[timeii].size())/n_times;
+		avg_multibodies += float((multibodies[timeii].size()))/float(n_times);
 	}
 
 	ofstream output(filename.c_str());

@@ -11,7 +11,7 @@
 #include "generated/version.h"
 
 using namespace std;
-
+const int PAD = 16;
 
 /*----------------------------------------------------------------------------------------------*/
 
@@ -26,8 +26,9 @@ Van_Hove_Distinct::Van_Hove_Distinct()
   bin_size = 0;
   timetable = 0;
   correlation = new float * [1];
-  weighting = new int [0];
-  correlation[0]=new float [0];
+  correlation[0]= new float [0];
+  weighting = new int * [1];
+  weighting[0] = new int[0];
 }
 
 
@@ -56,10 +57,11 @@ Van_Hove_Distinct::Van_Hove_Distinct(System*sys, Trajectory_List_Bins binnedtraj
 //  currentlists = new Trajectory_List [2];
   
   correlation = new float * [n_times];
-  weighting = new int [n_times];
+  weighting = new int * [n_times];
   for(timeii=0;timeii<n_times;timeii++)
   {
-    weighting[timeii]=0;
+    weighting[timeii] = new int [PAD];
+    weighting[timeii][0]=0;
     correlation[timeii]=new float [n_bins];
     for(binii=0;binii<n_bins;binii++)
     {
@@ -91,10 +93,11 @@ Van_Hove_Distinct::Van_Hove_Distinct(System*sys, int bin_count, float value_max)
 //  currentlists = new Trajectory_List [2];
  
   correlation = new float * [n_times];
-  weighting = new int [n_times];
+  weighting = new int * [n_times];
   for(timeii=0;timeii<n_times;timeii++)
   {
-    weighting[timeii]=0;
+    weighting[timeii] = new int [PAD];
+    weighting[timeii][0]=0;
     correlation[timeii]=new float [n_bins];
     for(binii=0;binii<n_bins;binii++)
     {
@@ -116,6 +119,7 @@ void Van_Hove_Distinct::set(System*sys, int bin_count, float value_max)
   for(timeii=0;timeii<n_times;timeii++)
   {
     delete [] correlation[timeii];
+    delete [] weighting[timeii];
   }
   
   delete [] correlation;
@@ -141,10 +145,11 @@ void Van_Hove_Distinct::set(System*sys, int bin_count, float value_max)
 //  currentlists = new Trajectory_List [2];
   
   correlation = new float * [n_times];
-  weighting = new int [n_times];
+  weighting = new int * [n_times];
   for(timeii=0;timeii<n_times;timeii++)
   {
-    weighting[timeii]=0;
+    weighting[timeii]=new int [PAD];
+    weighting[timeii][0]=0;
     correlation[timeii]=new float [n_bins];
     for(binii=0;binii<n_bins;binii++)
     {
@@ -183,7 +188,7 @@ void Van_Hove_Distinct::analyze(Trajectory_List * t_list1, Trajectory_List * t_l
 void Van_Hove_Distinct::list_displacementkernel(int timegapii, int thisii, int nextii)
 {
  
-    weighting[timegapii]+=trajectory_list->show_n_trajectories(thisii);
+    weighting[timegapii][0]+=trajectory_list->show_n_trajectories(thisii);
 //    current_list1->listloop(this,timegapii, thisii, nextii);
     trajectory_list->listloop(this,timegapii, thisii, nextii);
 }
@@ -202,12 +207,12 @@ void Van_Hove_Distinct::listkernel2(Trajectory* traj1, Trajectory* traj2, int ti
   float distance;
   if(traj1!=traj2)
   {
-    (traj2->show_coordinate(nextii)-(traj1->show_coordinate(thisii))).length_unwrapped(system->size());	//calculate shortest distance between two coordinates, taking into account periodic boundaries
+    distance = (traj2->show_coordinate(nextii)-(traj1->show_coordinate(thisii))).length_unwrapped(system->size());	//calculate shortest distance between two coordinates, taking into account periodic boundaries
     bin(timegapii,distance);
   }
   else
   {
-    weighting[timegapii]--;
+    //weighting[timegapii][0]--;
   }
 
 }

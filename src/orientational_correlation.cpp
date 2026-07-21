@@ -21,8 +21,8 @@ Orientational_Correlation::Orientational_Correlation()
 {
   n_times=0;
 
-  correlation = new float [n_times];
-  weighting = new float [n_times];
+  correlation = new float * [n_times];
+  weighting = new float * [n_times];
   overall_correlation = 0;
   weighting = 0;
   correlated_vector.set(0,0,0);
@@ -37,12 +37,14 @@ Orientational_Correlation::Orientational_Correlation(const Orientational_Correla
   n_times = copy.n_times;
   multibody_list = copy.multibody_list;
 
-  correlation = new float [n_times];
-  weighting = new float [n_times];
+  correlation = new float * [n_times];
+  weighting = new float * [n_times];
   for(timeii=0;timeii<n_times;timeii++)
   {
-    correlation[timeii] = copy.correlation[timeii];
-    weighting[timeii] = copy.weighting[timeii];
+    correlation[timeii] = new float [16];
+    weighting[timeii] = new float [16];
+    correlation[timeii][0] = copy.correlation[timeii][0];
+    weighting[timeii][0] = copy.weighting[timeii][0];
   }
   overall_correlation=copy.overall_correlation;
   correlated_vector=copy.correlated_vector;
@@ -55,12 +57,14 @@ Orientational_Correlation::Orientational_Correlation(System*sys)
   int timeii;
   system = sys;
   n_times = system->show_n_timesteps();
-  correlation = new float [n_times];
-  weighting = new float [n_times];
+  correlation = new float * [n_times];
+  weighting = new float * [n_times];
   for(timeii=0;timeii<n_times;timeii++)
   {
-    correlation[timeii] = 0;
-    weighting[timeii] = 0;
+    correlation[timeii] = new float [16];
+    weighting[timeii] = new float [16];
+    correlation[timeii][0] = 0;
+    weighting[timeii][0] = 0;
   }
   overall_correlation=0;
   correlated_vector.set(0,0,0);
@@ -72,12 +76,14 @@ Orientational_Correlation::Orientational_Correlation(System*sys, Coordinate vec)
   int timeii;
   system = sys;
   n_times = system->show_n_timesteps();
-  correlation = new float [n_times];
-  weighting = new float [n_times];
+  correlation = new float * [n_times];
+  weighting = new float * [n_times];
   for(timeii=0;timeii<n_times;timeii++)
   {
-    correlation[timeii] = 0;
-    weighting[timeii] = 0;
+    correlation[timeii] = new float [16];
+    weighting[timeii] = new float [16];
+    correlation[timeii][0] = 0;
+    weighting[timeii][0] = 0;
   }
   overall_correlation=0;
   correlated_vector.set(0,0,0);
@@ -92,16 +98,18 @@ Orientational_Correlation Orientational_Correlation::operator = (const Orientati
   if(this!=&copy)
   {
 
-    system = copy.system;
+  system = copy.system;
   n_times = copy.n_times;
   multibody_list = copy.multibody_list;
 
-  correlation = new float [n_times];
-  weighting = new float [n_times];
+  correlation = new float * [n_times];
+  weighting = new float * [n_times];
   for(timeii=0;timeii<n_times;timeii++)
   {
-    correlation[timeii] = copy.correlation[timeii];
-    weighting[timeii] = copy.weighting[timeii];
+    correlation[timeii] = new float [16];
+    weighting[timeii] = new float [16];
+    correlation[timeii][0] = copy.correlation[timeii][0];
+    weighting[timeii][0] = copy.weighting[timeii][0];
   }
   overall_correlation=copy.overall_correlation;
   correlated_vector=copy.correlated_vector;
@@ -117,9 +125,10 @@ Orientational_Correlation Orientational_Correlation::operator = (const Orientati
 void Orientational_Correlation::analyze(Multibody_List * t_list)
 {
   multibody_list=t_list;
+  #pragma omp parallel for schedule(static) if(this->isThreadSafe())
   for(int timeii=0; timeii<system->show_n_timesteps(); timeii++)
   {
-    weighting[timeii]+=multibody_list->show_n_multibodies(timeii);
+    weighting[timeii][0]+=multibody_list->show_n_multibodies(timeii);
     multibody_list->listloop(this,0, timeii, 0);
   }
   postprocess_list();
@@ -129,7 +138,7 @@ void Orientational_Correlation::analyze(Multibody_List * t_list)
 void Orientational_Correlation::listkernel(Multibody* current_multibody, int timegapii,int thisii, int nextii)
 {
   float dotproduct=  (((*current_multibody)(1)->show_unwrapped(thisii)-(*current_multibody)(0)->show_unwrapped(thisii)).unit_vector())&((correlated_vector).unit_vector());	//compute dot product between unit vectors at initial and later times
-  correlation[thisii]+=0.5*(3.0*dotproduct*dotproduct - 1.0);	//increment baf by second legendre polynomial of dot product above
+  correlation[thisii][0]+=0.5*(3.0*dotproduct*dotproduct - 1.0);	//increment baf by second legendre polynomial of dot product above
 }
 
 
@@ -138,9 +147,9 @@ void Orientational_Correlation::postprocess_list()
   float cumulative_weighting=0;
   for(int timeii=0;timeii<n_times;timeii++)
   {
-        overall_correlation+=correlation[timeii];
-        correlation[timeii] /= float(weighting[timeii]);
-        cumulative_weighting+=weighting[timeii];
+        overall_correlation+=correlation[timeii][0];
+        correlation[timeii][0] /= float(weighting[timeii][0]);
+        cumulative_weighting+=weighting[timeii][0];
   }
   overall_correlation/=cumulative_weighting;
 
@@ -165,7 +174,7 @@ void Orientational_Correlation::write(string filename)const
 
     for(timeii=0;timeii<n_times;timeii++)
   {
-    output << system->show_time(timeii)<<"\t"<<correlation[timeii]<<"\n";
+    output << system->show_time(timeii)<<"\t"<<correlation[timeii][0]<<"\n";
   }
 }
 
@@ -183,7 +192,7 @@ void Orientational_Correlation::write(ofstream& output)const
 
     for(timeii=0;timeii<n_times;timeii++)
   {
-    output << system->show_time(timeii)<<"\t"<<correlation[timeii]<<"\n";
+    output << system->show_time(timeii)<<"\t"<<correlation[timeii][0]<<"\n";
   }
 }
 

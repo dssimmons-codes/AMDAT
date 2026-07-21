@@ -20,7 +20,7 @@ class Space_Time_Correlation_Function: public Analysis
     float bin_size;		//size of bins
     float max_value;		//maximum value included in bins
     
-    int * weighting;	//number of measurements contributing to correlation at each time
+    int ** weighting;	//number of measurements contributing to correlation at each time
     
     float * timetable;		//table of times corresponding to correlation data
     
@@ -36,6 +36,7 @@ class Space_Time_Correlation_Function: public Analysis
     void spherical_fourier();
     
   public:
+    Space_Time_Correlation_Function();
     ~Space_Time_Correlation_Function();
 
     Analysis_Type what_are_you(){Analysis_Type type = space_time_correlation_function; return type;};		//virtual method to report the type of analysis

@@ -19,8 +19,8 @@ class Neighbor_Decorrelation_Function: public Analysis
     Neighbor_List * n_list;
   
     int n_times;
-    float * ndf;
-    float * weighting;
+    float ** ndf;
+    float ** weighting;
     float * timetable;
     void initialize(System*, Neighbor_List*);   
     
@@ -49,8 +49,8 @@ class Neighbor_Decorrelation_Function: public Analysis
     void bin_hook(Trajectory_List*,int,int,int);
     void postprocess_bins();
     
-    float show(int t)const{return ndf[t];};			//method to return one timestep of msd array
-//	bool isThreadSafe(){return true;};
+    float show(int t)const{return ndf[t][0];};			//method to return one timestep of msd array
+  	bool isThreadSafe(){return true;};
 };
 }
 

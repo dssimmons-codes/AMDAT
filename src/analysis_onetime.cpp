@@ -29,6 +29,7 @@ void Analysis_Onetime::analyze(Trajectory_List * t_list)
   
   if(time_scheme==-1)
   {
+    #pragma omp parallel for schedule(static) if(this->isThreadSafe())
     for (timeii=0; timeii<system->show_n_timesteps();timeii++)
     {
       timekernel(timeii);
@@ -40,6 +41,7 @@ void Analysis_Onetime::analyze(Trajectory_List * t_list)
   }
   else
   {
+    #pragma omp parallel for schedule(static) if(this->isThreadSafe())
     for (timeii=time_scheme; timeii<system->show_n_exponentials();timeii+=system->show_n_exponential_steps())
     {
       timekernel(timeii);
@@ -62,6 +64,7 @@ void Analysis_Onetime::analyze(Trajectory_List * t_list,Trajectory_List* t_list2
   
   if(time_scheme==-1)
   {
+    #pragma omp parallel for schedule(static) if(this->isThreadSafe())
     for (timeii=0; timeii<system->show_n_timesteps();timeii++)
     {
       timekernel2(timeii);
@@ -73,6 +76,7 @@ void Analysis_Onetime::analyze(Trajectory_List * t_list,Trajectory_List* t_list2
   }
   else
   {
+    #pragma omp parallel for schedule(static) if(this->isThreadSafe())
     for (timeii=time_scheme; timeii<system->show_n_exponentials();timeii+=system->show_n_exponential_steps())
     {
       timekernel2(timeii);

@@ -15,12 +15,12 @@ It provides a wide variety of high-performance analyses integral to molecular mo
 ## Why AMDAT (at a glance)
 
 * Fast, in-memory engine – load once, analyze many time delays without re-reading files.
-* Blocked exponential time spacing – efficient long-timescale dynamics across orders of magnitude.
-* Modular data abstractions – trajectory / neighbor / multibody / value lists compose into rich workflows.
-* Validated analyses –
-  * static and time-resolved structure factors,
-  * radial distribution functions,
-  * mean-square displacements,
+* Blocked [exponential time spacing](/Manual/time_scheme.md) – efficient long-timescale dynamics across orders of magnitude.
+* Modular data abstractions – [trajectory](Manual/trajectory_lists.md) / [neighbor](Manual/neighborlist.md) / [multibody](Manual/multibodies.md) / [value](Manual/value_list.md) lists compose into rich workflows.
+* Validated analyses such as -
+  * [static](Manual/structure_factor.md) and [time-resolved](Manual/isf_list.md) structure factors,
+  * [radial distribution functions](Manual/rdf.md),
+  * [mean-square displacements](Manual/msd.md),
   * neighbor correlations,
   * clustering, and more.
 * Plain-text outputs – easy post-processing in Python/Matlab/Excel/VMD/OVITO.
@@ -161,6 +161,9 @@ If you use AMDAT, please cite:
 > Simmons, Kawak, Drayer and Mackura, "Amorphous Molecular Dynamics Analysis Toolkit (AMDAT)". Zenodo, 2025. DOI: [10.5281/zenodo.17417166](https://doi.org/10.5281/zenodo.17417166).
 
 > Kawak, Drayer, and Simmons, "AMDAT: An Open-Source Molecular Dynamics Analysis Toolkit for Supercooled Liquids, Glass-Forming Materials, and Complex Fluids". arXiv, 2026. DOI: [10.48550/arXiv.2602.05865](https://doi.org/10.48550/arXiv.2602.05865)
+
+and
+> https://arxiv.org/abs/2602.05865
 
 *Also see [CITATION.cff](CITATION.cff).*
 

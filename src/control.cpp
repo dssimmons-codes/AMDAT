@@ -72,6 +72,7 @@
 #include "mean_closest_distance.h"
 #include "find_between.h"
 #include "multibody_bead_region.h"
+#include "multibody_trajlist_intersection.h"
 
 //#include "msd_listprint.h"
 
@@ -275,6 +276,10 @@ int Control::execute_commands(int iIndex, int fIndex)
     else if (command == "region_bead_multibody_list")
     {
       region_bead_multibody_list();
+    }
+    else if(command == "multibody_trajlist_intersection")
+    {
+      multibody_trajlist_intersection();
     }
     else if (command == "threshold_multibody_list")
     {
@@ -1998,6 +2003,44 @@ void Control::region_bead_multibody_list()
 
 }
 
+
+
+/*--------------------------------------------------------------------------------*/
+
+
+
+void Control::multibody_trajlist_intersection()
+{
+  string new_multibody_list_name, target_multibody_list_name, trajlist_name, statistics_file;
+  int expected = 6;
+  int thresh;
+  argcheck(expected);
+
+  Multibody_TrajList_Intersection* mbr;
+  mbr = new Multibody_TrajList_Intersection;
+  Multibody_List * target_multibodylist;
+  Trajectory_List * target_trajectorylist;
+
+  new_multibody_list_name = args[1];
+  target_multibody_list_name = args[2];
+  trajlist_name = args [3];
+
+  statistics_file=args[4];
+  thresh = atoi(args[5].c_str());
+
+  target_multibodylist = find_multibody_list(target_multibody_list_name);
+  target_trajectorylist = find_trajectorylist(trajlist_name);
+
+  (*mbr)=Multibody_TrajList_Intersection(analyte,target_trajectorylist,thresh);
+  mbr->analyze(target_multibodylist);
+
+  add_multibody_list((Multibody_List*)mbr, new_multibody_list_name);
+
+  mbr->write(statistics_file);
+
+
+}
+
 /*--------------------------------------------------------------------------------*/
 
 
@@ -2379,7 +2422,6 @@ void Control::neighbor_decorrelation_function()
   cout << "\nCalculating neighbor decorrelation function.\n";cout.flush();
   start = time(NULL);
   ndf = run_analysis <Neighbor_Decorrelation_Function> (ndf,runline,filename); // pass run_analysis template the analysis type 'Neighbor_Decorrelation_Function'
-
   finish = time(NULL);
   cout << "\nCalculated neighbor_decorrelation_function in " << finish-start<<" seconds."<<endl;
 
@@ -2542,11 +2584,11 @@ void Control::calc_vhs()
   cout << "\nCalculating self part of Van Hove correlation function.";
   start = time(NULL);
   run_analysis(&vhs,runline);
-  finish = time(NULL);
   vhs_defined=1;
+  vhs.write(filename);
+  finish = time(NULL);
 
   cout << "\nCalculated self Van Hove in " << finish-start<<" seconds.";
-  vhs.write(filename);
 
 }
 
@@ -2564,7 +2606,7 @@ void Control::calc_vhd()
   int n_bins;
   string filename;
 
-  int expected = 3;
+  int expected = 5;
   argcheck(expected);
 
   filename = args[1];
@@ -2580,7 +2622,7 @@ void Control::calc_vhd()
   cout << "\nCalculating distinct Van Hove correlation function.";
   start = time(NULL);
   run_analysis(&vhd, runline);
-  finish = time(NULL);
+  finish = time(NULL);;
   cout << "\nCalculated distinct Van Hove in " << finish-start<<" seconds.\n";
   cout << "Writing distinct Van Hove to file. ";
   vhd.write(filename);
@@ -3366,7 +3408,6 @@ void Control::ngp()
   ngpar=run_analysis <Non_Gaussian_Parameter> (ngpar,runline,filename); // pass run_analysis template the analysis type
   //ngpar.write(filename);
   cout << "\n Peak time index of non-Gaussian parameter is " << ngpar.max() << ".";
-
 }
 
 

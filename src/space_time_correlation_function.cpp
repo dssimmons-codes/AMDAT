@@ -10,6 +10,7 @@
 #include <stdlib.h>
 #include <iostream>
 #include <math.h>
+#include <vector>
 #include "generated/version.h"
 
 using namespace std;
@@ -23,9 +24,30 @@ using namespace std;
 
 
 
+Space_Time_Correlation_Function::Space_Time_Correlation_Function()
+{
+  n_bins = 0;
+  n_times = 0;
+  bin_size = 0;
+  max_value = 0;
+  weighting = nullptr;
+  timetable = nullptr;
+  correlation = nullptr;
+  spatial_inverse = nullptr;
+  spatial_inverse_calculated = false;
+  n_wavenumbers = 0;
+}
+
 Space_Time_Correlation_Function::~Space_Time_Correlation_Function()
 {
-  //clear_memory();
+  if(spatial_inverse != nullptr)
+  {
+    for(int timeii=0;timeii<n_times;timeii++)
+    {
+      delete [] spatial_inverse[timeii];
+    }
+    delete [] spatial_inverse;
+  }
 }
 
 
@@ -36,6 +58,7 @@ void Space_Time_Correlation_Function::clear_memory()
  for(ii=0;ii<n_times;ii++)
  {
    delete [] correlation[ii];
+   delete [] weighting[ii];
  }
  delete [] correlation;
  delete [] weighting;
@@ -82,15 +105,16 @@ Space_Time_Correlation_Function Space_Time_Correlation_Function::operator+ (cons
 
   temp.system = system;		//naively copy system point from present object; the user must simply be smart about what this means and when it is appropriate.  In general, it is acceptable if systems have the same timestep properties and merely have different trajectories.  Could put a warning in here triggered if time properties are different.
   temp.correlation = new float*[n_times];
-  temp.weighting = new int[n_times];
+  temp.weighting = new int*[n_times];
   temp.timetable = new float[n_times];
   for(timeii=0;timeii<n_times;timeii++)
   {
     temp.correlation[timeii]=new float[n_bins];
-    temp.weighting[timeii]=weighting[timeii]+increment.weighting[timeii];
+    temp.weighting[timeii] = new int[16];
+    temp.weighting[timeii][0]=weighting[timeii][0]+increment.weighting[timeii][0];
     for(binii=0;binii<n_bins;binii++)
     {
-      temp.correlation[timeii][binii] = (correlation[timeii][binii]*float(weighting[timeii]) + increment.correlation[timeii][binii]*float(increment.weighting[timeii]))/float(temp.weighting[timeii]);
+      temp.correlation[timeii][binii] = (correlation[timeii][binii]*float(weighting[timeii][0]) + increment.correlation[timeii][binii]*float(increment.weighting[timeii][0]))/float(temp.weighting[timeii][0]);
     }
     if(timetable[timeii]==increment.timetable[timeii])
     {
@@ -146,7 +170,7 @@ void Space_Time_Correlation_Function::spherical_fourier()
 {
   //float ** fourier;				//define pointer to array of fourier transformed data
   
-  float * wavenumber;				//array of wavenumbers
+  vector<float> wavenumber(n_wavenumbers);		//array of wavenumbers
   int kii;					//index over wavenumbers
   int rii;					//index over radius
   float r;					//mean radius of present shell
@@ -155,16 +179,19 @@ void Space_Time_Correlation_Function::spherical_fourier()
   
   //n_wavenumbers = 100;				//number of wavenumbers; this may eventually be an input value
   
-  //rho = system->show_rho();
+  rho = system->show_rho();
   /*allocate memory for wavenumbers and array of fourier transformed data*/
   
-  for(timeii=0;timeii<n_times;timeii++)
+  if(spatial_inverse != nullptr)
   {
-    delete [] spatial_inverse[timeii];
+    for(timeii=0;timeii<n_times;timeii++)
+    {
+      delete [] spatial_inverse[timeii];
+    }
+    delete [] spatial_inverse;
+    spatial_inverse = nullptr;
   }
-  delete [] spatial_inverse;
-  
-  wavenumber = new float [n_wavenumbers];
+
   spatial_inverse = new float* [n_times];		
   for(timeii=0;timeii<n_times;timeii++)
   {
@@ -350,10 +377,12 @@ void Space_Time_Correlation_Function::postprocess_list()
   for(binii=0;binii<n_bins;binii++)
   {
     rshell = binii*bin_size;						//determine inner radius of bin
-    shellvolume = (4.0/3.0)*PI*(pow(rshell+bin_size,3.0)-pow(rshell,3.0));		//calculate volume of bin
+    double a = rshell + bin_size;
+    double b = rshell;
+    shellvolume = (4.0/3.0) * PI * (a - b) * (a*a + a*b + b*b);
     for (timeii=0;timeii<n_times;timeii++)
     {
-      correlation[timeii][binii]/=(float(weighting[timeii])*shellvolume);
+      correlation[timeii][binii]/=(float(weighting[timeii][0])*shellvolume);
     }
   }
   

@@ -1,5 +1,7 @@
 <h1>msd_2d</h1>
 
+[![multi](https://img.shields.io/badge/Multithreaded-blue)](multithreading.md)
+
 <h2>Function</h2>
 
 Calculates mean square displacement in two dimensions

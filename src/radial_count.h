@@ -21,8 +21,8 @@ class Radial_Count: public Analysis_Onetime
     int n_times;
     float ** time_rdf;
     float * mean_rdf;
-    int * n_atoms_i;
-    int * n_atoms_j;
+    int ** n_atoms_i;
+    int ** n_atoms_j;
     
     
   public:
@@ -52,7 +52,7 @@ class Radial_Count: public Analysis_Onetime
 
     
     
-//	bool isThreadSafe(){return true;};
+  	bool isThreadSafe(){return true;};
 };
 }
 

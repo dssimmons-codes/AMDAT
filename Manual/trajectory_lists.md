@@ -50,7 +50,7 @@ A large number of analysis tools target `trajectory_list` objects.
 | [`displacement_dist`](displacement_dist.md) | Computes the displacement of each particle at some time separation and reports a distribution | Tab demarcated data file. |
 | [`displacement_map`](displacement_map.md) | Generates maps of particle displacement magnitude and writes to pdb files with value beta specifying displacement.| PDB file |
 | [`incremental_mean_displacement`](incremental_mean_displacement.md) | Calculates mean displacement of particles as a function of time. | Tab demarcated data file. |
-| [`isf_list`](isf_list.md) | Calculate full intermediate scattering function | Tab demarkated data file |
+| [`isf`](isf.md) | Calculate full intermediate scattering function | Tab demarkated data file |
 | [`isfs`](isfs.md) | Calculates the self-part of the intermediate scattering function. | Tab demarkated data file |
 | [`mean_closest_distance`](mean_closest_distance.md) | Calculates the average distance between particles in two distinct `trajectory_list`s. | Tab demarkated data file |
 | [`mean_displacement`](mean_displacement.md) | Calculates the mean (not mean square) displacement vector of all particles as a function of time. | Tab demarcated data file |
@@ -81,7 +81,6 @@ A large number of analysis tools target `trajectory_list` objects.
 | `find_fast_fixedthreshold` | Finds fast particles based on displacements higher than some value. Likely to become deprecated in favor of valuelist approach. | new `trajectory_list` |
 | [`find_between`](find_between.md) | Finds particles with displacements in some value range. Likely to become deprecated in favor of valuelist approach. | new `trajectory_list` |
 | `gyration_radius` | Deprecated; to be removed. | - |
-| `isf` | Deprecated; to be removed. | - |
 | `radial_debye_waller` | Computes dwf as a function of distance from (0,0,0). Planned for deprecation.|
 | `vector_autocorrelation_function` | Computes autocorrelation function for a specified set of vectors. Essentially replaced by [`raf`](raf.md) [`multibody`](multibodies.md) functionality and planned for deprecation. | Tab-demarcated data file. |
 
